@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "lerna bootstrap",
+    "test": "lerna exec npm test"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   "homepage": "https://github.com/ceilfors/laconia#readme",
   "devDependencies": {
     "jest": "^21.2.1",
-    "lerna": "^2.5.1"
+    "lerna": "^2.5.1",
+    "standard": "^10.0.3"
   }
 }

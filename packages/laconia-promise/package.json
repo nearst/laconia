@@ -1,0 +1,10 @@
+{
+  "name": "@laconia/promise",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Wisen Tanasa <wisen@ceilfors.com>",
+  "license": "Apache-2.0"
+}

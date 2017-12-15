@@ -11,13 +11,21 @@ describe('laconia promise', () => {
       callback = jest.fn()
     })
 
-    it('should call AWS Lambda callback with null', () => {
+    it('should call Lambda callback with null when there is no value returned', () => {
       return lp(handler)({}, {}, callback).then(_ => {
-        expect(callback).toBeCalledWith(null)
+        expect(callback).toBeCalledWith(null, undefined)
+        expect(callback).toHaveBeenCalledTimes(1)
       })
     })
 
-    it('should call wrapped function with the exact parameters', () => {
+    it('should return the handler return value to Lambda callback', () => {
+      handler.mockReturnValueOnce('value')
+      return lp(handler)({}, {}, callback).then(_ => {
+        expect(callback).toBeCalledWith(null, 'value')
+      })
+    })
+
+    it('should call handler function with the exact parameters', () => {
       return lp(handler)({}, {}, callback).then(_ => {
         expect(handler).toBeCalledWith({}, {}, callback)
       })

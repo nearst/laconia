@@ -25,6 +25,13 @@ describe("laconia promise", () => {
       });
     });
 
+    it("should return the handler Promise return value to Lambda callback", () => {
+      handler.mockReturnValueOnce(Promise.resolve("value"));
+      return lp(handler)({}, {}, callback).then(_ => {
+        expect(callback).toBeCalledWith(null, "value");
+      });
+    });
+
     it("should call handler function with the exact parameters", () => {
       return lp(handler)({}, {}, callback).then(_ => {
         expect(handler).toBeCalledWith({}, {}, callback);

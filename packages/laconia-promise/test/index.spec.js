@@ -3,14 +3,14 @@
 const lp = require('../src/index.js')
 
 describe('laconia promise', () => {
+  let callback, handler
+
+  beforeEach(() => {
+    handler = jest.fn()
+    callback = jest.fn()
+  })
+
   describe('when there is no error', () => {
-    let callback, handler
-
-    beforeEach(() => {
-      handler = jest.fn()
-      callback = jest.fn()
-    })
-
     it('should call Lambda callback with null when there is no value returned', () => {
       return lp(handler)({}, {}, callback).then(_ => {
         expect(callback).toBeCalledWith(null, undefined)
@@ -35,6 +35,15 @@ describe('laconia promise', () => {
     it('should call handler function with the exact parameters', () => {
       return lp(handler)({}, {}, callback).then(_ => {
         expect(handler).toBeCalledWith({}, {}, callback)
+      })
+    })
+  })
+
+  describe('when there is error', () => {
+    it('should call Lambda callback with the error', () => {
+      const error = new Error('boom')
+      return lp(() => { throw error })({}, {}, callback).then(_ => {
+        expect(callback).toBeCalledWith(error)
       })
     })
   })

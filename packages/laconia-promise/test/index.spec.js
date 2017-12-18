@@ -40,11 +40,18 @@ describe("laconia promise", () => {
   });
 
   describe("when there is error", () => {
-    it("should call Lambda callback with the error", () => {
+    it("should call Lambda callback with the error thrown", () => {
       const error = new Error("boom");
       return lp(() => {
         throw error;
       })({}, {}, callback).then(_ => {
+        expect(callback).toBeCalledWith(error);
+      });
+    });
+
+    it("should call Lambda callback with the rejected error", () => {
+      const error = new Error("boom");
+      return lp(() => Promise.reject(error))({}, {}, callback).then(_ => {
         expect(callback).toBeCalledWith(error);
       });
     });

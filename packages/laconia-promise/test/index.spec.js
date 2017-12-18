@@ -3,41 +3,33 @@
 const lp = require("../src/index.js");
 
 describe("laconia promise", () => {
-  let callback, handler;
+  let callback;
 
   beforeEach(() => {
-    handler = jest.fn();
     callback = jest.fn();
   });
 
-  describe("when there is no error", () => {
-    it("should call Lambda callback with null when there is no value returned", () => {
-      return lp(handler)({}, {}, callback).then(_ => {
-        expect(callback).toBeCalledWith(null, undefined);
-        expect(callback).toHaveBeenCalledTimes(1);
-      });
+  it("should call Lambda callback with null when there is no value returned", () => {
+    return lp(() => {})({}, {}, callback).then(_ => {
+      expect(callback).toBeCalledWith(null, undefined);
+      expect(callback).toHaveBeenCalledTimes(1);
     });
+  });
 
-    it("should return the handler return value to Lambda callback", () => {
+  it("should delegate AWS parameters to handler function", () => {
+    const handler = jest.fn();
+    return lp(handler)({}, {}, callback).then(_ => {
+      expect(handler).toBeCalledWith({}, {}, callback);
+    });
+  });
+
+  describe("when synchronous code", () => {
+    it("should call Lambda callback with the handler return value to Lambda callback", () => {
       return lp(() => "value")({}, {}, callback).then(_ => {
         expect(callback).toBeCalledWith(null, "value");
       });
     });
 
-    it("should return the handler Promise return value to Lambda callback", () => {
-      return lp(() => Promise.resolve("value"))({}, {}, callback).then(_ => {
-        expect(callback).toBeCalledWith(null, "value");
-      });
-    });
-
-    it("should call handler function with the exact parameters", () => {
-      return lp(handler)({}, {}, callback).then(_ => {
-        expect(handler).toBeCalledWith({}, {}, callback);
-      });
-    });
-  });
-
-  describe("when there is error", () => {
     it("should call Lambda callback with the error thrown", () => {
       const error = new Error("boom");
       return lp(() => {
@@ -46,8 +38,16 @@ describe("laconia promise", () => {
         expect(callback).toBeCalledWith(error);
       });
     });
+  });
 
-    it("should call Lambda callback with the rejected error", () => {
+  describe("when handling promise", () => {
+    it("should call Lambda callback with the handler return value to Lambda callback", () => {
+      return lp(() => Promise.resolve("value"))({}, {}, callback).then(_ => {
+        expect(callback).toBeCalledWith(null, "value");
+      });
+    });
+
+    it("should call Lambda callback with the error thrown", () => {
       const error = new Error("boom");
       return lp(() => Promise.reject(error))({}, {}, callback).then(_ => {
         expect(callback).toBeCalledWith(error);

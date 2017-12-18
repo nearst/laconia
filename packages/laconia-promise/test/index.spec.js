@@ -19,15 +19,13 @@ describe('laconia promise', () => {
     })
 
     it('should return the handler return value to Lambda callback', () => {
-      handler.mockReturnValueOnce('value')
-      return lp(handler)({}, {}, callback).then(_ => {
+      return lp(() => 'value')({}, {}, callback).then(_ => {
         expect(callback).toBeCalledWith(null, 'value')
       })
     })
 
     it('should return the handler Promise return value to Lambda callback', () => {
-      handler.mockReturnValueOnce(Promise.resolve('value'))
-      return lp(handler)({}, {}, callback).then(_ => {
+      return lp(() => Promise.resolve('value'))({}, {}, callback).then(_ => {
         expect(callback).toBeCalledWith(null, 'value')
       })
     })

@@ -18,8 +18,8 @@ describe("laconia promise", () => {
 
   it("should delegate AWS parameters to handler function", () => {
     const handler = jest.fn();
-    return lp(handler)({}, {}, callback).then(_ => {
-      expect(handler).toBeCalledWith({}, {}, callback);
+    return lp(handler)({ foo: "bar" }, { fiz: "baz" }, callback).then(_ => {
+      expect(handler).toBeCalledWith({ foo: "bar" }, { fiz: "baz" }, callback);
     });
   });
 

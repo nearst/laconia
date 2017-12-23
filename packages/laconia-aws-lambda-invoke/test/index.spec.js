@@ -5,11 +5,21 @@ const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");
 
 describe("aws invoke", () => {
+  let invokeMock;
+  let lambda;
+
+  beforeEach(() => {
+    invokeMock = jest.fn();
+    AWSMock.mock("Lambda", "invoke", invokeMock);
+    lambda = new AWS.Lambda();
+  });
+
+  afterEach(() => {
+    AWSMock.restore();
+  });
+
   describe("fire and forget", () => {
-    it("should throw an error when FunctionError is returned", () => {
-      const invokeMock = jest.fn();
-      AWSMock.mock("Lambda", "invoke", invokeMock);
-      const lambda = new AWS.Lambda();
+    it("should throw an error when FunctionError is set to Handled", () => {
       invokeMock.mockImplementation((params, callback) =>
         callback(null, { FunctionError: "Handled", Payload: "boom" })
       );
@@ -19,7 +29,15 @@ describe("aws invoke", () => {
       );
     });
 
-    it("should handle Unhandled Error as well");
+    it("should throw an error when FunctionError is set to Unhandled", () => {
+      invokeMock.mockImplementation((params, callback) =>
+        callback(null, { FunctionError: "Unhandled", Payload: "boom" })
+      );
+      const invoker = new LambdaInvoker(lambda, "myLambda");
+      return expect(invoker.fireAndForget()).rejects.toThrow(
+        "Unhandled error returned by myLambda: boom"
+      );
+    });
 
     it("do not retry on error");
 

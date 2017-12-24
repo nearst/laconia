@@ -4,11 +4,12 @@ module.exports = class LambdaInvoker {
     this.functionName = functionName;
   }
 
-  fireAndForget() {
+  fireAndForget(payload) {
     return this.lambda
       .invoke({
         FunctionName: this.functionName,
-        InvocationType: "Event"
+        InvocationType: "Event",
+        Payload: JSON.stringify(payload)
       })
       .promise()
       .then(data => {

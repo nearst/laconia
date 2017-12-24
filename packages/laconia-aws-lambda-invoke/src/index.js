@@ -6,7 +6,10 @@ module.exports = class LambdaInvoker {
 
   fireAndForget() {
     return this.lambda
-      .invoke({ FunctionName: this.functionName })
+      .invoke({
+        FunctionName: this.functionName,
+        InvocationType: "Event"
+      })
       .promise()
       .then(data => {
         if (data.FunctionError) {

@@ -4,10 +4,11 @@ module.exports = class LambdaInvoker {
     this.functionName = functionName
   }
 
-  fireAndForget () {
+  fireAndForget (payload) {
     return this.lambda.invoke({
       FunctionName: this.functionName,
-      InvocationType: 'Event'
+      InvocationType: 'Event',
+      Payload: JSON.stringify(payload)
     }).promise().then(data => {
       if (data.FunctionError) {
         throw new Error(`${data.FunctionError} error returned by ${this.functionName}: ${data.Payload}`)

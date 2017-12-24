@@ -31,30 +31,37 @@ describe('aws invoke', () => {
       return expect(invoker.fireAndForget()).rejects.toThrow('Unhandled error returned by myLambda: boom')
     })
 
-    it('should invoke Lambda with InvocationType parameter', () => {
-      invokeMock.mockImplementation((params, callback) => callback(null, {FunctionError: undefined}))
-      const invoker = new LambdaInvoker(lambda, 'myLambda')
-      return invoker.fireAndForget().then(_ => {
+    describe('when invoking Lambda', () => {
+      beforeEach(() => {
+        invokeMock.mockImplementation((params, callback) => callback(null, {FunctionError: undefined}))
+        const invoker = new LambdaInvoker(lambda, 'foobar')
+        return invoker.fireAndForget({biz: 'baz'})
+      })
+
+      it('should set InvocationType parameter', () => {
         expect(invokeMock).toBeCalledWith(
           expect.objectContaining({InvocationType: 'Event'}),
           expect.any(Function)
         )
       })
-    })
 
-    it('should invoke Lambda with FunctionName parameter', () => {
-      invokeMock.mockImplementation((params, callback) => callback(null, {FunctionError: undefined}))
-      const invoker = new LambdaInvoker(lambda, 'foobar')
-      return invoker.fireAndForget().then(_ => {
+      it('should set FunctionName parameter', () => {
         expect(invokeMock).toBeCalledWith(
           expect.objectContaining({FunctionName: 'foobar'}),
           expect.any(Function)
         )
       })
+
+      it('should set and stringify Payload parameter', () => {
+        expect(invokeMock).toBeCalledWith(
+          expect.objectContaining({Payload: JSON.stringify({biz: 'baz'})}),
+          expect.any(Function)
+        )
+      })
     })
 
+    it('should not set Payload parameter if it is invoked without it')
     it('throws error when StatusCode returned is not 202')
-    it('pass in payload')
   })
 
   describe('request response', () => {

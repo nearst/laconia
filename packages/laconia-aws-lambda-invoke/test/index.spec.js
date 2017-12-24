@@ -31,16 +31,35 @@ describe('aws invoke', () => {
       return expect(invoker.fireAndForget()).rejects.toThrow('Unhandled error returned by myLambda: boom')
     })
 
-    it('do not retry on error')
+    it('should invoke Lambda with InvocationType parameter', () => {
+      invokeMock.mockImplementation((params, callback) => callback(null, {FunctionError: undefined}))
+      const invoker = new LambdaInvoker(lambda, 'myLambda')
+      return invoker.fireAndForget().then(_ => {
+        expect(invokeMock).toBeCalledWith(
+          expect.objectContaining({InvocationType: 'Event'}),
+          expect.any(Function)
+        )
+      })
+    })
 
-    it('should delegate InvocationType as Event')
-    it('pass functionName')
-    it('verifies status code 202')
+    it('should invoke Lambda with FunctionName parameter', () => {
+      invokeMock.mockImplementation((params, callback) => callback(null, {FunctionError: undefined}))
+      const invoker = new LambdaInvoker(lambda, 'foobar')
+      return invoker.fireAndForget().then(_ => {
+        expect(invokeMock).toBeCalledWith(
+          expect.objectContaining({FunctionName: 'foobar'}),
+          expect.any(Function)
+        )
+      })
+    })
+
+    it('throws error when StatusCode returned is not 202')
     it('pass in payload')
   })
 
   describe('request response', () => {
     it('should delegate InvocationType as RequestResponse')
     it('verifies status code 200')
+    it('pass in payload')
   })
 })

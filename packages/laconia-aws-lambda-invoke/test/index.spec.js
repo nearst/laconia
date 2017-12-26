@@ -70,7 +70,17 @@ describe("aws invoke", () => {
       });
     });
 
-    it("should not set Payload parameter if it is invoked without it");
+    it("should not set Payload parameter if it is not available", () => {
+      invokeMock.mockImplementation((params, callback) =>
+        callback(null, { FunctionError: undefined })
+      );
+      const invoker = new LambdaInvoker(lambda, "foobar");
+      return invoker.fireAndForget().then(_ => {
+        const invokeParams = invokeMock.mock.calls[0][0];
+        expect(invokeParams).not.toHaveProperty("Payload");
+      });
+    });
+
     it("throws error when StatusCode returned is not 202");
   });
 

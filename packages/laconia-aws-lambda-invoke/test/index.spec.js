@@ -69,7 +69,11 @@ describe('aws invoke', () => {
       })
     })
 
-    it('throws error when StatusCode returned is not 202')
+    xit('throws error when StatusCode returned is not 202', () => {
+      invokeMock.mockImplementation((params, callback) => callback(null, {FunctionError: undefined, StatusCode: 400}))
+      const invoker = new LambdaInvoker(lambda, 'foobar')
+      return expect(invoker.fireAndForget()).rejects.toThrow('Status code returned was: 400')
+    })
   })
 
   describe('request response', () => {

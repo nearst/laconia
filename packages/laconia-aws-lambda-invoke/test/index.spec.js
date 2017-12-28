@@ -21,7 +21,11 @@ describe("aws invoke", () => {
   describe("fire and forget", () => {
     it("should throw an error when FunctionError is set to Handled", () => {
       invokeMock.mockImplementation((params, callback) =>
-        callback(null, { FunctionError: "Handled", Payload: "boom" })
+        callback(null, {
+          FunctionError: "Handled",
+          Payload: "boom",
+          StatusCode: 202
+        })
       );
       const invoker = new LambdaInvoker(lambda, "myLambda");
       return expect(invoker.fireAndForget()).rejects.toThrow(
@@ -31,7 +35,11 @@ describe("aws invoke", () => {
 
     it("should throw an error when FunctionError is set to Unhandled", () => {
       invokeMock.mockImplementation((params, callback) =>
-        callback(null, { FunctionError: "Unhandled", Payload: "boom" })
+        callback(null, {
+          FunctionError: "Unhandled",
+          Payload: "boom",
+          StatusCode: 202
+        })
       );
       const invoker = new LambdaInvoker(lambda, "myLambda");
       return expect(invoker.fireAndForget()).rejects.toThrow(
@@ -42,7 +50,7 @@ describe("aws invoke", () => {
     describe("when invoking Lambda", () => {
       beforeEach(() => {
         invokeMock.mockImplementation((params, callback) =>
-          callback(null, { FunctionError: undefined })
+          callback(null, { FunctionError: undefined, StatusCode: 202 })
         );
         const invoker = new LambdaInvoker(lambda, "foobar");
         return invoker.fireAndForget({ biz: "baz" });
@@ -72,7 +80,7 @@ describe("aws invoke", () => {
 
     it("should not set Payload parameter if it is not available", () => {
       invokeMock.mockImplementation((params, callback) =>
-        callback(null, { FunctionError: undefined })
+        callback(null, { FunctionError: undefined, StatusCode: 202 })
       );
       const invoker = new LambdaInvoker(lambda, "foobar");
       return invoker.fireAndForget().then(_ => {
@@ -81,15 +89,22 @@ describe("aws invoke", () => {
       });
     });
 
-    xit("throws error when StatusCode returned is not 202", () => {
-      invokeMock.mockImplementation((params, callback) =>
-        callback(null, { FunctionError: undefined, StatusCode: 400 })
-      );
-      const invoker = new LambdaInvoker(lambda, "foobar");
-      return expect(invoker.fireAndForget()).rejects.toThrow(
-        "Status code returned was: 400"
-      );
+    describe("when getting non 202 StatusCode", () => {
+      const invalidStatusCodes = [200, 201, 203, 400, 401];
+      invalidStatusCodes.forEach(statusCode => {
+        it(`throws error when StatusCode returned is ${statusCode}`, () => {
+          invokeMock.mockImplementation((params, callback) =>
+            callback(null, { FunctionError: undefined, StatusCode: statusCode })
+          );
+          const invoker = new LambdaInvoker(lambda, "foobar");
+          return expect(invoker.fireAndForget()).rejects.toThrow(
+            `Status code returned was: ${statusCode}`
+          );
+        });
+      });
     });
+
+    it("should try to returned JSON payload");
   });
 
   describe("request response", () => {

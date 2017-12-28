@@ -23,6 +23,8 @@ module.exports = class LambdaInvoker {
               data.Payload
             }`
           );
+        } else if (data.StatusCode !== 202) {
+          throw new Error(`Status code returned was: ${data.StatusCode}`);
         } else {
           return data;
         }

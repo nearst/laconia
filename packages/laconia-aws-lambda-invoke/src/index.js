@@ -16,6 +16,8 @@ module.exports = class LambdaInvoker {
     return this.lambda.invoke(params).promise().then(data => {
       if (data.FunctionError) {
         throw new Error(`${data.FunctionError} error returned by ${this.functionName}: ${data.Payload}`)
+      } else if (data.StatusCode !== 202) {
+        throw new Error(`Status code returned was: ${data.StatusCode}`)
       } else {
         return data
       }

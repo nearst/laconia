@@ -103,13 +103,27 @@ describe("aws invoke", () => {
         });
       });
     });
-
-    it("should try to returned JSON payload");
   });
 
   describe("request response", () => {
     it("should delegate InvocationType as RequestResponse");
-    it("verifies status code 200");
+
+    describe("when getting non 200 StatusCode", () => {
+      const invalidStatusCodes = [201, 202, 203, 400, 401];
+      invalidStatusCodes.forEach(statusCode => {
+        it(`throws error when StatusCode returned is ${statusCode}`, () => {
+          invokeMock.mockImplementation((params, callback) =>
+            callback(null, { FunctionError: undefined, StatusCode: statusCode })
+          );
+          const invoker = new LambdaInvoker(lambda, "foobar");
+          return expect(invoker.requestResponse()).rejects.toThrow(
+            `Status code returned was: ${statusCode}`
+          );
+        });
+      });
+    });
+
     it("pass in payload");
+    it("should try to returned JSON payload");
   });
 });

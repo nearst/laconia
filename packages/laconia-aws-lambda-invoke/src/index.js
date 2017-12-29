@@ -23,4 +23,12 @@ module.exports = class LambdaInvoker {
       }
     })
   }
+
+  requestResponse (payload) {
+    return this.lambda.invoke({FunctionName: 'something'}).promise().then(data => {
+      if (data.StatusCode !== 200) {
+        throw new Error(`Status code returned was: ${data.StatusCode}`)
+      }
+    })
+  }
 }

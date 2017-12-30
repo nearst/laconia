@@ -1,3 +1,9 @@
+const validateStatusCode = (statusCode, expectedStatusCode) => {
+  if (statusCode !== expectedStatusCode) {
+    throw new Error(`Status code returned was: ${statusCode}`);
+  }
+};
+
 module.exports = class LambdaInvoker {
   constructor(lambda, functionName) {
     this.lambda = lambda;
@@ -23,11 +29,9 @@ module.exports = class LambdaInvoker {
               data.Payload
             }`
           );
-        } else if (data.StatusCode !== 202) {
-          throw new Error(`Status code returned was: ${data.StatusCode}`);
-        } else {
-          return data;
         }
+        validateStatusCode(data.StatusCode, 202);
+        return data;
       });
   }
 
@@ -36,9 +40,7 @@ module.exports = class LambdaInvoker {
       .invoke({ FunctionName: "something" })
       .promise()
       .then(data => {
-        if (data.StatusCode !== 200) {
-          throw new Error(`Status code returned was: ${data.StatusCode}`);
-        }
+        validateStatusCode(data.StatusCode, 200);
       });
   }
 };

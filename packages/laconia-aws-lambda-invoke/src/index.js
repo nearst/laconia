@@ -29,7 +29,18 @@ module.exports = class LambdaInvoker {
   }
 
   requestResponse (payload) {
-    return this.lambda.invoke({FunctionName: 'something'}).promise().then(data => {
+    const params = {
+      FunctionName: this.functionName,
+      InvocationType: 'RequestResponse'
+    }
+    if (payload !== undefined) {
+      params.Payload = JSON.stringify(payload)
+    }
+
+    return this.lambda.invoke(params).promise().then(data => {
+      if (data.FunctionError) {
+        throw new Error(`${data.FunctionError} error returned by ${this.functionName}: ${data.Payload}`)
+      }
       validateStatusCode(data.StatusCode, 200)
     })
   }

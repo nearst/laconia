@@ -21,16 +21,15 @@ describe('aws invoke', () => {
   })
 
   const sharedTest = ({method, expectedInvocationType, expectedStatusCode}) => {
-    it('should throw an error when FunctionError is set to Handled', () => {
-      invokeMock.mockImplementation(yields({FunctionError: 'Handled', Payload: 'boom', StatusCode: expectedStatusCode}))
-      const invoker = new LambdaInvoker(lambda, 'myLambda')
-      return expect(invoker[method]()).rejects.toThrow('Handled error returned by myLambda: boom')
-    })
-
-    it('should throw an error when FunctionError is set to Unhandled', () => {
-      invokeMock.mockImplementation(yields({FunctionError: 'Unhandled', Payload: 'boom', StatusCode: expectedStatusCode}))
-      const invoker = new LambdaInvoker(lambda, 'myLambda')
-      return expect(invoker[method]()).rejects.toThrow('Unhandled error returned by myLambda: boom')
+    describe('when getting FunctionError', () => {
+      const functionErrors = ['Handled', 'Unhandled']
+      functionErrors.forEach(functionError => {
+        it(`should throw an error when FunctionError is set to ${functionError}`, () => {
+          invokeMock.mockImplementation(yields({FunctionError: functionError, Payload: 'boom', StatusCode: expectedStatusCode}))
+          const invoker = new LambdaInvoker(lambda, 'myLambda')
+          return expect(invoker[method]()).rejects.toThrow(`${functionError} error returned by myLambda: boom`)
+        })
+      })
     })
 
     describe('when invoking Lambda', () => {
@@ -98,6 +97,7 @@ describe('aws invoke', () => {
       expectedStatusCode: 200
     })
 
+    it('should return the response back to the client')
     it('should try to returned JSON payload')
   })
 })

@@ -11,28 +11,22 @@ module.exports = class LambdaInvoker {
   }
 
   fireAndForget (payload) {
-    const params = {
-      FunctionName: this.functionName,
+    return this._invoke({
       InvocationType: 'Event'
-    }
-    if (payload !== undefined) {
-      params.Payload = JSON.stringify(payload)
-    }
-
-    return this.lambda.invoke(params).promise().then(data => {
-      if (data.FunctionError) {
-        throw new Error(`${data.FunctionError} error returned by ${this.functionName}: ${data.Payload}`)
-      }
-      validateStatusCode(data.StatusCode, 202)
-      return data
-    })
+    }, payload, 202)
   }
 
   requestResponse (payload) {
-    const params = {
-      FunctionName: this.functionName,
+    return this._invoke({
       InvocationType: 'RequestResponse'
-    }
+    }, payload, 200)
+  }
+
+  _invoke (baseParams, payload, validStatusCode) {
+    const params = Object.assign({
+      FunctionName: this.functionName
+    }, baseParams)
+
     if (payload !== undefined) {
       params.Payload = JSON.stringify(payload)
     }
@@ -41,7 +35,8 @@ module.exports = class LambdaInvoker {
       if (data.FunctionError) {
         throw new Error(`${data.FunctionError} error returned by ${this.functionName}: ${data.Payload}`)
       }
-      validateStatusCode(data.StatusCode, 200)
+      validateStatusCode(data.StatusCode, validStatusCode)
+      return data
     })
   }
 }

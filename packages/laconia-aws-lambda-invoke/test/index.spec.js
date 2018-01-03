@@ -119,7 +119,20 @@ describe("aws invoke", () => {
       expectedStatusCode: 200
     });
 
-    it("should return the response back to the client");
+    xit("should return the invoked Lambda response", () => {
+      invokeMock.mockImplementation(
+        yields({
+          FunctionError: undefined,
+          StatusCode: 200,
+          Payload: "response"
+        })
+      );
+      const invoker = new LambdaInvoker(lambda, "foobar");
+      return invoker.requestResponse().then(response => {
+        expect(response).toEqual("response");
+      });
+    });
+
     it("should try to returned JSON payload");
   });
 });

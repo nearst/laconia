@@ -119,7 +119,7 @@ describe("aws invoke", () => {
       expectedStatusCode: 200
     });
 
-    xit("should return the invoked Lambda response", () => {
+    it("should return Payload response", () => {
       invokeMock.mockImplementation(
         yields({
           FunctionError: undefined,

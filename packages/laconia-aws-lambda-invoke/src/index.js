@@ -27,7 +27,9 @@ module.exports = class LambdaInvoker {
       },
       payload,
       200
-    );
+    ).then(data => {
+      return data.Payload;
+    });
   }
 
   _invoke(baseParams, payload, validStatusCode) {

@@ -19,7 +19,9 @@ module.exports = class LambdaInvoker {
   requestResponse (payload) {
     return this._invoke({
       InvocationType: 'RequestResponse'
-    }, payload, 200)
+    }, payload, 200).then(data => {
+      return data.Payload
+    })
   }
 
   _invoke (baseParams, payload, validStatusCode) {

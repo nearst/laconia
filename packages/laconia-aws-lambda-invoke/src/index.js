@@ -28,7 +28,11 @@ module.exports = class LambdaInvoker {
       payload,
       200
     ).then(data => {
-      return data.Payload;
+      try {
+        return JSON.parse(data.Payload);
+      } catch (e) {
+        return data.Payload;
+      }
     });
   }
 

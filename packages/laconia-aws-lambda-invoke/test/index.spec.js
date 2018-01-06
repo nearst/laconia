@@ -133,7 +133,7 @@ describe("aws invoke", () => {
       });
     });
 
-    xit("should JSON parse Payload response if JSON is returned", () => {
+    it("should JSON parse Payload response if JSON is returned", () => {
       invokeMock.mockImplementation(
         yields({
           FunctionError: undefined,

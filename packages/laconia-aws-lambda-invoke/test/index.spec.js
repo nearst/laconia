@@ -105,7 +105,7 @@ describe('aws invoke', () => {
       })
     })
 
-    xit('should JSON parse Payload response if JSON is returned', () => {
+    it('should JSON parse Payload response if JSON is returned', () => {
       invokeMock.mockImplementation(yields({FunctionError: undefined, StatusCode: 200, Payload: '{"value":"response"}'}))
       const invoker = new LambdaInvoker(lambda, 'foobar')
       return invoker.requestResponse().then(response => {

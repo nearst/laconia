@@ -20,7 +20,11 @@ module.exports = class LambdaInvoker {
     return this._invoke({
       InvocationType: 'RequestResponse'
     }, payload, 200).then(data => {
-      return data.Payload
+      try {
+        return JSON.parse(data.Payload)
+      } catch (e) {
+        return data.Payload
+      }
     })
   }
 

@@ -4,7 +4,7 @@ const validateStatusCode = (statusCode, expectedStatusCode) => {
   }
 };
 
-module.exports = class LambdaInvoker {
+module.exports.LambdaInvoker = class LambdaInvoker {
   constructor(lambda, functionName) {
     this.lambda = lambda;
     this.functionName = functionName;

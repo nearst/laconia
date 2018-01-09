@@ -19,6 +19,7 @@
   "devDependencies": {
     "aws-sdk": "^2.172.0",
     "aws-sdk-mock": "^1.7.0",
+    "dynamodb-local": "0.0.18",
     "jest": "^22.0.3",
     "lerna": "^2.5.1",
     "standard": "^10.0.3"

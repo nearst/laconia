@@ -4,8 +4,7 @@
   "description": "",
   "scripts": {
     "postinstall": "lerna bootstrap",
-    "test": "lerna exec --ignore @laconia/*integration-test npm test",
-    "aws-integration-test": "lerna exec --scope @laconia/aws-integration-test npm test"
+    "test": "lerna exec npm test"
   },
   "repository": {
     "type": "git",

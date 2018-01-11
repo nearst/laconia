@@ -13,20 +13,17 @@ describe('aws invoke', () => {
     return DynamoDbLocal.launch(dynamoLocalPort, null, ['-sharedDb'])
   })
 
-  beforeAll(() => {
+  beforeAll(async () => {
     const dynamoDbOptions = { region: 'eu-west-1', endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`) }
     const musicRepository = new DynamoDbMusicRepository(
       new AWS.DynamoDB(dynamoDbOptions),
       new AWS.DynamoDB.DocumentClient(dynamoDbOptions)
     )
 
-    return musicRepository.createTable()
-      .then(_ => {
-        return Promise.resolve()
-          .then(_ => musicRepository.save({Artist: 'Foo'}))
-          .then(_ => musicRepository.save({Artist: 'Bar'}))
-          .then(_ => musicRepository.save({Artist: 'Fiz'}))
-      })
+    await musicRepository.createTable()
+    await musicRepository.save({Artist: 'Foo'})
+    await musicRepository.save({Artist: 'Bar'})
+    await musicRepository.save({Artist: 'Fiz'})
   })
 
   it('should process all records in a Table', () => {

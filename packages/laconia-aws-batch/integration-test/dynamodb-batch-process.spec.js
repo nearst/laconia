@@ -4,9 +4,11 @@ const DynamoDbLocal = require('dynamodb-local')
 
 const AWS = require('aws-sdk')
 const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
+const {BatchProcessor, DynamoDbItemReader} = require('../src/index')
 
 describe('aws invoke', () => {
   const dynamoLocalPort = 8000
+  const dynamoDbOptions = { region: 'eu-west-1', endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`) }
 
   beforeAll(() => {
     jest.setTimeout(5000)
@@ -14,7 +16,6 @@ describe('aws invoke', () => {
   })
 
   beforeAll(async () => {
-    const dynamoDbOptions = { region: 'eu-west-1', endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`) }
     const musicRepository = new DynamoDbMusicRepository(
       new AWS.DynamoDB(dynamoDbOptions),
       new AWS.DynamoDB.DocumentClient(dynamoDbOptions)
@@ -26,9 +27,20 @@ describe('aws invoke', () => {
     await musicRepository.save({Artist: 'Fiz'})
   })
 
-  it('should process all records in a Table', () => {
-    expect(true).toEqual(true)
+  it('should process all records in a Table', async () => {
+    const itemProcessor = jest.fn()
+    const batchProcessor = new BatchProcessor(
+      new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions)),
+      itemProcessor
+    )
+    await batchProcessor.start()
+    expect(itemProcessor).toHaveBeenCalledTimes(3)
+    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Foo'})
+    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Bar'})
+    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'})
   })
+
+  it('should recurse when time is up')
 
   afterAll(() => {
     return DynamoDbLocal.stop(dynamoLocalPort)

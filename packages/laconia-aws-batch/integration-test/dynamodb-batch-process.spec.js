@@ -27,10 +27,10 @@ describe('aws invoke', () => {
     await musicRepository.save({Artist: 'Fiz'})
   })
 
-  it('should process all records in a Table', async () => {
+  it('should process all records in a Table with scan', async () => {
     const itemProcessor = jest.fn()
     const batchProcessor = new BatchProcessor(
-      new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions)),
+      new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions), {TableName: 'Music'}),
       itemProcessor
     )
     await batchProcessor.start()

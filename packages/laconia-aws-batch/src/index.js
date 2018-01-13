@@ -1,13 +1,15 @@
+
 module.exports.DynamoDbItemReader = class DynamoDbItemReader {
-  constructor (documentClient) {
+  constructor (documentClient, baseParams) {
     this.documentClient = documentClient
+    this.baseParams = baseParams
+    this.lastEvaluatedKey = undefined
   }
 
   async next () {
-    const params = {
-      TableName: 'Music',
+    const params = Object.assign({
       Limit: 1
-    }
+    }, this.baseParams)
     if (this.lastEvaluatedKey) {
       params.ExclusiveStartKey = this.lastEvaluatedKey
     }

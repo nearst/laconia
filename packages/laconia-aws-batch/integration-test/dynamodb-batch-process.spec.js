@@ -40,7 +40,20 @@ describe('aws invoke', () => {
     expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'})
   })
 
+  it('should take batch size to limit the number of item processed', async () => {
+    const itemProcessor = jest.fn()
+    const batchProcessor = new BatchProcessor(
+      new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions), {TableName: 'Music'}),
+      itemProcessor,
+      1
+    )
+    await batchProcessor.start()
+    expect(itemProcessor).toHaveBeenCalledTimes(1)
+  })
+
   it('should recurse when time is up')
+
+  it('should not return unefined item when lastEvaluatedKey is not empty')
 
   afterAll(() => {
     return DynamoDbLocal.stop(dynamoLocalPort)

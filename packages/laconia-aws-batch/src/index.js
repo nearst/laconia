@@ -20,16 +20,19 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
 }
 
 module.exports.BatchProcessor = class BatchProcessor {
-  constructor (itemReader, itemProcessor) {
+  constructor (itemReader, itemProcessor, batchSize) {
     this.itemReader = itemReader
     this.itemProcessor = itemProcessor
+    this.batchSize = batchSize
+    this.processedItemCount = 0
   }
 
   async start () {
-    while (true) {
+    while (this.batchSize ? this.processedItemCount < this.batchSize : true) {
       const item = await this.itemReader.next()
       if (item) {
         this.itemProcessor(item)
+        this.processedItemCount++
       } else {
         break
       }

@@ -2,22 +2,23 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
   constructor(documentClient, baseParams) {
     this.documentClient = documentClient;
     this.baseParams = baseParams;
-    this.lastEvaluatedKey = undefined;
   }
 
-  async next() {
+  async next(cursor = {}) {
     const params = Object.assign(
       {
         Limit: 1
       },
       this.baseParams
     );
-    if (this.lastEvaluatedKey) {
-      params.ExclusiveStartKey = this.lastEvaluatedKey;
+    if (cursor.lastEvaluatedKey) {
+      params.ExclusiveStartKey = cursor.lastEvaluatedKey;
     }
     const data = await this.documentClient.scan(params).promise();
-    this.lastEvaluatedKey = data.LastEvaluatedKey;
-    return data.Items[0];
+    return {
+      item: data.Items[0],
+      cursor: { lastEvaluatedKey: data.LastEvaluatedKey }
+    };
   }
 };
 
@@ -29,9 +30,12 @@ module.exports.BatchProcessor = class BatchProcessor {
     this.processedItemCount = 0;
   }
 
-  async start() {
+  async start(cursor = {}) {
+    let newCursor = cursor;
     while (this.batchSize ? this.processedItemCount < this.batchSize : true) {
-      const item = await this.itemReader.next();
+      const next = await this.itemReader.next(newCursor);
+      const item = next.item;
+      newCursor = next.cursor;
       if (item) {
         this.itemProcessor(item);
         this.processedItemCount++;

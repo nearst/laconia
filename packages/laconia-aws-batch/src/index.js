@@ -23,16 +23,18 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
 };
 
 module.exports.BatchProcessor = class BatchProcessor {
-  constructor(itemReader, itemProcessor, batchSize) {
+  constructor(context, itemReader, itemProcessor, options) {
+    this.context = context;
     this.itemReader = itemReader;
     this.itemProcessor = itemProcessor;
-    this.batchSize = batchSize;
     this.processedItemCount = 0;
+    this.options = Object.assign({}, options);
   }
 
   async start(cursor = {}) {
     let newCursor = cursor;
-    while (this.batchSize ? this.processedItemCount < this.batchSize : true) {
+
+    do {
       const next = await this.itemReader.next(newCursor);
       const item = next.item;
       newCursor = next.cursor;
@@ -40,8 +42,11 @@ module.exports.BatchProcessor = class BatchProcessor {
         this.itemProcessor(item);
         this.processedItemCount++;
       } else {
-        break;
+        return newCursor;
       }
-    }
+    } while (
+      this.context.getRemainingTimeInMillis() >
+      this.options.timeNeededToRecurseInMillis
+    );
   }
 };

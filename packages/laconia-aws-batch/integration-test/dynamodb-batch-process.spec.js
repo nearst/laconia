@@ -30,8 +30,10 @@ describe('aws invoke', () => {
   it('should process all records in a Table with scan', async () => {
     const itemProcessor = jest.fn()
     const batchProcessor = new BatchProcessor(
+      { getRemainingTimeInMillis: () => 100000 },
       new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions), {TableName: 'Music'}),
-      itemProcessor
+      itemProcessor,
+      { timeNeededToRecurseInMillis: 5000 }
     )
     await batchProcessor.start()
     expect(itemProcessor).toHaveBeenCalledTimes(3)
@@ -40,12 +42,14 @@ describe('aws invoke', () => {
     expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'})
   })
 
-  it('should take batch size to limit the number of item processed', async () => {
+  it('should stop processing when time is up', async () => {
     const itemProcessor = jest.fn()
     const batchProcessor = new BatchProcessor(
+      { getRemainingTimeInMillis: () => 3000 },
       new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions), {TableName: 'Music'}),
       itemProcessor,
-      1
+      1,
+      { timeNeededToRecurseInMillis: 5000 }
     )
     await batchProcessor.start()
     expect(itemProcessor).toHaveBeenCalledTimes(1)

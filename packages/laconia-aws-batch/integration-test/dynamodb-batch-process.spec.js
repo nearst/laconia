@@ -41,7 +41,7 @@ describe('aws invoke', () => {
   it('should process all records in a Table with scan', async () => {
     const itemProcessor = jest.fn()
     const batchProcessor = new BatchProcessor(
-      { getRemainingTimeInMillis: () => 100000 },
+      { functionName: 'blah', getRemainingTimeInMillis: () => 100000 },
       new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions), {TableName: 'Music'}),
       itemProcessor,
       { timeNeededToRecurseInMillis: 5000 }
@@ -56,7 +56,7 @@ describe('aws invoke', () => {
   it('should stop processing when time is up', async () => {
     const itemProcessor = jest.fn()
     const batchProcessor = new BatchProcessor(
-      { getRemainingTimeInMillis: () => 3000 },
+      { functionName: 'blah', getRemainingTimeInMillis: () => 3000 },
       new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions), {TableName: 'Music'}),
       itemProcessor,
       1,
@@ -66,7 +66,7 @@ describe('aws invoke', () => {
     expect(itemProcessor).toHaveBeenCalledTimes(1)
   })
 
-  xit('should recurse when time is up', async () => {
+  it('should recurse when time is up', async () => {
     const functionName = 'foo'
     const itemProcessor = jest.fn()
     const batchProcessor = new BatchProcessor(
@@ -81,13 +81,15 @@ describe('aws invoke', () => {
       expect.objectContaining({
         FunctionName: functionName,
         InvocationType: 'Event',
-        Payload: JSON.stringify({lastEvaluatedKey: {Artist: 'Fiz'}})
+        Payload: JSON.stringify({cursor: {lastEvaluatedKey: {Artist: 'Fiz'}}})
       }),
       expect.any(Function)
     )
   })
 
   it('should forward event during recursion')
+
+  it('should support query')
 
   it('CachedDynamoDbItemReader should not use Limit: 1 or should we return an array and process it all? Then setting Limit is becoming the user responsibility')
 

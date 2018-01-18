@@ -1,3 +1,6 @@
+const { LambdaInvoker } = require("@laconia/aws-lambda-invoke");
+const AWS = require("aws-sdk");
+
 module.exports.DynamoDbItemReader = class DynamoDbItemReader {
   constructor(documentClient, baseParams) {
     this.documentClient = documentClient;
@@ -17,7 +20,8 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
     const data = await this.documentClient.scan(params).promise();
     return {
       item: data.Items[0],
-      cursor: { lastEvaluatedKey: data.LastEvaluatedKey }
+      cursor: { lastEvaluatedKey: data.LastEvaluatedKey },
+      finished: cursor.lastEvaluatedKey === undefined
     };
   }
 };
@@ -27,7 +31,6 @@ module.exports.BatchProcessor = class BatchProcessor {
     this.context = context;
     this.itemReader = itemReader;
     this.itemProcessor = itemProcessor;
-    this.processedItemCount = 0;
     this.options = Object.assign({}, options);
   }
 
@@ -40,13 +43,29 @@ module.exports.BatchProcessor = class BatchProcessor {
       newCursor = next.cursor;
       if (item) {
         this.itemProcessor(item);
-        this.processedItemCount++;
       } else {
-        return newCursor;
+        break;
       }
-    } while (
+    } while (this.shouldContinue(newCursor));
+
+    if (!newCursor.finished) {
+      this.notFinished(newCursor);
+    }
+  }
+
+  shouldContinue(cursor) {
+    // TODO: Rename method and externalise
+    return (
       this.context.getRemainingTimeInMillis() >
       this.options.timeNeededToRecurseInMillis
     );
+  }
+
+  notFinished(cursor) {
+    // TODO: Rename method and externalise
+    new LambdaInvoker(
+      new AWS.Lambda(),
+      this.context.functionName
+    ).fireAndForget({ cursor });
   }
 };

@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-const recursiveHandler = require('../src/recursiveHandler.js')
+const recursiveHandler = require('../src/recursive-handler')
 const AWSMock = require('aws-sdk-mock')
 
 describe('aws recursive handler', () => {

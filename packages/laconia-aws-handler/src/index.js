@@ -1,6 +1,2 @@
-module.exports = (handler) => (event, context, callback) => {
-  return Promise.resolve()
-    .then(_ => handler(event, context, callback))
-    .then(result => callback(null, result))
-    .catch(err => callback(err))
-}
+module.exports.basic = require('./basic-handler')
+module.exports.recursive = require('./recursive-handler')

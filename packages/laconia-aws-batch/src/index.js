@@ -24,11 +24,10 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
 }
 
 module.exports.BatchProcessor = class BatchProcessor {
-  constructor (context, itemReader, itemProcessor, options) {
-    this.context = context
+  constructor (itemReader, itemProcessor, shouldContinue) {
     this.itemReader = itemReader
     this.itemProcessor = itemProcessor
-    this.options = Object.assign({}, options)
+    this.shouldContinue = shouldContinue
   }
 
   async start (cursor = {}) {
@@ -46,15 +45,32 @@ module.exports.BatchProcessor = class BatchProcessor {
     } while (this.shouldContinue(newCursor))
 
     if (!newCursor.finished) {
-      this.notFinished(newCursor)
+      return newCursor
     }
   }
-
-  shouldContinue (cursor) { // TODO: Rename method and externalise
-    return this.context.getRemainingTimeInMillis() > this.options.timeNeededToRecurseInMillis
-  }
-
-  notFinished (cursor) { // TODO: Rename method and externalise
-    new LambdaInvoker(new AWS.Lambda(), this.context.functionName).fireAndForget({cursor})
-  }
 }
+
+const recurse = (handler) => async (event, context, callback) => {
+  const response = await handler()
+  new LambdaInvoker(new AWS.Lambda(), context.functionName).fireAndForget(response)
+}
+
+module.exports.SCAN = 'SCAN'
+
+module.exports.dynamoDbBatchHandler =
+  (operation, dynamoParams, itemProcessor,
+    {
+      documentClient = new AWS.DynamoDB.DocumentClient(),
+      timeNeededToRecurseInMillis = 5000
+    } = {}) =>
+  (event, context, callback) => {
+    return recurse(async () => {
+      const batchProcessor = new exports.BatchProcessor(
+        new exports.DynamoDbItemReader(documentClient, dynamoParams),
+        (item) => itemProcessor(item, event, context),
+        (cursor) => context.getRemainingTimeInMillis() > timeNeededToRecurseInMillis
+      )
+      const cursor = await batchProcessor.start(event.cursor)
+      return { cursor }
+    })(event, context, callback)
+  }

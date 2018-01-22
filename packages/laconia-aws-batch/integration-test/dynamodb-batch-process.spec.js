@@ -5,7 +5,7 @@ const DynamoDbLocal = require("dynamodb-local");
 const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");
 const DynamoDbMusicRepository = require("./DynamoDbMusicRepository");
-const { BatchProcessor, DynamoDbItemReader } = require("../src/index");
+const { dynamoDbBatchHandler, SCAN } = require("../src/index");
 
 describe("dynamodb batch process", () => {
   const dynamoLocalPort = 8000;
@@ -13,7 +13,7 @@ describe("dynamodb batch process", () => {
     region: "eu-west-1",
     endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`)
   };
-  let invokeMock, itemProcessor;
+  let invokeMock, itemProcessor, event, context, callback;
 
   beforeAll(() => {
     jest.setTimeout(5000);
@@ -37,6 +37,9 @@ describe("dynamodb batch process", () => {
     AWSMock.mock("Lambda", "invoke", invokeMock);
 
     itemProcessor = jest.fn();
+    event = {};
+    context = { functionName: "blah", getRemainingTimeInMillis: () => 100000 };
+    callback = jest.fn();
   });
 
   afterEach(() => {
@@ -44,35 +47,37 @@ describe("dynamodb batch process", () => {
   });
 
   it("should process all records in a Table with scan", async () => {
-    const itemProcessor = jest.fn();
-    const batchProcessor = new BatchProcessor(
-      { functionName: "blah", getRemainingTimeInMillis: () => 100000 },
-      new DynamoDbItemReader(new AWS.DynamoDB.DocumentClient(dynamoDbOptions), {
-        TableName: "Music"
-      }),
-      itemProcessor,
-      { timeNeededToRecurseInMillis: 5000 }
-    );
-    await batchProcessor.start();
+    await dynamoDbBatchHandler(SCAN, { TableName: "Music" }, itemProcessor, {
+      documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions)
+    })(event, context, callback);
+
     expect(itemProcessor).toHaveBeenCalledTimes(3);
-    expect(itemProcessor).toHaveBeenCalledWith({ Artist: "Foo" });
-    expect(itemProcessor).toHaveBeenCalledWith({ Artist: "Bar" });
-    expect(itemProcessor).toHaveBeenCalledWith({ Artist: "Fiz" });
+    expect(itemProcessor).toHaveBeenCalledWith(
+      { Artist: "Foo" },
+      event,
+      context
+    );
+    expect(itemProcessor).toHaveBeenCalledWith(
+      { Artist: "Bar" },
+      event,
+      context
+    );
+    expect(itemProcessor).toHaveBeenCalledWith(
+      { Artist: "Fiz" },
+      event,
+      context
+    );
   });
 
   describe("when time is up", () => {
     beforeEach(async () => {
-      const functionName = "foo";
-      const batchProcessor = new BatchProcessor(
-        { functionName, getRemainingTimeInMillis: () => 3000 },
-        new DynamoDbItemReader(
-          new AWS.DynamoDB.DocumentClient(dynamoDbOptions),
-          { TableName: "Music" }
-        ),
+      context.getRemainingTimeInMillis = () => 5000;
+      await await dynamoDbBatchHandler(
+        SCAN,
+        { TableName: "Music" },
         itemProcessor,
-        { timeNeededToRecurseInMillis: 5000 }
-      );
-      await batchProcessor.start();
+        { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
+      )(event, context, callback);
     });
 
     it("should stop processing when time is up", async () => {
@@ -82,7 +87,7 @@ describe("dynamodb batch process", () => {
     it("should recurse when time is up", async () => {
       expect(invokeMock).toBeCalledWith(
         expect.objectContaining({
-          FunctionName: "foo",
+          FunctionName: context.functionName,
           InvocationType: "Event",
           Payload: JSON.stringify({
             cursor: { lastEvaluatedKey: { Artist: "Fiz" } }
@@ -106,6 +111,8 @@ describe("dynamodb batch process", () => {
   );
 
   it("should not return unefined item when lastEvaluatedKey is not empty");
+
+  it("mock invoke to call batchProcessor and finish the recursion!");
 
   afterAll(() => {
     return DynamoDbLocal.stop(dynamoLocalPort);

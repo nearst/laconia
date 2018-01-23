@@ -5,7 +5,7 @@ const DynamoDbLocal = require('dynamodb-local')
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
-const {dynamoDbBatchHandler, SCAN} = require('../src/index')
+const {dynamoDbBatchHandler, SCAN, QUERY} = require('../src/index')
 
 describe('dynamodb batch process', () => {
   const dynamoLocalPort = 8000
@@ -90,7 +90,25 @@ describe('dynamodb batch process', () => {
 
   it('should forward event during recursion')
 
-  it('should support query')
+  xit('should support query', async () => {
+    await dynamoDbBatchHandler(
+      QUERY,
+      {
+        ExpressionAttributeValues: {
+          ':v1': 'Fiz'
+        },
+        KeyConditionExpression: 'Artist = :v1',
+        TableName: 'Music'
+      },
+      itemProcessor,
+      { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
+    )(event, context, callback)
+
+    expect(itemProcessor).toHaveBeenCalledTimes(1)
+    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
+  })
+
+  it('should be able to stop recursing!')
 
   it('CachedDynamoDbItemReader should not use Limit: 1 or should we return an array and process it all? Then setting Limit is becoming the user responsibility')
 

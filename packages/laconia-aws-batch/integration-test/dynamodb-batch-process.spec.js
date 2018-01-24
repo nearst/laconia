@@ -90,7 +90,7 @@ describe('dynamodb batch process', () => {
 
   it('should forward event during recursion')
 
-  xit('should support query', async () => {
+  it('should support query', async () => {
     await dynamoDbBatchHandler(
       QUERY,
       {

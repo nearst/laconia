@@ -2,7 +2,8 @@ const { LambdaInvoker } = require("@laconia/aws-lambda-invoke");
 const AWS = require("aws-sdk");
 
 module.exports.DynamoDbItemReader = class DynamoDbItemReader {
-  constructor(documentClient, baseParams) {
+  constructor(operation, documentClient, baseParams) {
+    this.operation = operation; // TODO: validate operation
     this.documentClient = documentClient;
     this.baseParams = baseParams;
   }
@@ -17,11 +18,15 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
     if (cursor.lastEvaluatedKey) {
       params.ExclusiveStartKey = cursor.lastEvaluatedKey;
     }
-    const data = await this.documentClient.scan(params).promise();
+    const data =
+      this.operation === exports.QUERY
+        ? await this.documentClient.query(params).promise()
+        : await this.documentClient.scan(params).promise();
+
     return {
       item: data.Items[0],
       cursor: { lastEvaluatedKey: data.LastEvaluatedKey },
-      finished: cursor.lastEvaluatedKey === undefined
+      finished: data.LastEvaluatedKey === undefined
     };
   }
 };
@@ -45,9 +50,14 @@ module.exports.BatchProcessor = class BatchProcessor {
       } else {
         break;
       }
+
+      if (next.finished) {
+        break;
+      }
     } while (this.shouldContinue(newCursor));
 
     if (!newCursor.finished) {
+      // TODO: This has never worked, newCursor doesn't have finished property
       return newCursor;
     }
   }
@@ -61,6 +71,7 @@ const recurse = handler => async (event, context, callback) => {
 };
 
 module.exports.SCAN = "SCAN";
+module.exports.QUERY = "QUERY";
 
 module.exports.dynamoDbBatchHandler = (
   operation,
@@ -73,7 +84,7 @@ module.exports.dynamoDbBatchHandler = (
 ) => (event, context, callback) => {
   return recurse(async () => {
     const batchProcessor = new exports.BatchProcessor(
-      new exports.DynamoDbItemReader(documentClient, dynamoParams),
+      new exports.DynamoDbItemReader(operation, documentClient, dynamoParams),
       item => itemProcessor(item, event, context),
       cursor => context.getRemainingTimeInMillis() > timeNeededToRecurseInMillis
     );

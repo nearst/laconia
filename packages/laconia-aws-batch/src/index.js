@@ -59,7 +59,7 @@ module.exports.BatchProcessor = class BatchProcessor {
 }
 
 const recurse = (handler) => async (event, context, callback) => {
-  const response = await handler()
+  const response = await handler(event, context, callback)
   new LambdaInvoker(new AWS.Lambda(), context.functionName).fireAndForget(response)
 }
 
@@ -72,14 +72,13 @@ module.exports.dynamoDbBatchHandler =
       documentClient = new AWS.DynamoDB.DocumentClient(),
       timeNeededToRecurseInMillis = 5000
     } = {}) =>
-  (event, context, callback) => {
-    return recurse(async () => {
-      const batchProcessor = new exports.BatchProcessor(
-        new exports.DynamoDbItemReader(operation, documentClient, dynamoParams),
-        (item) => itemProcessor(item, event, context),
-        (cursor) => context.getRemainingTimeInMillis() > timeNeededToRecurseInMillis
-      )
-      const cursor = await batchProcessor.start(event.cursor)
-      return { cursor }
-    })(event, context, callback)
-  }
+  recurse(async (event, context, callback) => {
+    const batchProcessor = new exports.BatchProcessor(
+      new exports.DynamoDbItemReader(operation, documentClient, dynamoParams),
+      (item) => itemProcessor(item, event, context),
+      (cursor) => context.getRemainingTimeInMillis() > timeNeededToRecurseInMillis
+    )
+    const cursor = await batchProcessor.start(event.cursor)
+
+    return { cursor }
+  })

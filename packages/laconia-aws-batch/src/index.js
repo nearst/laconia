@@ -6,23 +6,35 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
     this.operation = operation // TODO: validate operation
     this.documentClient = documentClient
     this.baseParams = baseParams
+    this.cachedItems = []
   }
 
   async next (cursor = {}) {
-    const params = Object.assign({
-      Limit: 1
-    }, this.baseParams)
+    const params = Object.assign({}, this.baseParams)
     if (cursor.lastEvaluatedKey) {
       params.ExclusiveStartKey = cursor.lastEvaluatedKey
     }
+    const index = cursor.index ? cursor.index : 0
+
+    if (this.cachedItems.length !== 0) {
+      const item = this.cachedItems[index]
+      return {
+        item,
+        cursor: { lastEvaluatedKey: cursor.lastEvaluatedKey, index: index + 1 },
+        finished: cursor.lastEvaluatedKey === undefined && this.cachedItems.length === 0
+      }
+    }
+
     const data = this.operation === exports.QUERY
       ? await this.documentClient.query(params).promise()
       : await this.documentClient.scan(params).promise()
+    this.cachedItems = data.Items
 
+    const item = this.cachedItems[index]
     return {
-      item: data.Items[0],
-      cursor: { lastEvaluatedKey: data.LastEvaluatedKey },
-      finished: data.LastEvaluatedKey === undefined
+      item,
+      cursor: { lastEvaluatedKey: data.LastEvaluatedKey, index: index + 1 },
+      finished: data.LastEvaluatedKey === undefined && this.cachedItems.length === 0
     }
   }
 }

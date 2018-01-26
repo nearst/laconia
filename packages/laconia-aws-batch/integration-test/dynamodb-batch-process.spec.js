@@ -77,7 +77,7 @@ describe('dynamodb batch process', () => {
         expect.objectContaining({
           FunctionName: context.functionName,
           InvocationType: 'Event',
-          Payload: JSON.stringify({cursor: {lastEvaluatedKey: {Artist: 'Fiz'}}})
+          Payload: JSON.stringify({cursor: {index: 1}})
         }),
         expect.any(Function)
       )
@@ -110,9 +110,9 @@ describe('dynamodb batch process', () => {
 
   it('should be able to stop recursing!')
 
-  it('CachedDynamoDbItemReader should not use Limit: 1 or should we return an array and process it all? Then setting Limit is becoming the user responsibility')
+  it('test with Limit 1 as lastEvaluatedKey cursor is now untested')
 
-  it('should not return unefined item when lastEvaluatedKey is not empty')
+  it('should not return unefined item when lastEvaluatedKey is not empty (use Limit 1 or Filtering on scan)')
 
   it('mock invoke to call batchProcessor and finish the recursion!')
 

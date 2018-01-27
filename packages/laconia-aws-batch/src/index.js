@@ -9,32 +9,42 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
     this.cachedItems = []
   }
 
-  async next (cursor = {}) {
+  _createDynamoDbParams (cursor) {
     const params = Object.assign({}, this.baseParams)
     if (cursor.lastEvaluatedKey) {
       params.ExclusiveStartKey = cursor.lastEvaluatedKey
     }
-    const index = cursor.index ? cursor.index : 0
+    return params
+  }
 
-    if (this.cachedItems.length !== 0) {
-      const item = this.cachedItems[index]
+  async _hitDynamoDb (params) {
+    return this.operation === exports.QUERY
+      ? this.documentClient.query(params).promise()
+      : this.documentClient.scan(params).promise()
+  }
+
+  async _getDynamoDbData (cursor) {
+    if (this.cachedItems.length === 0) {
+      const data = await this._hitDynamoDb(this._createDynamoDbParams(cursor))
+      this.cachedItems = data.Items
+      return data
+    } else {
       return {
-        item,
-        cursor: { lastEvaluatedKey: cursor.lastEvaluatedKey, index: index + 1 },
-        finished: cursor.lastEvaluatedKey === undefined && this.cachedItems.length === 0
+        Items: this.cachedItems,
+        LastEvaluatedKey: cursor.lastEvaluatedKey
       }
     }
+  }
 
-    const data = this.operation === exports.QUERY
-      ? await this.documentClient.query(params).promise()
-      : await this.documentClient.scan(params).promise()
-    this.cachedItems = data.Items
+  async next (cursor = {}) {
+    const {Items: items, LastEvaluatedKey: lastEvaluatedKey} = await this._getDynamoDbData(cursor)
+    const index = cursor.index ? cursor.index : 0
+    const item = items[index]
 
-    const item = this.cachedItems[index]
     return {
       item,
-      cursor: { lastEvaluatedKey: data.LastEvaluatedKey, index: index + 1 },
-      finished: data.LastEvaluatedKey === undefined && this.cachedItems.length === 0
+      cursor: { lastEvaluatedKey, index: index + 1 },
+      finished: lastEvaluatedKey === undefined && items.length === 0
     }
   }
 }

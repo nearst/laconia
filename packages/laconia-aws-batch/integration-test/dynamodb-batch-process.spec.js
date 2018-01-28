@@ -10,7 +10,7 @@ const {dynamoDbBatchHandler, SCAN, QUERY} = require('../src/index')
 describe('dynamodb batch process', () => {
   const dynamoLocalPort = 8000
   const dynamoDbOptions = { region: 'eu-west-1', endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`) }
-  let invokeMock, itemProcessor, event, context, callback
+  let invokeMock, itemProcessor, event, context, callback, handlerOptions
 
   beforeAll(() => {
     jest.setTimeout(5000)
@@ -37,6 +37,7 @@ describe('dynamodb batch process', () => {
     event = {}
     context = { functionName: 'blah', getRemainingTimeInMillis: () => 100000 }
     callback = jest.fn()
+    handlerOptions = { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
   })
 
   afterEach(() => {
@@ -48,7 +49,7 @@ describe('dynamodb batch process', () => {
         SCAN,
         { TableName: 'Music' },
         itemProcessor,
-        { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
+        handlerOptions
     )(event, context, callback)
 
     expect(itemProcessor).toHaveBeenCalledTimes(3)
@@ -64,7 +65,7 @@ describe('dynamodb batch process', () => {
         SCAN,
         { TableName: 'Music' },
         itemProcessor,
-        { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
+        handlerOptions
       )(event, context, callback)
     })
 
@@ -101,16 +102,31 @@ describe('dynamodb batch process', () => {
         TableName: 'Music'
       },
       itemProcessor,
-      { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
+      handlerOptions
     )(event, context, callback)
 
     expect(itemProcessor).toHaveBeenCalledTimes(1)
     expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
   })
 
-  it('should be able to stop recursing!')
+  xit('should be able to process all items when Limit is set to 1', async () => {
+    await dynamoDbBatchHandler(
+      SCAN,
+      {
+        TableName: 'Music',
+        Limit: 1
+      },
+      itemProcessor,
+      handlerOptions
+    )(event, context, callback)
 
-  it('test with Limit 1 as lastEvaluatedKey cursor is now untested')
+    expect(itemProcessor).toHaveBeenCalledTimes(3)
+    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Foo'}, event, context)
+    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Bar'}, event, context)
+    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
+  })
+
+  it('should be able to stop recursing!')
 
   it('should not return unefined item when lastEvaluatedKey is not empty (use Limit 1 or Filtering on scan)')
 

@@ -23,8 +23,10 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
       : this.documentClient.scan(params).promise()
   }
 
-  async _getDynamoDbData (cursor) {
-    if (this.cachedItems.length === 0) {
+  async _getData (cursor) {
+    // TODO: _getNextData is also +1 to .index. Should not have two places that does + 1. Refactor!
+    // Is there anything we can do to check if we should hit dynamodb without checking index?
+    if (cursor.index < 0 || cursor.index + 1 > this.cachedItems.length - 1) {
       const data = await this._hitDynamoDb(this._createDynamoDbParams(cursor))
       this.cachedItems = data.Items
       return data
@@ -36,15 +38,15 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
     }
   }
 
-  async next (cursor = {}) {
-    const {Items: items, LastEvaluatedKey: lastEvaluatedKey} = await this._getDynamoDbData(cursor)
-    const index = cursor.index ? cursor.index : 0
+  async next (cursor = {lastEvaluatedKey: undefined, index: -1}) {
+    const {Items: items, LastEvaluatedKey: lastEvaluatedKey} = await this._getData(cursor)
+    const index = lastEvaluatedKey === cursor.lastEvaluatedKey ? cursor.index + 1 : 0
     const item = items[index]
 
     return {
       item,
-      cursor: { lastEvaluatedKey, index: index + 1 },
-      finished: lastEvaluatedKey === undefined && items.length === 0
+      cursor: { lastEvaluatedKey, index },
+      finished: lastEvaluatedKey === undefined && items.length === 0 // TODO: should check index instead of length
     }
   }
 }
@@ -56,7 +58,7 @@ module.exports.BatchProcessor = class BatchProcessor {
     this.shouldContinue = shouldContinue
   }
 
-  async start (cursor = {}) {
+  async start (cursor) {
     let newCursor = cursor
 
     do {

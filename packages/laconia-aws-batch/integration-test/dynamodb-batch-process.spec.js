@@ -78,7 +78,7 @@ describe('dynamodb batch process', () => {
         expect.objectContaining({
           FunctionName: context.functionName,
           InvocationType: 'Event',
-          Payload: JSON.stringify({cursor: {index: 1}})
+          Payload: JSON.stringify({cursor: {index: 0}})
         }),
         expect.any(Function)
       )
@@ -109,7 +109,7 @@ describe('dynamodb batch process', () => {
     expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
   })
 
-  xit('should be able to process all items when Limit is set to 1', async () => {
+  it('should be able to process all items when Limit is set to 1', async () => {
     await dynamoDbBatchHandler(
       SCAN,
       {

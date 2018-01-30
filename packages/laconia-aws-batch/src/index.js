@@ -50,9 +50,9 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
 };
 
 module.exports.BatchProcessor = class BatchProcessor {
-  constructor(itemReader, itemProcessor, shouldContinue) {
-    this.itemReader = itemReader;
-    this.itemProcessor = itemProcessor;
+  constructor(readItem, processItem, shouldContinue) {
+    this.readItem = readItem;
+    this.processItem = processItem;
     this.shouldContinue = shouldContinue;
   }
 
@@ -60,11 +60,11 @@ module.exports.BatchProcessor = class BatchProcessor {
     let newCursor = cursor;
 
     do {
-      const next = await this.itemReader.next(newCursor);
+      const next = await this.readItem(newCursor);
       const item = next.item;
       newCursor = next.cursor;
       if (item) {
-        this.itemProcessor(item);
+        this.processItem(item);
       } else {
         break;
       }
@@ -101,8 +101,13 @@ module.exports.dynamoDbBatchHandler = (
   } = {}
 ) =>
   recurse(async (event, context, callback) => {
+    const itemReader = new exports.DynamoDbItemReader(
+      operation,
+      documentClient,
+      dynamoParams
+    );
     const batchProcessor = new exports.BatchProcessor(
-      new exports.DynamoDbItemReader(operation, documentClient, dynamoParams),
+      itemReader.next.bind(itemReader),
       item => itemProcessor(item, event, context),
       cursor => context.getRemainingTimeInMillis() > timeNeededToRecurseInMillis
     );

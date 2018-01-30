@@ -23,34 +23,28 @@ module.exports.DynamoDbItemReader = class DynamoDbItemReader {
       : this.documentClient.scan(params).promise();
   }
 
-  async _getData(cursor) {
-    // TODO: _getNextData is also +1 to .index. Should not have two places that does + 1. Refactor!
-    // Is there anything we can do to check if we should hit dynamodb without checking index?
+  async next(cursor = { lastEvaluatedKey: undefined, index: -1 }) {
+    let data, index;
+
     if (cursor.index < 0 || cursor.index + 1 > this.cachedItems.length - 1) {
-      const data = await this._hitDynamoDb(this._createDynamoDbParams(cursor));
+      data = await this._hitDynamoDb(this._createDynamoDbParams(cursor));
       this.cachedItems = data.Items;
-      return data;
+      index = 0;
     } else {
-      return {
+      data = {
         Items: this.cachedItems,
         LastEvaluatedKey: cursor.lastEvaluatedKey
       };
+      index = cursor.index + 1;
     }
-  }
 
-  async next(cursor = { lastEvaluatedKey: undefined, index: -1 }) {
-    const {
-      Items: items,
-      LastEvaluatedKey: lastEvaluatedKey
-    } = await this._getData(cursor);
-    const index =
-      lastEvaluatedKey === cursor.lastEvaluatedKey ? cursor.index + 1 : 0;
+    const { Items: items, LastEvaluatedKey: lastEvaluatedKey } = data;
     const item = items[index];
 
     return {
       item,
       cursor: { lastEvaluatedKey, index },
-      finished: lastEvaluatedKey === undefined && items.length === 0 // TODO: should check index instead of length
+      finished: lastEvaluatedKey === undefined && index + 1 > items.length - 1
     };
   }
 };

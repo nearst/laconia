@@ -5,7 +5,7 @@ const DynamoDbLocal = require('dynamodb-local')
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
-const {dynamoDbBatchHandler, SCAN, QUERY} = require('../src/index')
+const {dynamoDbBatchHandler} = require('../src/index')
 
 describe('dynamodb batch process', () => {
   const dynamoLocalPort = 8000
@@ -46,7 +46,7 @@ describe('dynamodb batch process', () => {
 
   it('should process all records in a Table with scan', async () => {
     await dynamoDbBatchHandler(
-        SCAN,
+        'SCAN',
         { TableName: 'Music' },
         itemProcessor,
         handlerOptions
@@ -62,7 +62,7 @@ describe('dynamodb batch process', () => {
     beforeEach(async () => {
       context.getRemainingTimeInMillis = () => 5000
       await await dynamoDbBatchHandler(
-        SCAN,
+        'SCAN',
         { TableName: 'Music' },
         itemProcessor,
         handlerOptions
@@ -93,7 +93,7 @@ describe('dynamodb batch process', () => {
 
   it('should support query', async () => {
     await dynamoDbBatchHandler(
-      QUERY,
+      'QUERY',
       {
         ExpressionAttributeValues: {
           ':v1': 'Fiz'
@@ -111,7 +111,7 @@ describe('dynamodb batch process', () => {
 
   it('should be able to process all items when Limit is set to 1', async () => {
     await dynamoDbBatchHandler(
-      SCAN,
+      'SCAN',
       {
         TableName: 'Music',
         Limit: 1

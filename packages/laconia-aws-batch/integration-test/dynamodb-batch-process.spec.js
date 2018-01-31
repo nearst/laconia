@@ -45,6 +45,24 @@ describe('dynamodb batch process', () => {
   })
 
   it('should process all records in a Table with scan', async () => {
+    //maybe something like this:
+    await dynamoDbBatchHandler('SCAN',
+        { TableName: 'Music' },
+        handlerOptions
+    )
+    .on('item', itemProcessor)
+    //it could also be useful to know when the operation is finished
+    .on('end', () => console.log('finished'))
+    
+    //and you could have an alternative api if you want to work per batch instead of item by item
+     await dynamoDbBatchHandler('SCAN',
+        { TableName: 'Music' },
+        handlerOptions
+    )
+    .on('batch', items => doSomething(items))
+    .on('end', () => console.log('finished'))
+    
+    
     await dynamoDbBatchHandler(
         'SCAN',
         { TableName: 'Music' },

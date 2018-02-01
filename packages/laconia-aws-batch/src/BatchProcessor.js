@@ -14,8 +14,6 @@ module.exports = class BatchProcessor {
       newCursor = next.cursor
       if (item) {
         this.processItem(item)
-      } else {
-        break
       }
 
       if (next.finished) {

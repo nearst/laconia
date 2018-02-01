@@ -17,6 +17,10 @@ describe('dynamodb batch process', () => {
     return DynamoDbLocal.launch(dynamoLocalPort, null, ['-sharedDb'])
   })
 
+  afterAll(() => {
+    return DynamoDbLocal.stop(dynamoLocalPort)
+  })
+
   beforeAll(async () => {
     const musicRepository = new DynamoDbMusicRepository(
       new AWS.DynamoDB(dynamoDbOptions),
@@ -61,7 +65,7 @@ describe('dynamodb batch process', () => {
   describe('when time is up', () => {
     beforeEach(async () => {
       context.getRemainingTimeInMillis = () => 5000
-      await await dynamoDbBatchHandler(
+      await dynamoDbBatchHandler(
         'SCAN',
         { TableName: 'Music' },
         itemProcessor,
@@ -84,12 +88,6 @@ describe('dynamodb batch process', () => {
       )
     })
   })
-
-  describe('when recursing', () => {
-    // pass cursor in
-  })
-
-  it('should forward event during recursion')
 
   it('should support query', async () => {
     await dynamoDbBatchHandler(
@@ -126,13 +124,24 @@ describe('dynamodb batch process', () => {
     expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
   })
 
-  it('should be able to stop recursing!')
+  it('should be able to process items when filtered', async () => {
+    await dynamoDbBatchHandler(
+      'SCAN',
+      {
+        TableName: 'Music',
+        Limit: 1,
+        ExpressionAttributeValues: {
+          ':a': 'Bar'
+        },
+        FilterExpression: 'Artist = :a'
+      },
+      itemProcessor,
+      handlerOptions
+    )(event, context, callback)
 
-  it('should not return unefined item when lastEvaluatedKey is not empty (use Limit 1 or Filtering on scan)')
+    expect(itemProcessor).toHaveBeenCalledTimes(1)
+    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Bar'}, event, context)
+  })
 
   it('mock invoke to call batchProcessor and finish the recursion!')
-
-  afterAll(() => {
-    return DynamoDbLocal.stop(dynamoLocalPort)
-  })
 })

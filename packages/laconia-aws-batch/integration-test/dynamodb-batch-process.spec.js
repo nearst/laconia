@@ -13,7 +13,7 @@ describe("dynamodb batch process", () => {
     region: "eu-west-1",
     endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`)
   };
-  let invokeMock, itemProcessor, event, context, callback, handlerOptions;
+  let invokeMock, processItem, event, context, callback, handlerOptions;
 
   beforeAll(() => {
     jest.setTimeout(5000);
@@ -40,7 +40,7 @@ describe("dynamodb batch process", () => {
     invokeMock = jest.fn();
     AWSMock.mock("Lambda", "invoke", invokeMock);
 
-    itemProcessor = jest.fn();
+    processItem = jest.fn();
     event = {};
     context = { functionName: "blah", getRemainingTimeInMillis: () => 100000 };
     callback = jest.fn();
@@ -58,24 +58,24 @@ describe("dynamodb batch process", () => {
       await dynamoDbBatchHandler(
         "SCAN",
         { TableName: "Music" },
-        itemProcessor,
+        processItem,
         handlerOptions
       )(event, context, callback);
     });
 
     it("should process all records in a Table with scan", async () => {
-      expect(itemProcessor).toHaveBeenCalledTimes(3);
-      expect(itemProcessor).toHaveBeenCalledWith(
+      expect(processItem).toHaveBeenCalledTimes(3);
+      expect(processItem).toHaveBeenCalledWith(
         { Artist: "Foo" },
         event,
         context
       );
-      expect(itemProcessor).toHaveBeenCalledWith(
+      expect(processItem).toHaveBeenCalledWith(
         { Artist: "Bar" },
         event,
         context
       );
-      expect(itemProcessor).toHaveBeenCalledWith(
+      expect(processItem).toHaveBeenCalledWith(
         { Artist: "Fiz" },
         event,
         context
@@ -93,13 +93,13 @@ describe("dynamodb batch process", () => {
       await dynamoDbBatchHandler(
         "SCAN",
         { TableName: "Music" },
-        itemProcessor,
+        processItem,
         handlerOptions
       )(event, context, callback);
     });
 
     it("should stop processing when time is up", async () => {
-      expect(itemProcessor).toHaveBeenCalledTimes(1);
+      expect(processItem).toHaveBeenCalledTimes(1);
     });
 
     it("should recurse when time is up", async () => {
@@ -124,16 +124,12 @@ describe("dynamodb batch process", () => {
         KeyConditionExpression: "Artist = :v1",
         TableName: "Music"
       },
-      itemProcessor,
+      processItem,
       handlerOptions
     )(event, context, callback);
 
-    expect(itemProcessor).toHaveBeenCalledTimes(1);
-    expect(itemProcessor).toHaveBeenCalledWith(
-      { Artist: "Fiz" },
-      event,
-      context
-    );
+    expect(processItem).toHaveBeenCalledTimes(1);
+    expect(processItem).toHaveBeenCalledWith({ Artist: "Fiz" }, event, context);
   });
 
   it("should be able to process all items when Limit is set to 1", async () => {
@@ -143,26 +139,14 @@ describe("dynamodb batch process", () => {
         TableName: "Music",
         Limit: 1
       },
-      itemProcessor,
+      processItem,
       handlerOptions
     )(event, context, callback);
 
-    expect(itemProcessor).toHaveBeenCalledTimes(3);
-    expect(itemProcessor).toHaveBeenCalledWith(
-      { Artist: "Foo" },
-      event,
-      context
-    );
-    expect(itemProcessor).toHaveBeenCalledWith(
-      { Artist: "Bar" },
-      event,
-      context
-    );
-    expect(itemProcessor).toHaveBeenCalledWith(
-      { Artist: "Fiz" },
-      event,
-      context
-    );
+    expect(processItem).toHaveBeenCalledTimes(3);
+    expect(processItem).toHaveBeenCalledWith({ Artist: "Foo" }, event, context);
+    expect(processItem).toHaveBeenCalledWith({ Artist: "Bar" }, event, context);
+    expect(processItem).toHaveBeenCalledWith({ Artist: "Fiz" }, event, context);
   });
 
   it("should be able to process items when filtered", async () => {
@@ -176,16 +160,12 @@ describe("dynamodb batch process", () => {
         },
         FilterExpression: "Artist = :a"
       },
-      itemProcessor,
+      processItem,
       handlerOptions
     )(event, context, callback);
 
-    expect(itemProcessor).toHaveBeenCalledTimes(1);
-    expect(itemProcessor).toHaveBeenCalledWith(
-      { Artist: "Bar" },
-      event,
-      context
-    );
+    expect(processItem).toHaveBeenCalledTimes(1);
+    expect(processItem).toHaveBeenCalledWith({ Artist: "Bar" }, event, context);
   });
 
   it("mock invoke to call batchProcessor and finish the recursion!");

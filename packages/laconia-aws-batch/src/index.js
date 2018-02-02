@@ -9,7 +9,7 @@ const recursiveHandler = (handler) => async (event, context, callback) => {
 }
 
 module.exports.dynamoDbBatchHandler =
-  (operation, dynamoParams, itemProcessor,
+  (operation, dynamoParams, processItem,
     {
       documentClient = new AWS.DynamoDB.DocumentClient(),
       timeNeededToRecurseInMillis = 5000
@@ -18,7 +18,7 @@ module.exports.dynamoDbBatchHandler =
     const itemReader = new DynamoDbItemReader(operation, documentClient, dynamoParams)
     const batchProcessor = new BatchProcessor(
       itemReader.next.bind(itemReader),
-      (item) => itemProcessor(item, event, context),
+      (item) => processItem(item, event, context),
       (cursor) => context.getRemainingTimeInMillis() > timeNeededToRecurseInMillis
     )
     .on('inProgress', (cursor) => recurse({ cursor }))

@@ -48,18 +48,26 @@ describe('dynamodb batch process', () => {
     AWSMock.restore()
   })
 
-  it('should process all records in a Table with scan', async () => {
-    await dynamoDbBatchHandler(
+  describe('when no recursion is needed', () => {
+    beforeEach(async () => {
+      await dynamoDbBatchHandler(
         'SCAN',
         { TableName: 'Music' },
         itemProcessor,
         handlerOptions
-    )(event, context, callback)
+      )(event, context, callback)
+    })
 
-    expect(itemProcessor).toHaveBeenCalledTimes(3)
-    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Foo'}, event, context)
-    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Bar'}, event, context)
-    expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
+    it('should process all records in a Table with scan', async () => {
+      expect(itemProcessor).toHaveBeenCalledTimes(3)
+      expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Foo'}, event, context)
+      expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Bar'}, event, context)
+      expect(itemProcessor).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
+    })
+
+    it('should not recurse', () => {
+      expect(invokeMock).not.toHaveBeenCalled()
+    })
   })
 
   describe('when time is up', () => {

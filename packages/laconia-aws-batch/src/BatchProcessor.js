@@ -1,5 +1,8 @@
-module.exports = class BatchProcessor {
+const EventEmitter = require('events')
+
+module.exports = class BatchProcessor extends EventEmitter {
   constructor (readItem, processItem, shouldContinue) {
+    super()
     this.readItem = readItem
     this.processItem = processItem
     this.shouldContinue = shouldContinue
@@ -17,12 +20,10 @@ module.exports = class BatchProcessor {
       }
 
       if (next.finished) {
-        break
+        return
       }
     } while (this.shouldContinue(newCursor))
 
-    if (!newCursor.finished) { // TODO: This has never worked, newCursor doesn't have finished property
-      return newCursor
-    }
+    this.emit('inProgress', newCursor)
   }
 }

@@ -14,7 +14,9 @@ describe('aws recursive handler', () => {
     })
   })
 
-  xit('should recurse', () => {
+  xit('provide recurse callback')
+
+  xit('should recurse when value returned is not undefined', () => {
     const context = {functionName: 'foo'}
     const event = {}
     return recursiveHandler(() => ({ cursor: 5 }))(event, context, callback).then(_ => {
@@ -29,5 +31,5 @@ describe('aws recursive handler', () => {
     })
   })
 
-  xit('should merge and take the returned object as precedence to event')
+  xit('should merge and take the returned object as precedence to event (should forward event)')
 })

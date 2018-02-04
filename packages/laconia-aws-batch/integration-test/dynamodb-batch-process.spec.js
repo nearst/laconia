@@ -53,9 +53,9 @@ describe('dynamodb batch process', () => {
       await dynamoDbBatchHandler(
         'SCAN',
         { TableName: 'Music' },
-        processItem,
         handlerOptions
-      )(event, context, callback)
+      )
+      .on('item', processItem)(event, context, callback)
     })
 
     it('should process all records in a Table with scan', async () => {
@@ -76,9 +76,9 @@ describe('dynamodb batch process', () => {
       await dynamoDbBatchHandler(
         'SCAN',
         { TableName: 'Music' },
-        processItem,
         handlerOptions
-      )(event, context, callback)
+      )
+      .on('item', processItem)(event, context, callback)
     })
 
     it('should stop processing when time is up', async () => {
@@ -107,9 +107,9 @@ describe('dynamodb batch process', () => {
         KeyConditionExpression: 'Artist = :v1',
         TableName: 'Music'
       },
-      processItem,
       handlerOptions
-    )(event, context, callback)
+    )
+    .on('item', processItem)(event, context, callback)
 
     expect(processItem).toHaveBeenCalledTimes(1)
     expect(processItem).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
@@ -122,9 +122,9 @@ describe('dynamodb batch process', () => {
         TableName: 'Music',
         Limit: 1
       },
-      processItem,
       handlerOptions
-    )(event, context, callback)
+    )
+    .on('item', processItem)(event, context, callback)
 
     expect(processItem).toHaveBeenCalledTimes(3)
     expect(processItem).toHaveBeenCalledWith({Artist: 'Foo'}, event, context)
@@ -143,9 +143,9 @@ describe('dynamodb batch process', () => {
         },
         FilterExpression: 'Artist = :a'
       },
-      processItem,
       handlerOptions
-    )(event, context, callback)
+    )
+    .on('item', processItem)(event, context, callback)
 
     expect(processItem).toHaveBeenCalledTimes(1)
     expect(processItem).toHaveBeenCalledWith({Artist: 'Bar'}, event, context)

@@ -1,10 +1,9 @@
 const EventEmitter = require('events')
 
 module.exports = class BatchProcessor extends EventEmitter {
-  constructor (readItem, processItem, shouldContinue) {
+  constructor (readItem, shouldContinue) {
     super()
     this.readItem = readItem
-    this.processItem = processItem
     this.shouldContinue = shouldContinue
   }
 
@@ -16,7 +15,7 @@ module.exports = class BatchProcessor extends EventEmitter {
       const item = next.item
       newCursor = next.cursor
       if (item) {
-        this.processItem(item)
+        this.emit('item', item)
       }
 
       if (next.finished) {

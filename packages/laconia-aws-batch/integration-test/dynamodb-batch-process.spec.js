@@ -163,5 +163,41 @@ describe("dynamodb batch process", () => {
     expect(processItem).toHaveBeenCalledWith({ Artist: "Bar" }, event, context);
   });
 
-  it("mock invoke to call batchProcessor and finish the recursion!");
+  describe("complete recursion", () => {
+    xit("should process all items", async () => {
+      context.getRemainingTimeInMillis = () => 5000;
+      const handler = dynamoDbBatchHandler(
+        "SCAN",
+        {
+          TableName: "Music",
+          Limit: 1
+        },
+        handlerOptions
+      ).on("item", processItem);
+
+      invokeMock.mockImplementation(async event => {
+        await handler(event, context, callback);
+      });
+
+      await handler(event, context, callback);
+
+      expect(invokeMock).toHaveBeenCalledTimes(2);
+      expect(processItem).toHaveBeenCalledTimes(3);
+      expect(processItem).toHaveBeenCalledWith(
+        { Artist: "Foo" },
+        event,
+        context
+      );
+      expect(processItem).toHaveBeenCalledWith(
+        { Artist: "Bar" },
+        event,
+        context
+      );
+      expect(processItem).toHaveBeenCalledWith(
+        { Artist: "Fiz" },
+        event,
+        context
+      );
+    });
+  });
 });

@@ -151,8 +151,8 @@ describe('dynamodb batch process', () => {
     expect(processItem).toHaveBeenCalledWith({Artist: 'Bar'}, event, context)
   })
 
-  describe('complete recursion', () => {
-    xit('should process all items', async () => {
+  describe('when completing recursion', () => {
+    it('should process all items', async (done) => {
       context.getRemainingTimeInMillis = () => 5000
       const handler = dynamoDbBatchHandler(
         'SCAN',
@@ -164,17 +164,19 @@ describe('dynamodb batch process', () => {
       )
       .on('item', processItem)
 
-      invokeMock.mockImplementation(async (event) => {
-        await handler(event, context, callback)
+      handler(event, context, callback)
+      invokeMock.mockImplementationOnce(event => handler(JSON.parse(event.Payload), context, callback))
+      invokeMock.mockImplementationOnce(event => handler(JSON.parse(event.Payload), context, callback))
+      invokeMock.mockImplementationOnce(async (event) => {
+        await handler(JSON.parse(event.Payload), context, callback)
+
+        expect(invokeMock).toHaveBeenCalledTimes(3)
+        expect(processItem).toHaveBeenCalledTimes(3)
+        expect(processItem).toHaveBeenCalledWith({Artist: 'Foo'}, expect.anything(), expect.anything())
+        expect(processItem).toHaveBeenCalledWith({Artist: 'Bar'}, expect.anything(), expect.anything())
+        expect(processItem).toHaveBeenCalledWith({Artist: 'Fiz'}, expect.anything(), expect.anything())
+        done()
       })
-
-      await handler(event, context, callback)
-
-      expect(invokeMock).toHaveBeenCalledTimes(2)
-      expect(processItem).toHaveBeenCalledTimes(3)
-      expect(processItem).toHaveBeenCalledWith({Artist: 'Foo'}, event, context)
-      expect(processItem).toHaveBeenCalledWith({Artist: 'Bar'}, event, context)
-      expect(processItem).toHaveBeenCalledWith({Artist: 'Fiz'}, event, context)
     })
   })
 })

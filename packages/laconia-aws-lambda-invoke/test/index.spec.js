@@ -8,12 +8,10 @@ const yields = arg => (params, callback) => callback(null, arg);
 
 describe("aws invoke", () => {
   let invokeMock;
-  let lambda;
 
   beforeEach(() => {
     invokeMock = jest.fn();
     AWSMock.mock("Lambda", "invoke", invokeMock);
-    lambda = new AWS.Lambda();
   });
 
   afterEach(() => {
@@ -36,7 +34,7 @@ describe("aws invoke", () => {
               StatusCode: expectedStatusCode
             })
           );
-          const invoker = new LambdaInvoker(lambda, "myLambda");
+          const invoker = new LambdaInvoker("myLambda");
           return expect(invoker[method]()).rejects.toThrow(
             `${functionError} error returned by myLambda: boom`
           );
@@ -49,7 +47,7 @@ describe("aws invoke", () => {
         invokeMock.mockImplementation(
           yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
         );
-        const invoker = new LambdaInvoker(lambda, "foobar");
+        const invoker = new LambdaInvoker("foobar");
         return invoker[method]({ biz: "baz" });
       });
 
@@ -79,7 +77,7 @@ describe("aws invoke", () => {
       invokeMock.mockImplementation(
         yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
       );
-      const invoker = new LambdaInvoker(lambda, "foobar");
+      const invoker = new LambdaInvoker("foobar");
       return invoker[method]().then(_ => {
         const invokeParams = invokeMock.mock.calls[0][0];
         expect(invokeParams).not.toHaveProperty("Payload");
@@ -95,7 +93,7 @@ describe("aws invoke", () => {
           invokeMock.mockImplementation(
             yields({ FunctionError: undefined, StatusCode: statusCode })
           );
-          const invoker = new LambdaInvoker(lambda, "foobar");
+          const invoker = new LambdaInvoker("foobar");
           return expect(invoker[method]()).rejects.toThrow(
             `Status code returned was: ${statusCode}`
           );
@@ -127,7 +125,7 @@ describe("aws invoke", () => {
           Payload: "response"
         })
       );
-      const invoker = new LambdaInvoker(lambda, "foobar");
+      const invoker = new LambdaInvoker("foobar");
       return invoker.requestResponse().then(response => {
         expect(response).toEqual("response");
       });
@@ -141,10 +139,16 @@ describe("aws invoke", () => {
           Payload: '{"value":"response"}'
         })
       );
-      const invoker = new LambdaInvoker(lambda, "foobar");
+      const invoker = new LambdaInvoker("foobar");
       return invoker.requestResponse().then(response => {
         expect(response).toEqual({ value: "response" });
       });
     });
+  });
+
+  it("should be able to override lambda", () => {
+    const lambda = new AWS.Lambda();
+    const invoker = new LambdaInvoker("foobar", { lambda });
+    expect(invoker.lambda).toBe(lambda);
   });
 });

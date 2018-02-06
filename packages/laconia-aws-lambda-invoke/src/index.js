@@ -1,3 +1,5 @@
+const AWS = require("aws-sdk");
+
 const validateStatusCode = (statusCode, expectedStatusCode) => {
   if (statusCode !== expectedStatusCode) {
     throw new Error(`Status code returned was: ${statusCode}`);
@@ -5,7 +7,7 @@ const validateStatusCode = (statusCode, expectedStatusCode) => {
 };
 
 module.exports.LambdaInvoker = class LambdaInvoker {
-  constructor(lambda, functionName) {
+  constructor(functionName, { lambda = new AWS.Lambda() } = {}) {
     this.lambda = lambda;
     this.functionName = functionName;
   }

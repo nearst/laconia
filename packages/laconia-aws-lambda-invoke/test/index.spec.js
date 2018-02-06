@@ -8,12 +8,10 @@ const yields = (arg) => (params, callback) => callback(null, arg)
 
 describe('aws invoke', () => {
   let invokeMock
-  let lambda
 
   beforeEach(() => {
     invokeMock = jest.fn()
     AWSMock.mock('Lambda', 'invoke', invokeMock)
-    lambda = new AWS.Lambda()
   })
 
   afterEach(() => {
@@ -26,7 +24,7 @@ describe('aws invoke', () => {
       functionErrors.forEach(functionError => {
         it(`should throw an error when FunctionError is set to ${functionError}`, () => {
           invokeMock.mockImplementation(yields({FunctionError: functionError, Payload: 'boom', StatusCode: expectedStatusCode}))
-          const invoker = new LambdaInvoker(lambda, 'myLambda')
+          const invoker = new LambdaInvoker('myLambda')
           return expect(invoker[method]()).rejects.toThrow(`${functionError} error returned by myLambda: boom`)
         })
       })
@@ -35,7 +33,7 @@ describe('aws invoke', () => {
     describe('when invoking Lambda', () => {
       beforeEach(() => {
         invokeMock.mockImplementation(yields({FunctionError: undefined, StatusCode: expectedStatusCode}))
-        const invoker = new LambdaInvoker(lambda, 'foobar')
+        const invoker = new LambdaInvoker('foobar')
         return invoker[method]({biz: 'baz'})
       })
 
@@ -63,7 +61,7 @@ describe('aws invoke', () => {
 
     it('should not set Payload parameter if it is not available', () => {
       invokeMock.mockImplementation(yields({FunctionError: undefined, StatusCode: expectedStatusCode}))
-      const invoker = new LambdaInvoker(lambda, 'foobar')
+      const invoker = new LambdaInvoker('foobar')
       return invoker[method]().then(_ => {
         const invokeParams = invokeMock.mock.calls[0][0]
         expect(invokeParams).not.toHaveProperty('Payload')
@@ -75,7 +73,7 @@ describe('aws invoke', () => {
       invalidStatusCodes.forEach(statusCode => {
         it(`throws error when StatusCode returned is ${statusCode}`, () => {
           invokeMock.mockImplementation(yields({FunctionError: undefined, StatusCode: statusCode}))
-          const invoker = new LambdaInvoker(lambda, 'foobar')
+          const invoker = new LambdaInvoker('foobar')
           return expect(invoker[method]()).rejects.toThrow(`Status code returned was: ${statusCode}`)
         })
       })
@@ -99,7 +97,7 @@ describe('aws invoke', () => {
 
     it('should return Payload response', () => {
       invokeMock.mockImplementation(yields({FunctionError: undefined, StatusCode: 200, Payload: 'response'}))
-      const invoker = new LambdaInvoker(lambda, 'foobar')
+      const invoker = new LambdaInvoker('foobar')
       return invoker.requestResponse().then(response => {
         expect(response).toEqual('response')
       })
@@ -107,10 +105,16 @@ describe('aws invoke', () => {
 
     it('should JSON parse Payload response if JSON is returned', () => {
       invokeMock.mockImplementation(yields({FunctionError: undefined, StatusCode: 200, Payload: '{"value":"response"}'}))
-      const invoker = new LambdaInvoker(lambda, 'foobar')
+      const invoker = new LambdaInvoker('foobar')
       return invoker.requestResponse().then(response => {
         expect(response).toEqual({value: 'response'})
       })
     })
+  })
+
+  it('should be able to override lambda', () => {
+    const lambda = new AWS.Lambda()
+    const invoker = new LambdaInvoker('foobar', {lambda})
+    expect(invoker.lambda).toBe(lambda)
   })
 })

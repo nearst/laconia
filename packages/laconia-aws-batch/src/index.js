@@ -5,7 +5,7 @@ const DynamoDbItemReader = require('./DynamoDbItemReader')
 const EventEmitter = require('events')
 
 const recursiveHandler = (handler) => (event, context, callback) => {
-  const recurse = (response) => { new LambdaInvoker(new AWS.Lambda(), context.functionName).fireAndForget(response) }
+  const recurse = (response) => { new LambdaInvoker(context.functionName).fireAndForget(response) }
   return handler(event, context, recurse)
 }
 

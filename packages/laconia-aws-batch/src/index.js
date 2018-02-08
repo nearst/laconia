@@ -19,9 +19,9 @@ module.exports.dynamoDbBatchHandler =
       const itemReader = new DynamoDbItemReader(operation, documentClient, dynamoParams)
       const batchProcessor = new BatchProcessor(
         itemReader.next.bind(itemReader),
-        (cursor) => context.getRemainingTimeInMillis() > timeNeededToRecurseInMillis
+        (cursor) => context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis
       )
-      .on('inProgress', (cursor) => recurse({ cursor }))
+      .on('stop', (cursor) => recurse({ cursor }))
       .on('item', (item) => handler.emit('item', item, event, context))
 
       return batchProcessor.start(event.cursor)

@@ -1,28 +1,32 @@
 const EventEmitter = require('events')
 
 module.exports = class BatchProcessor extends EventEmitter {
-  constructor (readItem, shouldContinue) {
+  constructor (readItem, shouldStop) {
     super()
     this.readItem = readItem
-    this.shouldContinue = shouldContinue
+    this.shouldStop = shouldStop
   }
 
   async start (cursor) {
-    let newCursor = cursor
+    let prevCursor = cursor
 
     do {
-      const next = await this.readItem(newCursor)
-      const item = next.item
-      newCursor = next.cursor
+      const {item, cursor, finished} = await this.readItem(prevCursor)
+
       if (item) {
         this.emit('item', item)
       }
 
-      if (next.finished) {
+      if (finished) {
         return
       }
-    } while (this.shouldContinue(newCursor))
 
-    this.emit('inProgress', newCursor)
+      if (this.shouldStop(cursor)) {
+        this.emit('stop', cursor)
+        return
+      }
+
+      prevCursor = cursor
+    } while (true)
   }
 }

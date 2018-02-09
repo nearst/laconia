@@ -14,7 +14,7 @@ describe("dynamodb batch process", () => {
     endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`)
   };
   let invokeMock,
-    processItem,
+    itemListener,
     event,
     context,
     callback,
@@ -47,7 +47,7 @@ describe("dynamodb batch process", () => {
     invokeMock = jest.fn();
     AWSMock.mock("Lambda", "invoke", invokeMock);
 
-    processItem = jest.fn();
+    itemListener = jest.fn();
     stopListener = jest.fn();
     endListener = jest.fn();
     event = {};
@@ -65,24 +65,24 @@ describe("dynamodb batch process", () => {
   describe("when no recursion is needed", () => {
     beforeEach(async () => {
       await dynamoDbBatchHandler("SCAN", { TableName: "Music" }, handlerOptions)
-        .on("item", processItem)
+        .on("item", itemListener)
         .on("stop", stopListener)
         .on("end", endListener)(event, context, callback);
     });
 
     it("should process all records in a Table with scan", async () => {
-      expect(processItem).toHaveBeenCalledTimes(3);
-      expect(processItem).toHaveBeenCalledWith(
+      expect(itemListener).toHaveBeenCalledTimes(3);
+      expect(itemListener).toHaveBeenCalledWith(
         { Artist: "Foo" },
         event,
         context
       );
-      expect(processItem).toHaveBeenCalledWith(
+      expect(itemListener).toHaveBeenCalledWith(
         { Artist: "Bar" },
         event,
         context
       );
-      expect(processItem).toHaveBeenCalledWith(
+      expect(itemListener).toHaveBeenCalledWith(
         { Artist: "Fiz" },
         event,
         context
@@ -103,13 +103,13 @@ describe("dynamodb batch process", () => {
     beforeEach(async () => {
       context.getRemainingTimeInMillis = () => 5000;
       await dynamoDbBatchHandler("SCAN", { TableName: "Music" }, handlerOptions)
-        .on("item", processItem)
+        .on("item", itemListener)
         .on("stop", stopListener)
         .on("end", endListener)(event, context, callback);
     });
 
     it("should stop processing when time is up", async () => {
-      expect(processItem).toHaveBeenCalledTimes(1);
+      expect(itemListener).toHaveBeenCalledTimes(1);
     });
 
     it("should not notify end listener", () => {
@@ -147,10 +147,14 @@ describe("dynamodb batch process", () => {
         TableName: "Music"
       },
       handlerOptions
-    ).on("item", processItem)(event, context, callback);
+    ).on("item", itemListener)(event, context, callback);
 
-    expect(processItem).toHaveBeenCalledTimes(1);
-    expect(processItem).toHaveBeenCalledWith({ Artist: "Fiz" }, event, context);
+    expect(itemListener).toHaveBeenCalledTimes(1);
+    expect(itemListener).toHaveBeenCalledWith(
+      { Artist: "Fiz" },
+      event,
+      context
+    );
   });
 
   it("should be able to process all items when Limit is set to 1", async () => {
@@ -161,12 +165,24 @@ describe("dynamodb batch process", () => {
         Limit: 1
       },
       handlerOptions
-    ).on("item", processItem)(event, context, callback);
+    ).on("item", itemListener)(event, context, callback);
 
-    expect(processItem).toHaveBeenCalledTimes(3);
-    expect(processItem).toHaveBeenCalledWith({ Artist: "Foo" }, event, context);
-    expect(processItem).toHaveBeenCalledWith({ Artist: "Bar" }, event, context);
-    expect(processItem).toHaveBeenCalledWith({ Artist: "Fiz" }, event, context);
+    expect(itemListener).toHaveBeenCalledTimes(3);
+    expect(itemListener).toHaveBeenCalledWith(
+      { Artist: "Foo" },
+      event,
+      context
+    );
+    expect(itemListener).toHaveBeenCalledWith(
+      { Artist: "Bar" },
+      event,
+      context
+    );
+    expect(itemListener).toHaveBeenCalledWith(
+      { Artist: "Fiz" },
+      event,
+      context
+    );
   });
 
   it("should be able to process items when filtered", async () => {
@@ -181,10 +197,14 @@ describe("dynamodb batch process", () => {
         FilterExpression: "Artist = :a"
       },
       handlerOptions
-    ).on("item", processItem)(event, context, callback);
+    ).on("item", itemListener)(event, context, callback);
 
-    expect(processItem).toHaveBeenCalledTimes(1);
-    expect(processItem).toHaveBeenCalledWith({ Artist: "Bar" }, event, context);
+    expect(itemListener).toHaveBeenCalledTimes(1);
+    expect(itemListener).toHaveBeenCalledWith(
+      { Artist: "Bar" },
+      event,
+      context
+    );
   });
 
   describe("when completing recursion", () => {
@@ -197,7 +217,7 @@ describe("dynamodb batch process", () => {
           Limit: 1
         },
         handlerOptions
-      ).on("item", processItem);
+      ).on("item", itemListener);
 
       handler(event, context, callback);
       invokeMock.mockImplementationOnce(event =>
@@ -210,18 +230,18 @@ describe("dynamodb batch process", () => {
         await handler(JSON.parse(event.Payload), context, callback);
 
         expect(invokeMock).toHaveBeenCalledTimes(3);
-        expect(processItem).toHaveBeenCalledTimes(3);
-        expect(processItem).toHaveBeenCalledWith(
+        expect(itemListener).toHaveBeenCalledTimes(3);
+        expect(itemListener).toHaveBeenCalledWith(
           { Artist: "Foo" },
           expect.anything(),
           expect.anything()
         );
-        expect(processItem).toHaveBeenCalledWith(
+        expect(itemListener).toHaveBeenCalledWith(
           { Artist: "Bar" },
           expect.anything(),
           expect.anything()
         );
-        expect(processItem).toHaveBeenCalledWith(
+        expect(itemListener).toHaveBeenCalledWith(
           { Artist: "Fiz" },
           expect.anything(),
           expect.anything()

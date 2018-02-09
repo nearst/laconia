@@ -18,6 +18,7 @@ module.exports = class BatchProcessor extends EventEmitter {
       }
 
       if (finished) {
+        this.emit('end')
         return
       }
 

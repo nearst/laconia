@@ -30,8 +30,12 @@ module.exports.dynamoDbBatchHandler = (
       cursor =>
         context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis
     )
-      .on("stop", cursor => recurse({ cursor }))
-      .on("item", item => handler.emit("item", item, event, context));
+      .on("stop", cursor => {
+        handler.emit("stop", cursor);
+        recurse({ cursor });
+      })
+      .on("item", item => handler.emit("item", item, event, context))
+      .on("end", () => handler.emit("end"));
 
     return batchProcessor.start(event.cursor);
   });

@@ -13,7 +13,14 @@ describe("dynamodb batch process", () => {
     region: "eu-west-1",
     endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`)
   };
-  let invokeMock, processItem, event, context, callback, handlerOptions;
+  let invokeMock,
+    processItem,
+    event,
+    context,
+    callback,
+    handlerOptions,
+    stopListener,
+    endListener;
 
   beforeAll(() => {
     jest.setTimeout(5000);
@@ -41,6 +48,8 @@ describe("dynamodb batch process", () => {
     AWSMock.mock("Lambda", "invoke", invokeMock);
 
     processItem = jest.fn();
+    stopListener = jest.fn();
+    endListener = jest.fn();
     event = {};
     context = { functionName: "blah", getRemainingTimeInMillis: () => 100000 };
     callback = jest.fn();
@@ -55,11 +64,10 @@ describe("dynamodb batch process", () => {
 
   describe("when no recursion is needed", () => {
     beforeEach(async () => {
-      await dynamoDbBatchHandler(
-        "SCAN",
-        { TableName: "Music" },
-        handlerOptions
-      ).on("item", processItem)(event, context, callback);
+      await dynamoDbBatchHandler("SCAN", { TableName: "Music" }, handlerOptions)
+        .on("item", processItem)
+        .on("stop", stopListener)
+        .on("end", endListener)(event, context, callback);
     });
 
     it("should process all records in a Table with scan", async () => {
@@ -81,7 +89,12 @@ describe("dynamodb batch process", () => {
       );
     });
 
+    it("should notify end listener", () => {
+      expect(endListener).toHaveBeenCalledTimes(1);
+    });
+
     it("should not recurse", () => {
+      expect(stopListener).not.toHaveBeenCalled();
       expect(invokeMock).not.toHaveBeenCalled();
     });
   });
@@ -89,15 +102,26 @@ describe("dynamodb batch process", () => {
   describe("when time is up", () => {
     beforeEach(async () => {
       context.getRemainingTimeInMillis = () => 5000;
-      await dynamoDbBatchHandler(
-        "SCAN",
-        { TableName: "Music" },
-        handlerOptions
-      ).on("item", processItem)(event, context, callback);
+      await dynamoDbBatchHandler("SCAN", { TableName: "Music" }, handlerOptions)
+        .on("item", processItem)
+        .on("stop", stopListener)
+        .on("end", endListener)(event, context, callback);
     });
 
     it("should stop processing when time is up", async () => {
       expect(processItem).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not notify end listener", () => {
+      expect(endListener).not.toHaveBeenCalled();
+    });
+
+    it("should notify stop listener", () => {
+      expect(stopListener).toHaveBeenCalledTimes(1);
+      expect(stopListener).toHaveBeenCalledWith({
+        index: 0,
+        lastEvaluatedKey: undefined
+      });
     });
 
     it("should recurse when time is up", async () => {

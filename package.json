@@ -26,5 +26,9 @@
     "jest": "^22.0.3",
     "lerna": "^2.5.1",
     "standard": "^10.0.3"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": [".*test/"]
   }
 }

@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "postinstall": "lerna bootstrap",
-    "test": "lerna exec npm test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -24,11 +24,13 @@
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "dynamodb-local": "0.0.18",
     "jest": "^22.0.3",
+    "jest-extended": "^0.6.0",
     "lerna": "^2.5.1",
     "standard": "^10.0.3"
   },
   "jest": {
     "collectCoverage": true,
-    "coveragePathIgnorePatterns": [".*test/"]
+    "coveragePathIgnorePatterns": [".*test/"],
+    "setupTestFrameworkScriptFile": "jest-extended"
   }
 }

@@ -20,7 +20,8 @@ describe("dynamodb batch process", () => {
     callback,
     handlerOptions,
     stopListener,
-    endListener;
+    endListener,
+    startListener;
 
   beforeAll(() => {
     jest.setTimeout(5000);
@@ -50,6 +51,7 @@ describe("dynamodb batch process", () => {
     itemListener = jest.fn();
     stopListener = jest.fn();
     endListener = jest.fn();
+    startListener = jest.fn();
     event = {};
     context = { functionName: "blah", getRemainingTimeInMillis: () => 100000 };
     callback = jest.fn();
@@ -65,9 +67,20 @@ describe("dynamodb batch process", () => {
   describe("when no recursion is needed", () => {
     beforeEach(async () => {
       await dynamoDbBatchHandler("SCAN", { TableName: "Music" }, handlerOptions)
+        .on("start", startListener)
         .on("item", itemListener)
         .on("stop", stopListener)
         .on("end", endListener)(event, context, callback);
+    });
+
+    it("should notify listeners on lifecycle events", () => {
+      expect(startListener).toHaveBeenCalledTimes(1);
+      expect(startListener).toHaveBeenCalledWith(event, context);
+      expect(endListener).toHaveBeenCalledTimes(1);
+      expect(stopListener).not.toHaveBeenCalled();
+
+      expect(startListener).toHaveBeenCalledBefore(itemListener);
+      expect(startListener).toHaveBeenCalledBefore(endListener);
     });
 
     it("should process all records in a Table with scan", async () => {
@@ -89,12 +102,7 @@ describe("dynamodb batch process", () => {
       );
     });
 
-    it("should notify end listener", () => {
-      expect(endListener).toHaveBeenCalledTimes(1);
-    });
-
     it("should not recurse", () => {
-      expect(stopListener).not.toHaveBeenCalled();
       expect(invokeMock).not.toHaveBeenCalled();
     });
   });
@@ -103,6 +111,7 @@ describe("dynamodb batch process", () => {
     beforeEach(async () => {
       context.getRemainingTimeInMillis = () => 5000;
       await dynamoDbBatchHandler("SCAN", { TableName: "Music" }, handlerOptions)
+        .on("start", startListener)
         .on("item", itemListener)
         .on("stop", stopListener)
         .on("end", endListener)(event, context, callback);
@@ -112,16 +121,17 @@ describe("dynamodb batch process", () => {
       expect(itemListener).toHaveBeenCalledTimes(1);
     });
 
-    it("should not notify end listener", () => {
-      expect(endListener).not.toHaveBeenCalled();
-    });
-
-    it("should notify stop listener", () => {
+    it("should notify listeners on lifecycle events", () => {
+      expect(startListener).toHaveBeenCalledTimes(1);
       expect(stopListener).toHaveBeenCalledTimes(1);
       expect(stopListener).toHaveBeenCalledWith({
         index: 0,
         lastEvaluatedKey: undefined
       });
+      expect(endListener).not.toHaveBeenCalled();
+
+      expect(startListener).toHaveBeenCalledBefore(itemListener);
+      expect(startListener).toHaveBeenCalledBefore(stopListener);
     });
 
     it("should recurse when time is up", async () => {

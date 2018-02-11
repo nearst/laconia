@@ -25,6 +25,7 @@ module.exports.dynamoDbBatchHandler =
       .on('item', (item) => handler.emit('item', item, event, context))
       .on('end', () => handler.emit('end'))
 
+      handler.emit('start', event, context)
       return batchProcessor.start(event.cursor)
     })
     return Object.assign(handler, EventEmitter.prototype)

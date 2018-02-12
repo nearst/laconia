@@ -5,7 +5,7 @@ const DynamoDbLocal = require('dynamodb-local')
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
-const {dynamoDbBatchHandler} = require('../src/index')
+const {dynamoDbBatchHandler} = require('../src/dynamodb-batch-handler')
 
 describe('dynamodb batch process', () => {
   const dynamoLocalPort = 8000

@@ -85,21 +85,9 @@ describe("dynamodb batch process", () => {
 
     it("should process all records in a Table with scan", async () => {
       expect(itemListener).toHaveBeenCalledTimes(3);
-      expect(itemListener).toHaveBeenCalledWith(
-        { Artist: "Foo" },
-        event,
-        context
-      );
-      expect(itemListener).toHaveBeenCalledWith(
-        { Artist: "Bar" },
-        event,
-        context
-      );
-      expect(itemListener).toHaveBeenCalledWith(
-        { Artist: "Fiz" },
-        event,
-        context
-      );
+      expect(itemListener).toHaveBeenCalledWith({ Artist: "Foo" });
+      expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
+      expect(itemListener).toHaveBeenCalledWith({ Artist: "Fiz" });
     });
 
     it("should not recurse", () => {
@@ -160,11 +148,7 @@ describe("dynamodb batch process", () => {
     ).on("item", itemListener)(event, context, callback);
 
     expect(itemListener).toHaveBeenCalledTimes(1);
-    expect(itemListener).toHaveBeenCalledWith(
-      { Artist: "Fiz" },
-      event,
-      context
-    );
+    expect(itemListener).toHaveBeenCalledWith({ Artist: "Fiz" });
   });
 
   it("should be able to process all items when Limit is set to 1", async () => {
@@ -178,21 +162,9 @@ describe("dynamodb batch process", () => {
     ).on("item", itemListener)(event, context, callback);
 
     expect(itemListener).toHaveBeenCalledTimes(3);
-    expect(itemListener).toHaveBeenCalledWith(
-      { Artist: "Foo" },
-      event,
-      context
-    );
-    expect(itemListener).toHaveBeenCalledWith(
-      { Artist: "Bar" },
-      event,
-      context
-    );
-    expect(itemListener).toHaveBeenCalledWith(
-      { Artist: "Fiz" },
-      event,
-      context
-    );
+    expect(itemListener).toHaveBeenCalledWith({ Artist: "Foo" });
+    expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
+    expect(itemListener).toHaveBeenCalledWith({ Artist: "Fiz" });
   });
 
   it("should be able to process items when filtered", async () => {
@@ -210,11 +182,7 @@ describe("dynamodb batch process", () => {
     ).on("item", itemListener)(event, context, callback);
 
     expect(itemListener).toHaveBeenCalledTimes(1);
-    expect(itemListener).toHaveBeenCalledWith(
-      { Artist: "Bar" },
-      event,
-      context
-    );
+    expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
   });
 
   describe("when completing recursion", () => {
@@ -241,21 +209,9 @@ describe("dynamodb batch process", () => {
 
         expect(invokeMock).toHaveBeenCalledTimes(3);
         expect(itemListener).toHaveBeenCalledTimes(3);
-        expect(itemListener).toHaveBeenCalledWith(
-          { Artist: "Foo" },
-          expect.anything(),
-          expect.anything()
-        );
-        expect(itemListener).toHaveBeenCalledWith(
-          { Artist: "Bar" },
-          expect.anything(),
-          expect.anything()
-        );
-        expect(itemListener).toHaveBeenCalledWith(
-          { Artist: "Fiz" },
-          expect.anything(),
-          expect.anything()
-        );
+        expect(itemListener).toHaveBeenCalledWith({ Artist: "Foo" });
+        expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
+        expect(itemListener).toHaveBeenCalledWith({ Artist: "Fiz" });
         done();
       });
     });

@@ -9,6 +9,10 @@ const recursiveHandler = (handler) => (event, context, callback) => {
   return handler(event, context, recurse)
 }
 
+const forwardEvents = (from, eventNames, to) => {
+  eventNames.forEach(eventName => from.on(eventName, (...args) => to.emit(eventName, ...args)))
+}
+
 module.exports.dynamoDbBatchHandler =
   (operation, dynamoParams,
     {
@@ -21,9 +25,8 @@ module.exports.dynamoDbBatchHandler =
         itemReader.next.bind(itemReader),
         (cursor) => context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis
       )
-      .on('stop', (cursor) => { handler.emit('stop', cursor); recurse({ cursor }) })
-      .on('item', (item) => handler.emit('item', item, event, context))
-      .on('end', () => handler.emit('end'))
+      .on('stop', (cursor) => { recurse({ cursor }) })
+      forwardEvents(batchProcessor, ['stop', 'item', 'end'], handler)
 
       handler.emit('start', event, context)
       return batchProcessor.start(event.cursor)

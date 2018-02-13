@@ -73,15 +73,14 @@ describe("aws invoke", () => {
       });
     });
 
-    it("should not set Payload parameter if it is not available", () => {
+    it("should not set Payload parameter if it is not available", async () => {
       invokeMock.mockImplementation(
         yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
       );
       const invoker = new LambdaInvoker("foobar");
-      return invoker[method]().then(_ => {
-        const invokeParams = invokeMock.mock.calls[0][0];
-        expect(invokeParams).not.toHaveProperty("Payload");
-      });
+      await invoker[method]();
+      const invokeParams = invokeMock.mock.calls[0][0];
+      expect(invokeParams).not.toHaveProperty("Payload");
     });
 
     describe(`when getting non ${expectedStatusCode} StatusCode`, () => {
@@ -117,7 +116,7 @@ describe("aws invoke", () => {
       expectedStatusCode: 200
     });
 
-    it("should return Payload response", () => {
+    it("should return Payload response", async () => {
       invokeMock.mockImplementation(
         yields({
           FunctionError: undefined,
@@ -126,12 +125,11 @@ describe("aws invoke", () => {
         })
       );
       const invoker = new LambdaInvoker("foobar");
-      return invoker.requestResponse().then(response => {
-        expect(response).toEqual("response");
-      });
+      const response = await invoker.requestResponse();
+      expect(response).toEqual("response");
     });
 
-    it("should JSON parse Payload response if JSON is returned", () => {
+    it("should JSON parse Payload response if JSON is returned", async () => {
       invokeMock.mockImplementation(
         yields({
           FunctionError: undefined,
@@ -140,9 +138,8 @@ describe("aws invoke", () => {
         })
       );
       const invoker = new LambdaInvoker("foobar");
-      return invoker.requestResponse().then(response => {
-        expect(response).toEqual({ value: "response" });
-      });
+      const response = await invoker.requestResponse();
+      expect(response).toEqual({ value: "response" });
     });
   });
 

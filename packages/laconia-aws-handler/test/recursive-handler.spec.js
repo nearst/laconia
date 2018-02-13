@@ -16,23 +16,18 @@ describe("aws recursive handler", () => {
 
   xit("provide recurse callback");
 
-  xit("should recurse when value returned is not undefined", () => {
+  xit("should recurse when value returned is not undefined", async () => {
     const context = { functionName: "foo" };
     const event = {};
-    return recursiveHandler(() => ({ cursor: 5 }))(
-      event,
-      context,
-      callback
-    ).then(_ => {
-      expect(invokeMock).toBeCalledWith(
-        expect.objectContaining({
-          FunctionName: "foo",
-          InvocationType: "Event",
-          Payload: JSON.stringify({ cursor: 5 })
-        }),
-        expect.any(Function)
-      );
-    });
+    await recursiveHandler(() => ({ cursor: 5 }))(event, context, callback);
+    expect(invokeMock).toBeCalledWith(
+      expect.objectContaining({
+        FunctionName: "foo",
+        InvocationType: "Event",
+        Payload: JSON.stringify({ cursor: 5 })
+      }),
+      expect.any(Function)
+    );
   });
 
   xit(

@@ -36,17 +36,13 @@ module.exports = class MusicRepository {
     return this.documentClient.put(params).promise();
   }
 
-  scan(limit) {
+  async scan(limit) {
     let params = { TableName: "Music" };
     if (limit) {
       params = Object.assign({ Limit: limit }, params);
     }
 
-    return this.documentClient
-      .scan(params)
-      .promise()
-      .then(data => {
-        return data.Items;
-      });
+    const data = await this.documentClient.scan(params).promise();
+    return data.Items;
   }
 };

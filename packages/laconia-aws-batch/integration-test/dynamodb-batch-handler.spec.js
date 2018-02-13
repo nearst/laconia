@@ -64,7 +64,7 @@ describe("dynamodb batch process", () => {
     AWSMock.restore();
   });
 
-  describe("when no recursion is needed", () => {
+  describe("when finish processing in a single lambda execution", () => {
     beforeEach(async () => {
       await dynamoDbBatchHandler("SCAN", { TableName: "Music" }, handlerOptions)
         .on("start", startListener)
@@ -134,7 +134,7 @@ describe("dynamodb batch process", () => {
     });
   });
 
-  it("should support query", async () => {
+  it("should support query operation", async () => {
     await dynamoDbBatchHandler(
       "QUERY",
       {

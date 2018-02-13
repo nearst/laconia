@@ -18,19 +18,19 @@ module.exports.LambdaInvoker = class LambdaInvoker {
     }, payload, 202)
   }
 
-  requestResponse (payload) {
-    return this._invoke({
+  async requestResponse (payload) {
+    const data = await this._invoke({
       InvocationType: 'RequestResponse'
-    }, payload, 200).then(data => {
-      try {
-        return JSON.parse(data.Payload)
-      } catch (e) {
-        return data.Payload
-      }
-    })
+    }, payload, 200)
+
+    try {
+      return JSON.parse(data.Payload)
+    } catch (e) {
+      return data.Payload
+    }
   }
 
-  _invoke (baseParams, payload, validStatusCode) {
+  async _invoke (baseParams, payload, validStatusCode) {
     const params = Object.assign({
       FunctionName: this.functionName
     }, baseParams)
@@ -39,12 +39,11 @@ module.exports.LambdaInvoker = class LambdaInvoker {
       params.Payload = JSON.stringify(payload)
     }
 
-    return this.lambda.invoke(params).promise().then(data => {
-      if (data.FunctionError) {
-        throw new Error(`${data.FunctionError} error returned by ${this.functionName}: ${data.Payload}`)
-      }
-      validateStatusCode(data.StatusCode, validStatusCode)
-      return data
-    })
+    const data = await this.lambda.invoke(params).promise()
+    if (data.FunctionError) {
+      throw new Error(`${data.FunctionError} error returned by ${this.functionName}: ${data.Payload}`)
+    }
+    validateStatusCode(data.StatusCode, validStatusCode)
+    return data
   }
 }

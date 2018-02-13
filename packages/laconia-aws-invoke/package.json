@@ -1,5 +1,5 @@
 {
-  "name": "@laconia/aws-lambda-invoke",
+  "name": "@laconia/aws-invoke",
   "version": "0.1.0",
   "description": "",
   "main": "src/index.js",

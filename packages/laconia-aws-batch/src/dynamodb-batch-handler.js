@@ -1,4 +1,4 @@
-const { LambdaInvoker } = require('@laconia/aws-lambda-invoke')
+const { LambdaInvoker } = require('@laconia/aws-invoke')
 const AWS = require('aws-sdk')
 const BatchProcessor = require('./BatchProcessor')
 const DynamoDbItemReader = require('./DynamoDbItemReader')

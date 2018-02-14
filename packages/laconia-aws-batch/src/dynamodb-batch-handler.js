@@ -1,4 +1,4 @@
-const { LambdaInvoker } = require("@laconia/aws-invoke");
+const { lambdaInvoker } = require("@laconia/aws-invoke");
 const AWS = require("aws-sdk");
 const BatchProcessor = require("./BatchProcessor");
 const DynamoDbItemReader = require("./DynamoDbItemReader");
@@ -6,7 +6,7 @@ const EventEmitter = require("events");
 
 const recursiveHandler = handler => (event, context, callback) => {
   const recurse = response => {
-    new LambdaInvoker(context.functionName).fireAndForget(response);
+    lambdaInvoker(context.functionName).fireAndForget(response);
   };
   return handler(event, context, recurse);
 };

@@ -6,10 +6,12 @@ const validateStatusCode = (statusCode, expectedStatusCode) => {
   }
 }
 
-module.exports.LambdaInvoker = class LambdaInvoker {
-  constructor (functionName, { lambda = new AWS.Lambda() } = {}) {
+class LambdaInvoker {
+  constructor (functionName, lambda) {
     this.lambda = lambda
     this.functionName = functionName
+    this.fireAndForget = this.fireAndForget.bind(this)
+    this.requestResponse = this.requestResponse.bind(this)
   }
 
   fireAndForget (payload) {
@@ -46,4 +48,8 @@ module.exports.LambdaInvoker = class LambdaInvoker {
     validateStatusCode(data.StatusCode, validStatusCode)
     return data
   }
+}
+
+module.exports.lambdaInvoker = (functionName, { lambda = new AWS.Lambda() } = {}) => {
+  return new LambdaInvoker(functionName, lambda)
 }

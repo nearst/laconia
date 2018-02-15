@@ -7,7 +7,7 @@ const AWS = require('aws-sdk')
 const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
 const {dynamoDbBatchHandler} = require('../src/dynamodb-batch-handler')
 
-describe('dynamodb batch process', () => {
+describe('dynamodb batch handler', () => {
   const dynamoLocalPort = 8000
   const dynamoDbOptions = { region: 'eu-west-1', endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`) }
   let invokeMock, itemListener, event, context, callback, handlerOptions, stopListener, endListener, startListener

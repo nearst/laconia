@@ -1,15 +1,35 @@
 /* eslint-env jest */
 
 const AWSMock = require("aws-sdk-mock");
+const s3BatchHandler = require("../src/s3-batch-handler");
 
-const { s3BatchHandler } = require("../src/s3-batch-handler");
+const yields = arg => (params, callback) => callback(null, arg);
 
 describe("s3 batch handler", () => {
   let lambda, s3, itemListener, event, context, callback;
 
   beforeEach(() => {
     lambda = { invoke: jest.fn() };
-    s3 = { getObject: jest.fn() };
+    s3 = {
+      getObject: jest.fn().mockImplementation(
+        yields({
+          Body: {
+            toString: () =>
+              JSON.stringify({
+                database: {
+                  music: {
+                    list: [
+                      { Artist: "Foo" },
+                      { Artist: "Bar" },
+                      { Artist: "Fiz" }
+                    ]
+                  }
+                }
+              })
+          }
+        })
+      )
+    };
     AWSMock.mock("Lambda", "invoke", lambda.invoke);
     AWSMock.mock("S3", "getObject", s3.getObject);
 
@@ -21,13 +41,12 @@ describe("s3 batch handler", () => {
 
   describe("when finish processing in a single lambda execution", () => {
     beforeEach(async () => {
-      await s3BatchHandler("data['music'].list").on("item", itemListener)(
-        event,
-        context,
-        callback
-      );
+      await s3BatchHandler("database['music'].list", {
+        Bucket: "foo",
+        Key: "bar"
+      }).on("item", itemListener)(event, context, callback);
     });
-    xit("should process all items", () => {
+    it("should process all items", () => {
       expect(itemListener).toHaveBeenCalledTimes(3);
       expect(itemListener).toHaveBeenCalledWith({ Artist: "Foo" });
       expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
@@ -47,5 +66,5 @@ describe("s3 batch handler", () => {
     it("should process all items");
   });
 
-  it("allows s3 object to be customised");
+  it("allows s3 initiation to be customised");
 });

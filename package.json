@@ -31,7 +31,9 @@
   },
   "jest": {
     "collectCoverage": true,
-    "coveragePathIgnorePatterns": [".*test/"],
+    "coveragePathIgnorePatterns": [
+      ".*test/"
+    ],
     "setupTestFrameworkScriptFile": "jest-extended"
   }
 }

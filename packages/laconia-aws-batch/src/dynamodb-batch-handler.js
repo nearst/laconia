@@ -5,12 +5,9 @@ const baseBatchHandler = require("./base-batch-handler");
 module.exports.dynamoDbBatchHandler = (
   operation,
   dynamoParams,
-  {
-    documentClient = new AWS.DynamoDB.DocumentClient(),
-    timeNeededToRecurseInMillis = 5000
-  } = {}
+  { documentClient = new AWS.DynamoDB.DocumentClient(), ...options } = {}
 ) =>
   baseBatchHandler(
     new DynamoDbItemReader(operation, documentClient, dynamoParams),
-    { timeNeededToRecurseInMillis }
+    options
   );

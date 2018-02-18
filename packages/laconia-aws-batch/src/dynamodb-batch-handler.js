@@ -6,9 +6,9 @@ module.exports.dynamoDbBatchHandler =
   (operation, dynamoParams,
     {
       documentClient = new AWS.DynamoDB.DocumentClient(),
-      timeNeededToRecurseInMillis = 5000
+      ...options
     } = {}) =>
   baseBatchHandler(
     new DynamoDbItemReader(operation, documentClient, dynamoParams),
-    {timeNeededToRecurseInMillis}
+    options
   )

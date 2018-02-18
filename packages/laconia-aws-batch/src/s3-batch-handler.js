@@ -6,9 +6,9 @@ module.exports =
   (path, params,
     {
       s3 = new AWS.S3(),
-      timeNeededToRecurseInMillis = 5000
+      ...options
     } = {}) =>
   baseBatchHandler(
     new S3ItemReader(s3, params, path),
-    {timeNeededToRecurseInMillis}
+    options
   )

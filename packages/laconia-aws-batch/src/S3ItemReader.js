@@ -15,6 +15,10 @@ module.exports = class S3ItemReader {
 
     const items = _.get(object, this.path);
 
+    if (items === undefined) {
+      throw new Error(`${this.path} is not an array, it is undefined`);
+    }
+
     return {
       item: items[index],
       cursor: { index },

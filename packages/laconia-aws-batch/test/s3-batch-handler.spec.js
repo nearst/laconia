@@ -39,6 +39,10 @@ describe("s3 batch handler", () => {
     callback = jest.fn();
   });
 
+  afterEach(() => {
+    AWSMock.restore();
+  });
+
   describe("when finish processing in a single lambda execution", () => {
     beforeEach(async () => {
       await s3BatchHandler("database['music'].list", {

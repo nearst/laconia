@@ -14,6 +14,8 @@ const s3Body = (object) => yields({
 describe('S3 Item Reader', () => {
   let s3
 
+  const s3Params = {Bucket: 'bucket', Key: 'key'}
+
   beforeEach(() => {
     s3 = { getObject: jest.fn() }
     AWSMock.mock('S3', 'getObject', s3.getObject)
@@ -23,22 +25,25 @@ describe('S3 Item Reader', () => {
     AWSMock.restore()
   })
 
+  it('retrieves a directly stored array', async () => {
+    s3.getObject.mockImplementation(s3Body(['Foo']))
+    const reader = new S3ItemReader(new AWS.S3(), s3Params, '.')
+    let next = await reader.next()
+
+    expect(next).toEqual({ item: 'Foo', cursor: { index: 0 }, finished: true })
+  })
+
   it('retrieves next item when path given is an array of 1 item', async () => {
-    s3.getObject.mockImplementation(s3Body({
-      list: ['Foo']
-    }))
-    const reader = new S3ItemReader(new AWS.S3(), {Bucket: 'bucket', Key: 'key'}, 'list')
+    s3.getObject.mockImplementation(s3Body(['Foo']))
+    const reader = new S3ItemReader(new AWS.S3(), s3Params, '.')
     let next = await reader.next()
 
     expect(next).toEqual({ item: 'Foo', cursor: { index: 0 }, finished: true })
   })
 
   it('retrieves next item when path given is an array of 3 items', async () => {
-    s3.getObject.mockImplementation(s3Body({
-      list: ['Foo', 'Bar', 'Fiz']
-    }))
-
-    const reader = new S3ItemReader(new AWS.S3(), {Bucket: 'bucket', Key: 'key'}, 'list')
+    s3.getObject.mockImplementation(s3Body(['Foo', 'Bar', 'Fiz']))
+    const reader = new S3ItemReader(new AWS.S3(), s3Params, '.')
     let next = await reader.next()
     expect(next).toEqual({ item: 'Foo', cursor: { index: 0 }, finished: false })
 
@@ -49,8 +54,37 @@ describe('S3 Item Reader', () => {
     expect(next).toEqual({ item: 'Fiz', cursor: { index: 2 }, finished: true })
   })
 
-  it('should be able to retrieve a directly stored array')
-  it('should be able to handle various paths')
+  it('retrieves array from a simple object path', async () => {
+    s3.getObject.mockImplementation(s3Body({
+      list: ['Foo']
+    }))
+    const reader = new S3ItemReader(new AWS.S3(), s3Params, 'list')
+    let next = await reader.next()
+
+    expect(next).toHaveProperty('item', 'Foo')
+  })
+
+  it('retrieves array from a complex object path', async () => {
+    s3.getObject.mockImplementation(s3Body({
+      database: {
+        music: [
+          {
+            category: {
+              list: ['Foo']
+            }
+          }
+        ]
+
+      }
+    }))
+    const reader = new S3ItemReader(new AWS.S3(), s3Params, 'database.music[0]["category"].list')
+    let next = await reader.next()
+
+    expect(next).toHaveProperty('item', 'Foo')
+  })
+
+  it('caches result')
+
   describe('when path given is not an array', () => {
     it('throw error')
   })

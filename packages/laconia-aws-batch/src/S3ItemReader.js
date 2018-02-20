@@ -13,10 +13,10 @@ module.exports = class S3ItemReader {
     const object = JSON.parse(fileContent);
     const index = cursor.index + 1;
 
-    const items = _.get(object, this.path);
+    const items = this.path === "." ? object : _.get(object, this.path);
 
     if (items === undefined) {
-      throw new Error(`${this.path} is not an array, it is undefined`);
+      throw new Error(`Path '${this.path}' is not an array, it is undefined`);
     }
 
     return {

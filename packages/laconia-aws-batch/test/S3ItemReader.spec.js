@@ -109,14 +109,50 @@ describe("S3 Item Reader", () => {
       });
     });
 
-    xit("caches result", async () => {
+    it("caches S3 result", async () => {
       expect(s3.getObject).toHaveBeenCalledTimes(1);
     });
   });
 
-  it("should be able to resume from the middle");
+  describe("when start reading in the middle", () => {
+    let nexts;
 
-  describe("when path given is not an array", () => {
-    it("throw error");
+    beforeEach(async () => {
+      nexts = [];
+      s3.getObject.mockImplementation(
+        s3Body(["1", "2", "3", "Foo", "Bar", "Fiz"])
+      );
+      const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+      nexts.push(await reader.next({ index: 2 }));
+      nexts.push(await reader.next(_.last(nexts).cursor));
+      nexts.push(await reader.next(_.last(nexts).cursor));
+    });
+
+    it("generates nexts object with the correct content", async () => {
+      expect(nexts[0]).toEqual({
+        item: "Foo",
+        cursor: { index: 3 },
+        finished: false
+      });
+      expect(nexts[1]).toEqual({
+        item: "Bar",
+        cursor: { index: 4 },
+        finished: false
+      });
+      expect(nexts[2]).toEqual({
+        item: "Fiz",
+        cursor: { index: 5 },
+        finished: true
+      });
+    });
+
+    it("caches S3 result", async () => {
+      expect(s3.getObject).toHaveBeenCalledTimes(1);
+    });
   });
+
+  it("process 10000 items");
+
+  it("throws error when path given is not an array");
+  it("throws error when path given Body is not a JSON");
 });

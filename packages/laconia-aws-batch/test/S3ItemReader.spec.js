@@ -151,8 +151,29 @@ describe("S3 Item Reader", () => {
     });
   });
 
-  it("process 10000 items");
+  describe("when given path is not an array", () => {
+    const nonArrays = [
+      { name: "string", value: "Foo" },
+      { name: "object", value: { foo: "Foo" } },
+      { name: "null", value: null },
+      { name: "number", value: 1.0 }
+    ];
 
-  it("throws error when path given is not an array");
+    nonArrays.forEach(({ name, value, path }) => {
+      it(`throws error when ${name} is found`, async () => {
+        s3.getObject.mockImplementation(s3Body(value));
+        const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+        await expect(reader.next()).rejects.toThrow(JSON.stringify(value));
+      });
+    });
+
+    it(`throws error when undefined is found`, async () => {
+      s3.getObject.mockImplementation(s3Body("not used"));
+      const reader = new S3ItemReader(new AWS.S3(), s3Params, "non existent");
+      await expect(reader.next()).rejects.toThrow("undefined");
+    });
+  });
+
   it("throws error when path given Body is not a JSON");
+  it("process 10000 items");
 });

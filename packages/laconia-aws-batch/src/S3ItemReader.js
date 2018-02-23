@@ -18,8 +18,10 @@ module.exports = class S3ItemReader {
     const object = extractS3JsonBody(data);
     const items = this.path === "." ? object : _.get(object, this.path);
 
-    if (items === undefined) {
-      throw new Error(`Path '${this.path}' is not an array, it is undefined`);
+    if (!Array.isArray(items)) {
+      throw new Error(
+        `Path '${this.path}' is not an array, it is '${JSON.stringify(items)}'`
+      );
     }
     this.cachedItems = items;
     return items;

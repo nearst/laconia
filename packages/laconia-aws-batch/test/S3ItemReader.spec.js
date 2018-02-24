@@ -174,6 +174,13 @@ describe("S3 Item Reader", () => {
     });
   });
 
-  it("throws error when path given Body is not a JSON");
-  it("process 10000 items");
+  it("throws error when path given Body is not a JSON", async () => {
+    s3.getObject.mockImplementation(
+      yields({
+        Body: { toString: () => "boom" }
+      })
+    );
+    const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+    await expect(reader.next()).rejects.toThrow("not a JSON");
+  });
 });

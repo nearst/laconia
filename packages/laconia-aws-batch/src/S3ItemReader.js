@@ -2,7 +2,20 @@ const _ = require('lodash')
 
 const extractS3JsonBody = data => {
   const fileContent = data.Body.toString()
-  return JSON.parse(fileContent)
+  try {
+    return JSON.parse(fileContent)
+  } catch (e) {
+    throw new Error(`Data stored in S3 is not a JSON!: ${JSON.stringify(fileContent)}`)
+  }
+}
+
+const getArrayFromPath = (object, path) => {
+  const items = path === '.' ? object : _.get(object, path)
+
+  if (!Array.isArray(items)) {
+    throw new Error(`Path '${path}' is not an array, it is '${JSON.stringify(items)}'`)
+  }
+  return items
 }
 
 module.exports = class S3ItemReader {
@@ -15,12 +28,7 @@ module.exports = class S3ItemReader {
 
   async _getItemsFromS3 () {
     const data = await this.s3.getObject(this.baseParams).promise()
-    const object = extractS3JsonBody(data)
-    const items = this.path === '.' ? object : _.get(object, this.path)
-
-    if (!Array.isArray(items)) {
-      throw new Error(`Path '${this.path}' is not an array, it is '${JSON.stringify(items)}'`)
-    }
+    const items = getArrayFromPath(extractS3JsonBody(data), this.path)
     this.cachedItems = items
     return items
   }

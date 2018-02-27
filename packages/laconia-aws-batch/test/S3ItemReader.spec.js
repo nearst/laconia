@@ -3,14 +3,7 @@ const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const S3ItemReader = require('../src/S3ItemReader')
 const _ = require('lodash')
-
-const yields = (arg) => (params, callback) => callback(null, arg)
-
-const s3Body = (object) => yields({
-  Body: {
-    toString: () => (JSON.stringify(object))
-  }
-})
+const { yields, s3Body } = require('laconia-test-helper')
 
 describe('S3 Item Reader', () => {
   let s3

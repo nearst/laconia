@@ -3,8 +3,7 @@
 const {lambdaInvoker} = require('../src/index.js')
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
-
-const yields = (arg) => (params, callback) => callback(null, arg)
+const { yields } = require('laconia-test-helper')
 
 describe('aws invoke', () => {
   let invokeMock

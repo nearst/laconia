@@ -3,24 +3,19 @@
 const AWSMock = require('aws-sdk-mock')
 const s3BatchHandler = require('../src/s3-batch-handler')
 const { sharedAcceptanceTest } = require('./batch-handler-helper')
-
-const yields = (arg) => (params, callback) => callback(null, arg)
+const { s3Body } = require('laconia-test-helper')
 
 describe('s3 batch handler acceptance', () => {
   let s3
 
   beforeEach(() => {
-    s3 = { getObject: jest.fn().mockImplementation(yields(
+    s3 = { getObject: jest.fn().mockImplementation(s3Body(
       {
-        Body: {
-          toString: () => (JSON.stringify({
-            music: [
-              {Artist: 'Foo'},
-              {Artist: 'Bar'},
-              {Artist: 'Fiz'}
-            ]
-          }))
-        }
+        music: [
+          {Artist: 'Foo'},
+          {Artist: 'Bar'},
+          {Artist: 'Fiz'}
+        ]
       }
       ))
     }
@@ -40,6 +35,4 @@ describe('s3 batch handler acceptance', () => {
       }
     )
   })
-
-  it('allows s3 initiation to be customised')
 })

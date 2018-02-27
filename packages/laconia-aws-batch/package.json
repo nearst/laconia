@@ -10,5 +10,8 @@
   "dependencies": {
     "@laconia/aws-invoke": "*",
     "lodash": "^4.17.5"
+  },
+  "devDependencies": {
+    "laconia-test-helper": "*"
   }
 }

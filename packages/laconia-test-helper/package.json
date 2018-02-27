@@ -1,11 +1,8 @@
 {
-  "name": "@laconia/aws-invoke",
+  "name": "laconia-test-helper",
   "version": "0.1.0",
   "description": "",
   "main": "src/index.js",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "laconia-test-helper": "*"
-  }
+  "license": "Apache-2.0"
 }

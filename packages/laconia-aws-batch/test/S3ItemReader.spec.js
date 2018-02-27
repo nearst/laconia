@@ -175,4 +175,27 @@ describe("S3 Item Reader", () => {
     const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
     await expect(reader.next()).rejects.toThrow("not a JSON");
   });
+
+  it("hits S3 with the configured parameters", async () => {
+    s3.getObject.mockImplementation(s3Body(["Foo"]));
+    const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+    await reader.next();
+
+    expect(s3.getObject).toHaveBeenCalledWith(s3Params, expect.any(Function));
+  });
+
+  it("should be able to process 1000 items", async () => {
+    const oneThousand = _.range(1000);
+    s3.getObject.mockImplementation(s3Body(oneThousand));
+    const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+    oneThousand.reduce(async (cursorPromise, value) => {
+      const next = await reader.next(await cursorPromise);
+      expect(next).toEqual({
+        item: value,
+        cursor: { index: value },
+        finished: value === _.last(oneThousand)
+      });
+      return next.cursor;
+    }, undefined);
+  });
 });

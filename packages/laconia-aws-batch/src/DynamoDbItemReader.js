@@ -1,7 +1,16 @@
+const assert = require("assert");
+
 const QUERY = "QUERY";
+const SCAN = "SCAN";
+const unsupportedOperationMessage =
+  "Unsupported DynamoDB operation! Supported operations are SCAN and QUERY.";
 
 module.exports = class DynamoDbItemReader {
   constructor(operation, documentClient, baseParams) {
+    assert(
+      operation === QUERY || operation === SCAN,
+      unsupportedOperationMessage
+    );
     this.operation = operation; // TODO: validate operation
     this.documentClient = documentClient;
     this.baseParams = baseParams;

@@ -1,5 +1,4 @@
-module.exports.SCAN = "SCAN";
-module.exports.QUERY = "QUERY";
+const QUERY = "QUERY";
 
 module.exports = class DynamoDbItemReader {
   constructor(operation, documentClient, baseParams) {
@@ -18,7 +17,7 @@ module.exports = class DynamoDbItemReader {
   }
 
   async _hitDynamoDb(params) {
-    return this.operation === exports.QUERY
+    return this.operation === QUERY
       ? this.documentClient.query(params).promise()
       : this.documentClient.scan(params).promise();
   }

@@ -6,7 +6,7 @@ const { yields } = require('laconia-test-helper')
 
 describe('DynamoDb Item Reader', () => {
   let documentClient
-  const dynamoDbParams = {Bucket: 'bucket', Key: 'key'}
+  const dynamoDbParams = { TableName: 'Music' }
 
   beforeEach(() => {
     documentClient = {
@@ -21,20 +21,36 @@ describe('DynamoDb Item Reader', () => {
     AWSMock.restore()
   })
 
-  it('queries DynamoDb when QUERY operation is used', async () => {
-    const reader = new DynamoDbItemReader('QUERY', new AWS.DynamoDB.DocumentClient(), dynamoDbParams)
-    await reader.next()
+  describe('when using QUERY operation', () => {
+    beforeEach(async () => {
+      const reader = new DynamoDbItemReader('QUERY', new AWS.DynamoDB.DocumentClient(), dynamoDbParams)
+      await reader.next()
+    })
 
-    expect(documentClient.scan).not.toHaveBeenCalled()
-    expect(documentClient.query).toHaveBeenCalled()
+    it('queries DynamoDb', () => {
+      expect(documentClient.scan).not.toHaveBeenCalled()
+      expect(documentClient.query).toHaveBeenCalled()
+    })
+
+    it('uses the specified parameters', () => {
+      expect(documentClient.query).toHaveBeenCalledWith(dynamoDbParams, expect.any(Function))
+    })
   })
 
-  it('scans DynamoDb when SCAN operation is used', async () => {
-    const reader = new DynamoDbItemReader('SCAN', new AWS.DynamoDB.DocumentClient(), dynamoDbParams)
-    await reader.next()
+  describe('when using SCAN operation', () => {
+    beforeEach(async () => {
+      const reader = new DynamoDbItemReader('SCAN', new AWS.DynamoDB.DocumentClient(), dynamoDbParams)
+      await reader.next()
+    })
 
-    expect(documentClient.query).not.toHaveBeenCalled()
-    expect(documentClient.scan).toHaveBeenCalled()
+    it('scans DynamoDb', () => {
+      expect(documentClient.query).not.toHaveBeenCalled()
+      expect(documentClient.scan).toHaveBeenCalled()
+    })
+
+    it('uses the specified parameters', () => {
+      expect(documentClient.scan).toHaveBeenCalledWith(dynamoDbParams, expect.any(Function))
+    })
   })
 
   it('throws error when operation is not supported', async () => {

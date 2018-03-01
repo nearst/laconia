@@ -11,7 +11,7 @@ module.exports = class DynamoDbItemReader {
       operation === QUERY || operation === SCAN,
       unsupportedOperationMessage
     );
-    this.operation = operation; // TODO: validate operation
+    this.operation = operation;
     this.documentClient = documentClient;
     this.baseParams = baseParams;
     this.cachedItems = [];

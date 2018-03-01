@@ -7,7 +7,7 @@ const unsupportedOperationMessage = 'Unsupported DynamoDB operation! Supported o
 module.exports = class DynamoDbItemReader {
   constructor (operation, documentClient, baseParams) {
     assert(operation === QUERY || operation === SCAN, unsupportedOperationMessage)
-    this.operation = operation // TODO: validate operation
+    this.operation = operation
     this.documentClient = documentClient
     this.baseParams = baseParams
     this.cachedItems = []

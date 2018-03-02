@@ -3,6 +3,18 @@ const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");
 const DynamoDbItemReader = require("../src/DynamoDbItemReader");
 const { yields } = require("laconia-test-helper");
+const _ = require("lodash");
+
+const collectNexts = async (reader, times, startingCursor) => {
+  let nexts = [];
+  await _.range(times).reduce(async (cursorPromise, value) => {
+    const cursor = await cursorPromise;
+    const next = await reader.next(cursor);
+    nexts.push(next);
+    return next.cursor;
+  }, startingCursor);
+  return nexts;
+};
 
 describe("DynamoDb Item Reader", () => {
   let documentClient;
@@ -92,13 +104,114 @@ describe("DynamoDb Item Reader", () => {
     expect(next).toEqual({ item: "Foo", cursor: { index: 0 }, finished: true });
   });
 
-  describe("when multiple items are returned", () => {
-    it("generates nexts object with the correct content");
-    it("should cache result");
+  describe("when multiple items are returned in a single scan", () => {
+    let nexts;
+
+    beforeEach(async () => {
+      nexts = [];
+      documentClient.scan.mockImplementation(
+        yields({ Items: ["Foo", "Bar", "Fiz"] })
+      );
+      const reader = new DynamoDbItemReader(
+        "SCAN",
+        new AWS.DynamoDB.DocumentClient(),
+        dynamoDbParams
+      );
+      nexts = await collectNexts(reader, 3);
+    });
+
+    it("generates nexts object with the correct content", () => {
+      expect(nexts[0]).toEqual({
+        item: "Foo",
+        cursor: { index: 0 },
+        finished: false
+      });
+      expect(nexts[1]).toEqual({
+        item: "Bar",
+        cursor: { index: 1 },
+        finished: false
+      });
+      expect(nexts[2]).toEqual({
+        item: "Fiz",
+        cursor: { index: 2 },
+        finished: true
+      });
+    });
+
+    it("should cache result", () => {
+      expect(documentClient.scan).toHaveBeenCalledTimes(1);
+    });
   });
 
-  describe("when start reading in the middle", () => {
-    it("sets ExclusiveStartKey based on the parameter set");
-    it("should cache result");
+  describe("when multiple items are returned in multiple scans", () => {
+    let nexts;
+
+    beforeEach(async () => {
+      nexts = [];
+      documentClient.scan.mockImplementationOnce(
+        yields({ Items: ["Foo", "Bar"], LastEvaluatedKey: "Bar" })
+      );
+      documentClient.scan.mockImplementationOnce(
+        yields({ Items: ["Fiz", "Baz"], LastEvaluatedKey: "Baz" })
+      );
+      documentClient.scan.mockImplementationOnce(
+        yields({ Items: ["Boo", "Boz"] })
+      );
+      const reader = new DynamoDbItemReader(
+        "SCAN",
+        new AWS.DynamoDB.DocumentClient(),
+        dynamoDbParams
+      );
+      nexts = await collectNexts(reader, 6);
+    });
+
+    it("generates nexts object with the correct content", () => {
+      expect(nexts[0]).toEqual({
+        item: "Foo",
+        cursor: { index: 0, lastEvaluatedKey: "Bar" },
+        finished: false
+      });
+      expect(nexts[1]).toEqual({
+        item: "Bar",
+        cursor: { index: 1, lastEvaluatedKey: "Bar" },
+        finished: false
+      });
+      expect(nexts[2]).toEqual({
+        item: "Fiz",
+        cursor: { index: 0, lastEvaluatedKey: "Baz" },
+        finished: false
+      });
+      expect(nexts[3]).toEqual({
+        item: "Baz",
+        cursor: { index: 1, lastEvaluatedKey: "Baz" },
+        finished: false
+      });
+      expect(nexts[4]).toEqual({
+        item: "Boo",
+        cursor: { index: 0 },
+        finished: false
+      });
+      expect(nexts[5]).toEqual({
+        item: "Boz",
+        cursor: { index: 1 },
+        finished: true
+      });
+    });
+
+    it("should cache result", () => {
+      expect(documentClient.scan).toHaveBeenCalledTimes(3);
+      expect(documentClient.scan).toHaveBeenCalledWith(
+        dynamoDbParams,
+        expect.any(Function)
+      );
+      expect(documentClient.scan).toHaveBeenCalledWith(
+        Object.assign({ ExclusiveStartKey: "Bar" }, dynamoDbParams),
+        expect.any(Function)
+      );
+      expect(documentClient.scan).toHaveBeenCalledWith(
+        Object.assign({ ExclusiveStartKey: "Baz" }, dynamoDbParams),
+        expect.any(Function)
+      );
+    });
   });
 });

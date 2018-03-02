@@ -188,7 +188,7 @@ describe("S3 Item Reader", () => {
     const oneThousand = _.range(1000);
     s3.getObject.mockImplementation(s3Body(oneThousand));
     const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
-    oneThousand.reduce(async (cursorPromise, value) => {
+    await oneThousand.reduce(async (cursorPromise, value) => {
       const next = await reader.next(await cursorPromise);
       expect(next).toEqual({
         item: value,

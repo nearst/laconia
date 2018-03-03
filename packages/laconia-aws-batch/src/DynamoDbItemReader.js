@@ -10,64 +10,48 @@ module.exports = class DynamoDbItemReader {
     this.operation = operation
     this.documentClient = documentClient
     this.baseParams = baseParams
-    this.cachedItems = []
+    this.cachedData = {}
     this.initialized = false
   }
 
   _createDynamoDbParams (exclusiveStartKey) {
-    const params = Object.assign({}, this.baseParams)
-    if (exclusiveStartKey) {
-      params.ExclusiveStartKey = exclusiveStartKey
-    }
-    return params
+    return Object.assign({ExclusiveStartKey: exclusiveStartKey}, this.baseParams)
   }
 
-  async _hitDynamoDb (params) {
-    return this.operation === QUERY
-      ? this.documentClient.query(params).promise()
-      : this.documentClient.scan(params).promise()
+  async _hitAndCacheDynamoDb (params) {
+    const data = this.operation === QUERY
+      ? await this.documentClient.query(params).promise()
+      : await this.documentClient.scan(params).promise()
+    this.cachedData = data
+    return data
   }
 
   async _getDataFromDynamoDb (cursor) {
-    const data = await this._hitDynamoDb(this._createDynamoDbParams(cursor.lastEvaluatedKey))
-    this.cachedItems = data.Items
-    return data
+    return this._hitAndCacheDynamoDb(this._createDynamoDbParams(cursor.lastEvaluatedKey))
   }
 
   async _init (cursor) {
     if (!this.initialized) {
-      const data = await this._hitDynamoDb(this._createDynamoDbParams(cursor.exclusiveStartKey))
-      this.cachedItems = data.Items
+      await this._hitAndCacheDynamoDb(this._createDynamoDbParams(cursor.exclusiveStartKey))
       this.initialized = true
-      return data
     }
   }
 
-  _getDataFromCache (cursor) {
-    return {
-      Items: this.cachedItems,
-      LastEvaluatedKey: cursor.lastEvaluatedKey
-    }
+  _getDataFromCache () {
+    return this.cachedData
   }
 
   _hasNextItem (items, currentIndex) { return currentIndex + 1 <= items.length - 1 }
 
-  _hasNextItemInCache (cursor) { return this._hasNextItem(this.cachedItems, cursor.index) }
+  _hasNextItemInCache (cursor) { return this._hasNextItem(this.cachedData.Items, cursor.index) }
 
   async next (cursor = {lastEvaluatedKey: undefined, exclusiveStartKey: undefined, index: -1}) {
-    let lastEvaluatedKey
-    if (!this.initialized) {
-      const data = await this._init(cursor)
-      lastEvaluatedKey = data.LastEvaluatedKey
-    }
+    await this._init(cursor)
 
     const [data, index, exclusiveStartKey] = this._hasNextItemInCache(cursor)
-      ? [this._getDataFromCache(cursor), cursor.index + 1, cursor.exclusiveStartKey]
+      ? [this._getDataFromCache(), cursor.index + 1, cursor.exclusiveStartKey]
       : [await this._getDataFromDynamoDb(cursor), 0, cursor.lastEvaluatedKey]
-    if (!lastEvaluatedKey) {
-      lastEvaluatedKey = data.LastEvaluatedKey
-    }
-    const items = data.Items
+    const {LastEvaluatedKey: lastEvaluatedKey, Items: items} = data
 
     return {
       item: items[index],

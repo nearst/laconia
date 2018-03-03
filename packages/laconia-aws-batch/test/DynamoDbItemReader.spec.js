@@ -116,15 +116,38 @@ describe('DynamoDb Item Reader', () => {
     it('generates nexts object with the correct content', () => {
       expect(nexts[0]).toEqual({ item: 'Foo', cursor: { index: 0, lastEvaluatedKey: 'Bar' }, finished: false })
       expect(nexts[1]).toEqual({ item: 'Bar', cursor: { index: 1, lastEvaluatedKey: 'Bar' }, finished: false })
-      expect(nexts[2]).toEqual({ item: 'Fiz', cursor: { index: 0, lastEvaluatedKey: 'Baz' }, finished: false })
-      expect(nexts[3]).toEqual({ item: 'Baz', cursor: { index: 1, lastEvaluatedKey: 'Baz' }, finished: false })
-      expect(nexts[4]).toEqual({ item: 'Boo', cursor: { index: 0 }, finished: false })
-      expect(nexts[5]).toEqual({ item: 'Boz', cursor: { index: 1 }, finished: true })
+      expect(nexts[2]).toEqual({ item: 'Fiz', cursor: { index: 0, exclusiveStartKey: 'Bar', lastEvaluatedKey: 'Baz' }, finished: false })
+      expect(nexts[3]).toEqual({ item: 'Baz', cursor: { index: 1, exclusiveStartKey: 'Bar', lastEvaluatedKey: 'Baz' }, finished: false })
+      expect(nexts[4]).toEqual({ item: 'Boo', cursor: { index: 0, exclusiveStartKey: 'Baz' }, finished: false })
+      expect(nexts[5]).toEqual({ item: 'Boz', cursor: { index: 1, exclusiveStartKey: 'Baz' }, finished: true })
     })
 
     it('should cache result', () => {
       expect(documentClient.scan).toHaveBeenCalledTimes(3)
       expect(documentClient.scan).toHaveBeenCalledWith(dynamoDbParams, expect.any(Function))
+      expect(documentClient.scan).toHaveBeenCalledWith(Object.assign({ExclusiveStartKey: 'Bar'}, dynamoDbParams), expect.any(Function))
+      expect(documentClient.scan).toHaveBeenCalledWith(Object.assign({ExclusiveStartKey: 'Baz'}, dynamoDbParams), expect.any(Function))
+    })
+  })
+
+  describe('when start reading in the middle', () => {
+    let nexts
+
+    beforeEach(async () => {
+      nexts = []
+      documentClient.scan.mockImplementationOnce(yields({Items: ['Fiz', 'Baz'], LastEvaluatedKey: 'Baz'}))
+      documentClient.scan.mockImplementationOnce(yields({Items: ['Boo']}))
+      const reader = new DynamoDbItemReader('SCAN', new AWS.DynamoDB.DocumentClient(), dynamoDbParams)
+      nexts = await collectNexts(reader, 2, {index: 0, exclusiveStartKey: 'Bar', lastEvaluatedKey: 'Baz'})
+    })
+
+    it('generates nexts object with the correct content', () => {
+      expect(nexts[0]).toEqual({ item: 'Baz', cursor: { index: 1, exclusiveStartKey: 'Bar', lastEvaluatedKey: 'Baz' }, finished: false })
+      expect(nexts[1]).toEqual({ item: 'Boo', cursor: { index: 0, exclusiveStartKey: 'Baz' }, finished: true })
+    })
+
+    it('should cache result', () => {
+      expect(documentClient.scan).toHaveBeenCalledTimes(2)
       expect(documentClient.scan).toHaveBeenCalledWith(Object.assign({ExclusiveStartKey: 'Bar'}, dynamoDbParams), expect.any(Function))
       expect(documentClient.scan).toHaveBeenCalledWith(Object.assign({ExclusiveStartKey: 'Baz'}, dynamoDbParams), expect.any(Function))
     })

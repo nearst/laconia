@@ -2,15 +2,15 @@
 
 const DynamoDbLocal = require('dynamodb-local')
 
-const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
+const { sharedAcceptanceTest } = require('../acceptance-test/batch-handler-helper')
 const {dynamoDbBatchHandler} = require('../src/dynamodb-batch-handler')
 
 describe('dynamodb batch handler', () => {
   const dynamoLocalPort = 8000
   const dynamoDbOptions = { region: 'eu-west-1', endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`) }
-  let invokeMock, itemListener, event, context, callback, handlerOptions, stopListener, endListener, startListener
+  let itemListener, event, context, callback, handlerOptions
 
   beforeAll(() => {
     jest.setTimeout(5000)
@@ -34,96 +34,19 @@ describe('dynamodb batch handler', () => {
   })
 
   beforeEach(() => {
-    invokeMock = jest.fn()
-    AWSMock.mock('Lambda', 'invoke', invokeMock)
-
     itemListener = jest.fn()
-    stopListener = jest.fn()
-    endListener = jest.fn()
-    startListener = jest.fn()
     event = {}
     context = { functionName: 'blah', getRemainingTimeInMillis: () => 100000 }
     callback = jest.fn()
     handlerOptions = { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
   })
 
-  afterEach(() => {
-    AWSMock.restore()
-  })
-
-  describe('when finish processing in a single lambda execution', () => {
-    beforeEach(async () => {
-      await dynamoDbBatchHandler(
-        'SCAN',
-        { TableName: 'Music' },
-        handlerOptions
-      )
-      .on('start', startListener)
-      .on('item', itemListener)
-      .on('stop', stopListener)
-      .on('end', endListener)(event, context, callback)
-    })
-
-    it('should notify listeners on lifecycle events', () => {
-      expect(startListener).toHaveBeenCalledTimes(1)
-      expect(startListener).toHaveBeenCalledWith(event, context)
-      expect(endListener).toHaveBeenCalledTimes(1)
-      expect(stopListener).not.toHaveBeenCalled()
-
-      expect(startListener).toHaveBeenCalledBefore(itemListener)
-      expect(startListener).toHaveBeenCalledBefore(endListener)
-    })
-
-    it('should process all records in a Table with scan', async () => {
-      expect(itemListener).toHaveBeenCalledTimes(3)
-      expect(itemListener).toHaveBeenCalledWith({Artist: 'Foo'})
-      expect(itemListener).toHaveBeenCalledWith({Artist: 'Bar'})
-      expect(itemListener).toHaveBeenCalledWith({Artist: 'Fiz'})
-    })
-
-    it('should not recurse', () => {
-      expect(invokeMock).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('when time is up', () => {
-    beforeEach(async () => {
-      context.getRemainingTimeInMillis = () => 5000
-      await dynamoDbBatchHandler(
-        'SCAN',
-        { TableName: 'Music' },
-        handlerOptions
-      )
-      .on('start', startListener)
-      .on('item', itemListener)
-      .on('stop', stopListener)
-      .on('end', endListener)(event, context, callback)
-    })
-
-    it('should stop processing when time is up', async () => {
-      expect(itemListener).toHaveBeenCalledTimes(1)
-    })
-
-    it('should notify listeners on lifecycle events', () => {
-      expect(startListener).toHaveBeenCalledTimes(1)
-      expect(stopListener).toHaveBeenCalledTimes(1)
-      expect(stopListener).toHaveBeenCalledWith({ index: 0, lastEvaluatedKey: undefined })
-      expect(endListener).not.toHaveBeenCalled()
-
-      expect(startListener).toHaveBeenCalledBefore(itemListener)
-      expect(startListener).toHaveBeenCalledBefore(stopListener)
-    })
-
-    it('should recurse when time is up', async () => {
-      expect(invokeMock).toBeCalledWith(
-        expect.objectContaining({
-          FunctionName: context.functionName,
-          InvocationType: 'Event',
-          Payload: JSON.stringify({cursor: {index: 0}})
-        }),
-        expect.any(Function)
-      )
-    })
+  sharedAcceptanceTest(() => {
+    return dynamoDbBatchHandler(
+      'SCAN',
+      { TableName: 'Music' },
+      handlerOptions
+    )
   })
 
   it('should support query operation', async () => {
@@ -180,32 +103,6 @@ describe('dynamodb batch handler', () => {
     expect(itemListener).toHaveBeenCalledWith({Artist: 'Bar'})
   })
 
-  describe('when completing recursion', () => {
-    it('should process all items', async (done) => {
-      context.getRemainingTimeInMillis = () => 5000
-      const handler = dynamoDbBatchHandler(
-        'SCAN',
-        {
-          TableName: 'Music',
-          Limit: 1
-        },
-        handlerOptions
-      )
-      .on('item', itemListener)
-
-      handler(event, context, callback)
-      invokeMock.mockImplementationOnce(event => handler(JSON.parse(event.Payload), context, callback))
-      invokeMock.mockImplementationOnce(event => handler(JSON.parse(event.Payload), context, callback))
-      invokeMock.mockImplementationOnce(async (event) => {
-        await handler(JSON.parse(event.Payload), context, callback)
-
-        expect(invokeMock).toHaveBeenCalledTimes(3)
-        expect(itemListener).toHaveBeenCalledTimes(3)
-        expect(itemListener).toHaveBeenCalledWith({Artist: 'Foo'})
-        expect(itemListener).toHaveBeenCalledWith({Artist: 'Bar'})
-        expect(itemListener).toHaveBeenCalledWith({Artist: 'Fiz'})
-        done()
-      })
-    })
-  })
+  it('should process all items when filtered with complete recursion')
+  it('should process all items when filtered and limited with complete recursion')
 })

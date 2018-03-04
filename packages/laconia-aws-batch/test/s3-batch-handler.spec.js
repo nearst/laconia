@@ -2,10 +2,10 @@
 
 const AWSMock = require("aws-sdk-mock");
 const s3BatchHandler = require("../src/s3-batch-handler");
-const { sharedAcceptanceTest } = require("./batch-handler-helper");
+const { sharedBehaviour } = require("./shared-batch-handler-spec");
 const { s3Body } = require("laconia-test-helper");
 
-describe("s3 batch handler acceptance", () => {
+describe("s3 batch handler", () => {
   let s3;
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe("s3 batch handler acceptance", () => {
     AWSMock.restore();
   });
 
-  sharedAcceptanceTest(() => {
+  sharedBehaviour(options => {
     return s3BatchHandler("music", {
       Bucket: "foo",
       Key: "bar"

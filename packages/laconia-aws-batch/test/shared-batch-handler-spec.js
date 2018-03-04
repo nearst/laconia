@@ -2,8 +2,8 @@
 
 const AWSMock = require("aws-sdk-mock");
 
-exports.sharedAcceptanceTest = batchHandler => {
-  describe("batch behaviour", () => {
+exports.sharedBehaviour = batchHandler => {
+  describe("shared batch behaviour", () => {
     let invokeMock, event, context, callback;
     let itemListener, stopListener, endListener, startListener;
 

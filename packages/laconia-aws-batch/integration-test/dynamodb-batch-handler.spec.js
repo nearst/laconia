@@ -4,8 +4,8 @@ const DynamoDbLocal = require('dynamodb-local')
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
-const { sharedAcceptanceTest } = require('../acceptance-test/batch-handler-helper')
-const {dynamoDbBatchHandler} = require('../src/dynamodb-batch-handler')
+const { sharedBehaviour } = require('../test/shared-batch-handler-spec')
+const dynamoDbBatchHandler = require('../src/dynamodb-batch-handler')
 
 describe('dynamodb batch handler', () => {
   const dynamoLocalPort = 8000
@@ -41,7 +41,7 @@ describe('dynamodb batch handler', () => {
     handlerOptions = { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
   })
 
-  sharedAcceptanceTest(() => {
+  sharedBehaviour(() => {
     return dynamoDbBatchHandler(
       'SCAN',
       { TableName: 'Music' },

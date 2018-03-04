@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 const DynamoDbLocal = require("dynamodb-local");
-
+const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");
 const DynamoDbMusicRepository = require("./DynamoDbMusicRepository");
 const {
@@ -103,8 +103,45 @@ describe("dynamodb batch handler", () => {
     expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
   });
 
-  it("should process all items when filtered with complete recursion");
-  it(
-    "should process all items when filtered and limited with complete recursion"
-  );
+  describe("when completing recursion", () => {
+    let invokeMock;
+
+    beforeEach(() => {
+      invokeMock = jest.fn();
+      AWSMock.mock("Lambda", "invoke", invokeMock);
+    });
+
+    afterEach(() => {
+      AWSMock.restore();
+    });
+
+    it("should process all items when filtered and limited", async done => {
+      context.getRemainingTimeInMillis = () => 5000;
+      const handler = dynamoDbBatchHandler(
+        "SCAN",
+        {
+          TableName: "Music",
+          ExpressionAttributeValues: {
+            ":a": "Bar"
+          },
+          Limit: 1,
+          FilterExpression: "Artist = :a"
+        },
+        handlerOptions
+      )
+        .on("item", itemListener)
+        .on("end", () => {
+          expect(invokeMock).toHaveBeenCalledTimes(3);
+          expect(itemListener).toHaveBeenCalledTimes(1);
+          expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
+          done();
+        });
+
+      invokeMock.mockImplementation(event =>
+        handler(JSON.parse(event.Payload), context, callback)
+      );
+
+      handler(event, context, callback);
+    });
+  });
 });

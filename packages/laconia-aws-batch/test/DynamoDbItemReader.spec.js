@@ -2,19 +2,7 @@
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const DynamoDbItemReader = require('../src/DynamoDbItemReader')
-const { yields } = require('laconia-test-helper')
-const _ = require('lodash')
-
-const collectNexts = async (reader, times, startingCursor) => {
-  let nexts = []
-  await _.range(times).reduce(async (cursorPromise, value) => {
-    const cursor = await cursorPromise
-    const next = await reader.next(cursor)
-    nexts.push(next)
-    return next.cursor
-  }, startingCursor)
-  return nexts
-}
+const { yields, collectNexts } = require('laconia-test-helper')
 
 describe('DynamoDb Item Reader', () => {
   let documentClient

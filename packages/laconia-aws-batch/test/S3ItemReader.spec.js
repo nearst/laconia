@@ -3,7 +3,7 @@ const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const S3ItemReader = require('../src/S3ItemReader')
 const _ = require('lodash')
-const { yields, s3Body } = require('laconia-test-helper')
+const { yields, s3Body, collectNexts, reduceNexts } = require('laconia-test-helper')
 
 describe('S3 Item Reader', () => {
   let s3
@@ -68,12 +68,9 @@ describe('S3 Item Reader', () => {
     let nexts
 
     beforeEach(async () => {
-      nexts = []
       s3.getObject.mockImplementation(s3Body(['Foo', 'Bar', 'Fiz']))
       const reader = new S3ItemReader(new AWS.S3(), s3Params, '.')
-      nexts.push(await reader.next())
-      nexts.push(await reader.next(_.last(nexts).cursor))
-      nexts.push(await reader.next(_.last(nexts).cursor))
+      nexts = await collectNexts(reader, 3)
     })
 
     it('generates nexts object with the correct content', async () => {
@@ -91,12 +88,9 @@ describe('S3 Item Reader', () => {
     let nexts
 
     beforeEach(async () => {
-      nexts = []
       s3.getObject.mockImplementation(s3Body(['1', '2', '3', 'Foo', 'Bar', 'Fiz']))
       const reader = new S3ItemReader(new AWS.S3(), s3Params, '.')
-      nexts.push(await reader.next({ index: 2 }))
-      nexts.push(await reader.next(_.last(nexts).cursor))
-      nexts.push(await reader.next(_.last(nexts).cursor))
+      nexts = await collectNexts(reader, 3, { index: 2 })
     })
 
     it('generates nexts object with the correct content', async () => {
@@ -153,10 +147,8 @@ describe('S3 Item Reader', () => {
     const oneThousand = _.range(1000)
     s3.getObject.mockImplementation(s3Body(oneThousand))
     const reader = new S3ItemReader(new AWS.S3(), s3Params, '.')
-    await oneThousand.reduce(async (cursorPromise, value) => {
-      const next = await reader.next(await cursorPromise)
-      expect(next).toEqual({ item: value, cursor: { index: value }, finished: value === _.last(oneThousand) })
-      return next.cursor
-    }, undefined)
+    await reduceNexts(reader, 1000, undefined, (next, index) => {
+      expect(next).toEqual({ item: index, cursor: { index: index }, finished: index === _.last(oneThousand) })
+    })
   })
 })

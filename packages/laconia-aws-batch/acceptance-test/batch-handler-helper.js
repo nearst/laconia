@@ -44,7 +44,7 @@ exports.sharedAcceptanceTest = (batchHandler) => {
         expect(startListener).toHaveBeenCalledBefore(endListener)
       })
 
-      it('should process all records in a Table with scan', async () => {
+      it('should process all items', async () => {
         expect(itemListener).toHaveBeenCalledTimes(3)
         expect(itemListener).toHaveBeenCalledWith({Artist: 'Foo'})
         expect(itemListener).toHaveBeenCalledWith({Artist: 'Bar'})

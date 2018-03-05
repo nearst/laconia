@@ -23,10 +23,14 @@ describe("s3 batch handler", () => {
     AWSMock.restore();
   });
 
-  sharedBehaviour(options => {
-    return s3BatchHandler("music", {
-      Bucket: "foo",
-      Key: "bar"
-    });
+  sharedBehaviour(testOptions => {
+    return s3BatchHandler(
+      "music",
+      {
+        Bucket: "foo",
+        Key: "bar"
+      },
+      testOptions
+    );
   });
 });

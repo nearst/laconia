@@ -23,7 +23,7 @@ describe("dynamodb batch handler", () => {
     AWSMock.restore();
   });
 
-  sharedBehaviour(() => {
-    return dynamodbBatchHandler("SCAN", { TableName: "Music" });
+  sharedBehaviour(testOptions => {
+    return dynamodbBatchHandler("SCAN", { TableName: "Music" }, testOptions);
   });
 });

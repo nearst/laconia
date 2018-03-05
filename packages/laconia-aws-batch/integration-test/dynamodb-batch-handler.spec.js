@@ -46,8 +46,12 @@ describe("dynamodb batch handler", () => {
     };
   });
 
-  sharedBehaviour(() => {
-    return dynamoDbBatchHandler("SCAN", { TableName: "Music" }, handlerOptions);
+  sharedBehaviour(testOptions => {
+    return dynamoDbBatchHandler(
+      "SCAN",
+      { TableName: "Music" },
+      Object.assign({}, testOptions, handlerOptions)
+    );
   });
 
   it("should support query operation", async () => {

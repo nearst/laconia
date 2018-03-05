@@ -26,13 +26,14 @@ describe('s3 batch handler', () => {
     AWSMock.restore()
   })
 
-  sharedBehaviour((options) => {
+  sharedBehaviour(testOptions => {
     return s3BatchHandler(
       'music',
       {
         Bucket: 'foo',
         Key: 'bar'
-      }
+      },
+      testOptions
     )
   })
 })

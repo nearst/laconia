@@ -14,7 +14,7 @@ const forwardEvents = (from, eventNames, to) => {
 module.exports = (itemReader,
   {
     timeNeededToRecurseInMillis = 5000
-  } = {}) => {
+  }) => {
   const handler = recursiveHandler((event, context, recurse) => {
     const batchProcessor = new BatchProcessor(
         itemReader.next.bind(itemReader),

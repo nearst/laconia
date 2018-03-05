@@ -89,6 +89,26 @@ exports.sharedBehaviour = (batchHandler) => {
       })
     })
 
+    describe('when timeNeededToRecurseInMillis is configured', () => {
+      it('stops if time is not enough to process items', async () => {
+        context.getRemainingTimeInMillis = () => 10000
+        await batchHandler(
+          { timeNeededToRecurseInMillis: 10000 }
+        ).on('stop', stopListener)(event, context, callback)
+
+        expect(stopListener).toHaveBeenCalled()
+      })
+
+      it('does not stop if time is enough to process items', async () => {
+        context.getRemainingTimeInMillis = () => 10001
+        await batchHandler(
+          { timeNeededToRecurseInMillis: 10000 }
+        ).on('stop', stopListener)(event, context, callback)
+
+        expect(stopListener).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when completing recursion', () => {
       it('should process all items', async (done) => {
         context.getRemainingTimeInMillis = () => 5000

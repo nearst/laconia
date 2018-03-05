@@ -41,11 +41,11 @@ describe('dynamodb batch handler', () => {
     handlerOptions = { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
   })
 
-  sharedBehaviour(() => {
+  sharedBehaviour(testOptions => {
     return dynamoDbBatchHandler(
       'SCAN',
       { TableName: 'Music' },
-      handlerOptions
+      Object.assign({}, testOptions, handlerOptions)
     )
   })
 

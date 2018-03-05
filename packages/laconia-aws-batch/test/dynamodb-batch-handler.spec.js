@@ -26,10 +26,11 @@ describe('dynamodb batch handler', () => {
     AWSMock.restore()
   })
 
-  sharedBehaviour(() => {
+  sharedBehaviour(testOptions => {
     return dynamodbBatchHandler(
       'SCAN',
-      { TableName: 'Music' }
+      { TableName: 'Music' },
+      testOptions
     )
   })
 })

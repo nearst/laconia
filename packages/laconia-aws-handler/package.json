@@ -3,5 +3,8 @@
   "version": "0.1.0",
   "description": "",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@laconia/aws-invoke": "*"
+  }
 }

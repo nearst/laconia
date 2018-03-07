@@ -4,10 +4,11 @@ const recursiveHandler = require('../src/recursive-handler')
 const AWSMock = require('aws-sdk-mock')
 
 describe('recursive handler', () => {
-  let callback, invokeMock
+  let context, callback, invokeMock
 
   beforeEach(() => {
     callback = jest.fn()
+    context = { functionName: 'foo' }
     invokeMock = jest.fn()
     AWSMock.mock('Lambda', 'invoke', invokeMock)
   })
@@ -28,40 +29,38 @@ describe('recursive handler', () => {
     expect(handler).toBeCalledWith({foo: 'bar'}, {fiz: 'baz'}, expect.any(Function))
   })
 
-  it('should return error to callback when lambda recursion failed')
-
-  it('provides recurse callback', async () => {
-    const context = {functionName: 'foo'}
-    const event = {}
+  it('recurses when the recurse callback is called', async () => {
     await recursiveHandler((event, context, recurse) => {
       recurse('payload')
-    })(event, context, callback)
+    })({}, context, callback)
 
     expect(invokeMock).toBeCalledWith(
       expect.objectContaining({
         FunctionName: 'foo',
-        InvocationType: 'Event',
-        Payload: JSON.stringify('payload')
+        InvocationType: 'Event'
       }),
       expect.any(Function)
     )
   })
 
-  xit('should recurse when value returned is not undefined', async () => {
-    const context = {functionName: 'foo'}
-    const event = {}
-    await recursiveHandler(() => ({ cursor: 5 }))(event, context, callback)
-    expect(invokeMock).toBeCalledWith(
-      expect.objectContaining({
-        FunctionName: 'foo',
-        InvocationType: 'Event',
-        Payload: JSON.stringify({cursor: 5})
-      }),
-      expect.any(Function)
-    )
+  it('throws error when lambda recursion failed', async () => {
+    const error = new Error('boom')
+    invokeMock.mockImplementation(() => { throw error })
+    await recursiveHandler((event, context, recurse) => recurse())({}, context, callback)
+    expect(callback).toBeCalledWith(error)
   })
 
-  it('should not recurse when value returned is undefined') // Is this too dangerous for an API? Should we just not implement this?
+  it('should merge recurse payload and event object', async () => {
+    await recursiveHandler((event, context, recurse) => {
+      recurse({cursor: {index: 0, lastEvaluatedKey: 'bar'}})
+    })({key1: '1', key2: '2'}, context, callback)
 
-  xit('should merge and take the returned object as precedence to event (should forward event)')
+    expect(invokeMock).toHaveBeenCalledTimes(1)
+    const payload = JSON.parse(invokeMock.mock.calls[0][0].Payload)
+    expect(payload).toEqual({
+      key1: '1',
+      key2: '2',
+      cursor: {index: 0, lastEvaluatedKey: 'bar'}
+    })
+  })
 })

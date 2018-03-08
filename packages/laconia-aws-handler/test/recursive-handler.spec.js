@@ -1,5 +1,6 @@
 /* eslint-env jest */
 
+const { yields } = require("laconia-test-helper");
 const recursiveHandler = require("../src/recursive-handler");
 const AWSMock = require("aws-sdk-mock");
 
@@ -9,7 +10,7 @@ describe("recursive handler", () => {
   beforeEach(() => {
     callback = jest.fn();
     context = { functionName: "foo" };
-    invokeMock = jest.fn();
+    invokeMock = jest.fn().mockImplementation(yields({ StatusCode: 202 }));
     AWSMock.mock("Lambda", "invoke", invokeMock);
   });
 
@@ -34,9 +35,11 @@ describe("recursive handler", () => {
   });
 
   it("recurses when the recurse callback is called", async () => {
-    await recursiveHandler((event, context, recurse) => {
-      recurse("payload");
-    })({}, context, callback);
+    await recursiveHandler((event, context, recurse) => recurse())(
+      {},
+      context,
+      callback
+    );
 
     expect(invokeMock).toBeCalledWith(
       expect.objectContaining({
@@ -60,6 +63,17 @@ describe("recursive handler", () => {
     expect(callback).toBeCalledWith(error);
   });
 
+  it("throws error when payload given is not an object", async () => {
+    await recursiveHandler((event, context, recurse) => recurse("non object"))(
+      {},
+      context,
+      callback
+    );
+    expect(callback).toBeCalledWith(expect.any(Error));
+    const error = callback.mock.calls[0][0];
+    expect(error.message).toContain("Payload must be an object");
+  });
+
   it("should merge recurse payload and event object", async () => {
     await recursiveHandler((event, context, recurse) => {
       recurse({ cursor: { index: 0, lastEvaluatedKey: "bar" } });
@@ -73,4 +87,6 @@ describe("recursive handler", () => {
       cursor: { index: 0, lastEvaluatedKey: "bar" }
     });
   });
+
+  it("should be able to not call recurse function");
 });

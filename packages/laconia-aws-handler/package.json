@@ -5,6 +5,8 @@
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@laconia/aws-invoke": "*"
+    "@laconia/aws-invoke": "*",
+    "laconia-test-helper": "*",
+    "lodash": "^4.17.5"
   }
 }

@@ -8,5 +8,6 @@
     "@laconia/aws-invoke": "*",
     "laconia-test-helper": "*",
     "lodash": "^4.17.5"
-  }
+  },
+  "main": "src/index.js"
 }

@@ -88,5 +88,9 @@ describe("recursive handler", () => {
     });
   });
 
-  it("should be able to not call recurse function");
+  it("should be able to not call recurse function", async () => {
+    await recursiveHandler(() => {})({}, context, callback);
+
+    expect(invokeMock).not.toHaveBeenCalled();
+  });
 });

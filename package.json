@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
+    "clean": "rm -rf node_modules && lerna clean --yes",
     "postinstall": "lerna bootstrap",
     "test": "jest",
     "posttest": "standard",

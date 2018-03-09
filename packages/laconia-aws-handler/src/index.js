@@ -1,2 +1,2 @@
-module.exports.basic = require('./basic-handler')
-module.exports.recursive = require('./recursive-handler')
+module.exports.basicHandler = require('./basic-handler')
+module.exports.recursiveHandler = require('./recursive-handler')

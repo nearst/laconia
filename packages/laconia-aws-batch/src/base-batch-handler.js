@@ -1,11 +1,6 @@
-const { lambdaInvoker } = require('@laconia/aws-invoke')
+const { recursiveHandler } = require('@laconia/aws-handler')
 const BatchProcessor = require('./BatchProcessor')
 const EventEmitter = require('events')
-
-const recursiveHandler = (handler) => (event, context, callback) => {
-  const recurse = (response) => { lambdaInvoker(context.functionName).fireAndForget(response) }
-  return handler(event, context, recurse)
-}
 
 const forwardEvents = (from, eventNames, to) => {
   eventNames.forEach(eventName => from.on(eventName, (...args) => to.emit(eventName, ...args)))

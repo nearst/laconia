@@ -4,6 +4,15 @@ const { yields } = require('laconia-test-helper')
 const recursiveHandler = require('../src/recursive-handler')
 const AWSMock = require('aws-sdk-mock')
 
+expect.extend({
+  toBeCalledWithPayload (received, expected) {
+    expect(received).toHaveBeenCalledTimes(1)
+    const payload = JSON.parse(received.mock.calls[0][0].Payload)
+    expect(payload).toEqual(expected)
+    return { pass: true }
+  }
+})
+
 describe('recursive handler', () => {
   let context, callback, invokeMock
 
@@ -52,8 +61,9 @@ describe('recursive handler', () => {
   it('throws error when payload given is not an object', async () => {
     await recursiveHandler((event, context, recurse) => recurse('non object'))({}, context, callback)
     expect(callback).toBeCalledWith(expect.any(Error))
-    const error = callback.mock.calls[0][0]
-    expect(error.message).toContain('Payload must be an object')
+    expect(callback).toBeCalledWith(expect.objectContaining({
+      message: expect.stringContaining('Payload must be an object')
+    }))
   })
 
   it('should merge recurse payload and event object', async () => {
@@ -61,9 +71,7 @@ describe('recursive handler', () => {
       recurse({cursor: {index: 0, lastEvaluatedKey: 'bar'}})
     })({key1: '1', key2: '2'}, context, callback)
 
-    expect(invokeMock).toHaveBeenCalledTimes(1)
-    const payload = JSON.parse(invokeMock.mock.calls[0][0].Payload)
-    expect(payload).toEqual({
+    expect(invokeMock).toBeCalledWithPayload({
       key1: '1',
       key2: '2',
       cursor: {index: 0, lastEvaluatedKey: 'bar'}

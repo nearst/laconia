@@ -5,6 +5,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "test": "jest",
+    "posttest": "standard",
     "test:watch": "jest --watch"
   },
   "repository": {

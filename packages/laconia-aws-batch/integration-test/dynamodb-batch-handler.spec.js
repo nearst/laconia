@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 const DynamoDbLocal = require("dynamodb-local");
 const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");

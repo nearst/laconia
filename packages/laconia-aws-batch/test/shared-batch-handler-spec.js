@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 const AWSMock = require("aws-sdk-mock");
 
 exports.sharedBehaviour = batchHandler => {

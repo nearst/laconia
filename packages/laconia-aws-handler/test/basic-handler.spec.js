@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 const laconiaHandler = require('../src/basic-handler')
 
 describe('aws handler', () => {

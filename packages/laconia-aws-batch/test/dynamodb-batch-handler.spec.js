@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 const AWSMock = require('aws-sdk-mock')
 const dynamodbBatchHandler = require('../src/dynamodb-batch-handler')
 const { sharedBehaviour } = require('./shared-batch-handler-spec')

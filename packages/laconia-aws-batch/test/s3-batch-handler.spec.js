@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 const AWSMock = require('aws-sdk-mock')
 const s3BatchHandler = require('../src/s3-batch-handler')
 const { sharedBehaviour } = require('./shared-batch-handler-spec')

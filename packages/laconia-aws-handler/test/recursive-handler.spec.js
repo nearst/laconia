@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 const { yields } = require('laconia-test-helper')
 const recursiveHandler = require('../src/recursive-handler')
 const AWSMock = require('aws-sdk-mock')

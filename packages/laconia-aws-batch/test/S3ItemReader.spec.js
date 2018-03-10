@@ -1,4 +1,3 @@
-/* eslint-env jest */
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const S3ItemReader = require('../src/S3ItemReader')

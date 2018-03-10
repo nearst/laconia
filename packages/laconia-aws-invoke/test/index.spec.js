@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 const {lambdaInvoker} = require('../src/index.js')
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')

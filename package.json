@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "clean": "rm -rf node_modules && lerna clean --yes",
+    "clean": "lerna clean --yes || true",
+    "postclean": "rm -rf node_modules",
     "postinstall": "lerna bootstrap",
     "test": "jest",
     "posttest": "standard",
@@ -39,6 +40,8 @@
     "setupTestFrameworkScriptFile": "jest-extended"
   },
   "standard": {
-    "envs": ["jest"]
+    "envs": [
+      "jest"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-const { lambdaInvoker } = require("@laconia/aws-invoke");
+const { lambdaInvoker } = require("laconia-invoke");
 const basicHandler = require("./basic-handler");
 const _ = require("lodash");
 

@@ -1,17 +1,15 @@
 {
-  "name": "@laconia/aws-batch",
+  "name": "laconia-handler",
   "version": "0.1.0",
   "description": "",
-  "scripts": {
-    "test": "jest"
-  },
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@laconia/aws-handler": "*",
+    "laconia-invoke": "*",
     "lodash": "^4.17.5"
   },
   "devDependencies": {
     "laconia-test-helper": "*"
-  }
+  },
+  "main": "src/index.js"
 }

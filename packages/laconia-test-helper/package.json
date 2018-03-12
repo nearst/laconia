@@ -4,5 +4,6 @@
   "description": "",
   "main": "src/index.js",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "private": true
 }

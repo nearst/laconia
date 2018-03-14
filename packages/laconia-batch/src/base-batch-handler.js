@@ -8,12 +8,16 @@ const forwardEvents = (from, eventNames, to) => {
   );
 };
 
-module.exports = (itemReader, { timeNeededToRecurseInMillis = 5000 }) => {
+module.exports = (
+  itemReader,
+  { timeNeededToRecurseInMillis = 5000, itemsPerSecond }
+) => {
   const handler = recursiveHandler((event, context, recurse) => {
     const batchProcessor = new BatchProcessor(
       itemReader.next.bind(itemReader),
       cursor =>
-        context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis
+        context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis,
+      { itemsPerSecond }
     ).on("stop", cursor => {
       recurse({ cursor });
     });

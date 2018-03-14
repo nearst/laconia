@@ -1,9 +1,19 @@
 const EventEmitter = require("events");
+const Bottleneck = require("bottleneck");
+
+const rateLimit = (fn, itemPerSecond) => {
+  const limiter = new Bottleneck({
+    maxConcurrent: 1,
+    minTime: 1000 / itemPerSecond
+  });
+  return limiter.wrap(fn);
+};
 
 module.exports = class BatchProcessor extends EventEmitter {
-  constructor(readItem, shouldStop) {
+  constructor(readItem, shouldStop, { itemsPerSecond = 0 } = {}) {
     super();
-    this.readItem = readItem;
+    this.readItem =
+      itemsPerSecond === 0 ? readItem : rateLimit(readItem, itemsPerSecond);
     this.shouldStop = shouldStop;
   }
 

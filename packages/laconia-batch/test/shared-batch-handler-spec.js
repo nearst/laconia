@@ -57,17 +57,17 @@ exports.sharedBehaviour = (batchHandler) => {
     describe('when rate limited', () => {
       beforeEach(async () => {
         await batchHandler(
-          { rateLimit: 4 }
+          { itemsPerSecond: 10 }
         )
         .on('item', itemListener)(event, context, callback)
       })
 
-      xit('should have at least 0.25 second gap per call', () => {
+      it('should have at least 0.1 second gap per call', () => {
         const timestamps = itemListener.mock.timestamps
         const gap1 = timestamps[1] - timestamps[0]
         const gap2 = timestamps[2] - timestamps[1]
-        expect(gap1).toBeGreaterThanOrEqual(250)
-        expect(gap2).toBeGreaterThanOrEqual(250)
+        expect(gap1).toBeGreaterThanOrEqual(90)
+        expect(gap2).toBeGreaterThanOrEqual(90)
       })
     })
 

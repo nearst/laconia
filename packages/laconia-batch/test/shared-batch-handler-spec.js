@@ -1,4 +1,6 @@
 const AWSMock = require('aws-sdk-mock')
+const { matchers } = require('laconia-test-helper')
+expect.extend(matchers)
 
 exports.sharedBehaviour = (batchHandler) => {
   describe('shared batch behaviour', () => {
@@ -63,11 +65,7 @@ exports.sharedBehaviour = (batchHandler) => {
       })
 
       it('should have at least 0.1 second gap per call', () => {
-        const timestamps = itemListener.mock.timestamps
-        const gap1 = timestamps[1] - timestamps[0]
-        const gap2 = timestamps[2] - timestamps[1]
-        expect(gap1).toBeGreaterThanOrEqual(90)
-        expect(gap2).toBeGreaterThanOrEqual(90)
+        expect(itemListener).toBeCalledWithGapBetween(80, 120)
       })
     })
 

@@ -24,7 +24,24 @@ const collectNexts = async (reader, times, startingCursor) => {
   return nexts;
 };
 
+const getTimestampGaps = jestFn => {
+  const timestamps = jestFn.mock.timestamps;
+  return timestamps.slice(1).map((val, index) => val - timestamps[index]);
+};
+
+const matchers = {
+  toBeCalledWithGapBetween(jestFn, minimum, maximum) {
+    const gaps = getTimestampGaps(jestFn);
+    gaps.forEach(gap => {
+      expect(gap).toBeGreaterThanOrEqual(minimum);
+      expect(gap).toBeLessThanOrEqual(maximum);
+    });
+    return { pass: true };
+  }
+};
+
 module.exports.yields = yields;
 module.exports.s3Body = s3Body;
 module.exports.collectNexts = collectNexts;
 module.exports.reduceNexts = reduceNexts;
+module.exports.matchers = matchers;

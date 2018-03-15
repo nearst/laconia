@@ -1,4 +1,6 @@
 const BatchProcessor = require("../src/BatchProcessor");
+const { matchers } = require("laconia-test-helper");
+expect.extend(matchers);
 
 describe("BatchProcessor", () => {
   let itemListener;
@@ -46,11 +48,7 @@ describe("BatchProcessor", () => {
     });
 
     it("is not rate limited by default", () => {
-      const timestamps = itemListener.mock.timestamps;
-      const gap1 = timestamps[1] - timestamps[0];
-      const gap2 = timestamps[2] - timestamps[1];
-      expect(gap1).toBeLessThan(5);
-      expect(gap2).toBeLessThan(5);
+      expect(itemListener).toBeCalledWithGapBetween(0, 5);
     });
   });
 
@@ -75,15 +73,7 @@ describe("BatchProcessor", () => {
       ).on("item", itemListener);
       await batchProcessor.start();
 
-      const timestamps = itemListener.mock.timestamps;
-      const gap1 = timestamps[1] - timestamps[0];
-      const gap2 = timestamps[2] - timestamps[1];
-      expect(gap1).toBeGreaterThan(5);
-      expect(gap1).toBeLessThan(110);
-      expect(gap2).toBeGreaterThan(5);
-      expect(gap2).toBeLessThan(110);
+      expect(itemListener).toBeCalledWithGapBetween(5, 110);
     });
-
-    it("should support more than 1000 itemsPerSecond");
   });
 });

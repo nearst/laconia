@@ -2,6 +2,12 @@ const BatchProcessor = require('../src/BatchProcessor')
 const { matchers } = require('laconia-test-helper')
 expect.extend(matchers)
 
+const arrayReader = (array) =>
+  array.reduce((reader, item, index) => {
+    const finished = index === array.length - 1
+    return reader.mockImplementationOnce(() => (Promise.resolve({item, finished})))
+  }, jest.fn())
+
 describe('BatchProcessor', () => {
   let itemListener
   let shouldStop
@@ -26,13 +32,9 @@ describe('BatchProcessor', () => {
   describe('when multiple items were returned', () => {
     beforeEach(() => {
       const batchProcessor = new BatchProcessor(
-        jest.fn()
-          .mockImplementationOnce(() => (Promise.resolve({item: '1', finished: false})))
-          .mockImplementationOnce(() => (Promise.resolve({item: '2', finished: false})))
-          .mockImplementationOnce(() => (Promise.resolve({item: '3', finished: true}))),
+        arrayReader(['1', '2', '3']),
         shouldStop
-      )
-        .on('item', itemListener)
+      ).on('item', itemListener)
       return batchProcessor.start()
     })
 
@@ -48,21 +50,25 @@ describe('BatchProcessor', () => {
   })
 
   describe('when rate limited', () => {
-    it('should process items with delay', async () => {
-      const batchProcessor = new BatchProcessor(
-        jest.fn()
-          .mockImplementationOnce(() => (Promise.resolve({item: '1', finished: false})))
-          .mockImplementationOnce(() => (Promise.resolve({item: '2', finished: false})))
-          .mockImplementationOnce(() => (Promise.resolve({item: '3', finished: true}))),
+    const createBatchProcessor = (itemsPerSecond) =>
+      new BatchProcessor(
+        arrayReader(['1', '2', '3']),
         shouldStop,
-        {
-          itemsPerSecond: 10
-        }
-      )
-        .on('item', itemListener)
+        { itemsPerSecond }
+      ).on('item', itemListener)
+
+    it('should process items with delay', async () => {
+      const batchProcessor = createBatchProcessor(10)
       await batchProcessor.start()
 
       expect(itemListener).toBeCalledWithGapBetween(5, 110)
+    })
+
+    it('should support 1000 itemsPerSecond', async () => {
+      const batchProcessor = createBatchProcessor(1000)
+      await batchProcessor.start()
+
+      expect(itemListener).toBeCalledWithGapBetween(0, 10)
     })
   })
 })

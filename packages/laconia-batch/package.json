@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "jest",
     "prepublish": "babel src -d lib"
   },
   "author": "Wisen Tanasa <wisen@ceilfors.com>",

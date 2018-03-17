@@ -57,10 +57,10 @@ describe("BatchProcessor", () => {
       }).on("item", itemListener);
 
     it("should process items with delay", async () => {
-      const batchProcessor = createBatchProcessor(10);
+      const batchProcessor = createBatchProcessor(50);
       await batchProcessor.start();
 
-      expect(itemListener).toBeCalledWithGapBetween(5, 110);
+      expect(itemListener).toBeCalledWithGapBetween(5, 25);
     });
 
     it("should support 1000 itemsPerSecond", async () => {

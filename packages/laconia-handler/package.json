@@ -2,6 +2,9 @@
   "name": "laconia-handler",
   "version": "0.1.0",
   "description": "",
+  "scripts": {
+    "prepublish": "babel src -d lib"
+  },
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
   "license": "Apache-2.0",
   "dependencies": {
@@ -11,5 +14,5 @@
   "devDependencies": {
     "laconia-test-helper": "*"
   },
-  "main": "src/index.js"
+  "main": "lib/index.js"
 }

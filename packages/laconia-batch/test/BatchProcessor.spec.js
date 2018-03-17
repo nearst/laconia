@@ -39,6 +39,7 @@ describe('BatchProcessor', () => {
     })
 
     it('fires multiple item events', async () => {
+      expect(itemListener).toHaveBeenCalledTimes(3)
       expect(itemListener).toBeCalledWith('1')
       expect(itemListener).toBeCalledWith('2')
       expect(itemListener).toBeCalledWith('3')
@@ -46,6 +47,18 @@ describe('BatchProcessor', () => {
 
     it('is not rate limited by default', () => {
       expect(itemListener).toBeCalledWithGapBetween(0, 5)
+    })
+  })
+
+  describe('when an undefined item is returned', () => {
+    it('should not fire item event', async () => {
+      const batchProcessor = new BatchProcessor(
+        arrayReader(['1', undefined, '3']),
+        shouldStop
+      ).on('item', itemListener)
+      await batchProcessor.start()
+
+      expect(itemListener).toHaveBeenCalledTimes(2)
     })
   })
 

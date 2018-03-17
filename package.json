@@ -6,9 +6,10 @@
     "clean": "lerna clean --yes || true",
     "postclean": "rm -rf node_modules",
     "postinstall": "lerna bootstrap --hoist",
-    "test": "jest",
-    "posttest": "standard",
-    "test:watch": "jest --watch"
+    "test": "jest '/test' --coverage",
+    "test:watch": "jest --watch",
+    "integration-test": "jest '/integration-test'",
+    "posttest": "standard"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,6 @@
     "standard": "^10.0.3"
   },
   "jest": {
-    "collectCoverage": true,
     "coveragePathIgnorePatterns": [
       ".*test/"
     ],

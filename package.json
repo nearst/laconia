@@ -24,9 +24,11 @@
   "devDependencies": {
     "aws-sdk": "^2.172.0",
     "aws-sdk-mock": "^1.7.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-jest": "^22.0.4",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "dynamodb-local": "0.0.18",
     "jest": "^22.0.3",
     "jest-extended": "^0.6.0",

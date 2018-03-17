@@ -2,7 +2,10 @@
   "name": "laconia-invoke",
   "version": "0.1.0",
   "description": "",
-  "main": "src/index.js",
+  "scripts": {
+    "prepublish": "babel src -d lib"
+  },
+  "main": "lib/index.js",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
   "license": "Apache-2.0",
   "devDependencies": {

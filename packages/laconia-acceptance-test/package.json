@@ -1,0 +1,15 @@
+{
+  "name": "laconia-acceptance-test",
+  "version": "0.1.0",
+  "description": "",
+  "author": "Wisen Tanasa <wisen@ceilfors.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "laconia-invoke": "*",
+    "serverless": "^1.26.1"
+  },
+  "dependencies": {
+    "laconia-handler": "*",
+    "laconia-test-helper": "^0.1.0"
+  }
+}

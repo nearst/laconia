@@ -1,0 +1,36 @@
+service: laconia-acceptance
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: test
+  region: eu-west-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - s3:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+        - "lambda:InvokeAsync"
+      Resource: "*"
+  environment:
+    TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
+
+custom:
+  fullName: ${self:service}-${self:provider.stage}
+  trackerBucketName: ${self:custom.fullName}-tracker
+
+functions:
+  handler-basic:
+    handler: src/basic.handler
+  handler-recursive:
+    handler: src/recursive.handler
+
+resources:
+  Resources:
+    S3Tracker:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.trackerBucketName}

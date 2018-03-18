@@ -5,10 +5,13 @@
   "scripts": {
     "clean": "lerna clean --yes || true",
     "postclean": "rm -rf node_modules",
-    "postinstall": "lerna bootstrap --hoist",
+    "postinstall": "lerna bootstrap",
     "test": "jest '/test' --coverage",
     "test:watch": "jest --watch",
     "integration-test": "jest '/integration-test'",
+    "deploy-acceptance": "AWS_REGION=eu-west-1 lerna exec --scope laconia-acceptance-test sls deploy",
+    "remove-acceptance": "AWS_REGION=eu-west-1 lerna exec --scope laconia-acceptance-test sls remove",
+    "acceptance-test": "AWS_REGION=eu-west-1 jest '/laconia-acceptance-test'",
     "posttest": "standard"
   },
   "repository": {

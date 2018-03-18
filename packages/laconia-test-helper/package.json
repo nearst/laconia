@@ -6,7 +6,9 @@
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "prepublish": "babel src -d lib"
+    "compile": "babel src -d lib",
+    "prepublish": "npm run compile",
+    "watch": "npm run compile -- --watch"
   },
   "private": true
 }

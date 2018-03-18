@@ -45,3 +45,4 @@ module.exports.s3Body = s3Body;
 module.exports.collectNexts = collectNexts;
 module.exports.reduceNexts = reduceNexts;
 module.exports.matchers = matchers;
+module.exports.tracker = require("./tracker");

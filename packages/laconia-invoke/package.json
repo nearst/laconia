@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "prepublish": "babel src -d lib"
+    "compile": "babel src -d lib",
+    "prepublish": "npm run compile",
+    "watch": "npm run compile -- --watch"
   },
   "main": "lib/index.js",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",

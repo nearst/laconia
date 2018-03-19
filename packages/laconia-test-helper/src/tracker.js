@@ -14,14 +14,10 @@ module.exports = (id, bucketName) => {
 
   return {
     async tick () {
-      const objects = await s3.listObjects({
-        Bucket: bucket,
-        Prefix: id
-      }).promise()
-      const lastTickIndex = objects.Contents.length
+      const total = await this.getTotal()
       return s3.putObject({
         Bucket: bucket,
-        Key: `${id}/${lastTickIndex + 1}`
+        Key: `${id}/${total + 1}`
       }).promise()
     },
 
@@ -31,6 +27,14 @@ module.exports = (id, bucketName) => {
         Key: `${id}/${totalTicks}`,
         $waiter: { delay: 1 }
       }).promise()
+    },
+
+    async getTotal () {
+      const objects = await s3.listObjects({
+        Bucket: bucket,
+        Prefix: id
+      }).promise()
+      return objects.Contents.length
     },
 
     async clear () {

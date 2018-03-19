@@ -18,5 +18,6 @@ describe('laconia-handler recursiveHandler', () => {
     await lambdaInvoker(name('handler-recursive')).fireAndForget({input: 1})
 
     await recursiveTracker.waitUntil(3)
+    expect(await recursiveTracker.getTotal()).toEqual(3)
   })
 })

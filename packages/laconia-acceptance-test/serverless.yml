@@ -17,16 +17,21 @@ provider:
       Resource: "*"
   environment:
     TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
+    TEST_BUCKET_NAME: ${self:custom.testBucketName}
 
 custom:
   fullName: ${self:service}-${self:provider.stage}
   trackerBucketName: ${self:custom.fullName}-tracker
-
+  testBucketName: ${self:custom.fullName}-bucket
+  
 functions:
   handler-basic:
-    handler: src/basic.handler
+    handler: src/handler/basic.handler
   handler-recursive:
-    handler: src/recursive.handler
+    handler: src/handler/recursive.handler
+  batch-s3:
+    handler: src/batch/s3.handler
+    timeout: 6
 
 resources:
   Resources:
@@ -34,3 +39,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.trackerBucketName}
+    TestBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.testBucketName}

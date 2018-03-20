@@ -9,7 +9,8 @@
     "serverless": "^1.26.1"
   },
   "dependencies": {
+    "laconia-batch": "*",
     "laconia-handler": "*",
-    "laconia-test-helper": "^0.1.0"
+    "laconia-test-helper": "*"
   }
 }

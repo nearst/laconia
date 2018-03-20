@@ -10,5 +10,8 @@
     "prepublish": "npm run compile",
     "watch": "npm run compile -- --watch"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "p-wait-for": "^1.0.0"
+  }
 }

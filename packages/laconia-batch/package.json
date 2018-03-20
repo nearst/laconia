@@ -16,5 +16,6 @@
   },
   "devDependencies": {
     "laconia-test-helper": "*"
-  }
+  },
+  "main": "lib/index.js"
 }

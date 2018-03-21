@@ -8,9 +8,7 @@ module.exports.handler = s3BatchHandler(
     Bucket: process.env["TEST_BUCKET_NAME"],
     Key: "batch-s3.json"
   },
-  {
-    itemsPerSecond: 2
-  }
+  { itemsPerSecond: 2 }
 )
   .on("start", (event, context) => {
     lambdaContext = context;

@@ -1,6 +1,7 @@
 const { lambdaInvoker } = require("laconia-invoke");
 const basicHandler = require("./basic-handler");
-const _ = require("lodash");
+const isplainobject = require("lodash.isplainobject");
+const _ = { isPlainObject: isplainobject };
 
 module.exports = handler =>
   basicHandler((event, context) => {

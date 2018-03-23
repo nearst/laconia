@@ -37,11 +37,14 @@
     "jest": "^22.0.3",
     "jest-extended": "^0.6.0",
     "lerna": "^2.5.1",
+    "lodash": "^4.17.5",
     "standard": "^10.0.3"
   },
   "jest": {
     "coveragePathIgnorePatterns": [
-      ".*test/"
+      ".*test/",
+      "laconia-test-helper",
+      "packages/laconia-.*/lib"
     ],
     "setupTestFrameworkScriptFile": "jest-extended"
   },

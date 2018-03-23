@@ -1,4 +1,5 @@
-const _ = require("lodash");
+const get = require("lodash.get");
+const _ = { get };
 
 const extractS3JsonBody = data => {
   const fileContent = data.Body.toString();

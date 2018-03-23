@@ -43,6 +43,7 @@
   "jest": {
     "coveragePathIgnorePatterns": [
       ".*test/",
+      ".serverless",
       "laconia-test-helper",
       "packages/laconia-.*/lib"
     ],

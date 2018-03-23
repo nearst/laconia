@@ -12,7 +12,7 @@
   "dependencies": {
     "bottleneck": "^2.1.0",
     "laconia-handler": "*",
-    "lodash": "^4.17.5"
+    "lodash.get": "^4.4.2"
   },
   "devDependencies": {
     "laconia-test-helper": "*"

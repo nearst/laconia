@@ -8,7 +8,7 @@ const dynamoDbBatchHandler = require('../src/dynamodb-batch-handler')
 describe('dynamodb batch handler', () => {
   const dynamoLocalPort = 8000
   const dynamoDbOptions = { region: 'eu-west-1', endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`) }
-  let itemListener, event, context, callback, handlerOptions
+  let itemListener, event, context, callback, documentClient
 
   beforeAll(() => {
     jest.setTimeout(60000)
@@ -36,69 +36,78 @@ describe('dynamodb batch handler', () => {
     event = {}
     context = { functionName: 'blah', getRemainingTimeInMillis: () => 100000 }
     callback = jest.fn()
-    handlerOptions = { documentClient: new AWS.DynamoDB.DocumentClient(dynamoDbOptions) }
+    documentClient = new AWS.DynamoDB.DocumentClient(dynamoDbOptions)
   })
 
-  sharedBehaviour(testOptions => {
-    return dynamoDbBatchHandler(
-      'SCAN',
-      { TableName: 'Music' },
-      Object.assign({}, testOptions, handlerOptions)
-    )
+  sharedBehaviour(batchOptions => {
+    return dynamoDbBatchHandler({
+      readerOptions: {
+        operation: 'SCAN',
+        dynamoDbParams: { TableName: 'Music' },
+        documentClient
+      },
+      batchOptions
+    })
   })
 
   it('should support query operation', async () => {
-    await dynamoDbBatchHandler(
-      'QUERY',
-      {
-        ExpressionAttributeValues: {
-          ':v1': 'Fiz'
+    await dynamoDbBatchHandler({
+      readerOptions: {
+        operation: 'QUERY',
+        dynamoDbParams: {
+          ExpressionAttributeValues: {
+            ':v1': 'Fiz'
+          },
+          KeyConditionExpression: 'Artist = :v1',
+          TableName: 'Music'
         },
-        KeyConditionExpression: 'Artist = :v1',
-        TableName: 'Music'
-      },
-      handlerOptions
-    )
+        documentClient
+      }
+    })
     .on('item', itemListener)(event, context, callback)
 
     expect(itemListener).toHaveBeenCalledTimes(1)
-    expect(itemListener).toHaveBeenCalledWith({Artist: 'Fiz'})
+    expect(itemListener).toHaveBeenCalledWith(expect.anything(), {Artist: 'Fiz'})
   })
 
   it('should be able to process all items when Limit is set to 1', async () => {
-    await dynamoDbBatchHandler(
-      'SCAN',
-      {
-        TableName: 'Music',
-        Limit: 1
-      },
-      handlerOptions
-    )
+    await dynamoDbBatchHandler({
+      readerOptions: {
+        operation: 'SCAN',
+        dynamoDbParams: {
+          TableName: 'Music',
+          Limit: 1
+        },
+        documentClient
+      }
+    })
     .on('item', itemListener)(event, context, callback)
 
     expect(itemListener).toHaveBeenCalledTimes(3)
-    expect(itemListener).toHaveBeenCalledWith({Artist: 'Foo'})
-    expect(itemListener).toHaveBeenCalledWith({Artist: 'Bar'})
-    expect(itemListener).toHaveBeenCalledWith({Artist: 'Fiz'})
+    expect(itemListener).toHaveBeenCalledWith(expect.anything(), {Artist: 'Foo'})
+    expect(itemListener).toHaveBeenCalledWith(expect.anything(), {Artist: 'Bar'})
+    expect(itemListener).toHaveBeenCalledWith(expect.anything(), {Artist: 'Fiz'})
   })
 
   it('should be able to process items when filtered', async () => {
-    await dynamoDbBatchHandler(
-      'SCAN',
-      {
-        TableName: 'Music',
-        Limit: 1,
-        ExpressionAttributeValues: {
-          ':a': 'Bar'
+    await dynamoDbBatchHandler({
+      readerOptions: {
+        operation: 'SCAN',
+        dynamoDbParams: {
+          TableName: 'Music',
+          Limit: 1,
+          ExpressionAttributeValues: {
+            ':a': 'Bar'
+          },
+          FilterExpression: 'Artist = :a'
         },
-        FilterExpression: 'Artist = :a'
-      },
-      handlerOptions
-    )
+        documentClient
+      }
+    })
     .on('item', itemListener)(event, context, callback)
 
     expect(itemListener).toHaveBeenCalledTimes(1)
-    expect(itemListener).toHaveBeenCalledWith({Artist: 'Bar'})
+    expect(itemListener).toHaveBeenCalledWith(expect.anything(), {Artist: 'Bar'})
   })
 
   describe('when completing recursion', () => {
@@ -115,23 +124,25 @@ describe('dynamodb batch handler', () => {
 
     it('should process all items when filtered and limited', async(done) => {
       context.getRemainingTimeInMillis = () => 5000
-      const handler = dynamoDbBatchHandler(
-        'SCAN',
-        {
-          TableName: 'Music',
-          ExpressionAttributeValues: {
-            ':a': 'Bar'
+      const handler = dynamoDbBatchHandler({
+        readerOptions: {
+          operation: 'SCAN',
+          dynamoDbParams: {
+            TableName: 'Music',
+            ExpressionAttributeValues: {
+              ':a': 'Bar'
+            },
+            Limit: 1,
+            FilterExpression: 'Artist = :a'
           },
-          Limit: 1,
-          FilterExpression: 'Artist = :a'
-        },
-        handlerOptions
-      )
+          documentClient
+        }
+      })
       .on('item', itemListener)
       .on('end', () => {
         expect(invokeMock).toHaveBeenCalledTimes(3)
         expect(itemListener).toHaveBeenCalledTimes(1)
-        expect(itemListener).toHaveBeenCalledWith({Artist: 'Bar'})
+        expect(itemListener).toHaveBeenCalledWith(expect.anything(), {Artist: 'Bar'})
         done()
       })
 

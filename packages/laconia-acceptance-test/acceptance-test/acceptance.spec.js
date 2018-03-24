@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const { lambdaInvoker } = require("laconia-invoke");
+const invoke = require("laconia-invoke");
 const tracker = require("laconia-test-helper").tracker;
 
 const prefix = "laconia-acceptance-test";
@@ -15,7 +15,7 @@ jest.setTimeout(10000);
 
 describe("laconia-handler basicHandler", () => {
   it("returns result", async () => {
-    const result = await lambdaInvoker(name("handler-basic")).requestResponse();
+    const result = await invoke(name("handler-basic")).requestResponse();
     expect(result).toEqual("hello");
   });
 });
@@ -26,7 +26,7 @@ describe("laconia-handler recursiveHandler", () => {
   beforeAll(() => recursiveTracker.clear());
 
   it("recurses three times", async () => {
-    await lambdaInvoker(name("handler-recursive")).fireAndForget({ input: 1 });
+    await invoke(name("handler-recursive")).fireAndForget({ input: 1 });
     await recursiveTracker.waitUntil(3);
     expect(await recursiveTracker.getTotal()).toEqual(3);
   });
@@ -49,7 +49,7 @@ describe("laconia-batch s3-batch-handler", () => {
   const getItems = ticks => ticks.map(t => t.item);
 
   it("processes all items", async () => {
-    await lambdaInvoker(name("batch-s3")).fireAndForget();
+    await invoke(name("batch-s3")).fireAndForget();
     await s3BatchTracker.waitUntil(10);
 
     const ticks = await s3BatchTracker.getTicks();
@@ -77,7 +77,7 @@ describe("laconia-batch dynamodb-batch-handler", () => {
   const getArtistIds = ticks => ticks.map(t => t.item.ArtistId).sort();
 
   it("processes all items", async () => {
-    await lambdaInvoker(name("batch-dynamodb")).fireAndForget();
+    await invoke(name("batch-dynamodb")).fireAndForget();
     await dynamoDbBatchTracker.waitUntil(10);
 
     const ticks = await dynamoDbBatchTracker.getTicks();

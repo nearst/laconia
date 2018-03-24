@@ -65,9 +65,6 @@ class LambdaInvoker {
   }
 }
 
-module.exports.lambdaInvoker = (
-  functionName,
-  { lambda = new AWS.Lambda() } = {}
-) => {
+module.exports = (functionName, { lambda = new AWS.Lambda() } = {}) => {
   return new LambdaInvoker(functionName, lambda);
 };

@@ -2,12 +2,15 @@ const AWS = require("aws-sdk");
 const DynamoDbItemReader = require("./DynamoDbItemReader");
 const baseBatchHandler = require("./base-batch-handler");
 
-module.exports = (
-  operation,
-  dynamoParams,
-  { documentClient = new AWS.DynamoDB.DocumentClient(), ...options } = {}
-) =>
+module.exports = ({
+  readerOptions: {
+    operation,
+    dynamoDbParams,
+    documentClient = new AWS.DynamoDB.DocumentClient()
+  },
+  batchOptions = {}
+}) =>
   baseBatchHandler(
-    new DynamoDbItemReader(operation, documentClient, dynamoParams),
-    options
+    new DynamoDbItemReader(operation, documentClient, dynamoDbParams),
+    batchOptions
   );

@@ -38,8 +38,9 @@ exports.sharedBehaviour = batchHandler => {
 
       it("should notify listeners on lifecycle events", () => {
         expect(startListener).toHaveBeenCalledTimes(1);
-        expect(startListener).toHaveBeenCalledWith(event, context);
+        expect(startListener).toHaveBeenCalledWith({ event, context });
         expect(endListener).toHaveBeenCalledTimes(1);
+        expect(endListener).toHaveBeenCalledWith({ event, context });
         expect(stopListener).not.toHaveBeenCalled();
 
         expect(startListener).toHaveBeenCalledBefore(itemListener);
@@ -48,9 +49,18 @@ exports.sharedBehaviour = batchHandler => {
 
       it("should process all items", async () => {
         expect(itemListener).toHaveBeenCalledTimes(3);
-        expect(itemListener).toHaveBeenCalledWith({ Artist: "Foo" });
-        expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
-        expect(itemListener).toHaveBeenCalledWith({ Artist: "Fiz" });
+        expect(itemListener).toHaveBeenCalledWith(
+          { event, context },
+          { Artist: "Foo" }
+        );
+        expect(itemListener).toHaveBeenCalledWith(
+          { event, context },
+          { Artist: "Bar" }
+        );
+        expect(itemListener).toHaveBeenCalledWith(
+          { event, context },
+          { Artist: "Fiz" }
+        );
       });
 
       it("should not recurse", () => {
@@ -89,7 +99,10 @@ exports.sharedBehaviour = batchHandler => {
       it("should notify listeners on lifecycle events", () => {
         expect(startListener).toHaveBeenCalledTimes(1);
         expect(stopListener).toHaveBeenCalledTimes(1);
-        expect(stopListener).toHaveBeenCalledWith({ index: 0 });
+        expect(stopListener).toHaveBeenCalledWith(
+          { event, context },
+          { index: 0 }
+        );
         expect(endListener).not.toHaveBeenCalled();
       });
 
@@ -133,12 +146,22 @@ exports.sharedBehaviour = batchHandler => {
         const handler = batchHandler()
           .on("item", itemListener)
           .on("end", () => {
-            expect(invokeMock).toHaveBeenCalledTimes(2);
-            expect(itemListener).toHaveBeenCalledTimes(3);
-            expect(itemListener).toHaveBeenCalledWith({ Artist: "Foo" });
-            expect(itemListener).toHaveBeenCalledWith({ Artist: "Bar" });
-            expect(itemListener).toHaveBeenCalledWith({ Artist: "Fiz" });
-            done();
+            try {
+              expect(invokeMock).toHaveBeenCalledTimes(2);
+              expect(itemListener).toHaveBeenCalledTimes(3);
+              expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
+                Artist: "Foo"
+              });
+              expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
+                Artist: "Bar"
+              });
+              expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
+                Artist: "Fiz"
+              });
+              done();
+            } catch (ex) {
+              done.fail(ex);
+            }
           });
 
         invokeMock.mockImplementation(event =>

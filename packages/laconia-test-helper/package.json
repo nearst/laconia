@@ -8,7 +8,7 @@
   "scripts": {
     "compile": "babel src -d lib",
     "prepublish": "npm run compile",
-    "watch": "npm run compile -- --watch"
+    "compile:watch": "npm run compile -- --watch"
   },
   "private": true,
   "dependencies": {

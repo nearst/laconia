@@ -5,7 +5,7 @@
   "scripts": {
     "compile": "babel src -d lib",
     "prepublish": "npm run compile",
-    "watch": "npm run compile -- --watch"
+    "compile:watch": "npm run compile -- --watch"
   },
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
   "license": "Apache-2.0",

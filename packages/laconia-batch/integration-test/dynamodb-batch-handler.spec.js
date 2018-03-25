@@ -16,9 +16,8 @@ describe("dynamodb batch handler", () => {
   let itemListener, event, context, callback, documentClient;
 
   beforeAll(() => {
-    jest.setTimeout(60000);
     return DynamoDbLocal.launch(dynamoLocalPort, null, ["-sharedDb"]);
-  });
+  }, 60000);
 
   afterAll(() => {
     return DynamoDbLocal.stop(dynamoLocalPort);

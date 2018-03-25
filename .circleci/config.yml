@@ -34,7 +34,14 @@ jobs:
       - attach_workspace:
           at: .
       - run: npm install
+      - restore_cache:
+        keys:
+         - ddb-local-{{ checksum /tmp/dynamodb-local/DynamoDBLocal.jar }}
       - run: npm run test:integration
+      - save_cache:
+          paths:
+            - /tmp/dynamodb-local
+          key: ddb-local-{{ checksum /tmp/dynamodb-local/DynamoDBLocal.jar }}
 
 workflows:
   version: 2

@@ -15,6 +15,7 @@
     "remove-acceptance": "AWS_REGION=eu-west-1 lerna exec --scope laconia-acceptance-test sls remove",
     "acceptance-test": "AWS_REGION=eu-west-1 jest '/laconia-acceptance-test'",
     "posttest": "standard",
+    "publish:coverage": "cat ./coverage/lcov.info | coveralls",
     "compile:watch": "lerna run --parallel compile:watch"
   },
   "repository": {
@@ -35,6 +36,7 @@
     "babel-jest": "^22.0.4",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "coveralls": "^3.0.0",
     "dynamodb-local": "0.0.18",
     "jest": "^22.0.3",
     "jest-extended": "^0.6.0",

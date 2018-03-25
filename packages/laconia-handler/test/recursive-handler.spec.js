@@ -33,20 +33,19 @@ describe("recursive handler", () => {
 
   it("should delegate AWS parameters to handler function", async () => {
     const handler = jest.fn();
-    await recursiveHandler(handler)({ foo: "bar" }, { fiz: "baz" }, callback);
+    await recursiveHandler(handler)(
+      { foo: "event" },
+      { fiz: "context" },
+      callback
+    );
     expect(handler).toBeCalledWith(
-      { foo: "bar" },
-      { fiz: "baz" },
+      { event: { foo: "event" }, context: { fiz: "context" } },
       expect.any(Function)
     );
   });
 
   it("recurses when the recurse callback is called", async () => {
-    await recursiveHandler((event, context, recurse) => recurse())(
-      {},
-      context,
-      callback
-    );
+    await recursiveHandler((_, recurse) => recurse())({}, context, callback);
 
     expect(invokeMock).toBeCalledWith(
       expect.objectContaining({
@@ -62,16 +61,12 @@ describe("recursive handler", () => {
     invokeMock.mockImplementation(() => {
       throw error;
     });
-    await recursiveHandler((event, context, recurse) => recurse())(
-      {},
-      context,
-      callback
-    );
+    await recursiveHandler((_, recurse) => recurse())({}, context, callback);
     expect(callback).toBeCalledWith(error);
   });
 
   it("throws error when payload given is not an object", async () => {
-    await recursiveHandler((event, context, recurse) => recurse("non object"))(
+    await recursiveHandler((_, recurse) => recurse("non object"))(
       {},
       context,
       callback
@@ -85,7 +80,7 @@ describe("recursive handler", () => {
   });
 
   it("should merge recurse payload and event object", async () => {
-    await recursiveHandler((event, context, recurse) => {
+    await recursiveHandler((_, recurse) => {
       recurse({ cursor: { index: 0, lastEvaluatedKey: "bar" } });
     })({ key1: "1", key2: "2" }, context, callback);
 

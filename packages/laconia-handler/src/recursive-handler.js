@@ -4,7 +4,8 @@ const isplainobject = require("lodash.isplainobject");
 const _ = { isPlainObject: isplainobject };
 
 module.exports = handler =>
-  basicHandler((event, context) => {
+  basicHandler(laconiaContext => {
+    const { event, context } = laconiaContext;
     const recurse = (payload = {}) => {
       if (!_.isPlainObject(payload)) {
         throw new Error("Payload must be an object");
@@ -13,5 +14,5 @@ module.exports = handler =>
         Object.assign({}, event, payload)
       );
     };
-    return handler(event, context, recurse);
+    return handler(laconiaContext, recurse);
   });

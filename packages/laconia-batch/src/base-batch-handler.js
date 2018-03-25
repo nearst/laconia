@@ -12,8 +12,8 @@ module.exports = (
   itemReader,
   { timeNeededToRecurseInMillis = 5000, itemsPerSecond }
 ) => {
-  const handler = recursiveHandler((event, context, recurse) => {
-    const laconiaContext = { event, context };
+  const handler = recursiveHandler((laconiaContext, recurse) => {
+    const { event, context } = laconiaContext;
     const batchProcessor = new BatchProcessor(
       itemReader.next.bind(itemReader),
       cursor =>

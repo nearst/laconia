@@ -5,6 +5,8 @@ const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
 const { sharedBehaviour } = require('../test/shared-batch-handler-spec')
 const dynamoDbBatchHandler = require('../src/dynamodb-batch-handler')
 
+AWS.config.credentials = new AWS.Credentials('fake', 'fake', 'fake')
+
 describe('dynamodb batch handler', () => {
   const dynamoLocalPort = 8000
   const dynamoDbOptions = { region: 'eu-west-1', endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`) }

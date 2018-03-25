@@ -15,8 +15,8 @@ describe('aws handler', () => {
 
   it('should delegate AWS parameters to handler function', async () => {
     const handler = jest.fn()
-    await laconiaHandler(handler)({foo: 'bar'}, {fiz: 'baz'}, callback)
-    expect(handler).toBeCalledWith({foo: 'bar'}, {fiz: 'baz'})
+    await laconiaHandler(handler)({foo: 'event'}, {fiz: 'context'}, callback)
+    expect(handler).toBeCalledWith({event: {foo: 'event'}, context: {fiz: 'context'}})
   })
 
   describe('when synchronous code', () => {

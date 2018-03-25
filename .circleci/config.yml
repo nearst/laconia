@@ -35,13 +35,13 @@ jobs:
           at: .
       - run: npm install
       - restore_cache:
-        keys:
-         - ddb-local-{{ checksum /tmp/dynamodb-local/DynamoDBLocal.jar }}
+          keys:
+          - ddb-local-{{ checksum "/tmp/dynamodb-local/DynamoDBLocal.jar" }}
       - run: npm run test:integration
       - save_cache:
           paths:
             - /tmp/dynamodb-local
-          key: ddb-local-{{ checksum /tmp/dynamodb-local/DynamoDBLocal.jar }}
+          key: ddb-local-{{ checksum "/tmp/dynamodb-local/DynamoDBLocal.jar" }}
 
 workflows:
   version: 2

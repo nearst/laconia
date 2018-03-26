@@ -12,5 +12,6 @@
     "laconia-batch": "*",
     "laconia-handler": "*",
     "laconia-test-helper": "*"
-  }
+  },
+  "private": true
 }

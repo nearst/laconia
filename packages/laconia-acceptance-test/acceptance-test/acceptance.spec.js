@@ -9,8 +9,7 @@ const s3 = new AWS.S3();
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 const items = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-const getRequestIds = ticks =>
-  _.uniq(ticks.map(t => t.laconiaContext.context.awsRequestId));
+const getRequestIds = ticks => _.uniq(ticks.map(t => t.context.awsRequestId));
 
 jest.setTimeout(10000);
 

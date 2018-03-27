@@ -10,4 +10,4 @@ module.exports.handler = dynamoDbBatchHandler({
   },
   batchOptions: { itemsPerSecond: 2 }
 })
-.on('item', (laconiaContext, item) => tracker.tick({laconiaContext, item}))
+.on('item', ({ context }, item) => tracker.tick({context, item}))

@@ -1,5 +1,24 @@
 {
   "rules": {
-    "require-name": "error"
+    "require-author": "error",
+    "require-bugs": "error",
+    "require-description": "error",
+    "require-engines": "error",
+    "require-files": "error",
+    "require-homepage": "error",
+    "require-keywords": "error",
+    "require-license": "error",
+    "require-main": "error",
+    "require-name": "error",
+    "require-repository": "error",
+    "require-version": "error",
+    "valid-values-author": ["error", [
+      "Wisen Tanasa <wisen@ceilfors.com>"
+    ]],
+    "valid-values-license": ["error", [
+      "Apache-2.0"
+    ]],
+    "version-format": "error",
+    "prefer-property-order": ["error", []]
   }
 }

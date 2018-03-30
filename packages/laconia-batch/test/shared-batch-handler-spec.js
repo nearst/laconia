@@ -78,7 +78,7 @@ exports.sharedBehaviour = batchHandler => {
       });
 
       it("should have at least 0.1 second gap per call", () => {
-        expect(itemListener).toBeCalledWithGapBetween(80, 120);
+        expect(itemListener).toBeCalledWithGapBetween(50, 120);
       });
     });
 

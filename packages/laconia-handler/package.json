@@ -2,16 +2,16 @@
   "name": "laconia-handler",
   "version": "0.1.0",
   "description": "",
-  "keywords": [ "aws", "lambda", "laconia", "serverless" ],
+  "keywords": ["aws", "lambda", "laconia", "serverless"],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {
     "url": "https://github.com/ceilfors/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": [ "lib" ],
+  "files": ["lib"],
   "main": "lib/index.js",
-  "repository":  {
+  "repository": {
     "type": "git",
     "url": "https://github.com/ceilfors/laconia.git"
   },
@@ -21,13 +21,13 @@
     "compile:watch": "npm run compile -- --watch"
   },
   "dependencies": {
-    "laconia-invoke": "*",
+    "laconia-invoke": "^0.1.0",
     "lodash.isplainobject": "^4.0.6"
   },
   "devDependencies": {
-    "laconia-test-helper": "*"
+    "laconia-test-helper": "^0.1.0"
   },
   "engines": {
-    "node" : ">=6.10"
+    "node": ">=6.10"
   }
 }

@@ -2,30 +2,30 @@
   "name": "laconia-acceptance-test",
   "version": "0.1.0",
   "description": "",
-  "keywords": [ "aws", "lambda", "laconia", "serverless" ],
+  "keywords": ["aws", "lambda", "laconia", "serverless"],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {
     "url": "https://github.com/ceilfors/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": [ "lib" ],
+  "files": ["lib"],
   "main": "lib/index.js",
-  "repository":  {
+  "repository": {
     "type": "git",
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "laconia-batch": "*",
-    "laconia-handler": "*",
-    "laconia-test-helper": "*"
+    "laconia-batch": "^0.1.0",
+    "laconia-handler": "^0.1.0",
+    "laconia-test-helper": "^0.1.0"
   },
   "devDependencies": {
-    "laconia-invoke": "*",
+    "laconia-invoke": "^0.1.0",
     "serverless": "^1.26.1"
   },
   "engines": {
-    "node" : ">=6.10"
+    "node": ">=6.10"
   },
   "private": true
 }

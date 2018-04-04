@@ -1,10 +1,10 @@
 const invoke = require("./invoke");
-const basicHandler = require("./basic-handler");
+const handler = require("./handler");
 const isplainobject = require("lodash.isplainobject");
 const _ = { isPlainObject: isplainobject };
 
-module.exports = handler =>
-  basicHandler(laconiaContext => {
+module.exports = fn =>
+  handler(laconiaContext => {
     const { event, context } = laconiaContext;
     const recurse = (payload = {}) => {
       if (!_.isPlainObject(payload)) {
@@ -14,5 +14,5 @@ module.exports = handler =>
         Object.assign({}, event, payload)
       );
     };
-    return handler(laconiaContext, recurse);
+    return fn(laconiaContext, recurse);
   });

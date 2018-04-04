@@ -13,7 +13,7 @@ const getRequestIds = ticks => _.uniq(ticks.map(t => t.context.awsRequestId))
 
 jest.setTimeout(10000)
 
-describe('laconia-core basicHandler', () => {
+describe('laconia-core handler', () => {
   it('returns result', async () => {
     const result = await invoke(name('handler-basic')).requestResponse()
     expect(result).toEqual('hello')

@@ -27,7 +27,7 @@ Or via npm:
 npm install --save laconia-core
 ```
 
-### Basic Handler
+### Handler
 
 Promisifies Lambda handler. Never forget to call AWS
 Lambda's `callback` anymore. This is the base of all Laconia handlers.
@@ -38,9 +38,9 @@ for the Lambda callback as well. When an error occured, both in sync and async s
 will properly be propagated to Lambda callback.
 
 ```js
-const { basicHandler } = require('laconia-core')
+const { handler } = require('laconia-core')
 
-module.exports.handler = basicHandler(() => 'hello')
+module.exports.handler = handler(() => 'hello')
 ```
 
 ### Recursive Handler
@@ -60,7 +60,7 @@ module.exports.handler = recursiveHandler(({ event }, recurse) => {
 
 ## API
 
-### `basicHandler(fn)`
+### `handler(fn)`
 
 * `fn(laconiaContext)`
   * This `Function` is called when your Lambda is invoked
@@ -72,10 +72,10 @@ Example:
 
 ```js
 // Simple return value
-basicHandler(() => 'value')
+handler(() => 'value')
 
 // Return a promise and 'value' will be returned to the Lambda caller
-basicHandler(() => Promise.resolve('value'))
+handler(() => Promise.resolve('value'))
 ```
 
 ### `recursiveHandler(fn)`

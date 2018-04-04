@@ -1,6 +1,6 @@
-const laconiaHandler = require('../src/basic-handler')
+const laconiaHandler = require('../src/handler')
 
-describe('aws handler', () => {
+describe('handler', () => {
   let callback
 
   beforeEach(() => {

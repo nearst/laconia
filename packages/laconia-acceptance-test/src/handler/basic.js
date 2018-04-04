@@ -1,3 +1,3 @@
-const { basicHandler } = require('laconia-core')
+const { handler } = require('laconia-core')
 
-module.exports.handler = basicHandler(() => 'hello')
+module.exports.handler = handler(() => 'hello')

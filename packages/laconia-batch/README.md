@@ -75,7 +75,7 @@ handle two items, the following will happen:
 
 ## API
 
-### `dynamoDbBatchHandler({readerOptions, batchOptions})`
+### `dynamoDbBatchHandler({readerOptions, [batchOptions]})`
 
 Reads items from Dynamo DB table.
 
@@ -120,7 +120,7 @@ dynamoDbBatchHandler({
 })
 ```
 
-### `s3BatchHandler({readerOptions, batchOptions})`
+### `s3BatchHandler({readerOptions, [batchOptions]})`
 
 Reads items from an array stored in s3.
 
@@ -173,7 +173,15 @@ _This is a shared behaviour to all the batch handlers._
 batchOptions available:
 
 * `itemsPerSecond`
+  * _Optional_
+  * Rate limit will not be applied if value is not set
+  * Can be set to decimal, i.e. 0.5 will equate to 1 item per 2 second.
 * `timeNeededToRecurseInMillis`
+  * _Optional_
+  * The value set here will be used to check if the current execution is to be stopped
+  * If you have a _very slow_ item processing, the batch processor might not have enough time
+    to recurse and your Lambda execution might be timing out. You can increase this value to
+    increase the chance of the the recursion to happen
 
 Example:
 

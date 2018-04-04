@@ -1,4 +1,4 @@
-const laconiaHandler = require("../src/handler");
+const laconia = require("../src/laconia");
 
 describe("handler", () => {
   let callback;
@@ -8,18 +8,14 @@ describe("handler", () => {
   });
 
   it("should call Lambda callback with null when there is no value returned", async () => {
-    await laconiaHandler(() => {})({}, {}, callback);
+    await laconia(() => {})({}, {}, callback);
     expect(callback).toBeCalledWith(null, undefined);
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it("should delegate AWS parameters to handler function", async () => {
     const handler = jest.fn();
-    await laconiaHandler(handler)(
-      { foo: "event" },
-      { fiz: "context" },
-      callback
-    );
+    await laconia(handler)({ foo: "event" }, { fiz: "context" }, callback);
     expect(handler).toBeCalledWith({
       event: { foo: "event" },
       context: { fiz: "context" }
@@ -28,13 +24,13 @@ describe("handler", () => {
 
   describe("when synchronous code", () => {
     it("should call Lambda callback with the handler return value to Lambda callback", async () => {
-      await laconiaHandler(() => "value")({}, {}, callback);
+      await laconia(() => "value")({}, {}, callback);
       expect(callback).toBeCalledWith(null, "value");
     });
 
     it("should call Lambda callback with the error thrown", async () => {
       const error = new Error("boom");
-      await laconiaHandler(() => {
+      await laconia(() => {
         throw error;
       })({}, {}, callback);
       expect(callback).toBeCalledWith(error);
@@ -43,13 +39,13 @@ describe("handler", () => {
 
   describe("when handling promise", () => {
     it("should call Lambda callback with the handler return value to Lambda callback", async () => {
-      await laconiaHandler(() => Promise.resolve("value"))({}, {}, callback);
+      await laconia(() => Promise.resolve("value"))({}, {}, callback);
       expect(callback).toBeCalledWith(null, "value");
     });
 
     it("should call Lambda callback with the error thrown", async () => {
       const error = new Error("boom");
-      await laconiaHandler(() => Promise.reject(error))({}, {}, callback);
+      await laconia(() => Promise.reject(error))({}, {}, callback);
       expect(callback).toBeCalledWith(error);
     });
   });

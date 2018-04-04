@@ -21,7 +21,6 @@
     "laconia-test-helper": "^0.1.0"
   },
   "devDependencies": {
-    "laconia-invoke": "^0.1.0",
     "serverless": "^1.26.1"
   },
   "engines": {

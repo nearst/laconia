@@ -1,4 +1,4 @@
-const invoke = require("laconia-invoke");
+const invoke = require("./invoke");
 const basicHandler = require("./basic-handler");
 const isplainobject = require("lodash.isplainobject");
 const _ = { isPlainObject: isplainobject };

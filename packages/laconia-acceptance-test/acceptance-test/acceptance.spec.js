@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const invoke = require("laconia-invoke");
+const { invoke } = require("laconia-core");
 const tracker = require("laconia-test-helper").tracker;
 
 const prefix = "laconia-acceptance-test";

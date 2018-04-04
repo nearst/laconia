@@ -1,4 +1,4 @@
-# laconia-handler
+# laconia-core
 
 [![CircleCI](https://img.shields.io/circleci/project/github/ceilfors/laconia/master.svg)](https://circleci.com/gh/ceilfors/laconia)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
@@ -18,13 +18,13 @@ Reduces boilerplate Lambda code.
 Install Jest using yarn:
 
 ```
-yarn add laconia-handler
+yarn add laconia-core
 ```
 
 Or via npm:
 
 ```
-npm install --save laconia-handler
+npm install --save laconia-core
 ```
 
 ### Basic Handler
@@ -38,7 +38,7 @@ for the Lambda callback as well. When an error occured, both in sync and async s
 will properly be propagated to Lambda callback.
 
 ```js
-const { basicHandler } = require('laconia-handler')
+const { basicHandler } = require('laconia-core')
 
 module.exports.handler = basicHandler(() => 'hello')
 ```
@@ -49,7 +49,7 @@ Provides convenience `recurse` function that will recurse the running Lambda
 with the provided `payload`.
 
 ```js
-const { recursiveHandler } = require('laconia-handler')
+const { recursiveHandler } = require('laconia-core')
 
 module.exports.handler = recursiveHandler(({ event }, recurse) => {
   if (event.input !== 3) {

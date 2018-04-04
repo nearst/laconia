@@ -13,14 +13,14 @@ const getRequestIds = ticks => _.uniq(ticks.map(t => t.context.awsRequestId));
 
 jest.setTimeout(10000);
 
-describe("laconia-handler basicHandler", () => {
+describe("laconia-core basicHandler", () => {
   it("returns result", async () => {
     const result = await invoke(name("handler-basic")).requestResponse();
     expect(result).toEqual("hello");
   });
 });
 
-describe("laconia-handler recursiveHandler", () => {
+describe("laconia-core recursiveHandler", () => {
   const recursiveTracker = tracker("recursive", name("tracker"));
 
   beforeAll(() => recursiveTracker.clear());

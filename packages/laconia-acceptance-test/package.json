@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "laconia-batch": "^0.1.0",
-    "laconia-handler": "^0.1.0",
+    "laconia-core": "^0.1.0",
     "laconia-test-helper": "^0.1.0"
   },
   "devDependencies": {

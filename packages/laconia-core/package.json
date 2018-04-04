@@ -1,5 +1,5 @@
 {
-  "name": "laconia-handler",
+  "name": "laconia-core",
   "version": "0.1.0",
   "description": "",
   "keywords": ["aws", "lambda", "laconia", "serverless"],

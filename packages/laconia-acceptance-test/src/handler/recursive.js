@@ -1,4 +1,4 @@
-const { recursiveHandler } = require("laconia-handler");
+const { recursiveHandler } = require("laconia-core");
 const tracker = require("laconia-test-helper").tracker("recursive");
 
 module.exports.handler = recursiveHandler(({ event }, recurse) => {

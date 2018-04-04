@@ -19,7 +19,7 @@ describe('handler', () => {
     expect(handler).toBeCalledWith({event: {foo: 'event'}, context: {fiz: 'context'}})
   })
 
-  describe('when synchronous code', () => {
+  describe('when synchronous code is returned', () => {
     it('should call Lambda callback with the handler return value to Lambda callback', async () => {
       await laconia(() => 'value')({}, {}, callback)
       expect(callback).toBeCalledWith(null, 'value')
@@ -32,7 +32,7 @@ describe('handler', () => {
     })
   })
 
-  describe('when handling promise', () => {
+  describe('when promise is returned', () => {
     it('should call Lambda callback with the handler return value to Lambda callback', async () => {
       await laconia(() => Promise.resolve('value'))({}, {}, callback)
       expect(callback).toBeCalledWith(null, 'value')
@@ -41,6 +41,33 @@ describe('handler', () => {
     it('should call Lambda callback with the error thrown', async () => {
       const error = new Error('boom')
       await laconia(() => Promise.reject(error))({}, {}, callback)
+      expect(callback).toBeCalledWith(error)
+    })
+  })
+
+  describe('when function is returned', () => {
+    it('should call the function with laconiaContext', async () => {
+      const fn = jest.fn()
+      await laconia(() => fn)({}, {}, callback)
+      expect(fn).toBeCalledWith({event: {}, context: {}})
+    })
+
+    it('should call Lambda callback with the function return value to Lambda callback', async () => {
+      const fn = jest.fn().mockReturnValue('value')
+      await laconia(() => fn)({}, {}, callback)
+      expect(callback).toBeCalledWith(null, 'value')
+    })
+
+    it('should call Lambda callback with the function Promise return value to Lambda callback', async () => {
+      const fn = jest.fn().mockReturnValue(Promise.resolve('value'))
+      await laconia(() => fn)({}, {}, callback)
+      expect(callback).toBeCalledWith(null, 'value')
+    })
+
+    it('should call Lambda callback with the error thrown inside the function', async () => {
+      const error = new Error('boom')
+      const fn = jest.fn().mockImplementation(() => { throw error })
+      await laconia(() => fn)({}, {}, callback)
       expect(callback).toBeCalledWith(error)
     })
   })

@@ -43,15 +43,15 @@ const { laconia } = require('laconia-core')
 module.exports.handler = laconia(() => 'hello')
 ```
 
-### Recursive Handler
+#### Recurse
 
 Provides convenience `recurse` function that will recurse the running Lambda
 with the provided `payload`.
 
 ```js
-const { recursiveHandler } = require('laconia-core')
+const { laconia, recurse } = require('laconia-core')
 
-module.exports.handler = recursiveHandler(({ event }, recurse) => {
+module.exports.handler = laconia(({ event }) => {
   if (event.input !== 3) {
     return recurse({ input: event.input + 1 })
   }
@@ -78,21 +78,16 @@ laconia(() => 'value')
 laconia(() => Promise.resolve('value'))
 ```
 
-### `recursiveHandler(fn)`
+### `recurse(payload = {})`
 
-* `fn(laconiaContext, recurse)`
-
-  * This `Function` is called when your Lambda is invoked
-  * Will be called with `laconiaContext` object, which can be destructured to `{event, context}`
-  * `recurse(payload = {})`
-    * This `Function` can be called to recurse the Lambda
-    * `payload` will be made available in the invoked Lambda's `event` object
-    * Do not call this function to stop the recursion
+* This `Function` can be called to recurse the Lambda
+* `payload` will be made available in the invoked Lambda's `event` object
+* Do not call this function to stop the recursion
 
 Example:
 
 ```js
-recursiveHandler(({ event }, recurse) => {
+laconia(({ event }, { recurse }) => {
   if (event.input !== 3) {
     return recurse({ input: event.input + 1 })
   }

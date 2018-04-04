@@ -1,4 +1,4 @@
-const { recursiveHandler } = require('laconia-core')
+const { laconia, recurse } = require('laconia-core')
 const BatchProcessor = require('./BatchProcessor')
 const EventEmitter = require('events')
 
@@ -11,14 +11,14 @@ module.exports = (itemReader,
     timeNeededToRecurseInMillis = 5000,
     itemsPerSecond
   }) => {
-  const handler = recursiveHandler((laconiaContext, recurse) => {
+  const handler = laconia((laconiaContext) => {
     const { event, context } = laconiaContext
     const batchProcessor = new BatchProcessor(
         itemReader.next.bind(itemReader),
         (cursor) => context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis,
         { itemsPerSecond }
       )
-      .on('stop', (cursor) => { recurse({ cursor }) })
+      .on('stop', (cursor) => { recurse({ cursor })(laconiaContext) })
     forwardEvents(batchProcessor, ['stop', 'item', 'end'], handler, laconiaContext)
 
     handler.emit('start', laconiaContext)

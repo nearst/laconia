@@ -20,7 +20,7 @@ describe("laconia-core handler", () => {
   });
 });
 
-describe("laconia-core recursiveHandler", () => {
+describe("laconia-core recursion", () => {
   const recursiveTracker = tracker("recursive", name("tracker"));
 
   beforeAll(() => recursiveTracker.clear());

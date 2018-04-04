@@ -18,10 +18,6 @@ The following modules are available as NPM packages:
 
   [Documentation](packages/laconia-batch/README.md)
 
-* laconia-invoke: Improves the user experience of invoking Lambdas.
-
-  [Documentation](packages/laconia-invoke/README.md)
-
 ## License
 
 [Apache License 2.0](LICENSE)

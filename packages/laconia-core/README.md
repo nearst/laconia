@@ -98,3 +98,67 @@ recursiveHandler(({ event }, recurse) => {
   }
 })
 ```
+
+## Lambda Invocation
+
+`invoke` provides improved and more predictable user experience of invoking other Lambda by:
+
+* Automatically stringifying the JSON payload
+* Throwing an error when FunctionError is returned
+* Throwing an error when statusCode returned is not expected
+
+```js
+const { invoke } = require('laconia-core')
+
+// Waits for Lambda response before continuing
+await invoke('function-name').requestResponse({ foo: 'bar' })
+
+// Invokes a Lambda and not wait for it to return
+await invoke('function-name').fireAndForget({ foo: 'bar' })
+```
+
+### API
+
+#### `invoke(functionName, options)`
+
+* `functionName` specifies the Lambda function name that will be invoked
+* `options`:
+  * `lambda = new AWS.Lambda()`
+    * _Optional_
+    * Set this option if there's a need to cutomise the AWS.Lambda instantation
+    * Used for Lambda invocation
+
+Example:
+
+```js
+// Customise AWS.Lambda instantiation
+invoke('name', {
+  lambda: new AWS.Lambda({ apiVersion: '2015-03-31' })
+})
+```
+
+#### `requestResponse(payload)`
+
+Synchronous Lambda invocation.
+
+* `payload`
+  * The payload used for the Lambda invocation
+
+Example:
+
+```js
+invoke('fn').requestResponse({ foo: 'bar' })
+```
+
+#### `fireAndForget(payload)`
+
+Asynchronous Lambda invocation.
+
+* `payload`
+  * The payload used for the Lambda invocation
+
+Example:
+
+```js
+invoke('fn').fireAndForget({ foo: 'bar' })
+```

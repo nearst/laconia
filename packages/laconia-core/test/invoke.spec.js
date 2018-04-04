@@ -1,9 +1,9 @@
-const invoke = require('../src/index.js')
+const invoke = require('../src/invoke.js')
 const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const { yields } = require('laconia-test-helper')
 
-describe('aws invoke', () => {
+describe('invoke', () => {
   let invokeMock
 
   beforeEach(() => {

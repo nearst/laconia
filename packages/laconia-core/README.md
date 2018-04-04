@@ -38,9 +38,9 @@ for the Lambda callback as well. When an error occured, both in sync and async s
 will properly be propagated to Lambda callback.
 
 ```js
-const { handler } = require('laconia-core')
+const { laconia } = require('laconia-core')
 
-module.exports.handler = handler(() => 'hello')
+module.exports.handler = laconia(() => 'hello')
 ```
 
 ### Recursive Handler
@@ -60,7 +60,7 @@ module.exports.handler = recursiveHandler(({ event }, recurse) => {
 
 ## API
 
-### `handler(fn)`
+### `laconia(fn)`
 
 * `fn(laconiaContext)`
   * This `Function` is called when your Lambda is invoked
@@ -72,10 +72,10 @@ Example:
 
 ```js
 // Simple return value
-handler(() => 'value')
+laconia(() => 'value')
 
 // Return a promise and 'value' will be returned to the Lambda caller
-handler(() => Promise.resolve('value'))
+laconia(() => Promise.resolve('value'))
 ```
 
 ### `recursiveHandler(fn)`

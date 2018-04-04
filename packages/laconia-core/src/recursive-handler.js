@@ -1,9 +1,9 @@
 const invoke = require('./invoke')
-const handler = require('./handler')
+const laconia = require('./laconia')
 const isplainobject = require('lodash.isplainobject')
 const _ = { isPlainObject: isplainobject }
 
-module.exports = (fn) => handler(laconiaContext => {
+module.exports = (fn) => laconia(laconiaContext => {
   const {event, context} = laconiaContext
   const recurse = (payload = {}) => {
     if (!_.isPlainObject(payload)) {

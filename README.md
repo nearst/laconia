@@ -10,9 +10,9 @@
 
 The following modules are available as NPM packages:
 
-* laconia-handler: Reduces boilerplate Lambda code.
+* laconia-core: Reduces boilerplate Lambda code.
 
-  [Documentation](packages/laconia-handler/README.md)
+  [Documentation](packages/laconia-core/README.md)
 
 * laconia-batch: Reads large number of records without time limit.
 

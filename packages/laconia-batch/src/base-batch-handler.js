@@ -1,4 +1,4 @@
-const { recursiveHandler } = require('laconia-handler')
+const { recursiveHandler } = require('laconia-core')
 const BatchProcessor = require('./BatchProcessor')
 const EventEmitter = require('events')
 

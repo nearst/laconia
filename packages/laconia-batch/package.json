@@ -1,7 +1,7 @@
 {
   "name": "laconia-batch",
   "version": "0.1.0",
-  "description": "",
+  "description": "Reads large number of records without Lambda time limit.",
   "keywords": ["aws", "lambda", "laconia", "serverless"],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {

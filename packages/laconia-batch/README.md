@@ -4,9 +4,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 
-> 🛡️ Laconia is a lightweight AWS Lambda development framework that brings focus back on your real work.
+> 🛡️ Laconia — Micro AWS Lambda framework
 
-Reads large number of records without time limit.
+Reads large number of records without Lambda time limit.
 
 AWS Lambda maximum execution duration per request is 300 seconds, hence it is
 impossible to utilise a Lambda to execute a long running task. `laconia-batch`
@@ -20,7 +20,7 @@ which hides the time limitaton problem.
 
 ## Usage
 
-Install Jest using yarn:
+Install laconia-batch using yarn:
 
 ```
 yarn add laconia-batch

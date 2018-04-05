@@ -4,9 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 
-> 🛡️ Laconia is a lightweight AWS Lambda development framework that brings focus back on your real work.
-
-Reduces boilerplate Lambda code.
+> 🛡️ Laconia — Micro AWS Lambda framework
 
 ## Documentation
 
@@ -15,7 +13,7 @@ Reduces boilerplate Lambda code.
 
 ## Usage
 
-Install Jest using yarn:
+Install laconia-core using yarn:
 
 ```
 yarn add laconia-core
@@ -27,15 +25,27 @@ Or via npm:
 npm install --save laconia-core
 ```
 
-### Handler
+Create a new js file and the following capabilities will be made
+available for you:
 
-Promisifies Lambda handler. Never forget to call AWS
-Lambda's `callback` anymore. This is the base of all Laconia handlers.
+```js
+const { laconia, recurse invoke } = require('laconia-core')
+```
 
-Value returned in the `fn` will be used for the Lambda callback.
-If a promise is returned, the resolved value will be used
-for the Lambda callback as well. When an error occured, both in sync and async scenario, the error
-will properly be propagated to Lambda callback.
+## The `laconia` function
+
+The `laconia` function will be the main entry of your Lambda execution. It wraps the
+original Lambda signature so that you won't forget to call AWS
+Lambda's `callback` anymore.
+
+To respond to your Lambda caller, you can do the following:
+
+* return object: This will used for calling Lambda `callback`
+* return Promise: The promise will be resolved/rejected, and `callback` will called appropriately
+* throw error: The error object will be used for calling Lambda `callback`
+* return `recurse(payload)` function: Recurse the currently running Lambda
+* -_in progress_- return `send(statusCode, data)` function: Return an API Gateway Lambda Proxy Integration response
+* -_in progress_- return `sendError(statusCode, error)` function: Return an API Gateway Lambda Proxy Integration response
 
 ```js
 const { laconia } = require('laconia-core')
@@ -43,30 +53,13 @@ const { laconia } = require('laconia-core')
 module.exports.handler = laconia(() => 'hello')
 ```
 
-#### Recurse
+### API
 
-Provides convenience `recurse` function that will recurse the running Lambda
-with the provided `payload`.
-
-```js
-const { laconia, recurse } = require('laconia-core')
-
-module.exports.handler = laconia(({ event }) => {
-  if (event.input !== 3) {
-    return recurse({ input: event.input + 1 })
-  }
-})
-```
-
-## API
-
-### `laconia(fn)`
+#### `laconia(fn)`
 
 * `fn(laconiaContext)`
   * This `Function` is called when your Lambda is invoked
   * Will be called with `laconiaContext` object, which can be destructured to `{event, context}`
-  * `return` value will be returned to the Lambda caller
-  * `return` a Promise and it will be handled appopriately
 
 Example:
 
@@ -78,28 +71,12 @@ laconia(() => 'value')
 laconia(() => Promise.resolve('value'))
 ```
 
-### `recurse(payload = {})`
-
-* This `Function` can be called to recurse the Lambda
-* `payload` will be made available in the invoked Lambda's `event` object
-* Do not call this function to stop the recursion
-
-Example:
-
-```js
-laconia(({ event }, { recurse }) => {
-  if (event.input !== 3) {
-    return recurse({ input: event.input + 1 })
-  }
-})
-```
-
 ## Lambda Invocation
 
-`invoke` provides improved and more predictable user experience of invoking other Lambda by:
+Laconia provides more predictable user experience of invoking other Lambda by:
 
 * Automatically stringifying the JSON payload
-* Throwing an error when FunctionError is returned
+* Throwing an error when FunctionError is returned instead of failing silently
 * Throwing an error when statusCode returned is not expected
 
 ```js
@@ -107,7 +84,6 @@ const { invoke } = require('laconia-core')
 
 // Waits for Lambda response before continuing
 await invoke('function-name').requestResponse({ foo: 'bar' })
-
 // Invokes a Lambda and not wait for it to return
 await invoke('function-name').fireAndForget({ foo: 'bar' })
 ```
@@ -156,4 +132,36 @@ Example:
 
 ```js
 invoke('fn').fireAndForget({ foo: 'bar' })
+```
+
+## Recursion
+
+To be used together with `laconia` function to recurse the currently running Lambda.
+
+```js
+const { laconia, recurse } = require('laconia-core')
+
+module.exports.handler = laconia(({ event }) => {
+  if (event.input !== 3) {
+    return recurse({ input: event.input + 1 })
+  }
+})
+```
+
+### API
+
+#### `recurse(payload = {})`
+
+* This `Function` can be called to recurse the Lambda
+* `payload` will be made available in the invoked Lambda's `event` object
+* Do not call this function to stop the recursion
+
+Example:
+
+```js
+laconia(({ event }, { recurse }) => {
+  if (event.input !== 3) {
+    return recurse({ input: event.input + 1 })
+  }
+})
 ```

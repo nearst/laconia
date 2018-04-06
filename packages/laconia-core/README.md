@@ -6,11 +6,6 @@
 
 > 🛡️ Laconia — Micro AWS Lambda framework
 
-## Documentation
-
-* [Usage](#usage)
-* [API Reference](#api)
-
 ## Usage
 
 Install laconia-core using yarn:
@@ -31,8 +26,6 @@ available for you:
 ```js
 const { laconia, recurse invoke } = require('laconia-core')
 ```
-
-## The `laconia` function
 
 The `laconia` function will be the main entry of your Lambda execution. It wraps the
 original Lambda signature so that you won't forget to call AWS

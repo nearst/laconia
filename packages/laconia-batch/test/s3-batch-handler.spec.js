@@ -1,13 +1,12 @@
 const AWSMock = require('aws-sdk-mock')
-const s3BatchHandler = require('../src/s3-batch-handler')
+const laconiaBatch = require('../src/laconiaBatch')
+const s3 = require('../src/s3')
 const { sharedBehaviour } = require('./shared-batch-handler-spec')
 const { s3Body } = require('laconia-test-helper')
 
 describe('s3 batch handler', () => {
-  let s3
-
   beforeEach(() => {
-    s3 = { getObject: jest.fn().mockImplementation(s3Body(
+    const awsS3 = { getObject: jest.fn().mockImplementation(s3Body(
       {
         music: [
           {Artist: 'Foo'},
@@ -17,7 +16,7 @@ describe('s3 batch handler', () => {
       }
       ))
     }
-    AWSMock.mock('S3', 'getObject', s3.getObject)
+    AWSMock.mock('S3', 'getObject', awsS3.getObject)
   })
 
   afterEach(() => {
@@ -25,15 +24,12 @@ describe('s3 batch handler', () => {
   })
 
   sharedBehaviour(batchOptions => {
-    return s3BatchHandler({
-      readerOptions: {
-        path: 'music',
-        s3Params: {
-          Bucket: 'foo',
-          Key: 'bar'
-        }
-      },
-      batchOptions
-    })
+    return laconiaBatch(_ => s3({
+      path: 'music',
+      s3Params: {
+        Bucket: 'foo',
+        Key: 'bar'
+      }
+    }), batchOptions)
   })
 })

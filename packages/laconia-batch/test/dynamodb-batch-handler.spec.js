@@ -1,5 +1,6 @@
 const AWSMock = require('aws-sdk-mock')
-const dynamodbBatchHandler = require('../src/dynamodb-batch-handler')
+const laconiaBatch = require('../src/laconiaBatch')
+const dynamoDb = require('../src/dynamoDb')
 const { sharedBehaviour } = require('./shared-batch-handler-spec')
 const { yields } = require('laconia-test-helper')
 
@@ -25,12 +26,9 @@ describe('dynamodb batch handler', () => {
   })
 
   sharedBehaviour(batchOptions => {
-    return dynamodbBatchHandler({
-      readerOptions: {
-        operation: 'SCAN',
-        dynamoDbParams: { TableName: 'Music' }
-      },
-      batchOptions
-    })
+    return laconiaBatch(_ => dynamoDb({
+      operation: 'SCAN',
+      dynamoDbParams: { TableName: 'Music' }
+    }), batchOptions)
   })
 })

@@ -1,2 +1,3 @@
-module.exports.s3BatchHandler = require('./s3-batch-handler')
-module.exports.dynamoDbBatchHandler = require('./dynamodb-batch-handler')
+module.exports.laconiaBatch = require('./laconiaBatch')
+module.exports.s3 = require('./s3')
+module.exports.dynamoDb = require('./dynamoDb')

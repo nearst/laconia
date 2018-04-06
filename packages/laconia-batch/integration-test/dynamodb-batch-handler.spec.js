@@ -3,7 +3,8 @@ const AWSMock = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
 const DynamoDbMusicRepository = require('./DynamoDbMusicRepository')
 const { sharedBehaviour } = require('../test/shared-batch-handler-spec')
-const dynamoDbBatchHandler = require('../src/dynamodb-batch-handler')
+const dynamoDb = require('../src/dynamoDb')
+const laconiaBatch = require('../src/laconiaBatch')
 
 AWS.config.credentials = new AWS.Credentials('fake', 'fake', 'fake')
 
@@ -41,30 +42,25 @@ describe('dynamodb batch handler', () => {
   })
 
   sharedBehaviour(batchOptions => {
-    return dynamoDbBatchHandler({
-      readerOptions: {
-        operation: 'SCAN',
-        dynamoDbParams: { TableName: 'Music' },
-        documentClient
-      },
-      batchOptions
-    })
+    return laconiaBatch(_ => dynamoDb({
+      operation: 'SCAN',
+      dynamoDbParams: { TableName: 'Music' },
+      documentClient
+    }), batchOptions)
   })
 
   it('should support query operation', async () => {
-    await dynamoDbBatchHandler({
-      readerOptions: {
-        operation: 'QUERY',
-        dynamoDbParams: {
-          ExpressionAttributeValues: {
-            ':v1': 'Fiz'
-          },
-          KeyConditionExpression: 'Artist = :v1',
-          TableName: 'Music'
+    await laconiaBatch(_ => dynamoDb({
+      operation: 'QUERY',
+      dynamoDbParams: {
+        ExpressionAttributeValues: {
+          ':v1': 'Fiz'
         },
-        documentClient
-      }
-    })
+        KeyConditionExpression: 'Artist = :v1',
+        TableName: 'Music'
+      },
+      documentClient
+    }))
     .on('item', itemListener)(event, context, callback)
 
     expect(itemListener).toHaveBeenCalledTimes(1)
@@ -72,16 +68,14 @@ describe('dynamodb batch handler', () => {
   })
 
   it('should be able to process all items when Limit is set to 1', async () => {
-    await dynamoDbBatchHandler({
-      readerOptions: {
-        operation: 'SCAN',
-        dynamoDbParams: {
-          TableName: 'Music',
-          Limit: 1
-        },
-        documentClient
-      }
-    })
+    await laconiaBatch(_ => dynamoDb({
+      operation: 'SCAN',
+      dynamoDbParams: {
+        TableName: 'Music',
+        Limit: 1
+      },
+      documentClient
+    }))
     .on('item', itemListener)(event, context, callback)
 
     expect(itemListener).toHaveBeenCalledTimes(3)
@@ -91,20 +85,18 @@ describe('dynamodb batch handler', () => {
   })
 
   it('should be able to process items when filtered', async () => {
-    await dynamoDbBatchHandler({
-      readerOptions: {
-        operation: 'SCAN',
-        dynamoDbParams: {
-          TableName: 'Music',
-          Limit: 1,
-          ExpressionAttributeValues: {
-            ':a': 'Bar'
-          },
-          FilterExpression: 'Artist = :a'
+    await laconiaBatch(_ => dynamoDb({
+      operation: 'SCAN',
+      dynamoDbParams: {
+        TableName: 'Music',
+        Limit: 1,
+        ExpressionAttributeValues: {
+          ':a': 'Bar'
         },
-        documentClient
-      }
-    })
+        FilterExpression: 'Artist = :a'
+      },
+      documentClient
+    }))
     .on('item', itemListener)(event, context, callback)
 
     expect(itemListener).toHaveBeenCalledTimes(1)
@@ -125,20 +117,18 @@ describe('dynamodb batch handler', () => {
 
     it('should process all items when filtered and limited', async(done) => {
       context.getRemainingTimeInMillis = () => 5000
-      const handler = dynamoDbBatchHandler({
-        readerOptions: {
-          operation: 'SCAN',
-          dynamoDbParams: {
-            TableName: 'Music',
-            ExpressionAttributeValues: {
-              ':a': 'Bar'
-            },
-            Limit: 1,
-            FilterExpression: 'Artist = :a'
+      const handler = laconiaBatch(_ => dynamoDb({
+        operation: 'SCAN',
+        dynamoDbParams: {
+          TableName: 'Music',
+          ExpressionAttributeValues: {
+            ':a': 'Bar'
           },
-          documentClient
-        }
-      })
+          Limit: 1,
+          FilterExpression: 'Artist = :a'
+        },
+        documentClient
+      }))
       .on('item', itemListener)
       .on('end', () => {
         expect(invokeMock).toHaveBeenCalledTimes(3)

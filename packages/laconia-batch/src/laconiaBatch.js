@@ -6,13 +6,13 @@ const forwardEvents = (from, eventNames, to, laconiaContext) => {
   eventNames.forEach(eventName => from.on(eventName, (...args) => to.emit(eventName, laconiaContext, ...args)))
 }
 
-module.exports = (itemReader,
-  {
-    timeNeededToRecurseInMillis = 5000,
-    itemsPerSecond
-  }) => {
+module.exports = (reader, {
+  timeNeededToRecurseInMillis = 5000,
+  itemsPerSecond
+} = {}) => {
   const handler = laconia((laconiaContext) => {
     const { event, context } = laconiaContext
+    const itemReader = reader(laconiaContext)
     const batchProcessor = new BatchProcessor(
         itemReader.next.bind(itemReader),
         (cursor) => context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis,

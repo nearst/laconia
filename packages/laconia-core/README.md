@@ -24,7 +24,7 @@ Create a new js file and the following capabilities will be made
 available for you:
 
 ```js
-const { laconia, recurse invoke } = require('laconia-core')
+const { laconia, recurse, invoke } = require('laconia-core')
 ```
 
 The `laconia` function will be the main entry of your Lambda execution. It wraps the

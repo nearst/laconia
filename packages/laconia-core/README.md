@@ -6,6 +6,10 @@
 
 > 🛡️ Laconia — Micro AWS Lambda framework
 
+## FAQ
+
+Check out [FAQ](https://github.com/ceilfors/laconia#faq)
+
 ## Usage
 
 Install laconia-core using yarn:

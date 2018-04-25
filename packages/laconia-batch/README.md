@@ -13,6 +13,10 @@ impossible to utilise a Lambda to execute a long running task. `laconia-batch`
 handles your batch processing needs by providing a beautifully designed API
 which abstracts the time limitaton problem.
 
+## FAQ
+
+Check out [FAQ](https://github.com/ceilfors/laconia#faq)
+
 ## Usage
 
 Install laconia-batch using yarn:

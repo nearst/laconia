@@ -156,7 +156,8 @@ module.exports.handler = laconia(({ event }) => {
 Example:
 
 ```js
-laconia(({ event }, { recurse }) => {
+const { laconia, recurse } = require('laconia-core')
+laconia(({ event }) => {
   if (event.input !== 3) {
     return recurse({ input: event.input + 1 })
   }

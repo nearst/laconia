@@ -24,6 +24,12 @@ describe("handler", () => {
     );
   });
 
+  it("should be able to run handler without executing Lambda logic", () => {
+    const handler = jest.fn();
+    laconia(handler).run({ foo: "bar" });
+    expect(handler).toBeCalledWith(expect.objectContaining({ foo: "bar" }));
+  });
+
   describe("when synchronous code is returned", () => {
     it("should call Lambda callback with the handler return value to Lambda callback", async () => {
       await laconia(() => "value")({}, {}, callback);

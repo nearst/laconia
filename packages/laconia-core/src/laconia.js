@@ -1,16 +1,10 @@
-const isfunction = require("lodash.isfunction");
-const _ = { isFunction: isfunction };
+const coreLaconiaContext = require("./coreLaconiaContext");
 
 module.exports = fn => async (event, context, callback) => {
-  const laconiaContext = { event, context };
+  const laconiaContext = coreLaconiaContext({ event, context });
   try {
     const result = await fn(laconiaContext);
-    if (_.isFunction(result)) {
-      const functionResult = await result(laconiaContext);
-      callback(null, functionResult);
-    } else {
-      callback(null, result);
-    }
+    callback(null, result);
   } catch (err) {
     callback(err);
   }

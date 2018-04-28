@@ -21,7 +21,6 @@
     "compile:watch": "npm run compile -- --watch"
   },
   "dependencies": {
-    "lodash.isfunction": "^3.0.9",
     "lodash.isplainobject": "^4.0.6"
   },
   "devDependencies": {

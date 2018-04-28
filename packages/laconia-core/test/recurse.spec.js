@@ -29,7 +29,7 @@ describe("recurse", () => {
   });
 
   it("recurses when the recurse callback is called", async () => {
-    await recurse()(laconiaContext);
+    await recurse(laconiaContext)();
 
     expect(invokeMock).toBeCalledWith(
       expect.objectContaining({
@@ -45,11 +45,11 @@ describe("recurse", () => {
     invokeMock.mockImplementation(() => {
       throw error;
     });
-    await expect(recurse()(laconiaContext)).rejects.toThrow(error);
+    await expect(recurse(laconiaContext)()).rejects.toThrow(error);
   });
 
   it("throws error when payload given is not an object", async () => {
-    await expect(() => recurse("non object")(laconiaContext)).toThrow(
+    await expect(() => recurse(laconiaContext)("non object")).toThrow(
       expect.objectContaining({
         message: expect.stringContaining("Payload must be an object")
       })
@@ -58,9 +58,9 @@ describe("recurse", () => {
 
   it("should merge recurse payload and event object", async () => {
     laconiaContext.event = { key1: "1", key2: "2" };
-    await recurse({ cursor: { index: 0, lastEvaluatedKey: "bar" } })(
-      laconiaContext
-    );
+    await recurse(laconiaContext)({
+      cursor: { index: 0, lastEvaluatedKey: "bar" }
+    });
 
     expect(invokeMock).toBeCalledWithPayload({
       key1: "1",

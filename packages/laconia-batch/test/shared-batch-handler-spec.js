@@ -38,9 +38,13 @@ exports.sharedBehaviour = batchHandler => {
 
       it("should notify listeners on lifecycle events", () => {
         expect(startListener).toHaveBeenCalledTimes(1);
-        expect(startListener).toHaveBeenCalledWith({ event, context });
+        expect(startListener).toHaveBeenCalledWith(
+          expect.objectContaining({ event })
+        );
         expect(endListener).toHaveBeenCalledTimes(1);
-        expect(endListener).toHaveBeenCalledWith({ event, context });
+        expect(startListener).toHaveBeenCalledWith(
+          expect.objectContaining({ event })
+        );
         expect(stopListener).not.toHaveBeenCalled();
 
         expect(startListener).toHaveBeenCalledBefore(itemListener);
@@ -50,15 +54,15 @@ exports.sharedBehaviour = batchHandler => {
       it("should process all items", async () => {
         expect(itemListener).toHaveBeenCalledTimes(3);
         expect(itemListener).toHaveBeenCalledWith(
-          { event, context },
+          expect.objectContaining({ event }),
           { Artist: "Foo" }
         );
         expect(itemListener).toHaveBeenCalledWith(
-          { event, context },
+          expect.objectContaining({ event }),
           { Artist: "Bar" }
         );
         expect(itemListener).toHaveBeenCalledWith(
-          { event, context },
+          expect.objectContaining({ event }),
           { Artist: "Fiz" }
         );
       });
@@ -100,7 +104,7 @@ exports.sharedBehaviour = batchHandler => {
         expect(startListener).toHaveBeenCalledTimes(1);
         expect(stopListener).toHaveBeenCalledTimes(1);
         expect(stopListener).toHaveBeenCalledWith(
-          { event, context },
+          expect.objectContaining({ event }),
           { index: 0 }
         );
         expect(endListener).not.toHaveBeenCalled();

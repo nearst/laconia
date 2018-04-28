@@ -2,7 +2,7 @@ const invoke = require("./invoke");
 const isplainobject = require("lodash.isplainobject");
 const _ = { isPlainObject: isplainobject };
 
-module.exports = (payload = {}) => ({ event, context }) => {
+module.exports = ({ event, context }) => (payload = {}) => {
   if (!_.isPlainObject(payload)) {
     throw new Error("Payload must be an object");
   }

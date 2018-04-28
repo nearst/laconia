@@ -1,6 +1,5 @@
 const laconiaContext = require("../src/coreLaconiaContext");
 const invoke = require("../src/invoke");
-const recurse = require("../src/recurse");
 
 describe("laconiaContext", () => {
   it("should include invoke function", () => {
@@ -8,9 +7,11 @@ describe("laconiaContext", () => {
     expect(result).toEqual(expect.objectContaining({ invoke }));
   });
 
-  it("should include recurse function", () => {
+  it("should include instantiated recurse function", () => {
     const result = laconiaContext({ foo: "event" }, { fiz: "context" });
-    expect(result).toEqual(expect.objectContaining({ recurse }));
+    expect(result).toEqual(
+      expect.objectContaining({ recurse: expect.any(Function) })
+    );
   });
 
   it("should include process.env", () => {

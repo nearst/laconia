@@ -1,4 +1,4 @@
-const { laconia, recurse } = require("laconia-core");
+const { laconia } = require("laconia-core");
 const BatchProcessor = require("./BatchProcessor");
 const EventEmitter = require("events");
 
@@ -13,7 +13,7 @@ module.exports = (
   { timeNeededToRecurseInMillis = 5000, itemsPerSecond } = {}
 ) => {
   const handler = laconia(laconiaContext => {
-    const { event, context } = laconiaContext;
+    const { event, context, recurse } = laconiaContext;
     const itemReader = reader(laconiaContext);
     const batchProcessor = new BatchProcessor(
       itemReader.next.bind(itemReader),
@@ -21,7 +21,7 @@ module.exports = (
         context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis,
       { itemsPerSecond }
     ).on("stop", cursor => {
-      recurse({ cursor })(laconiaContext);
+      recurse({ cursor });
     });
     forwardEvents(
       batchProcessor,

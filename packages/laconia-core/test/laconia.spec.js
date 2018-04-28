@@ -16,10 +16,12 @@ describe("handler", () => {
   it("should delegate AWS parameters to handler function", async () => {
     const handler = jest.fn();
     await laconia(handler)({ foo: "event" }, { fiz: "context" }, callback);
-    expect(handler).toBeCalledWith({
-      event: { foo: "event" },
-      context: { fiz: "context" }
-    });
+    expect(handler).toBeCalledWith(
+      expect.objectContaining({
+        event: { foo: "event" },
+        context: { fiz: "context" }
+      })
+    );
   });
 
   describe("when synchronous code is returned", () => {
@@ -46,35 +48,6 @@ describe("handler", () => {
     it("should call Lambda callback with the error thrown", async () => {
       const error = new Error("boom");
       await laconia(() => Promise.reject(error))({}, {}, callback);
-      expect(callback).toBeCalledWith(error);
-    });
-  });
-
-  describe("when function is returned", () => {
-    it("should call the function with laconiaContext", async () => {
-      const fn = jest.fn();
-      await laconia(() => fn)({}, {}, callback);
-      expect(fn).toBeCalledWith({ event: {}, context: {} });
-    });
-
-    it("should call Lambda callback with the function return value to Lambda callback", async () => {
-      const fn = jest.fn().mockReturnValue("value");
-      await laconia(() => fn)({}, {}, callback);
-      expect(callback).toBeCalledWith(null, "value");
-    });
-
-    it("should call Lambda callback with the function Promise return value to Lambda callback", async () => {
-      const fn = jest.fn().mockReturnValue(Promise.resolve("value"));
-      await laconia(() => fn)({}, {}, callback);
-      expect(callback).toBeCalledWith(null, "value");
-    });
-
-    it("should call Lambda callback with the error thrown inside the function", async () => {
-      const error = new Error("boom");
-      const fn = jest.fn().mockImplementation(() => {
-        throw error;
-      });
-      await laconia(() => fn)({}, {}, callback);
       expect(callback).toBeCalledWith(error);
     });
   });

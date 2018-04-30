@@ -30,6 +30,20 @@ describe("handler", () => {
     expect(handler).toBeCalledWith(expect.objectContaining({ foo: "bar" }));
   });
 
+  xit("should fire init lifecycle", () => {
+    const handler = jest.fn();
+    const initListener = jest.fn();
+    laconia(handler).on("init", initListener)(
+      { foo: "event" },
+      { fiz: "context" },
+      callback
+    );
+
+    expect(initListener).toBeCalledWith(
+      expect.objectContaining({ foo: "bar" })
+    );
+  });
+
   describe("when synchronous code is returned", () => {
     it("should call Lambda callback with the handler return value to Lambda callback", async () => {
       await laconia(() => "value")({}, {}, callback);

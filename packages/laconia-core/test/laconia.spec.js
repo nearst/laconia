@@ -30,10 +30,10 @@ describe("handler", () => {
     expect(handler).toBeCalledWith(expect.objectContaining({ foo: "bar" }));
   });
 
-  it("should fire init lifecycle", () => {
+  it("should fire init lifecycle", async () => {
     const handler = jest.fn();
     const initListener = jest.fn();
-    laconia(handler).on("init", initListener)(
+    await laconia(handler).on("init", initListener)(
       { foo: "event" },
       { fiz: "context" },
       callback
@@ -42,9 +42,9 @@ describe("handler", () => {
     expect(initListener).toBeCalled();
   });
 
-  it("should be able to configure laconiaContext in init lifecycle", () => {
+  it("should be able to configure laconiaContext in init lifecycle", async () => {
     const handler = jest.fn();
-    laconia(handler)
+    await laconia(handler)
       .on("init", lc => lc.inject({ foo: "bar" }))
       .on("init", lc => lc.inject({ boo: "baz" }))(
       { foo: "event" },
@@ -56,6 +56,20 @@ describe("handler", () => {
       expect.objectContaining({
         foo: "bar",
         boo: "baz"
+      })
+    );
+  });
+
+  it("should be able to async configure laconiaContext in init lifecycle", async () => {
+    const handler = jest.fn();
+    await laconia(handler).on("init", async lc => {
+      const instance = await Promise.resolve({ foo: "bar" });
+      lc.inject(instance);
+    })({ foo: "event" }, { fiz: "context" }, callback);
+
+    expect(handler).toBeCalledWith(
+      expect.objectContaining({
+        foo: "bar"
       })
     );
   });

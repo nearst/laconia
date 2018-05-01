@@ -1,10 +1,12 @@
-const EventEmitter = require("events");
+const Emittery = require("emittery");
 const coreLaconiaContext = require("./coreLaconiaContext");
 
 module.exports = fn => {
+  const emitter = new Emittery();
   const laconia = async (event, context, callback) => {
     const laconiaContext = coreLaconiaContext({ event, context });
-    laconia.emit("init", laconiaContext);
+    await emitter.emit("init", laconiaContext);
+
     try {
       const result = await fn(laconiaContext);
       callback(null, result);
@@ -12,6 +14,12 @@ module.exports = fn => {
       callback(err);
     }
   };
-  laconia.run = laconiaContext => fn(laconiaContext);
-  return Object.assign(laconia, EventEmitter.prototype);
+
+  return Object.assign(laconia, {
+    run: laconiaContext => fn(laconiaContext),
+    on: (eventName, listener) => {
+      emitter.on(eventName, listener);
+      return laconia;
+    }
+  });
 };

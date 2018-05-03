@@ -6,7 +6,7 @@ describe("handler-with-invoke", () => {
       event: {
         payload: "data"
       },
-      invoke: {
+      hello: {
         requestResponse: jest.fn().mockReturnValue(Promise.resolve("result"))
       }
     };

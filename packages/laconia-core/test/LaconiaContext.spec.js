@@ -1,18 +1,18 @@
 const LaconiaContext = require("../src/LaconiaContext");
 
 describe("laconiaContext", () => {
-  it("should be able to inject new component", () => {
+  it("should be able to register new component", () => {
     const lc = new LaconiaContext({});
-    lc.inject({ foo: "bar" });
+    lc.register({ foo: "bar" });
     expect(lc).toHaveProperty("foo", "bar");
-    lc.inject({ boo: "baz" });
+    lc.register({ boo: "baz" });
     expect(lc).toHaveProperty("foo", "bar");
     expect(lc).toHaveProperty("boo", "baz");
   });
 
   it("should be able to override component", () => {
     const lc = new LaconiaContext({});
-    lc.inject({ env: "bar" });
+    lc.register({ env: "bar" });
     expect(lc).toHaveProperty("env", "bar");
   });
 });

@@ -10,7 +10,7 @@ module.exports = class CoreLaconiaContext extends LaconiaContext {
       recurse: recurse(baseContext),
       env: process.env
     };
-    this.inject(coreComponents);
-    this._injectWithPrefix(coreComponents);
+    this.register(coreComponents);
+    this._registerWithPrefix(coreComponents);
   }
 };

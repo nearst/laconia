@@ -19,7 +19,7 @@ describe("laconiaContext", () => {
 
   it("should make built-in component available after being overridden", () => {
     const lc = new CoreLaconiaContext({});
-    lc.inject({ env: "bar" });
+    lc.register({ env: "bar" });
     expect(lc).toHaveProperty("$env", process.env);
   });
 });

@@ -45,8 +45,8 @@ describe("handler", () => {
   it("should be able to configure laconiaContext in init lifecycle", async () => {
     const handler = jest.fn();
     await laconia(handler)
-      .on("init", lc => lc.inject({ foo: "bar" }))
-      .on("init", lc => lc.inject({ boo: "baz" }))(
+      .on("init", lc => lc.register({ foo: "bar" }))
+      .on("init", lc => lc.register({ boo: "baz" }))(
       { foo: "event" },
       { fiz: "context" },
       callback
@@ -64,7 +64,7 @@ describe("handler", () => {
     const handler = jest.fn();
     await laconia(handler).on("init", async lc => {
       const instance = await Promise.resolve({ foo: "bar" });
-      lc.inject(instance);
+      lc.register(instance);
     })({ foo: "event" }, { fiz: "context" }, callback);
 
     expect(handler).toBeCalledWith(

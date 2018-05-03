@@ -8,16 +8,16 @@ const prefixKeys = (prefix, object) => {
 
 module.exports = class LaconiaContext {
   constructor(baseContext) {
-    this.inject(baseContext);
+    this.register(baseContext);
   }
 
-  inject(instance) {
+  register(instance) {
     Object.keys(instance).forEach(key => {
       this[key] = instance[key];
     });
   }
 
-  _injectWithPrefix(instance) {
-    this.inject(prefixKeys("$", instance));
+  _registerWithPrefix(instance) {
+    this.register(prefixKeys("$", instance));
   }
 };

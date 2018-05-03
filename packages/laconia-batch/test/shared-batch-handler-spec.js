@@ -1,5 +1,6 @@
 const AWSMock = require("aws-sdk-mock");
 const { matchers } = require("laconia-test-helper");
+const { LaconiaContext } = require("laconia-core");
 expect.extend(matchers);
 
 exports.sharedBehaviour = batchHandler => {
@@ -38,13 +39,9 @@ exports.sharedBehaviour = batchHandler => {
 
       it("should notify listeners on lifecycle events", () => {
         expect(startListener).toHaveBeenCalledTimes(1);
-        expect(startListener).toHaveBeenCalledWith(
-          expect.objectContaining({ event })
-        );
+        expect(startListener).toHaveBeenCalledWith(expect.any(LaconiaContext));
         expect(endListener).toHaveBeenCalledTimes(1);
-        expect(startListener).toHaveBeenCalledWith(
-          expect.objectContaining({ event })
-        );
+        expect(startListener).toHaveBeenCalledWith(expect.any(LaconiaContext));
         expect(stopListener).not.toHaveBeenCalled();
 
         expect(startListener).toHaveBeenCalledBefore(itemListener);
@@ -53,18 +50,15 @@ exports.sharedBehaviour = batchHandler => {
 
       it("should process all items", async () => {
         expect(itemListener).toHaveBeenCalledTimes(3);
-        expect(itemListener).toHaveBeenCalledWith(
-          expect.objectContaining({ event }),
-          { Artist: "Foo" }
-        );
-        expect(itemListener).toHaveBeenCalledWith(
-          expect.objectContaining({ event }),
-          { Artist: "Bar" }
-        );
-        expect(itemListener).toHaveBeenCalledWith(
-          expect.objectContaining({ event }),
-          { Artist: "Fiz" }
-        );
+        expect(itemListener).toHaveBeenCalledWith(expect.any(LaconiaContext), {
+          Artist: "Foo"
+        });
+        expect(itemListener).toHaveBeenCalledWith(expect.any(LaconiaContext), {
+          Artist: "Bar"
+        });
+        expect(itemListener).toHaveBeenCalledWith(expect.any(LaconiaContext), {
+          Artist: "Fiz"
+        });
       });
 
       it("should not recurse", () => {
@@ -103,10 +97,9 @@ exports.sharedBehaviour = batchHandler => {
       it("should notify listeners on lifecycle events", () => {
         expect(startListener).toHaveBeenCalledTimes(1);
         expect(stopListener).toHaveBeenCalledTimes(1);
-        expect(stopListener).toHaveBeenCalledWith(
-          expect.objectContaining({ event }),
-          { index: 0 }
-        );
+        expect(stopListener).toHaveBeenCalledWith(expect.any(LaconiaContext), {
+          index: 0
+        });
         expect(endListener).not.toHaveBeenCalled();
       });
 
@@ -153,15 +146,18 @@ exports.sharedBehaviour = batchHandler => {
             try {
               expect(invokeMock).toHaveBeenCalledTimes(2);
               expect(itemListener).toHaveBeenCalledTimes(3);
-              expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
-                Artist: "Foo"
-              });
-              expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
-                Artist: "Bar"
-              });
-              expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
-                Artist: "Fiz"
-              });
+              expect(itemListener).toHaveBeenCalledWith(
+                expect.any(LaconiaContext),
+                { Artist: "Foo" }
+              );
+              expect(itemListener).toHaveBeenCalledWith(
+                expect.any(LaconiaContext),
+                { Artist: "Bar" }
+              );
+              expect(itemListener).toHaveBeenCalledWith(
+                expect.any(LaconiaContext),
+                { Artist: "Fiz" }
+              );
               done();
             } catch (ex) {
               done.fail(ex);

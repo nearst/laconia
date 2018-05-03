@@ -1,4 +1,5 @@
 const laconia = require("../src/laconia");
+const LaconiaContext = require("../src/LaconiaContext");
 
 describe("handler", () => {
   let callback;
@@ -39,7 +40,7 @@ describe("handler", () => {
       callback
     );
 
-    expect(initListener).toBeCalled();
+    expect(initListener).toHaveBeenCalledWith(expect.any(LaconiaContext));
   });
 
   it("should be able to configure laconiaContext in init lifecycle", async () => {

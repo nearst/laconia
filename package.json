@@ -12,7 +12,7 @@
     "test:acceptance": "npm run deploy-acceptance && npm run acceptance-test",
     "test:all":
       "npm run test && npm run test:integration && npm run test:acceptance",
-    "test:jslint": "standard",
+    "test:jslint": "eslint ./ --ignore-path .gitignore",
     "test:packagelint":
       "lerna exec pjl-cli -- -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json",
     "deploy-acceptance":
@@ -44,12 +44,20 @@
     "babel-preset-env": "^1.6.1",
     "coveralls": "^3.0.0",
     "dynamodb-local": "0.0.18",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.1.0",
     "jest": "^22.0.3",
     "jest-extended": "^0.6.0",
     "lerna": "^2.5.1",
     "lodash": "^4.17.5",
     "npm-package-json-lint": "^2.11.2",
-    "standard": "^10.0.3"
+    "prettier": "^1.12.1"
   },
   "jest": {
     "coveragePathIgnorePatterns": [
@@ -59,8 +67,5 @@
       "packages/laconia-.*/lib"
     ],
     "setupTestFrameworkScriptFile": "jest-extended"
-  },
-  "standard": {
-    "envs": ["jest"]
   }
 }

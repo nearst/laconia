@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Micro AWS Lambda framework",
   "scripts": {
-    "clean": "lerna clean --yes || true",
+    "clean": "npm run clean:lib && npm run clean:lerna",
+    "clean:lib": "lerna exec --parallel rm -- -rf lib",
+    "clean:lerna": "lerna clean --yes || true",
     "postclean": "rm -rf node_modules",
     "postinstall": "lerna bootstrap",
     "test": "jest '/test' --coverage",

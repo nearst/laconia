@@ -1,4 +1,4 @@
-const Emittery = require("emittery");
+const Emittery = require("emittery/legacy");
 const CoreLaconiaContext = require("./CoreLaconiaContext");
 
 module.exports = fn => {

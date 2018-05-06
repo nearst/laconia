@@ -1,7 +1,7 @@
-const handler = require("./handler-with-invoke");
+const handler = require("./handler-with-invoke").handler;
 
 describe("handler-with-invoke", () => {
-  xit("should invoke hello lambda", async () => {
+  it("should invoke hello lambda", async () => {
     const laconiaContext = {
       event: {
         payload: "data"
@@ -13,6 +13,6 @@ describe("handler-with-invoke", () => {
     const response = await handler.run(laconiaContext);
 
     expect(response).toEqual("result");
-    expect(laconiaContext.invoke.requestResponse).toBeCalledWith("data");
+    expect(laconiaContext.hello.requestResponse).toBeCalledWith("data");
   });
 });

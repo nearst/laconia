@@ -1,5 +1,6 @@
 const { laconia } = require("laconia-core");
 const BatchProcessor = require("./BatchProcessor");
+const EventEmitter = require("events");
 
 const forwardEvents = (from, eventNames, to, laconiaContext) => {
   eventNames.forEach(eventName =>
@@ -32,5 +33,5 @@ module.exports = (
     handler.emit("start", laconiaContext);
     return batchProcessor.start(event.cursor);
   });
-  return handler;
+  return Object.assign(handler, EventEmitter.prototype);
 };

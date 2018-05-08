@@ -18,10 +18,11 @@
     "test:packagelint":
       "lerna exec pjl-cli -- -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json",
     "deploy-acceptance":
-      "AWS_REGION=eu-west-1 lerna exec --scope laconia-acceptance-test sls deploy",
+      "lerna exec --scope laconia-acceptance-test npm run deploy",
     "remove-acceptance":
-      "AWS_REGION=eu-west-1 lerna exec --scope laconia-acceptance-test sls remove",
-    "acceptance-test": "AWS_REGION=eu-west-1 jest '/laconia-acceptance-test'",
+      "lerna exec --scope laconia-acceptance-test npm run remove",
+    "acceptance-test":
+      "lerna exec --scope laconia-acceptance-test npm run test",
     "posttest": "npm run test:jslint && npm run test:packagelint",
     "publish:coverage": "cat ./coverage/lcov.info | coveralls",
     "compile:watch": "lerna run --parallel compile:watch"

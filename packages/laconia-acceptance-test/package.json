@@ -15,6 +15,11 @@
     "type": "git",
     "url": "https://github.com/ceilfors/laconia.git"
   },
+  "scripts": {
+    "test": "AWS_REGION=eu-west-1 jest",
+    "deploy": "AWS_REGION=eu-west-1 sls deploy",
+    "remove": "AWS_REGION=eu-west-1 sls remove"
+  },
   "dependencies": {
     "laconia-batch": "^0.1.0",
     "laconia-core": "^0.1.0",

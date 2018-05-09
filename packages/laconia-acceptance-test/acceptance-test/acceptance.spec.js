@@ -2,7 +2,7 @@ const _ = require("lodash");
 const { invoke } = require("laconia-core");
 const tracker = require("laconia-test-helper").tracker;
 
-const prefix = "laconia-acceptance-test";
+const prefix = `laconia-acceptance-${process.env.NODE_VERSION}`;
 const name = name => `${prefix}-${name}`;
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3();

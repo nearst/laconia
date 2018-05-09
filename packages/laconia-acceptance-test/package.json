@@ -16,9 +16,15 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "scripts": {
-    "test": "AWS_REGION=eu-west-1 jest",
-    "deploy": "AWS_REGION=eu-west-1 sls deploy",
-    "remove": "AWS_REGION=eu-west-1 sls remove"
+    "test": "npm run test:6.10",
+    "test:6.10":
+      "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs6.10 NODE_VERSION=node6 jest",
+    "deploy": "npm run deploy:6.10",
+    "deploy:6.10":
+      "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs6.10 NODE_VERSION=node6 sls deploy",
+    "remove": "npm run remove:6.10",
+    "remove:6.10":
+      "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs6.10 NODE_VERSION=node6 sls remove"
   },
   "dependencies": {
     "laconia-batch": "^0.1.0",

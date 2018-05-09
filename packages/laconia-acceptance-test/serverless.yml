@@ -2,9 +2,9 @@ service: laconia-acceptance
 
 provider:
   name: aws
-  runtime: nodejs6.10
-  stage: test
-  region: eu-west-1
+  runtime: ${env:NODE_RUNTIME}
+  stage: ${env:NODE_VERSION}
+  region: ${env:AWS_REGION}
   iamRoleStatements:
     - Effect: "Allow"
       Action:

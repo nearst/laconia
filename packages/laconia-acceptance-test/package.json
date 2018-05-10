@@ -9,24 +9,19 @@
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": ["lib"],
-  "main": "lib/index.js",
+  "files": ["src"],
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "scripts": {
-    "test": "npm run test:6 && npm run test:8",
-    "test:6": "AWS_REGION=eu-west-1 NODE_VERSION=node6 jest",
+    "test": "npm run test:8",
     "test:8": "AWS_REGION=eu-west-1 NODE_VERSION=node8 jest",
-    "deploy": "npm run deploy:6 && npm run deploy:8",
-    "deploy:6":
-      "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs6.10 NODE_VERSION=node6 sls deploy",
+    "deploy": "npm run deploy:8",
     "deploy:8":
       "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls deploy",
-    "remove": "npm run remove:6 && npm run remove:8",
-    "remove:6":
-      "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs6.10 NODE_VERSION=node6 sls remove",
+    "remove": "npm run remove:8",
     "remove:8":
       "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
   },
@@ -39,7 +34,7 @@
     "serverless": "^1.26.1"
   },
   "engines": {
-    "node": ">=6.10"
+    "node": ">=8.10"
   },
   "private": true
 }

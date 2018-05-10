@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "description": "Micro AWS Lambda framework",
   "scripts": {
-    "clean": "npm run clean:lib && npm run clean:lerna",
-    "clean:lib": "lerna exec --parallel rm -- -rf lib",
+    "clean": "npm run clean:lerna",
     "clean:lerna": "lerna clean --yes || true",
     "postclean": "rm -rf node_modules",
     "postinstall": "lerna bootstrap",
@@ -24,8 +23,7 @@
     "acceptance-test":
       "lerna exec --scope laconia-acceptance-test npm run test",
     "posttest": "npm run test:jslint && npm run test:packagelint",
-    "publish:coverage": "cat ./coverage/lcov.info | coveralls",
-    "compile:watch": "lerna run --parallel compile:watch"
+    "publish:coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -40,11 +38,6 @@
   "devDependencies": {
     "aws-sdk": "^2.0.1",
     "aws-sdk-mock": "^1.7.0",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-jest": "^22.0.4",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
     "coveralls": "^3.0.0",
     "dynamodb-local": "0.0.18",
     "eslint": "^4.19.1",
@@ -66,8 +59,7 @@
     "coveragePathIgnorePatterns": [
       ".*test/",
       ".serverless",
-      "laconia-test-helper",
-      "packages/laconia-.*/lib"
+      "laconia-test-helper"
     ],
     "setupTestFrameworkScriptFile": "jest-extended"
   }

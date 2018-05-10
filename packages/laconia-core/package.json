@@ -9,16 +9,11 @@
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": ["lib"],
-  "main": "lib/index.js",
+  "files": ["src"],
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ceilfors/laconia.git"
-  },
-  "scripts": {
-    "compile": "babel src -d lib",
-    "prepublish": "npm run compile",
-    "compile:watch": "npm run compile -- --watch"
   },
   "dependencies": {
     "emittery": "^0.3.0",
@@ -31,6 +26,6 @@
     "aws-sdk": "^2.0.1"
   },
   "engines": {
-    "node": ">=6.10"
+    "node": ">=8.10"
   }
 }

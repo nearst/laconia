@@ -3,11 +3,9 @@
 ## Getting Started
 
 1.  Install nvm
-2.  Run `nvm install 8` to install node 8
+2.  Run `nvm install 8.10` to install node 8
 3.  Run `npm i`  
     This will also run `lerna bootstrap` for you.
-4.  Run `npm compile:watch`  
-    This command will run `babel` on source change.
 
 ## Acceptance Test
 

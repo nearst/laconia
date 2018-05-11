@@ -26,6 +26,7 @@
       "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
   },
   "dependencies": {
+    "aws-event-mocks": "^0.0.0",
     "laconia-batch": "^0.1.0",
     "laconia-core": "^0.1.0",
     "laconia-test-helper": "^0.1.0"

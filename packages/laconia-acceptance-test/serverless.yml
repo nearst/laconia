@@ -26,6 +26,7 @@ custom:
   trackerBucketName: ${self:custom.fullName}-tracker
   testBucketName: ${self:custom.fullName}-bucket
   testDynamoDbBatchTableName: ${self:custom.fullName}-batch
+  orderDynamoDbBatchTableName: ${self:custom.fullName}-Order
   
 functions:
   handler-basic:
@@ -64,3 +65,16 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:custom.testDynamoDbBatchTableName}
+    OrderTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions: 
+          - AttributeName: "OrderId"
+            AttributeType: "S"
+        KeySchema: 
+          - AttributeName: "OrderId"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.orderDynamoDbBatchTableName}

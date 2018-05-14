@@ -1,10 +1,18 @@
 const { laconia } = require("laconia-core");
-const OrderRepository = require("./OrderRepository");
+const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
+const UuidIdGenerator = require("./UuidIdGenerator");
 
-module.exports.handler = laconia(({ event, orderRepository }) => {
-  return orderRepository.save(event.body.order);
+module.exports.handler = laconia(({ event, orderRepository, idGenerator }) => {
+  const order = Object.assign(
+    {
+      OrderId: idGenerator.generate()
+    },
+    event.body.order
+  );
+  return orderRepository.save(order);
 }).on("init", lc => {
   lc.register({
-    orderRepository: new OrderRepository(lc.env.ORDER_TABLE_NAME)
+    orderRepository: new DynamoDbOrderRepository(lc.env.ORDER_TABLE_NAME),
+    idGenerator: new UuidIdGenerator()
   });
 });

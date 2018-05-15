@@ -27,6 +27,10 @@ custom:
   testBucketName: ${self:custom.fullName}-bucket
   testDynamoDbBatchTableName: ${self:custom.fullName}-batch
   orderDynamoDbBatchTableName: ${self:custom.fullName}-Order
+  remover:
+     buckets:
+       - ${self:custom.testBucketName}
+       - ${self:custom.trackerBucketName}
   
 functions:
   handler-basic:

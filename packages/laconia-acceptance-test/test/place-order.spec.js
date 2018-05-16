@@ -17,9 +17,9 @@ describe("place-order", () => {
     event = createEvent({
       template: "aws:apiGateway",
       merge: {
-        body: {
+        body: JSON.stringify({
           order
-        }
+        })
       }
     });
 
@@ -39,6 +39,14 @@ describe("place-order", () => {
 
     expect(lc.orderRepository.save).toBeCalledWith(
       expect.objectContaining(order)
+    );
+  });
+
+  it("should return orderId upon successful save", async () => {
+    const response = await handler.run(lc);
+
+    expect(response).toEqual(
+      expect.objectContaining({ body: JSON.stringify({ orderId: "123" }) })
     );
   });
 

@@ -28,14 +28,15 @@
   "dependencies": {
     "laconia-batch": "^0.1.0",
     "laconia-core": "^0.1.0",
+    "pino": "^4.16.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
     "aws-event-mocks": "^0.0.0",
     "frisby": "^2.0.16",
     "laconia-test-helper": "^0.1.0",
-    "serverless-s3-remover": "^0.4.1",
-    "serverless": "^1.27.2"
+    "serverless": "^1.27.2",
+    "serverless-s3-remover": "^0.4.1"
   },
   "engines": {
     "node": ">=8.10"

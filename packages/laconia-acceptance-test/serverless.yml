@@ -16,6 +16,7 @@ provider:
         - "lambda:InvokeAsync"
         - "dynamodb:Scan"
         - "dynamodb:Query"
+        - "dynamodb:PutItem"
       Resource: "*"
   environment:
     TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
@@ -45,6 +46,14 @@ functions:
     timeout: 6
     environment:
       TABLE_NAME: ${self:custom.testDynamoDbBatchTableName}
+  place-order:
+    handler: src/place-order.handler
+    events:
+      - http:
+          path: order
+          method: post
+    environment:
+      ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
 
 resources:
   Resources:

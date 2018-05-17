@@ -1,4 +1,8 @@
 const _ = require("lodash");
+const frisby = require("frisby");
+const uuidv4 = require("uuid/v4");
+const Joi = frisby.Joi;
+const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 const { invoke } = require("laconia-core");
 const tracker = require("laconia-test-helper").tracker;
 
@@ -12,6 +16,62 @@ const items = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 const getRequestIds = ticks => _.uniq(ticks.map(t => t.context.awsRequestId));
 
 jest.setTimeout(10000);
+
+const deleteAllItems = async tableName => {
+  const params = { TableName: tableName };
+  const data = await documentClient.scan(params).promise();
+  for (const item of data.Items) {
+    const deleteParams = {
+      TableName: tableName,
+      Key: { OrderId: item.OrderId }
+    };
+    await documentClient.delete(deleteParams).promise();
+  }
+};
+
+const createOrder = () => ({
+  restaurantId: 5,
+  customer: {
+    name: "Sam"
+  },
+  menu: {
+    food: "chicken"
+  },
+  paymentReference: uuidv4()
+});
+
+const placeOrder = async order => {
+  const response = await frisby
+    .post(
+      "https://y3lie63fw8.execute-api.eu-west-1.amazonaws.com/node8/order",
+      { order }
+    )
+    .expect("status", 200)
+    .expect("jsonTypes", {
+      orderId: Joi.string()
+    });
+
+  return response.json;
+};
+
+describe("place-order", () => {
+  let orderRepository;
+
+  beforeAll(async () => {
+    await deleteAllItems(name("Order"));
+    orderRepository = new DynamoDbOrderRepository(name("Order"));
+  });
+
+  it("should store order data in Order Table", async () => {
+    const order = createOrder();
+    const response = await placeOrder(order);
+    const orderId = response.orderId;
+
+    const savedOrder = await orderRepository.find(orderId);
+    expect(savedOrder).toEqual(expect.objectContaining(order));
+    expect(savedOrder.OrderId).toEqual(orderId);
+  });
+});
 
 describe("laconia-core handler", () => {
   it("returns result", async () => {

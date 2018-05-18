@@ -54,18 +54,35 @@ const placeOrder = async order => {
   return response.json;
 };
 
-describe("place-order", () => {
+describe("order flow", () => {
   let orderRepository;
+  let orderMap;
 
   beforeAll(async () => {
     await deleteAllItems(name("Order"));
     orderRepository = new DynamoDbOrderRepository(name("Order"));
   });
 
-  it("should store order data in Order Table", async () => {
-    const order = createOrder();
-    const response = await placeOrder(order);
-    const orderId = response.orderId;
+  beforeAll(async () => {
+    const orders = Array(10)
+      .fill()
+      .map(createOrder);
+    const responses = await Promise.all(orders.map(order => placeOrder(order)));
+    const orderIds = responses.map(response => response.orderId);
+
+    orderMap = orders.reduce((acc, order, i) => {
+      acc[orderIds[i]] = order;
+      return acc;
+    }, {});
+  });
+
+  it("should store all placed orders in Order Table", async () => {
+    Object.keys(orderMap).forEach(async orderId => {
+      const savedOrder = await orderRepository.find(orderId);
+      expect(savedOrder).toEqual(expect.objectContaining(orderMap[orderId]));
+      expect(savedOrder.OrderId).toEqual(orderId);
+    });
+  });
 
     const savedOrder = await orderRepository.find(orderId);
     expect(savedOrder).toEqual(expect.objectContaining(order));

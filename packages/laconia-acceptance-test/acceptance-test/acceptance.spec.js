@@ -57,11 +57,17 @@ const placeOrder = async order => {
 describe("order flow", () => {
   let orderRepository;
   let orderMap;
+  const captureCardPaymentTracker = tracker(
+    name("capture-card-payment"),
+    name("tracker")
+  );
 
   beforeAll(async () => {
     await deleteAllItems(name("Order"));
     orderRepository = new DynamoDbOrderRepository(name("Order"));
   });
+
+  beforeAll(() => captureCardPaymentTracker.clear());
 
   beforeAll(async () => {
     const orders = Array(10)
@@ -84,9 +90,16 @@ describe("order flow", () => {
     });
   });
 
-    const savedOrder = await orderRepository.find(orderId);
-    expect(savedOrder).toEqual(expect.objectContaining(order));
-    expect(savedOrder.OrderId).toEqual(orderId);
+  it("should capture all card payments", async () => {
+    await invoke(name("process-card-payments")).fireAndForget();
+    await captureCardPaymentTracker.waitUntil(10);
+    const ticks = await captureCardPaymentTracker.getTicks();
+    const capturedPaymentReferences = ticks.sort();
+    const paymentReferences = Object.keys(orderMap)
+      .map(orderId => orderMap[orderId].paymentReference)
+      .sort();
+
+    expect(capturedPaymentReferences).toEqual(paymentReferences);
   });
 });
 

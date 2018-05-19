@@ -54,6 +54,14 @@ functions:
           method: post
     environment:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
+  process-card-payments:
+    timeout: 6
+    handler: src/process-card-payments.handler
+    environment:
+      CAPTURE_CARD_PAYMENT_FUNCTION_NAME: ${self:custom.fullName}-capture-card-payment
+      ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
+  capture-card-payment:
+    handler: src/capture-card-payment.handler
 
 resources:
   Resources:

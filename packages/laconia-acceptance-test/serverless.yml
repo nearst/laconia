@@ -1,5 +1,9 @@
 service: laconia-acceptance
 
+plugins:
+ - serverless-s3-remover
+ - serverless-s3-sync
+
 provider:
   name: aws
   runtime: ${env:NODE_RUNTIME}
@@ -25,6 +29,7 @@ provider:
 custom:
   fullName: ${self:service}-${self:provider.stage}
   trackerBucketName: ${self:custom.fullName}-tracker
+  restaurantBucketName: ${self:custom.fullName}-restaurant
   testBucketName: ${self:custom.fullName}-bucket
   testDynamoDbBatchTableName: ${self:custom.fullName}-batch
   orderDynamoDbBatchTableName: ${self:custom.fullName}-Order
@@ -32,6 +37,9 @@ custom:
      buckets:
        - ${self:custom.testBucketName}
        - ${self:custom.trackerBucketName}
+  s3Sync:
+    - bucketName: ${self:custom.restaurantBucketName}
+      localDir: src/resources
   
 functions:
   handler-basic:
@@ -69,6 +77,10 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.trackerBucketName}
+    RestaurantBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.restaurantBucketName}
     TestBucket:
       Type: AWS::S3::Bucket
       Properties:

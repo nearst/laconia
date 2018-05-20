@@ -36,7 +36,8 @@
     "frisby": "^2.0.16",
     "laconia-test-helper": "^0.1.0",
     "serverless": "^1.27.2",
-    "serverless-s3-remover": "^0.4.1"
+    "serverless-s3-remover": "^0.4.1",
+    "serverless-s3-sync": "^1.6.1"
   },
   "engines": {
     "node": ">=8.10"

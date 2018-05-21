@@ -95,8 +95,8 @@ describe("order flow", () => {
     await captureCardPaymentTracker.waitUntil(10);
     const ticks = await captureCardPaymentTracker.getTicks();
     const capturedPaymentReferences = ticks.sort();
-    const paymentReferences = Object.keys(orderMap)
-      .map(orderId => orderMap[orderId].paymentReference)
+    const paymentReferences = Object.values(orderMap)
+      .map(order => order.paymentReference)
       .sort();
 
     expect(capturedPaymentReferences).toEqual(paymentReferences);

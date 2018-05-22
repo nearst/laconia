@@ -63,13 +63,19 @@ functions:
     environment:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
   process-card-payments:
-    timeout: 6
+    timeout: 6 # Force recursion
     handler: src/process-card-payments.handler
     environment:
       CAPTURE_CARD_PAYMENT_FUNCTION_NAME: ${self:custom.fullName}-capture-card-payment
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
   capture-card-payment:
     handler: src/capture-card-payment.handler
+  calculate-total-order:
+    timeout: 6 # Force recursion
+    handler: src/calculate-total-order.handler
+    environment:
+      RESTAURANT_BUCKET_NAME: ${self:custom.restaurantBucketName}
+      ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
 
 resources:
   Resources:

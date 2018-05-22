@@ -29,15 +29,16 @@ const deleteAllItems = async tableName => {
   }
 };
 
-const createOrder = () => ({
-  restaurantId: 5,
+const createOrder = (restaurantId, total) => ({
+  restaurantId,
   customer: {
     name: "Sam"
   },
   menu: {
     food: "chicken"
   },
-  paymentReference: uuidv4()
+  paymentReference: uuidv4(),
+  total
 });
 
 const placeOrder = async order => {
@@ -62,17 +63,32 @@ describe("order flow", () => {
     name("tracker")
   );
 
+  const calculateTotalOrderTracker = tracker(
+    name("calculate-total-order"),
+    name("tracker")
+  );
+
   beforeAll(async () => {
     await deleteAllItems(name("Order"));
     orderRepository = new DynamoDbOrderRepository(name("Order"));
   });
 
   beforeAll(() => captureCardPaymentTracker.clear());
+  beforeAll(() => calculateTotalOrderTracker.clear());
 
   beforeAll(async () => {
-    const orders = Array(10)
-      .fill()
-      .map(createOrder);
+    const orders = [
+      { restaurantId: 1, total: 10 },
+      { restaurantId: 2, total: 3 },
+      { restaurantId: 2, total: 5 },
+      { restaurantId: 5, total: 7 },
+      { restaurantId: 5, total: 8 },
+      { restaurantId: 6, total: 10 },
+      { restaurantId: 6, total: 1 },
+      { restaurantId: 6, total: 20 },
+      { restaurantId: 9, total: 100 },
+      { restaurantId: 9, total: 10 }
+    ].map(({ restaurantId, total }) => createOrder(restaurantId, total));
     const responses = await Promise.all(orders.map(order => placeOrder(order)));
     const orderIds = responses.map(response => response.orderId);
 
@@ -90,27 +106,57 @@ describe("order flow", () => {
     });
   });
 
-  it("should capture all card payments", async () => {
-    await invoke(name("process-card-payments")).fireAndForget();
-    await captureCardPaymentTracker.waitUntil(10);
-    const ticks = await captureCardPaymentTracker.getTicks();
-    const capturedPaymentReferences = ticks.sort();
-    const paymentReferences = Object.values(orderMap)
-      .map(order => order.paymentReference)
-      .sort();
+  it(
+    "should capture all card payments",
+    async () => {
+      await invoke(name("process-card-payments")).fireAndForget();
+      await captureCardPaymentTracker.waitUntil(10);
+      const ticks = await captureCardPaymentTracker.getTicks();
+      const capturedPaymentReferences = ticks.sort();
+      const paymentReferences = Object.values(orderMap)
+        .map(order => order.paymentReference)
+        .sort();
 
-    expect(capturedPaymentReferences).toEqual(paymentReferences);
-  });
+      expect(capturedPaymentReferences).toEqual(paymentReferences);
+    },
+    20000
+  );
+
+  it(
+    "should calculate total order for every restaurants",
+    async () => {
+      await invoke(name("calculate-total-order")).fireAndForget();
+      await calculateTotalOrderTracker.waitUntil(10);
+      const ticks = await calculateTotalOrderTracker.getTicks();
+      const actualTotalOrder = ticks;
+
+      const expectedTotalOrder = [
+        { restaurantId: 1, total: 10 },
+        { restaurantId: 2, total: 8 },
+        { restaurantId: 3, total: 0 },
+        { restaurantId: 4, total: 0 },
+        { restaurantId: 5, total: 15 },
+        { restaurantId: 6, total: 31 },
+        { restaurantId: 7, total: 0 },
+        { restaurantId: 8, total: 0 },
+        { restaurantId: 9, total: 110 },
+        { restaurantId: 10, total: 0 }
+      ];
+
+      expect(actualTotalOrder).toEqual(expectedTotalOrder);
+    },
+    20000
+  );
 });
 
-describe("laconia-core handler", () => {
+xdescribe("laconia-core handler", () => {
   it("returns result", async () => {
     const result = await invoke(name("handler-basic")).requestResponse();
     expect(result).toEqual("hello");
   });
 });
 
-describe("laconia-core recursion", () => {
+xdescribe("laconia-core recursion", () => {
   const recursiveTracker = tracker("recursive", name("tracker"));
 
   beforeAll(() => recursiveTracker.clear());
@@ -122,7 +168,7 @@ describe("laconia-core recursion", () => {
   });
 });
 
-describe("laconia-batch s3-batch-handler", () => {
+xdescribe("laconia-batch s3-batch-handler", () => {
   const s3BatchTracker = tracker("batch-s3", name("tracker"));
 
   beforeAll(() =>
@@ -148,7 +194,7 @@ describe("laconia-batch s3-batch-handler", () => {
   });
 });
 
-describe("laconia-batch dynamodb-batch-handler", () => {
+xdescribe("laconia-batch dynamodb-batch-handler", () => {
   const dynamoDbBatchTracker = tracker("batch-dynamoDb", name("tracker"));
 
   beforeAll(() =>

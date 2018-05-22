@@ -26,4 +26,18 @@ module.exports = class DynamoDbOrderRepository {
     const data = await this.documentClient.query(params).promise();
     return data.Items[0];
   }
+
+  async findAll() {
+    const params = {
+      TableName: this.tableName
+    };
+
+    const data = await this.documentClient.scan(params).promise();
+    return data.Items;
+  }
+
+  async findByRestaurantId(restaurantId) {
+    const orders = await this.findAll();
+    return orders.filter(order => order.restaurantId === restaurantId);
+  }
 };

@@ -80,7 +80,7 @@ describe("BatchProcessor", () => {
       const batchProcessor = createBatchProcessor(1000);
       await batchProcessor.start();
 
-      expect(itemListener).toBeCalledWithGapBetween(0, 10);
+      expect(itemListener).toBeCalledWithGapBetween(0, 15);
     });
   });
 });

@@ -24,36 +24,20 @@ provider:
       Resource: "*"
   environment:
     TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
-    TEST_BUCKET_NAME: ${self:custom.testBucketName}
 
 custom:
   fullName: ${self:service}-${self:provider.stage}
   trackerBucketName: ${self:custom.fullName}-tracker
   restaurantBucketName: ${self:custom.fullName}-restaurant
-  testBucketName: ${self:custom.fullName}-bucket
-  testDynamoDbBatchTableName: ${self:custom.fullName}-batch
   orderDynamoDbBatchTableName: ${self:custom.fullName}-Order
   remover:
      buckets:
-       - ${self:custom.testBucketName}
        - ${self:custom.trackerBucketName}
   s3Sync:
     - bucketName: ${self:custom.restaurantBucketName}
       localDir: src/resources
   
 functions:
-  handler-basic:
-    handler: src/handler/basic.handler
-  handler-recursive:
-    handler: src/handler/recursive.handler
-  batch-s3:
-    handler: src/batch/s3.handler
-    timeout: 6
-  batch-dynamodb:
-    handler: src/batch/dynamodb.handler
-    timeout: 6
-    environment:
-      TABLE_NAME: ${self:custom.testDynamoDbBatchTableName}
   place-order:
     handler: src/place-order.handler
     events:
@@ -87,23 +71,6 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.restaurantBucketName}
-    TestBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:custom.testBucketName}
-    TestDynamoDbBatchTable:
-      Type: "AWS::DynamoDB::Table"
-      Properties:
-        AttributeDefinitions: 
-          - AttributeName: "ArtistId"
-            AttributeType: "S"
-        KeySchema: 
-          - AttributeName: "ArtistId"
-            KeyType: "HASH"
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:custom.testDynamoDbBatchTableName}
     OrderTable:
       Type: "AWS::DynamoDB::Table"
       Properties:

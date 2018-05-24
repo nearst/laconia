@@ -17,7 +17,7 @@ module.exports = class DynamoDbOrderRepository {
   async find(orderId) {
     const params = {
       TableName: this.tableName,
-      KeyConditionExpression: "OrderId = :orderId",
+      KeyConditionExpression: "orderId = :orderId",
       ExpressionAttributeValues: {
         ":orderId": orderId
       }

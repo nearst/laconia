@@ -50,14 +50,14 @@ describe("place-order", () => {
     );
   });
 
-  it("should set OrderId to order body", async () => {
+  it("should set orderId to order body", async () => {
     lc.idGenerator.generate.mockReturnValueOnce("123");
     await handler.run(lc);
 
     expect(lc.orderRepository.save).toHaveBeenCalledTimes(1);
     const orderResult = lc.orderRepository.save.mock.calls[0][0];
 
-    expect(orderResult.OrderId).toBeString();
+    expect(orderResult.orderId).toBeString();
   });
 
   it("should call id generator to generate random order id on every call", async () => {
@@ -73,7 +73,7 @@ describe("place-order", () => {
     const order1 = lc.orderRepository.save.mock.calls[0][0];
     const order2 = lc.orderRepository.save.mock.calls[1][0];
 
-    expect(order1.OrderId).toEqual("123");
-    expect(order2.OrderId).toEqual("456");
+    expect(order1.orderId).toEqual("123");
+    expect(order2.orderId).toEqual("456");
   });
 });

@@ -8,7 +8,7 @@ module.exports.handler = laconia(
     const orderId = idGenerator.generate();
     const order = Object.assign(
       {
-        OrderId: orderId
+        orderId
       },
       JSON.parse(event.body).order
     );

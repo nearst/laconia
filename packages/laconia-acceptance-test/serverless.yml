@@ -29,7 +29,7 @@ custom:
   fullName: ${self:service}-${self:provider.stage}
   trackerBucketName: ${self:custom.fullName}-tracker
   restaurantBucketName: ${self:custom.fullName}-restaurant
-  orderDynamoDbBatchTableName: ${self:custom.fullName}-Order
+  orderDynamoDbBatchTableName: ${self:custom.fullName}-order
   remover:
      buckets:
        - ${self:custom.trackerBucketName}
@@ -75,10 +75,10 @@ resources:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions: 
-          - AttributeName: "OrderId"
+          - AttributeName: "orderId"
             AttributeType: "S"
         KeySchema: 
-          - AttributeName: "OrderId"
+          - AttributeName: "orderId"
             KeyType: "HASH"
         ProvisionedThroughput:
           ReadCapacityUnits: 1

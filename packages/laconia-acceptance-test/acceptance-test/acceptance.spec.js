@@ -18,7 +18,7 @@ const deleteAllItems = async tableName => {
   for (const item of data.Items) {
     const deleteParams = {
       TableName: tableName,
-      Key: { OrderId: item.OrderId }
+      Key: { orderId: item.orderId }
     };
     await documentClient.delete(deleteParams).promise();
   }
@@ -64,8 +64,8 @@ describe("order flow", () => {
   );
 
   beforeAll(async () => {
-    await deleteAllItems(name("Order"));
-    orderRepository = new DynamoDbOrderRepository(name("Order"));
+    await deleteAllItems(name("order"));
+    orderRepository = new DynamoDbOrderRepository(name("order"));
   });
 
   beforeAll(() => captureCardPaymentTracker.clear());
@@ -97,7 +97,7 @@ describe("order flow", () => {
     Object.keys(orderMap).forEach(async orderId => {
       const savedOrder = await orderRepository.find(orderId);
       expect(savedOrder).toEqual(expect.objectContaining(orderMap[orderId]));
-      expect(savedOrder.OrderId).toEqual(orderId);
+      expect(savedOrder.orderId).toEqual(orderId);
     });
   });
 

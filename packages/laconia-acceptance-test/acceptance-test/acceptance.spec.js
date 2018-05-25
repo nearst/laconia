@@ -5,7 +5,9 @@ const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 const { invoke } = require("laconia-core");
 const tracker = require("laconia-test-helper").tracker;
 
-const prefix = `laconia-acceptance-${process.env.NODE_VERSION}`;
+const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
+const SERVERLESS_STAGE = process.env.NODE_VERSION;
+const prefix = `${SERVERLESS_SERVICE_NAME}-${SERVERLESS_STAGE}`;
 const name = name => `${prefix}-${name}`;
 const AWS = require("aws-sdk");
 const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -36,18 +38,28 @@ const createOrder = (restaurantId, total) => ({
   total
 });
 
-const placeOrder = async order => {
+const placeOrder = async (url, order) => {
   const response = await frisby
-    .post(
-      "https://y3lie63fw8.execute-api.eu-west-1.amazonaws.com/node8/order",
-      { order }
-    )
+    .post(url, { order })
     .expect("status", 200)
     .expect("jsonTypes", {
       orderId: Joi.string()
     });
 
   return response.json;
+};
+
+const getOrderUrl = async () => {
+  const apig = new AWS.APIGateway();
+  const restApis = await apig.getRestApis().promise();
+  const restApiName = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}`;
+  const restApi = restApis.items.find(i => i.name === restApiName);
+  if (!restApi) {
+    throw new Error(`${restApiName} could not be found!`);
+  }
+  return `https://${
+    restApi.id
+  }.execute-api.eu-west-1.amazonaws.com/${SERVERLESS_STAGE}/order`;
 };
 
 describe("order flow", () => {
@@ -84,7 +96,10 @@ describe("order flow", () => {
       { restaurantId: 9, total: 100 },
       { restaurantId: 9, total: 10 }
     ].map(({ restaurantId, total }) => createOrder(restaurantId, total));
-    const responses = await Promise.all(orders.map(order => placeOrder(order)));
+    const orderUrl = await getOrderUrl();
+    const responses = await Promise.all(
+      orders.map(order => placeOrder(orderUrl, order))
+    );
     const orderIds = responses.map(response => response.orderId);
 
     orderMap = orders.reduce((acc, order, i) => {

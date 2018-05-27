@@ -3,9 +3,13 @@ const CoreLaconiaContext = require("./CoreLaconiaContext");
 
 module.exports = fn => {
   const emitter = new Emittery();
+  const useFns = [];
   const laconia = async (event, context, callback) => {
     const laconiaContext = new CoreLaconiaContext({ event, context });
     await emitter.emit("init", laconiaContext);
+    for (const useFn of useFns) {
+      laconiaContext.register(await useFn(laconiaContext));
+    }
 
     try {
       const result = await fn(laconiaContext);
@@ -17,8 +21,8 @@ module.exports = fn => {
 
   return Object.assign(laconia, {
     run: laconiaContext => fn(laconiaContext),
-    on: (eventName, listener) => {
-      emitter.on(eventName, listener);
+    use: useFn => {
+      useFns.push(useFn);
       return laconia;
     }
   });

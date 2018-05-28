@@ -1,12 +1,9 @@
-const Emittery = require("emittery");
 const CoreLaconiaContext = require("./CoreLaconiaContext");
 
 module.exports = fn => {
-  const emitter = new Emittery();
   const useFns = [];
   const laconia = async (event, context, callback) => {
     const laconiaContext = new CoreLaconiaContext({ event, context });
-    await emitter.emit("init", laconiaContext);
     for (const useFn of useFns) {
       laconiaContext.register(await useFn(laconiaContext));
     }

@@ -30,11 +30,11 @@ describe("handler", () => {
     expect(handler).toBeCalledWith(expect.objectContaining({ foo: "bar" }));
   });
 
-  it("should be able to add instances by calling 'use'", async () => {
+  it("should be able to add instances by calling 'register'", async () => {
     const handler = jest.fn();
     await laconia(handler)
-      .use(lc => ({ foo: "bar" }))
-      .use(lc => ({ boo: "baz" }))(
+      .register(lc => ({ foo: "bar" }))
+      .register(lc => ({ boo: "baz" }))(
       { foo: "event" },
       { fiz: "context" },
       callback
@@ -48,9 +48,9 @@ describe("handler", () => {
     );
   });
 
-  it("should be able to add async instances by calling 'use'", async () => {
+  it("should be able to add async instances by calling 'register'", async () => {
     const handler = jest.fn();
-    await laconia(handler).use(async lc => {
+    await laconia(handler).register(async lc => {
       const instance = await Promise.resolve({ foo: "bar" });
       return instance;
     })({ foo: "event" }, { fiz: "context" }, callback);

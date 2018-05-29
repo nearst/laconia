@@ -7,4 +7,4 @@ const instances = lc => ({
 
 module.exports.handler = laconia(async ({ tracker, event }) => {
   await tracker.tick(event);
-}).use(instances);
+}).register(instances);

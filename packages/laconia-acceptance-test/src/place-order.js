@@ -21,4 +21,4 @@ module.exports.handler = laconia(
     await orderRepository.save(order);
     return { statusCode: 200, body: JSON.stringify({ orderId }) };
   }
-).use(instances);
+).register(instances);

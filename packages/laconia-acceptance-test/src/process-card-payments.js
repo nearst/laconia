@@ -1,6 +1,10 @@
 const { invoke } = require("laconia-core");
 const { laconiaBatch, dynamoDb } = require("laconia-batch");
 
+const instances = ({ env }) => ({
+  captureCardPayment: invoke(env.CAPTURE_CARD_PAYMENT_FUNCTION_NAME)
+});
+
 module.exports.handler = laconiaBatch(
   _ =>
     dynamoDb({
@@ -10,8 +14,8 @@ module.exports.handler = laconiaBatch(
       }
     }),
   { itemsPerSecond: 2 }
-).on("item", async ({ env }, item) =>
-  invoke(env.CAPTURE_CARD_PAYMENT_FUNCTION_NAME).fireAndForget(
-    item.paymentReference
-  )
-);
+)
+  .register(instances)
+  .on("item", ({ captureCardPayment }, item) =>
+    captureCardPayment.fireAndForget(item.paymentReference)
+  );

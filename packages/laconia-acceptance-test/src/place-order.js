@@ -3,8 +3,8 @@ const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");
 
-const instances = lc => ({
-  orderRepository: new DynamoDbOrderRepository(lc.env.ORDER_TABLE_NAME),
+const instances = ({ env }) => ({
+  orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
   idGenerator: new UuidIdGenerator()
 });
 

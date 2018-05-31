@@ -138,7 +138,7 @@ describe("order flow", () => {
       await invoke(name("calculate-total-order")).fireAndForget();
       await calculateTotalOrderTracker.waitUntil(10);
       const ticks = await calculateTotalOrderTracker.getTicks();
-      const actualTotalOrder = ticks;
+      const actualTotalOrder = ticks.sort();
 
       const expectedTotalOrder = [
         { restaurantId: 1, total: 10 },

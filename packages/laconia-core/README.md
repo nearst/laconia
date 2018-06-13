@@ -24,31 +24,64 @@ Or via npm:
 npm install --save laconia-core
 ```
 
-Create a new js file and the following capabilities will be made
-available for you:
+An AWS Lambda handler function is an entry point for **both** injecting the dependencies
+and running the function. In traditional application development, you would normally
+only focus on the latter. This brings a unique challenge to AWS Lambda development
+as it is very difficult to test a handler function when it is responsible for doing
+both the object creations and function run.
+
+laconia-core is a simple dependency injection framework for your Lambda code.
+Laconia explicitly splits the responsibility of the object creations and function run.
+Laconia also provides a simple way for you to run your Lambda function
+so that your unit tests will not run the code that instantiates your Lambda dependencies.
+
+Let's have a look into a very quick example below.
+
+this is not a running code as there are a lot of code that have been trimmed down,
+full example can be found [here](packages/laconia-acceptance-test/src/place-order.js).
 
 ```js
-const { laconia, recurse, invoke } = require('laconia-core')
+const instances = ({ env }) => ({
+  orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
+  idGenerator: new UuidIdGenerator()
+});
+
+module.exports.handler = laconia(
+  async ({ event, orderRepository, idGenerator }) => {
+    // ommitted implementation
+    await orderRepository.save(order);
+    // ommitted implementation
+  }
+).register(instances);
 ```
 
-The `laconia` function will be the main entry of your Lambda execution. It wraps the
-original Lambda signature so that you won't forget to call AWS
-Lambda's `callback` anymore.
-
-To respond to your Lambda caller, you can do the following:
-
-* return object: This will used for calling Lambda `callback`
-* return Promise: The promise will be resolved/rejected, and `callback` will called appropriately
-* throw error: The error object will be used for calling Lambda `callback`
-* return `recurse(payload)` function: Recurse the currently running Lambda
-* -_in progress_- return `send(statusCode, data)` function: Return an API Gateway Lambda Proxy Integration response
-* -_in progress_- return `sendError(statusCode, error)` function: Return an API Gateway Lambda Proxy Integration response
+Now to test (this is not a running code as there are a lot of code that have been trimmed down,
+full example can be found [here](packages/laconia-acceptance-test/test/place-order.spec.js)).
 
 ```js
-const { laconia } = require('laconia-core')
+const handler = require("../src/place-order").handler;
 
-module.exports.handler = laconia(() => 'hello')
+beforeEach(() => {
+  lc = {
+    orderRepository: {
+      save: jest.fn().mockReturnValue(Promise.resolve())
+    }
+  };
+});
+
+it("should store order to order table", async () => {
+  await handler.run(lc);
+
+  expect(lc.orderRepository.save).toBeCalledWith(
+    expect.objectContaining(order)
+  );
+});
 ```
+
+Note that as you have seen so far, Laconia is not aiming to become a comprehensive
+DI framework hence the need of you instantiating all of the objects by yourself.
+It should theoretically be possible to integrate Laconia to other more comprehensive
+NodeJS DI framework but it has not been tested.
 
 ### API
 
@@ -62,10 +95,10 @@ Example:
 
 ```js
 // Simple return value
-laconia(() => 'value')
+laconia(() => "value");
 
 // Return a promise and 'value' will be returned to the Lambda caller
-laconia(() => Promise.resolve('value'))
+laconia(() => Promise.resolve("value"));
 ```
 
 ## Lambda Invocation
@@ -100,9 +133,9 @@ Example:
 
 ```js
 // Customise AWS.Lambda instantiation
-invoke('name', {
-  lambda: new AWS.Lambda({ apiVersion: '2015-03-31' })
-})
+invoke("name", {
+  lambda: new AWS.Lambda({ apiVersion: "2015-03-31" })
+});
 ```
 
 #### `requestResponse(payload)`
@@ -115,7 +148,7 @@ Synchronous Lambda invocation.
 Example:
 
 ```js
-invoke('fn').requestResponse({ foo: 'bar' })
+invoke("fn").requestResponse({ foo: "bar" });
 ```
 
 #### `fireAndForget(payload)`
@@ -128,7 +161,7 @@ Asynchronous Lambda invocation.
 Example:
 
 ```js
-invoke('fn').fireAndForget({ foo: 'bar' })
+invoke("fn").fireAndForget({ foo: "bar" });
 ```
 
 ## Recursion
@@ -136,13 +169,13 @@ invoke('fn').fireAndForget({ foo: 'bar' })
 To be used together with `laconia` function to recurse the currently running Lambda.
 
 ```js
-const { laconia, recurse } = require('laconia-core')
+const { laconia, recurse } = require("laconia-core");
 
 module.exports.handler = laconia(({ event }) => {
   if (event.input !== 3) {
-    return recurse({ input: event.input + 1 })
+    return recurse({ input: event.input + 1 });
   }
-})
+});
 ```
 
 ### API
@@ -156,10 +189,10 @@ module.exports.handler = laconia(({ event }) => {
 Example:
 
 ```js
-const { laconia, recurse } = require('laconia-core')
+const { laconia, recurse } = require("laconia-core");
 laconia(({ event }) => {
   if (event.input !== 3) {
-    return recurse({ input: event.input + 1 })
+    return recurse({ input: event.input + 1 });
   }
-})
+});
 ```

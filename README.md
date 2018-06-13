@@ -14,7 +14,7 @@
 
 The following modules are available as NPM packages:
 
-* laconia-core: The core module. Start here.
+* laconia-core: Simple dependency injection framework. Also provides help on Lambda invocations.
 
   [Documentation](packages/laconia-core/README.md)
 

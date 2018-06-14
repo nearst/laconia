@@ -6,6 +6,17 @@
 
 > 🛡️ Laconia — Micro AWS Lambda framework
 
+An AWS Lambda handler function is a single entry point for **both** injecting the dependencies
+and running the function. In non-serverless development, you would normally
+only focus on the latter. This brings a unique challenge to AWS Lambda development
+as it is very difficult to test a handler function when it is responsible for doing
+both the object creations and the application run. laconia-core is a simple dependency
+injection framework for your Lambda code, hence solving this problem for you.
+
+Laconia explicitly splits the responsibility of the object creations and handler function run.
+Laconia also provides a simple way for you to run your Lambda function
+so that your unit tests will not run the code that instantiates your Lambda dependencies.
+
 ## FAQ
 
 Check out [FAQ](https://github.com/ceilfors/laconia#faq)
@@ -24,43 +35,35 @@ Or via npm:
 npm install --save laconia-core
 ```
 
-An AWS Lambda handler function is an entry point for **both** injecting the dependencies
-and running the function. In traditional application development, you would normally
-only focus on the latter. This brings a unique challenge to AWS Lambda development
-as it is very difficult to test a handler function when it is responsible for doing
-both the object creations and function run.
+To fully understand how Laconia can tackle this problem, let's have a look into an
+example below. _This is not a running code as there are a lot of code that have been trimmed down,
+full example can be found in the acceptance test: [src](packages/laconia-acceptance-test/src/place-order.js)
+and [unit test](packages/laconia-acceptance-test/test/place-order.spec.js)_.
 
-laconia-core is a simple dependency injection framework for your Lambda code.
-Laconia explicitly splits the responsibility of the object creations and function run.
-Laconia also provides a simple way for you to run your Lambda function
-so that your unit tests will not run the code that instantiates your Lambda dependencies.
-
-Let's have a look into a very quick example below.
-
-this is not a running code as there are a lot of code that have been trimmed down,
-full example can be found [here](packages/laconia-acceptance-test/src/place-order.js).
+Lambda handler code:
 
 ```js
+// Objects creation. Essentially a function that returns an object
 const instances = ({ env }) => ({
   orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
   idGenerator: new UuidIdGenerator()
 });
 
+// Handler function, which do not have objects creation.
 module.exports.handler = laconia(
+  // Instances made available via destructuring
   async ({ event, orderRepository, idGenerator }) => {
-    // ommitted implementation
     await orderRepository.save(order);
-    // ommitted implementation
   }
 ).register(instances);
 ```
 
-Now to test (this is not a running code as there are a lot of code that have been trimmed down,
-full example can be found [here](packages/laconia-acceptance-test/test/place-order.spec.js)).
+Unit test code:
 
 ```js
 const handler = require("../src/place-order").handler;
 
+// Creates a mock Laconia context
 beforeEach(() => {
   lc = {
     orderRepository: {
@@ -69,6 +72,7 @@ beforeEach(() => {
   };
 });
 
+// Runs handler function without worrying about the objects creation
 it("should store order to order table", async () => {
   await handler.run(lc);
 
@@ -79,7 +83,7 @@ it("should store order to order table", async () => {
 ```
 
 Note that as you have seen so far, Laconia is not aiming to become a comprehensive
-DI framework hence the need of you instantiating all of the objects by yourself.
+DI framework hence the need of you handle the instantiation of all of the objects by yourself.
 It should theoretically be possible to integrate Laconia to other more comprehensive
 NodeJS DI framework but it has not been tested.
 
@@ -101,6 +105,14 @@ laconia(() => "value");
 laconia(() => Promise.resolve("value"));
 ```
 
+#### `register(instanceFn)`
+
+TBD
+
+## Laconia Context
+
+TBD
+
 ## Lambda Invocation
 
 Laconia provides more predictable user experience of invoking other Lambda by:
@@ -109,13 +121,18 @@ Laconia provides more predictable user experience of invoking other Lambda by:
 * Throwing an error when FunctionError is returned instead of failing silently
 * Throwing an error when statusCode returned is not expected
 
-```js
-const { invoke } = require('laconia-core')
+An `invoke` function is injected to LaconiaContext by default, or you can
+import it manually.
 
-// Waits for Lambda response before continuing
-await invoke('function-name').requestResponse({ foo: 'bar' })
-// Invokes a Lambda and not wait for it to return
-await invoke('function-name').fireAndForget({ foo: 'bar' })
+```js
+const { laconia } = require("laconia-core");
+
+module.exports.handler = laconia(async ({ invoke }) => {
+  // Waits for Lambda response before continuing
+  await invoke("function-name").requestResponse({ foo: "bar" });
+  // Invokes a Lambda and not wait for it to return
+  await invoke("function-name").fireAndForget({ foo: "bar" });
+});
 ```
 
 ### API
@@ -166,12 +183,13 @@ invoke("fn").fireAndForget({ foo: "bar" });
 
 ## Recursion
 
-To be used together with `laconia` function to recurse the currently running Lambda.
+An instantiated `recurse` function is injected to LaconiaContext by default, or
+you can import it manually from laconia-core.
 
 ```js
-const { laconia, recurse } = require("laconia-core");
+const { laconia } = require("laconia-core");
 
-module.exports.handler = laconia(({ event }) => {
+module.exports.handler = laconia(({ event, recurse }) => {
   if (event.input !== 3) {
     return recurse({ input: event.input + 1 });
   }
@@ -189,8 +207,7 @@ module.exports.handler = laconia(({ event }) => {
 Example:
 
 ```js
-const { laconia, recurse } = require("laconia-core");
-laconia(({ event }) => {
+laconia(({ event, recurse }) => {
   if (event.input !== 3) {
     return recurse({ input: event.input + 1 });
   }

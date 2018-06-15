@@ -7,15 +7,15 @@
 > 🛡️ Laconia — Micro AWS Lambda framework
 
 An AWS Lambda handler function is a single entry point for **both** injecting the dependencies
-and running the function. In non-serverless development, you would normally
+and function execution. In non-serverless development, you would normally
 only focus on the latter. This brings a unique challenge to AWS Lambda development
 as it is very difficult to test a handler function when it is responsible for doing
 both the object creations and the application run. laconia-core is a simple dependency
 injection framework for your Lambda code, hence solving this problem for you.
 
-Laconia explicitly splits the responsibility of the object creations and handler function run.
-Laconia also provides a simple way for you to run your Lambda function
-so that your unit tests will not run the code that instantiates your Lambda dependencies.
+Laconia explicitly splits the responsibility of the object creations and Lambda function execution.
+Laconia also provides a simple way for you to execute your Lambda function
+so that your unit tests will not execute the code that instantiates your Lambda dependencies.
 
 ## FAQ
 
@@ -87,6 +87,59 @@ DI framework hence the need of you handle the instantiation of all of the object
 It should theoretically be possible to integrate Laconia to other more comprehensive
 NodeJS DI framework but it has not been tested.
 
+## LaconiaContext
+
+Laconia provides a one stop location to get all of the information you need for your Lambda
+function execution via `LaconiaContext`. In a nutshell, LaconiaContext is just an object that
+contains all of those information by using object property keys, hence you can be destructured
+to get just the information you need.
+
+### AWS Event and Context
+
+When Laconia is adopted, the handler function signature will change. Without Laconia,
+your handler signature would be `event, context, callback`. With Laconia, your handler
+signature would be `laconiaContext`. The `event` and `context` are always available in LaconiaContext.
+`callback` is not made available as this should not be necessary anymore when you are
+using Node 8, just `return` the value that you want to return to the caller inside the handler function.
+
+Example:
+
+```js
+laconia(({ event, context }) => true);
+```
+
+### Laconia helpers
+
+LaconiaContext contains some helpers that you can use by default. They are accessible
+via the following keys:
+
+* `invoke`
+* `recurse`
+
+The details of these helpers are covered in the different section of this documentation.
+
+Example:
+
+```js
+laconia(({ invoke, recurse }) => true);
+```
+
+## Environment Variables
+
+It is very common to configure Environment variables for your Lambda functions.
+This is normally accessed via `process.env`. Unit testing a Lambda function that
+uses `process.env` is awkward, as you have to modify this global variable and remember
+to remove your change so that it doesn't affect other test.
+
+For better unit testability, LaconiaContext contains the environment variables
+with key `env`.
+
+Example:
+
+```js
+laconia(({ env }) => true);
+```
+
 ### API
 
 #### `laconia(fn)`
@@ -107,9 +160,23 @@ laconia(() => Promise.resolve("value"));
 
 #### `register(instanceFn)`
 
-TBD
+Registers objects into LaconiaContext. Objects registered here will be made
+available in the Lambda function execution.
 
-## Laconia Context
+* `instanceFn(laconiaContext)`
+  * This `Function` is called when your Lambda is invoked
+  * An object which contains the instances to be registered must be returned
+
+Example:
+
+```js
+// Register an object with key 'service'
+laconia(({ service }) => service.call()).register(() => ({
+  service: new SomeService()
+}));
+```
+
+#### `run(laconiaContext)`
 
 TBD
 

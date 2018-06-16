@@ -1,15 +1,22 @@
 {
   "name": "laconia-batch",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Reads large number of records without Lambda time limit.",
-  "keywords": ["aws", "lambda", "laconia", "serverless"],
+  "keywords": [
+    "aws",
+    "lambda",
+    "laconia",
+    "serverless"
+  ],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {
     "url": "https://github.com/ceilfors/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "main": "src/index.js",
   "repository": {
     "type": "git",
@@ -17,11 +24,11 @@
   },
   "dependencies": {
     "bottleneck": "^2.1.0",
-    "laconia-core": "^0.1.0",
+    "laconia-core": "^0.2.0",
     "lodash.get": "^4.4.2"
   },
   "devDependencies": {
-    "laconia-test-helper": "^0.1.0"
+    "laconia-test-helper": "^0.2.0"
   },
   "peerDependencies": {
     "aws-sdk": "^2.0.1"

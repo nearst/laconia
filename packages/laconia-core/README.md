@@ -6,8 +6,8 @@
 
 > 🛡️ Laconia — Micro AWS Lambda framework
 
-An AWS Lambda handler function is a single entry point for **both** injecting the dependencies
-and function execution. In non-serverless development, you would normally
+An AWS Lambda handler function is a single entry point for both injecting dependencies
+and function execution. In non-serverless development, you can and will normally
 only focus on the latter. This brings a unique challenge to AWS Lambda development
 as it is very difficult to test a handler function when it is responsible for doing
 both the object creations and the application run. laconia-core is a simple dependency
@@ -35,7 +35,7 @@ Or via npm:
 npm install --save laconia-core
 ```
 
-To fully understand how Laconia can tackle this problem, let's have a look into an
+To fully understand how Laconia's Dependency Injection works, let's have a look into an
 example below. _This is not a running code as there are a lot of code that have been trimmed down,
 full example can be found in the acceptance test: [src](packages/laconia-acceptance-test/src/place-order.js)
 and [unit test](packages/laconia-acceptance-test/test/place-order.spec.js)_.
@@ -43,13 +43,13 @@ and [unit test](packages/laconia-acceptance-test/test/place-order.spec.js)_.
 Lambda handler code:
 
 ```js
-// Objects creation. Essentially a function that returns an object
+// Objects creation, a function that returns an object
 const instances = ({ env }) => ({
   orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
   idGenerator: new UuidIdGenerator()
 });
 
-// Handler function, which do not have objects creation.
+// Handler function, which do not have any object instantiations
 module.exports.handler = laconia(
   // Instances made available via destructuring
   async ({ event, orderRepository, idGenerator }) => {
@@ -87,14 +87,14 @@ DI framework hence the need of you handle the instantiation of all of the object
 It should theoretically be possible to integrate Laconia to other more comprehensive
 NodeJS DI framework but it has not been tested.
 
-## LaconiaContext
+### LaconiaContext
 
 Laconia provides a one stop location to get all of the information you need for your Lambda
 function execution via `LaconiaContext`. In a nutshell, LaconiaContext is just an object that
-contains all of those information by using object property keys, hence you can be destructured
+contains all of those information by using object property keys, hence you can destructure it
 to get just the information you need.
 
-### AWS Event and Context
+#### AWS Event and Context
 
 When Laconia is adopted, the handler function signature will change. Without Laconia,
 your handler signature would be `event, context, callback`. With Laconia, your handler
@@ -108,7 +108,7 @@ Example:
 laconia(({ event, context }) => true);
 ```
 
-### Laconia helpers
+#### Laconia helpers
 
 LaconiaContext contains some helpers that you can use by default. They are accessible
 via the following keys:
@@ -124,11 +124,11 @@ Example:
 laconia(({ invoke, recurse }) => true);
 ```
 
-## Environment Variables
+#### Environment Variables
 
-It is very common to configure Environment variables for your Lambda functions.
+It is very common to set environment variables for your Lambda functions.
 This is normally accessed via `process.env`. Unit testing a Lambda function that
-uses `process.env` is awkward, as you have to modify this global variable and remember
+uses `process.env` is awkward, as you have to modify the `process` global variable and remember
 to remove your change so that it doesn't affect other test.
 
 For better unit testability, LaconiaContext contains the environment variables
@@ -178,7 +178,24 @@ laconia(({ service }) => service.call()).register(() => ({
 
 #### `run(laconiaContext)`
 
-TBD
+Runs Lambda handler function with the specified `laconiaContext` and bypasses
+the LaconiaContext registration step. This function should only be used in a
+unit test.
+
+* `laconiaContext`
+  * A plain object that should represent the LaconiaContext to be used in the function execution
+
+```js
+// Runs a handler function with a LaconiaContext that contains a mock service object.
+// `SomeService` will not be instantiated
+laconia(({ service }) => service.call())
+  .register(() => ({
+    service: new SomeService()
+  }))
+  .run({
+    service: jest.mock()
+  });
+```
 
 ## Lambda Invocation
 

@@ -14,7 +14,7 @@
 
 The following modules are available as NPM packages:
 
-* laconia-core: Simple dependency injection framework. Also provides help on Lambda invocations.
+* laconia-core: Micro dependency injection framework. Also provides help on Lambda invocations.
 
   [Documentation](packages/laconia-core/README.md)
 
@@ -24,13 +24,7 @@ The following modules are available as NPM packages:
 
 ## FAQ
 
-1.  Do I still need laconia if I use Node.js 8 in my AWS Lambda?
-
-    Node.js 8 support in AWS Lambda only supersedes a small functionality of laconia: the promisification
-    of the Lambda callback. Laconia adds more capabilities on top of the
-    promisification which can be used in Node.js 8.
-
-2.  I already am using another framework like Serverless Framework or SAM, why should I use laconia?
+1.  I already am using another framework like Serverless Framework or SAM, why should I use laconia?
 
     Tools like Serverless Framework or SAM are more focused on helping the
     build and deployment of your application. Laconia however is more focused on

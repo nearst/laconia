@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 
-> 🛡️ Laconia — Micro AWS Lambda framework
+> 🛡️ Laconia Batch — Reads large number of records without time limit.
 
 Reads large number of records without Lambda time limit.
 
@@ -39,16 +39,16 @@ These are the currently supported input sources:
 Example of batch processing by scanning a dynamodb table:
 
 ```js
-const { laconiaBatch, dynamoDb } = require('laconia-batch')
+const { laconiaBatch, dynamoDb } = require("laconia-batch");
 
 module.exports.handler = laconiaBatch(
   _ =>
     dynamoDb({
-      operation: 'SCAN',
-      dynamoDbParams: { TableName: 'Music' }
+      operation: "SCAN",
+      dynamoDbParams: { TableName: "Music" }
     }),
   { itemsPerSecond: 2 }
-).on('item', ({ event }, item) => processItem(event, context))
+).on("item", ({ event }, item) => processItem(event, context));
 ```
 
 Rate limiting is supported out of the box by setting the `batchOptions.itemsPerSecond`
@@ -95,13 +95,13 @@ Example:
 
 ```js
 // Use all default batch options (No rate limiting)
-laconiaBatch(_ => dynamoDb())
+laconiaBatch(_ => dynamoDb());
 
 // Customise batch options
 laconiaBatch(_ => dynamoDb(), {
   itemsPerSecond: 2,
   timeNeededToRecurseInMillis: 10000
-})
+});
 ```
 
 #### Events
@@ -154,22 +154,22 @@ Example:
 ```js
 // Scans the entire Music table
 dynamoDb({
-  operation: 'SCAN',
-  dynamoDbParams: { TableName: 'Music' }
-})
+  operation: "SCAN",
+  dynamoDbParams: { TableName: "Music" }
+});
 
 // Queries Music table with a more complicated DynamoDB parameters
 dynamoDb({
-  operation: 'QUERY',
+  operation: "QUERY",
   dynamoDbParams: {
-    TableName: 'Music',
+    TableName: "Music",
     Limit: 1,
     ExpressionAttributeValues: {
-      ':a': 'Bar'
+      ":a": "Bar"
     },
-    FilterExpression: 'Artist = :a'
+    FilterExpression: "Artist = :a"
   }
-})
+});
 ```
 
 #### `s3(readerOptions)`
@@ -195,19 +195,19 @@ Example:
 ```js
 // Reads an array from array.json in MyBucket
 s3({
-  path: '.',
+  path: ".",
   s3Params: {
-    Bucket: 'MyBucket',
-    Key: 'array.json'
+    Bucket: "MyBucket",
+    Key: "array.json"
   }
-})
+});
 
 // Reads the array retrieved at database.music[0]["category"].list from object.json in MyBucket
 s3({
   path: 'database.music[0]["category"].list',
   s3Params: {
-    Bucket: 'MyBucket',
-    Key: 'object.json'
+    Bucket: "MyBucket",
+    Key: "object.json"
   }
-})
+});
 ```

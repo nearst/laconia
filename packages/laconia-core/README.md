@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 
-> 🛡️ Laconia — Micro AWS Lambda framework
+> 🛡️ Laconia Core — Micro dependency injection framework. Also provides help on Lambda invocations.
 
 An AWS Lambda handler function is a single entry point for both injecting dependencies
 and function execution. In non-serverless development, you can and will normally

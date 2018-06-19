@@ -14,3 +14,14 @@
 2.  Setup AWS credentials in `~/.aws/credentials`
 3.  Run `npm run test:acceptance`  
     This command will deploy the acceptance stack via `serverless framework`, then run the acceptance test.
+
+# Release
+
+Run `npx lerna publish`. This command will do everything for you:
+
+1.  Version update to all packages' package.json
+2.  Inter dependency update
+3.  Git commit
+4.  Git tag creation
+5.  NPM package publish to npmjs
+6.  Git tag push

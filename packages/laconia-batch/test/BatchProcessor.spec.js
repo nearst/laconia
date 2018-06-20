@@ -75,12 +75,5 @@ describe("BatchProcessor", () => {
 
       expect(itemListener).toBeCalledWithGapBetween(5, 25);
     });
-
-    it("should support 1000 itemsPerSecond", async () => {
-      const batchProcessor = createBatchProcessor(1000);
-      await batchProcessor.start();
-
-      expect(itemListener).toBeCalledWithGapBetween(0, 15);
-    });
   });
 });

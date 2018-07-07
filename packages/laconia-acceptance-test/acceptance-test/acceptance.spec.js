@@ -65,6 +65,7 @@ const getOrderUrl = async () => {
 describe("order flow", () => {
   let orderRepository;
   let orderMap;
+  let orderUrl;
   const captureCardPaymentTracker = tracker(
     name("capture-card-payment"),
     name("tracker")
@@ -80,6 +81,9 @@ describe("order flow", () => {
     orderRepository = new DynamoDbOrderRepository(name("order"));
   });
 
+  beforeAll(async () => {
+    orderUrl = await getOrderUrl();
+  });
   beforeAll(() => captureCardPaymentTracker.clear());
   beforeAll(() => calculateTotalOrderTracker.clear());
 
@@ -108,53 +112,62 @@ describe("order flow", () => {
     }, {});
   });
 
-  it("should store all placed orders in Order Table", async () => {
-    Object.keys(orderMap).forEach(async orderId => {
-      const savedOrder = await orderRepository.find(orderId);
-      expect(savedOrder).toEqual(expect.objectContaining(orderMap[orderId]));
-      expect(savedOrder.orderId).toEqual(orderId);
+  describe("happy path", () => {
+    it("should store all placed orders in Order Table", async () => {
+      Object.keys(orderMap).forEach(async orderId => {
+        const savedOrder = await orderRepository.find(orderId);
+        expect(savedOrder).toEqual(expect.objectContaining(orderMap[orderId]));
+        expect(savedOrder.orderId).toEqual(orderId);
+      });
     });
+
+    it(
+      "should capture all card payments",
+      async () => {
+        await invoke(name("process-card-payments")).fireAndForget();
+        await captureCardPaymentTracker.waitUntil(10);
+        const ticks = await captureCardPaymentTracker.getTicks();
+        const capturedPaymentReferences = ticks.sort();
+        const paymentReferences = Object.values(orderMap)
+          .map(order => order.paymentReference)
+          .sort();
+
+        expect(capturedPaymentReferences).toEqual(paymentReferences);
+      },
+      20000
+    );
+
+    it(
+      "should calculate total order for every restaurants",
+      async () => {
+        await invoke(name("calculate-total-order")).fireAndForget();
+        await calculateTotalOrderTracker.waitUntil(10);
+        const ticks = await calculateTotalOrderTracker.getTicks();
+        const actualTotalOrder = ticks.sort();
+
+        const expectedTotalOrder = [
+          { restaurantId: 1, total: 10 },
+          { restaurantId: 2, total: 8 },
+          { restaurantId: 3, total: 0 },
+          { restaurantId: 4, total: 0 },
+          { restaurantId: 5, total: 15 },
+          { restaurantId: 6, total: 31 },
+          { restaurantId: 7, total: 0 },
+          { restaurantId: 8, total: 0 },
+          { restaurantId: 9, total: 110 },
+          { restaurantId: 10, total: 0 }
+        ];
+
+        expect(actualTotalOrder).toEqual(expectedTotalOrder);
+      },
+      20000
+    );
   });
 
-  it(
-    "should capture all card payments",
-    async () => {
-      await invoke(name("process-card-payments")).fireAndForget();
-      await captureCardPaymentTracker.waitUntil(10);
-      const ticks = await captureCardPaymentTracker.getTicks();
-      const capturedPaymentReferences = ticks.sort();
-      const paymentReferences = Object.values(orderMap)
-        .map(order => order.paymentReference)
-        .sort();
-
-      expect(capturedPaymentReferences).toEqual(paymentReferences);
-    },
-    20000
-  );
-
-  it(
-    "should calculate total order for every restaurants",
-    async () => {
-      await invoke(name("calculate-total-order")).fireAndForget();
-      await calculateTotalOrderTracker.waitUntil(10);
-      const ticks = await calculateTotalOrderTracker.getTicks();
-      const actualTotalOrder = ticks.sort();
-
-      const expectedTotalOrder = [
-        { restaurantId: 1, total: 10 },
-        { restaurantId: 2, total: 8 },
-        { restaurantId: 3, total: 0 },
-        { restaurantId: 4, total: 0 },
-        { restaurantId: 5, total: 15 },
-        { restaurantId: 6, total: 31 },
-        { restaurantId: 7, total: 0 },
-        { restaurantId: 8, total: 0 },
-        { restaurantId: 9, total: 110 },
-        { restaurantId: 10, total: 0 }
-      ];
-
-      expect(actualTotalOrder).toEqual(expectedTotalOrder);
-    },
-    20000
-  );
+  describe("error scenario", () => {
+    xit("should not place order when restaurantId is undefined", async () => {
+      const order = createOrder(undefined, 10);
+      await placeOrder(orderUrl, order);
+    });
+  });
 });

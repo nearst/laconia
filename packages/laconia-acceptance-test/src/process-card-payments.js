@@ -17,5 +17,7 @@ module.exports.handler = laconiaBatch(
 )
   .register(instances)
   .on("item", ({ captureCardPayment }, item) =>
-    captureCardPayment.fireAndForget(item.paymentReference)
+    captureCardPayment.fireAndForget({
+      paymentReference: item.paymentReference
+    })
   );

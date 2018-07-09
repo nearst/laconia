@@ -127,7 +127,9 @@ describe("order flow", () => {
         await invoke(name("process-card-payments")).fireAndForget();
         await captureCardPaymentTracker.waitUntil(10);
         const ticks = await captureCardPaymentTracker.getTicks();
-        const capturedPaymentReferences = ticks.sort();
+        const capturedPaymentReferences = ticks
+          .map(t => t.paymentReference)
+          .sort();
         const paymentReferences = Object.values(orderMap)
           .map(order => order.paymentReference)
           .sort();
@@ -165,9 +167,20 @@ describe("order flow", () => {
   });
 
   describe("error scenario", () => {
-    xit("should not place order when restaurantId is undefined", async () => {
-      const order = createOrder(undefined, 10);
-      await placeOrder(orderUrl, order);
+    describe("place-order", () => {
+      xit("should not place order when restaurantId is undefined", async () => {
+        const order = createOrder(undefined, 10);
+        await placeOrder(orderUrl, order);
+      });
+    });
+
+    describe("capture-card-payment", () => {
+      xit("should throw an error when paymentReference is not defined", async () => {
+        const captureCardPayment = invoke(name("capture-card-payment"));
+        await expect(captureCardPayment.requestResponse()).rejects.toThrow(
+          "paymentReerence is required"
+        );
+      });
     });
   });
 });

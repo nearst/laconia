@@ -6,5 +6,8 @@ const instances = ({ context }) => ({
 });
 
 module.exports.handler = laconia(async ({ tracker, event }) => {
+  if (!event.paymentReference) {
+    throw new Error("paymentReference is required");
+  }
   await tracker.tick(event);
 }).register(instances);

@@ -6,6 +6,8 @@ describe("process-card-payments", () => {
     const item = { paymentReference: "something" };
     handler.emit("item", { captureCardPayment }, item);
 
-    expect(captureCardPayment.fireAndForget).toBeCalledWith("something");
+    expect(captureCardPayment.fireAndForget).toBeCalledWith({
+      paymentReference: "something"
+    });
   });
 });

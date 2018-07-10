@@ -54,11 +54,19 @@ class LambdaInvoker {
 
     const data = await this.lambda.invoke(params).promise();
     if (data.FunctionError) {
-      throw new Error(
-        `${data.FunctionError} error returned by ${this.functionName}: ${
-          data.Payload
-        }`
-      );
+      if (data.FunctionError === "Handled") {
+        const errorPayload = JSON.parse(data.Payload);
+        const error = new Error(errorPayload.errorMessage);
+        error.name = errorPayload.errorType;
+
+        throw error;
+      } else {
+        throw new Error(
+          `${data.FunctionError} error returned by ${this.functionName}: ${
+            data.Payload
+          }`
+        );
+      }
     }
     validateStatusCode(data.StatusCode, validStatusCode);
     return data;

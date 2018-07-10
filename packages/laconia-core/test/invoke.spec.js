@@ -37,6 +37,37 @@ describe("invoke", () => {
           );
         });
       });
+
+      it(
+        "what should we do for Unhandled Error, what kind of Payload is returned?"
+      );
+
+      fit("should unwrap Payload when Handled Error is returned", async () => {
+        const handledErrorPayload = {
+          errorMessage: "paymentReference is required",
+          errorType: "SomeError",
+          stackTrace: [
+            "module.exports.handler.laconia (/var/task/src/capture-card-payment.js:10:11)",
+            "laconia (/var/task/node_modules/laconia-core/src/laconia.js:12:28)",
+            "<anonymous>"
+          ]
+        };
+        invokeMock.mockImplementation(
+          yields({
+            FunctionError: "Handled",
+            Payload: JSON.stringify(handledErrorPayload),
+            StatusCode: expectedStatusCode
+          })
+        );
+        const invoker = invoke("myLambda");
+        try {
+          await invoker[method]();
+          throw new Error("should not reach here");
+        } catch (err) {
+          expect(err.name).toBe("SomeError");
+          expect(err.message).toBe("paymentReference is required");
+        }
+      });
     });
 
     describe("when invoking Lambda", () => {
@@ -68,6 +99,16 @@ describe("invoke", () => {
           expect.any(Function)
         );
       });
+    });
+
+    it("should not set Payload parameter if it is not available", async () => {
+      invokeMock.mockImplementation(
+        yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
+      );
+      const invoker = invoke("foobar");
+      await invoker[method]();
+      const invokeParams = invokeMock.mock.calls[0][0];
+      expect(invokeParams).not.toHaveProperty("Payload");
     });
 
     it("should not set Payload parameter if it is not available", async () => {

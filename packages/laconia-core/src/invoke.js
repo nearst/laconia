@@ -1,4 +1,5 @@
 const AWS = require("aws-sdk");
+const InvokeLaconiaError = require("./InvokeLaconiaError");
 
 const validateStatusCode = (statusCode, expectedStatusCode) => {
   if (statusCode !== expectedStatusCode) {
@@ -56,7 +57,7 @@ class LambdaInvoker {
     if (data.FunctionError) {
       if (data.FunctionError === "Handled") {
         const errorPayload = JSON.parse(data.Payload);
-        const error = new Error(errorPayload.errorMessage);
+        const error = new InvokeLaconiaError(errorPayload.errorMessage);
         error.name = errorPayload.errorType;
 
         throw error;

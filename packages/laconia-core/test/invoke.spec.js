@@ -1,4 +1,5 @@
 const invoke = require("../src/invoke.js");
+const InvokeLaconiaError = require("../src/InvokeLaconiaError.js");
 const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");
 const { yields } = require("laconia-test-helper");
@@ -66,6 +67,7 @@ describe("invoke", () => {
         } catch (err) {
           expect(err.name).toBe("SomeError");
           expect(err.message).toBe("paymentReference is required");
+          expect(err).toBeInstanceOf(InvokeLaconiaError);
         }
       });
     });

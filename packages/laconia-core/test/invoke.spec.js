@@ -22,7 +22,7 @@ describe("invoke", () => {
     expectedStatusCode
   }) => {
     describe("when getting FunctionError", () => {
-      const functionErrors = ["Handled", "Unhandled"];
+      const functionErrors = ["Unhandled"];
       functionErrors.forEach(functionError => {
         it(`should throw an error when FunctionError is set to ${functionError}`, () => {
           invokeMock.mockImplementation(
@@ -43,7 +43,7 @@ describe("invoke", () => {
         "what should we do for Unhandled Error, what kind of Payload is returned?"
       );
 
-      fit("should unwrap Payload when Handled Error is returned", async () => {
+      it("should wrap Payload in InvokeLaconiaError when Handled Error is returned", async () => {
         const handledErrorPayload = {
           errorMessage: "paymentReference is required",
           errorType: "SomeError",
@@ -65,9 +65,9 @@ describe("invoke", () => {
           await invoker[method]();
           throw new Error("should not reach here");
         } catch (err) {
-          expect(err.name).toBe("SomeError");
-          expect(err.message).toBe("paymentReference is required");
           expect(err).toBeInstanceOf(InvokeLaconiaError);
+          expect(err.name).toEqual(handledErrorPayload.errorType);
+          expect(err.message).toEqual(handledErrorPayload.errorMessage);
         }
       });
     });

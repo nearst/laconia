@@ -57,8 +57,7 @@ class LambdaInvoker {
     if (data.FunctionError) {
       if (data.FunctionError === "Handled") {
         const errorPayload = JSON.parse(data.Payload);
-        const error = new InvokeLaconiaError(errorPayload.errorMessage);
-        error.name = errorPayload.errorType;
+        const error = new InvokeLaconiaError(errorPayload);
 
         throw error;
       } else {

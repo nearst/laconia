@@ -39,9 +39,9 @@ describe("invoke", () => {
         });
       });
 
-      it(
-        "what should we do for Unhandled Error, what kind of Payload is returned?"
-      );
+      xit("what should we do for Unhandled Error, what kind of Payload is returned?", async () => {
+        // example payload: {"errorMessage":"Handler 'handlera' missing on module 'src/capture-card-payment'"}
+      });
 
       it("should wrap Payload in InvokeLaconiaError when Handled Error is returned", async () => {
         const handledErrorPayload = {
@@ -60,7 +60,7 @@ describe("invoke", () => {
             StatusCode: expectedStatusCode
           })
         );
-        const invoker = invoke("myLambda");
+        const invoker = invoke("heavy-operation");
         try {
           await invoker[method]();
           throw new Error("should not reach here");
@@ -68,6 +68,13 @@ describe("invoke", () => {
           expect(err).toBeInstanceOf(InvokeLaconiaError);
           expect(err.name).toEqual(handledErrorPayload.errorType);
           expect(err.message).toEqual(handledErrorPayload.errorMessage);
+          expect(err.lambdaStackTrace).toEqual(handledErrorPayload.stackTrace);
+          expect(err.stack).toEqual(
+            expect.stringContaining(`Caused by an error in heavy-operation Lambda:
+    at module.exports.handler.laconia (/var/task/src/capture-card-payment.js:10:11)
+    at laconia (/var/task/node_modules/laconia-core/src/laconia.js:12:28)
+    at <anonymous>`)
+          );
         }
       });
     });

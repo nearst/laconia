@@ -1,26 +1,32 @@
-module.exports = class InvokeLaconiaError extends Error {
-  constructor(lambdaErrorPayload) {
+const overrideStack = (err, overrideFn) => {
+  Object.defineProperty(err, "stack", {
+    get: () => overrideFn(),
+    set: value => {}
+  });
+};
+
+const getLambdaStack = lambdaStackTrace =>
+  lambdaStackTrace.map(t => `    at ${t}`).join("\n");
+
+const extendStack = (invokeLaconiaError, extension) => {
+  const err = new Error();
+  err.name = invokeLaconiaError.name;
+  Error.captureStackTrace(err, InvokeLaconiaError);
+  return () =>
+    err.stack +
+    `\nCaused by an error in ${invokeLaconiaError.functionName} Lambda:\n` +
+    getLambdaStack(invokeLaconiaError.lambdaStackTrace);
+};
+
+const InvokeLaconiaError = class InvokeLaconiaError extends Error {
+  constructor(functionName, lambdaErrorPayload) {
     super(lambdaErrorPayload.errorMessage);
     this.name = lambdaErrorPayload.errorType;
+    this.functionName = functionName;
     this.lambdaStackTrace = lambdaErrorPayload.stackTrace;
 
-    Object.defineProperty(this, "stack", {
-      get: () => this.generateLambdaStack(),
-      set: value => {}
-    });
-
-    const err = new Error();
-    Error.captureStackTrace(err, InvokeLaconiaError);
-    this._error = err;
-  }
-
-  generateLambdaStack() {
-    // Calling _error.stack here to reduce performance impact of overriding stack
-    return (
-      this._error.stack +
-      "\n" +
-      "Caused by Lambda Invocation error:\n" +
-      this.lambdaStackTrace.map(t => `    at ${t}`).join("\n")
-    );
+    overrideStack(this, extendStack(this));
   }
 };
+
+module.exports = InvokeLaconiaError;

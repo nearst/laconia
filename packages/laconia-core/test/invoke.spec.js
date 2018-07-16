@@ -75,6 +75,11 @@ describe("invoke", () => {
     at laconia (/var/task/node_modules/laconia-core/src/laconia.js:12:28)
     at <anonymous>`)
           );
+          expect(err.stack).toEqual(
+            expect.stringMatching(
+              /^SomeError[\W\w]*at LambdaInvoker[\W\w]*Caused by an error in heavy-operation Lambda/
+            )
+          );
         }
       });
     });

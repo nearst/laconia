@@ -1,5 +1,6 @@
 const AWS = require("aws-sdk");
-const InvokeLaconiaError = require("./InvokeLaconiaError");
+const HandledInvokeLaconiaError = require("./HandledInvokeLaconiaError");
+const UnhandledInvokeLaconiaError = require("./UnhandledInvokeLaconiaError");
 
 const validateStatusCode = (statusCode, expectedStatusCode) => {
   if (statusCode !== expectedStatusCode) {
@@ -57,13 +58,10 @@ class LambdaInvoker {
     if (data.FunctionError) {
       if (data.FunctionError === "Handled") {
         const errorPayload = JSON.parse(data.Payload);
-        throw new InvokeLaconiaError(this.functionName, errorPayload);
+        throw new HandledInvokeLaconiaError(this.functionName, errorPayload);
       } else {
-        throw new Error(
-          `${data.FunctionError} error returned by ${this.functionName}: ${
-            data.Payload
-          }`
-        );
+        const errorPayload = JSON.parse(data.Payload);
+        throw new UnhandledInvokeLaconiaError(this.functionName, errorPayload);
       }
     }
     validateStatusCode(data.StatusCode, validStatusCode);

@@ -1,5 +1,5 @@
 const invoke = require("../src/invoke.js");
-const InvokeLaconiaError = require("../src/InvokeLaconiaError.js");
+const HandledInvokeLaconiaError = require("../src/HandledInvokeLaconiaError");
 const UnhandledInvokeLaconiaError = require("../src/UnhandledInvokeLaconiaError");
 const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");
@@ -23,24 +23,7 @@ describe("invoke", () => {
     expectedStatusCode
   }) => {
     describe("when getting FunctionError", () => {
-      const functionErrors = ["Unhandled"];
-      functionErrors.forEach(functionError => {
-        it(`should throw an error when FunctionError is set to ${functionError}`, () => {
-          invokeMock.mockImplementation(
-            yields({
-              FunctionError: functionError,
-              Payload: "boom",
-              StatusCode: expectedStatusCode
-            })
-          );
-          const invoker = invoke("myLambda");
-          return expect(invoker[method]()).rejects.toThrow(
-            `${functionError} error returned by myLambda: boom`
-          );
-        });
-      });
-
-      xit("should throw an error when Unhandled error is rerturned", async () => {
+      it("should throw an error when Unhandled error is rerturned", async () => {
         const errorPayload = {
           errorMessage:
             "Handler 'handler' missing on module 'src/capture-card-payment'"
@@ -60,8 +43,9 @@ describe("invoke", () => {
           expect(err).toBeInstanceOf(UnhandledInvokeLaconiaError);
           expect(err.name).toEqual("Unhandled");
           expect(err.functionName).toEqual("heavy-operation");
-          expect(err.message).toEqual(errorPayload.errorMessage);
-          expect(err.stack).toEqual(expect.stringMatching(/heavy-operation/));
+          expect(err.message).toEqual(
+            `Error in heavy-operation: ${errorPayload.errorMessage}`
+          );
         }
       });
 
@@ -87,9 +71,11 @@ describe("invoke", () => {
           await invoker[method]();
           throw new Error("should not reach here");
         } catch (err) {
-          expect(err).toBeInstanceOf(InvokeLaconiaError);
+          expect(err).toBeInstanceOf(HandledInvokeLaconiaError);
           expect(err.name).toEqual(errorPayload.errorType);
-          expect(err.message).toEqual(errorPayload.errorMessage);
+          expect(err.message).toEqual(
+            `Error in heavy-operation: ${errorPayload.errorMessage}`
+          );
           expect(err.lambdaStackTrace).toEqual(errorPayload.stackTrace);
           expect(err.stack).toEqual(
             expect.stringContaining(`Caused by an error in heavy-operation Lambda:
@@ -99,7 +85,7 @@ describe("invoke", () => {
           );
           expect(err.stack).toEqual(
             expect.stringMatching(
-              /^SomeError[\W\w]*at LambdaInvoker[\W\w]*Caused by an error in heavy-operation Lambda/
+              /^SomeError: Error in heavy-operation: paymentReference is required[\W\w]*at LambdaInvoker[\W\w]*Caused by an error in heavy-operation Lambda/
             )
           );
         }

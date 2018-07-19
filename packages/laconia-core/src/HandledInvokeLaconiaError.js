@@ -1,7 +1,6 @@
 const overrideStack = (err, overrideFn) => {
   Object.defineProperty(err, "stack", {
-    get: () => overrideFn(),
-    set: value => {}
+    get: () => overrideFn()
   });
 };
 

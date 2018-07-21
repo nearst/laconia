@@ -18,11 +18,14 @@ const extendStack = (invokeLaconiaError, extension) => {
 };
 
 const HandledInvokeLaconiaError = class HandledInvokeLaconiaError extends Error {
-  constructor(functionName, lambdaErrorPayload) {
+  constructor(functionName, lambdaErrorPayload, logResult) {
     super(`Error in ${functionName}: ${lambdaErrorPayload.errorMessage}`);
     this.name = lambdaErrorPayload.errorType;
     this.functionName = functionName;
     this.lambdaStackTrace = lambdaErrorPayload.stackTrace;
+    this.logs = logResult
+      ? Buffer.from(logResult, "base64").toString()
+      : undefined;
 
     overrideStack(this, extendStack(this));
   }

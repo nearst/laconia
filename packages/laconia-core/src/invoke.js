@@ -9,9 +9,10 @@ const validateStatusCode = (statusCode, expectedStatusCode) => {
 };
 
 class LambdaInvoker {
-  constructor(functionName, lambda) {
+  constructor(functionName, lambda, requestsLog) {
     this.lambda = lambda;
     this.functionName = functionName;
+    this.requestsLog = requestsLog;
     this.fireAndForget = this.fireAndForget.bind(this);
     this.requestResponse = this.requestResponse.bind(this);
   }
@@ -29,7 +30,8 @@ class LambdaInvoker {
   async requestResponse(payload) {
     const data = await this._invoke(
       {
-        InvocationType: "RequestResponse"
+        InvocationType: "RequestResponse",
+        LogType: this.requestsLog ? "Tail" : "None"
       },
       payload,
       200
@@ -56,11 +58,14 @@ class LambdaInvoker {
 
     const data = await this.lambda.invoke(params).promise();
     if (data.FunctionError) {
+      const errorPayload = JSON.parse(data.Payload);
       if (data.FunctionError === "Handled") {
-        const errorPayload = JSON.parse(data.Payload);
-        throw new HandledInvokeLaconiaError(this.functionName, errorPayload);
+        throw new HandledInvokeLaconiaError(
+          this.functionName,
+          errorPayload,
+          data.LogResult
+        );
       } else {
-        const errorPayload = JSON.parse(data.Payload);
         throw new UnhandledInvokeLaconiaError(this.functionName, errorPayload);
       }
     }
@@ -69,6 +74,9 @@ class LambdaInvoker {
   }
 }
 
-module.exports = (functionName, { lambda = new AWS.Lambda() } = {}) => {
-  return new LambdaInvoker(functionName, lambda);
+module.exports = (
+  functionName,
+  { lambda = new AWS.Lambda(), requestsLog = false } = {}
+) => {
+  return new LambdaInvoker(functionName, lambda, requestsLog);
 };

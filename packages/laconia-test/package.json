@@ -1,5 +1,5 @@
 {
-  "name": "laconia-core",
+  "name": "laconia-test",
   "version": "0.2.1",
   "description": "Micro AWS Lambda framework",
   "keywords": ["aws", "lambda", "laconia", "serverless"],

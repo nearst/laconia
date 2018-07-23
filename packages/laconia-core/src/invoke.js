@@ -9,10 +9,10 @@ const validateStatusCode = (statusCode, expectedStatusCode) => {
 };
 
 class LambdaInvoker {
-  constructor(functionName, lambda, requestsLog) {
+  constructor(functionName, lambda, requestLogs) {
     this.lambda = lambda;
     this.functionName = functionName;
-    this.requestsLog = requestsLog;
+    this.requestLogs = requestLogs;
     this.fireAndForget = this.fireAndForget.bind(this);
     this.requestResponse = this.requestResponse.bind(this);
   }
@@ -31,7 +31,7 @@ class LambdaInvoker {
     const data = await this._invoke(
       {
         InvocationType: "RequestResponse",
-        LogType: this.requestsLog ? "Tail" : "None"
+        LogType: this.requestLogs ? "Tail" : "None"
       },
       payload,
       200
@@ -76,7 +76,7 @@ class LambdaInvoker {
 
 module.exports = (
   functionName,
-  { lambda = new AWS.Lambda(), requestsLog = false } = {}
+  { lambda = new AWS.Lambda(), requestLogs = false } = {}
 ) => {
-  return new LambdaInvoker(functionName, lambda, requestsLog);
+  return new LambdaInvoker(functionName, lambda, requestLogs);
 };

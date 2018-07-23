@@ -214,9 +214,9 @@ describe("invoke", () => {
       );
     });
 
-    describe("when requestLog is enabled", () => {
+    describe("when requestLogs is enabled", () => {
       it("should set LogType to Tail", async () => {
-        const invoker = invoke("foobar", { requestsLog: true });
+        const invoker = invoke("foobar", { requestLogs: true });
         await invoker.requestResponse();
         expect(invokeMock).toBeCalledWith(
           expect.objectContaining({ LogType: "Tail" }),

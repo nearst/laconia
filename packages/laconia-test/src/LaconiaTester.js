@@ -10,7 +10,9 @@ module.exports = class LaconiaTester {
     try {
       return await this.invoker.requestResponse(...arguments);
     } catch (err) {
-      this.logger(err.logs);
+      if (err instanceof HandledInvokeLaconiaError) {
+        this.logger(err.logs);
+      }
       throw err;
     }
   }

@@ -51,9 +51,21 @@ REPORT RequestId: a75f223f-31b9-11e7-bdfc-132d074f77c8	Duration: 10027.29 ms	Bil
       ).rejects.toThrow();
       expect(logger).toBeCalledWith(logs);
     });
-    it("should not log if not available");
-    it("should requests for Lambda logs on RequestResponse");
-    it("should filter by latest request block");
+
+    it("should not log logs if it is not available", async () => {
+      const invoker = {
+        requestResponse: jest
+          .fn()
+          .mockImplementation(() => Promise.reject(new Error("boom")))
+      };
+      const logger = jest.fn();
+      await expect(
+        new LaconiaTester(invoker, {
+          logger: logger
+        }).requestResponse("something")
+      ).rejects.toThrow();
+      expect(logger).not.toBeCalled();
+    });
 
     it("delegates fireAndForget to LambdaInvoker");
   });

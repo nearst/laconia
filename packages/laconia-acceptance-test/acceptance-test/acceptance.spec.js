@@ -3,6 +3,7 @@ const uuidv4 = require("uuid/v4");
 const Joi = frisby.Joi;
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 const { invoke } = require("laconia-core");
+const { laconiaTest } = require("laconia-test");
 const tracker = require("laconia-test-helper").tracker;
 
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
@@ -175,10 +176,10 @@ describe("order flow", () => {
     });
 
     describe("capture-card-payment", () => {
-      xit("should throw an error when paymentReference is not defined", async () => {
-        const captureCardPayment = invoke(name("capture-card-payment"));
+      it("should throw an error when paymentReference is not defined", async () => {
+        const captureCardPayment = laconiaTest(name("capture-card-payment"));
         await expect(captureCardPayment.requestResponse()).rejects.toThrow(
-          "paymentReerence is required"
+          "paymentReference is required"
         );
       });
     });

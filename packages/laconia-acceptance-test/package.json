@@ -28,6 +28,7 @@
   "dependencies": {
     "laconia-batch": "^0.2.1",
     "laconia-core": "^0.2.1",
+    "laconia-test": "^0.2.1",
     "pino": "^4.16.1",
     "uuid": "^3.2.1"
   },

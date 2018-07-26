@@ -2,7 +2,6 @@ const frisby = require("frisby");
 const uuidv4 = require("uuid/v4");
 const Joi = frisby.Joi;
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
-const { invoke } = require("laconia-core");
 const { laconiaTest } = require("laconia-test");
 const tracker = require("laconia-test-helper").tracker;
 
@@ -125,7 +124,7 @@ describe("order flow", () => {
     it(
       "should capture all card payments",
       async () => {
-        await invoke(name("process-card-payments")).fireAndForget();
+        await laconiaTest(name("process-card-payments")).fireAndForget();
         await captureCardPaymentTracker.waitUntil(10);
         const ticks = await captureCardPaymentTracker.getTicks();
         const capturedPaymentReferences = ticks
@@ -143,7 +142,7 @@ describe("order flow", () => {
     it(
       "should calculate total order for every restaurants",
       async () => {
-        await invoke(name("calculate-total-order")).fireAndForget();
+        await laconiaTest(name("calculate-total-order")).fireAndForget();
         await calculateTotalOrderTracker.waitUntil(10);
         const ticks = await calculateTotalOrderTracker.getTicks();
         const actualTotalOrder = ticks.sort();

@@ -1,9 +1,9 @@
 const { laconiaBatch, s3 } = require("laconia-batch");
-const testHelper = require("laconia-test-helper");
+const { tracker } = require("laconia-test");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 
 const instances = ({ context, env }) => ({
-  tracker: testHelper.tracker(context.functionName),
+  tracker: tracker(context.functionName),
   orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME)
 });
 

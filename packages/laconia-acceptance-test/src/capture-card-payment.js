@@ -1,8 +1,8 @@
 const { laconia } = require("laconia-core");
-const testHelper = require("laconia-test-helper");
+const { tracker } = require("laconia-test");
 
 const instances = ({ context }) => ({
-  tracker: testHelper.tracker(context.functionName)
+  tracker: tracker(context.functionName)
 });
 
 module.exports.handler = laconia(async ({ tracker, event }) => {

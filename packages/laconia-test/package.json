@@ -16,7 +16,8 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "laconia-core": "^0.2.1"
+    "laconia-core": "^0.2.1",
+    "p-wait-for": "^1.0.0"
   },
   "peerDependencies": {
     "aws-sdk": "^2.0.1"

@@ -66,20 +66,6 @@ exports.sharedBehaviour = batchHandler => {
       });
     });
 
-    describe("when rate limited", () => {
-      beforeEach(async () => {
-        await batchHandler({ itemsPerSecond: 10 }).on("item", itemListener)(
-          event,
-          context,
-          callback
-        );
-      });
-
-      it("should have at least 0.1 second gap per call", () => {
-        expect(itemListener).toBeCalledWithGapBetween(50, 120);
-      });
-    });
-
     describe("when time is up", () => {
       beforeEach(async () => {
         context.getRemainingTimeInMillis = () => 5000;

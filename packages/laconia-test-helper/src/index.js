@@ -25,8 +25,15 @@ const collectNexts = async (reader, times, startingCursor) => {
 };
 
 const getTimestampGaps = jestFn => {
-  const timestamps = jestFn.mock.timestamps;
+  const timestamps = jestFn.timestamps;
   return timestamps.slice(1).map((val, index) => val - timestamps[index]);
+};
+
+const recordTimestamps = jestFn => () => {
+  if (!jestFn.timestamps) {
+    jestFn.timestamps = [];
+  }
+  jestFn.timestamps.push(Date.now());
 };
 
 const matchers = {
@@ -45,3 +52,4 @@ module.exports.s3Body = s3Body;
 module.exports.collectNexts = collectNexts;
 module.exports.reduceNexts = reduceNexts;
 module.exports.matchers = matchers;
+module.exports.recordTimestamps = recordTimestamps;

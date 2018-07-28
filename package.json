@@ -48,19 +48,20 @@
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.1.0",
-    "jest": "^22.4.4",
-    "jest-extended": "^0.6.0",
+    "jest": "^23.4.2",
+    "jest-extended": "^0.7.2",
     "lerna": "^2.5.1",
     "lodash": "^4.17.5",
     "npm-package-json-lint": "^2.11.2",
     "prettier": "^1.12.1"
   },
   "jest": {
+    "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       ".*test/",
       ".serverless",
       "laconia-test-helper"
     ],
-    "setupTestFrameworkScriptFile": "jest-extended"
+    "setupTestFrameworkScriptFile": "./src/setupTests"
   }
 }

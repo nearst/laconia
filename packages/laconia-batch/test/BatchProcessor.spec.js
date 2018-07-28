@@ -1,5 +1,5 @@
 const BatchProcessor = require("../src/BatchProcessor");
-const { matchers } = require("laconia-test-helper");
+const { matchers, recordTimestamps } = require("laconia-test-helper");
 expect.extend(matchers);
 
 const arrayReader = array =>
@@ -16,6 +16,7 @@ describe("BatchProcessor", () => {
 
   beforeEach(() => {
     itemListener = jest.fn();
+    itemListener.mockImplementation(recordTimestamps(itemListener));
     shouldStop = jest.fn();
   });
 

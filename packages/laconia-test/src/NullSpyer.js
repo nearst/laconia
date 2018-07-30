@@ -1,1 +1,3 @@
-module.exports = class NullSpyer {};
+module.exports = class NullSpyer {
+  track() {}
+};

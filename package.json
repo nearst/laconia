@@ -58,9 +58,10 @@
   "jest": {
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
-      ".*test/",
+      ".*/test/",
       ".serverless",
-      "laconia-test-helper"
+      "laconia-test-helper",
+      "laconia-acceptance-test"
     ],
     "setupTestFrameworkScriptFile": "./src/setupTests"
   }

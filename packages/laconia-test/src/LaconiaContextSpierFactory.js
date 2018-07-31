@@ -1,7 +1,7 @@
-const S3Spyer = require("./S3Spyer");
-const NullSpyer = require("./NullSpyer");
+const S3Spier = require("./S3Spier");
+const NullSpier = require("./NullSpier");
 
-module.exports = class LaconiaContextSpyerFactory {
+module.exports = class LaconiaContextSpierFactory {
   constructor(lc) {
     this.lc = lc;
   }
@@ -9,9 +9,9 @@ module.exports = class LaconiaContextSpyerFactory {
   makeSpy() {
     const bucketName = this.lc.env.LACONIA_TEST_SPY_BUCKET_NAME;
     if (bucketName && bucketName !== "disabled") {
-      return new S3Spyer(bucketName);
+      return new S3Spier(bucketName);
     } else {
-      return new NullSpyer();
+      return new NullSpier();
     }
   }
 };

@@ -1,7 +1,7 @@
 const AWS = require("aws-sdk");
 const pWaitFor = require("p-wait-for");
 
-module.exports = class S3Spyer {
+module.exports = class S3Spier {
   constructor(bucketName, functionName, { s3 = new AWS.S3() } = {}) {
     this.bucketName = bucketName;
     this.functionName = functionName;

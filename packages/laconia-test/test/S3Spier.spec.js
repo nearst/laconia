@@ -1,9 +1,9 @@
 const AWSMock = require("aws-sdk-mock");
-const S3Spyer = require("../src/S3Spyer");
+const S3Spier = require("../src/S3Spier");
 const { yields } = require("laconia-test-helper");
 const _ = require("lodash");
 
-describe("S3Spyer", () => {
+describe("S3Spier", () => {
   let lc;
 
   afterEach(() => {
@@ -24,8 +24,8 @@ describe("S3Spyer", () => {
     });
 
     it("should call s3 with the configured bucket name", async () => {
-      const spyer = new S3Spyer("bucket name", "function name");
-      await spyer.track(lc);
+      const spier = new S3Spier("bucket name", "function name");
+      await spier.track(lc);
       expect(s3.putObject).toBeCalledWith(
         expect.objectContaining({ Bucket: "bucket name" }),
         expect.any(Function)
@@ -33,9 +33,9 @@ describe("S3Spyer", () => {
     });
 
     it("should generate unique bucket item name", async () => {
-      const spyer = new S3Spyer("bucket name", "function name");
-      await spyer.track(_.merge(lc, { context: { awsRequestId: "123" } }));
-      await spyer.track(_.merge(lc, { context: { awsRequestId: "456" } }));
+      const spier = new S3Spier("bucket name", "function name");
+      await spier.track(_.merge(lc, { context: { awsRequestId: "123" } }));
+      await spier.track(_.merge(lc, { context: { awsRequestId: "456" } }));
 
       const keys = s3.putObject.mock.calls.map(c => c[0].Key);
       expect(keys).toHaveLength(2);
@@ -46,8 +46,8 @@ describe("S3Spyer", () => {
     });
 
     it("should track event object", async () => {
-      const spyer = new S3Spyer("bucket name", "function name");
-      await spyer.track(lc);
+      const spier = new S3Spier("bucket name", "function name");
+      await spier.track(lc);
       expect(s3.putObject).toBeCalledWith(
         expect.objectContaining({ Body: expect.any(String) }),
         expect.any(Function)

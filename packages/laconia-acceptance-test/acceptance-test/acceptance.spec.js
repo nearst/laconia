@@ -65,10 +65,12 @@ describe("order flow", () => {
   let orderRepository;
   let orderMap;
   let orderUrl;
-  const captureCardPaymentTracker = tracker(
-    name("capture-card-payment"),
-    name("tracker")
-  );
+
+  const captureCardPayment = laconiaTest(name("capture-card-payment"), {
+    spy: {
+      bucketName: name("tracker")
+    }
+  });
 
   const calculateTotalOrderTracker = tracker(
     name("calculate-total-order"),
@@ -83,7 +85,7 @@ describe("order flow", () => {
   beforeAll(async () => {
     orderUrl = await getOrderUrl();
   });
-  beforeAll(() => captureCardPaymentTracker.clear());
+  beforeAll(() => captureCardPayment.spy.clear());
   beforeAll(() => calculateTotalOrderTracker.clear());
 
   beforeAll(async () => {
@@ -124,10 +126,10 @@ describe("order flow", () => {
       "should capture all card payments",
       async () => {
         await laconiaTest(name("process-card-payments")).fireAndForget();
-        await captureCardPaymentTracker.waitUntil(10);
-        const ticks = await captureCardPaymentTracker.getTicks();
-        const capturedPaymentReferences = ticks
-          .map(t => t.paymentReference)
+        await captureCardPayment.spy.waitForTotalInvocations(10);
+        const invocations = await captureCardPayment.spy.getInvocations();
+        const capturedPaymentReferences = invocations
+          .map(t => t.event.paymentReference)
           .sort();
         const paymentReferences = Object.values(orderMap)
           .map(order => order.paymentReference)

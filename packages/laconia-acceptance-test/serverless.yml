@@ -24,6 +24,7 @@ provider:
       Resource: "*"
   environment:
     TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
+    LACONIA_TEST_SPY_BUCKET: ${self:custom.trackerBucketName}
 
 custom:
   fullName: ${self:service}-${self:provider.stage}

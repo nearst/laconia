@@ -14,7 +14,7 @@ describe("LaconiaContextSpierFactory", () => {
   describe("when bucket name is set", () => {
     let spierFactory;
     beforeEach(() => {
-      lc.env.LACONIA_TEST_SPY_BUCKET_NAME = "bucket name";
+      lc.env.LACONIA_TEST_SPY_BUCKET = "bucket name";
       spierFactory = new LaconiaContextSpierFactory(lc);
     });
 
@@ -36,14 +36,14 @@ describe("LaconiaContextSpierFactory", () => {
 
   describe("when bucket name is not set", () => {
     it("should return a new instance of NullSpier when bucket name is not defined", () => {
-      lc.env.LACONIA_TEST_SPY_BUCKET_NAME = undefined;
+      lc.env.LACONIA_TEST_SPY_BUCKET = undefined;
       const spierFactory = new LaconiaContextSpierFactory(lc);
       const spy = spierFactory.makeSpier();
       expect(spy).toBeInstanceOf(NullSpier);
     });
 
     it("should return a new instance of NullSpier when bucket name is 'disabled'", () => {
-      lc.env.LACONIA_TEST_SPY_BUCKET_NAME = "disabled";
+      lc.env.LACONIA_TEST_SPY_BUCKET = "disabled";
       const spierFactory = new LaconiaContextSpierFactory(lc);
       const spy = spierFactory.makeSpier();
       expect(spy).toBeInstanceOf(NullSpier);

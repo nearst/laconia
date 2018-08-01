@@ -53,3 +53,4 @@ module.exports.collectNexts = collectNexts;
 module.exports.reduceNexts = reduceNexts;
 module.exports.matchers = matchers;
 module.exports.recordTimestamps = recordTimestamps;
+module.exports.tracker = require("./tracker");

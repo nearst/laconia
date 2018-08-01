@@ -1,5 +1,5 @@
 const { laconiaBatch, s3 } = require("laconia-batch");
-const { tracker } = require("laconia-test");
+const { tracker } = require("laconia-test-helper");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 
 const instances = ({ context, env }) => ({

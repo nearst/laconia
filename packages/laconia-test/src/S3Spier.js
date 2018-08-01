@@ -45,8 +45,9 @@ module.exports = class S3Spier {
     return this.s3
       .putObject({
         Bucket: this.bucketName,
-        Key: `${this._prefix}/${Date.now()}-${context.awsRequestId}`,
-        Body: JSON.stringify({ event })
+        Key: `${this._prefix}/${Date.now()}-${context.awsRequestId}.json`,
+        Body: JSON.stringify({ event }),
+        ContentType: "application/json"
       })
       .promise();
   }

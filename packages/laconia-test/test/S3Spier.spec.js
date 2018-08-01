@@ -56,5 +56,17 @@ describe("S3Spier", () => {
       const body = JSON.parse(s3.putObject.mock.calls[0][0].Body);
       expect(body).toEqual({ event: { foo: "bar" } });
     });
+
+    it("should make sure the object stored in S3 openable easily in a browser and an edito", async () => {
+      const spier = new S3Spier("bucket name", "function name");
+      await spier.track(lc);
+      expect(s3.putObject).toBeCalledWith(
+        expect.objectContaining({
+          Key: expect.stringMatching(/.json$/),
+          ContentType: "application/json"
+        }),
+        expect.any(Function)
+      );
+    });
   });
 });

@@ -17,7 +17,9 @@ module.exports = fn => {
   };
 
   return Object.assign(laconia, {
-    run: laconiaContext => fn(laconiaContext),
+    run: laconiaContext => {
+      return fn({ $run: true, ...laconiaContext });
+    },
     register: instanceFn => {
       instanceFns.push(instanceFn);
       return laconia;

@@ -30,6 +30,22 @@ describe("handler", () => {
     expect(handler).toBeCalledWith(expect.objectContaining({ foo: "bar" }));
   });
 
+  describe("run flag", () => {
+    it("should set a flag when #run is called", () => {
+      const handler = jest.fn();
+      laconia(handler).run({});
+      expect(handler).toBeCalledWith(expect.objectContaining({ $run: true }));
+    });
+
+    it("should not set a flag when the handler is being called normally", async () => {
+      const handler = jest.fn();
+      await laconia(handler)({ foo: "event" }, { fiz: "context" }, callback);
+      expect(handler).not.toBeCalledWith(
+        expect.objectContaining({ $run: true })
+      );
+    });
+  });
+
   it("should be able to add instances by calling 'register'", async () => {
     const handler = jest.fn();
     await laconia(handler)

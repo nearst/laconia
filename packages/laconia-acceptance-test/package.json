@@ -43,5 +43,8 @@
   "engines": {
     "node": ">=8.10"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "testEnvironment": "node"
+  }
 }

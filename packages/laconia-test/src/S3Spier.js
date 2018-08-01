@@ -9,7 +9,7 @@ module.exports = class S3Spier {
   }
 
   get _prefix() {
-    return `${this.functionName}/`;
+    return `${this.functionName}`;
   }
 
   async _objectsKeys() {

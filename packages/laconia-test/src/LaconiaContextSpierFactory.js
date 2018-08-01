@@ -6,10 +6,11 @@ module.exports = class LaconiaContextSpierFactory {
     this.lc = lc;
   }
 
-  makeSpy() {
-    const bucketName = this.lc.env.LACONIA_TEST_SPY_BUCKET_NAME;
+  makeSpier() {
+    const bucketName = this.lc.env.LACONIA_TEST_SPY_BUCKET;
+    const functionName = this.lc.context.functionName;
     if (bucketName && bucketName !== "disabled") {
-      return new S3Spier(bucketName);
+      return new S3Spier(bucketName, functionName);
     } else {
       return new NullSpier();
     }

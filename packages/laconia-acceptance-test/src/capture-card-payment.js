@@ -1,9 +1,5 @@
 const { laconia } = require("laconia-core");
-const { spy, LaconiaContextSpierFactory } = require("laconia-test");
-
-const instances = lc => ({
-  $spierFactory: new LaconiaContextSpierFactory(lc)
-});
+const { spy } = require("laconia-test");
 
 const handler = async ({ tracker, event }) => {
   if (!event.paymentReference) {
@@ -11,4 +7,4 @@ const handler = async ({ tracker, event }) => {
   }
 };
 
-module.exports.handler = laconia(spy(handler)).register(instances);
+module.exports.handler = laconia(spy(handler)).register(spy.instances);

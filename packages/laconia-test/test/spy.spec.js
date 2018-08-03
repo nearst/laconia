@@ -63,4 +63,15 @@ describe("spy", () => {
       expect(result).toEqual("result");
     });
   });
+
+  describe("instances", () => {
+    it("should be able to retrieve $spierFactory", () => {
+      const result = spy.instances({
+        env: {
+          LACONIA_TEST_SPY_BUCKET: "bucket"
+        }
+      });
+      expect(result).toHaveProperty("$spierFactory");
+    });
+  });
 });

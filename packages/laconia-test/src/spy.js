@@ -1,4 +1,6 @@
-module.exports = fn => {
+const LaconiaContextSpierFactory = require("./LaconiaContextSpierFactory");
+
+const spy = fn => {
   return async lc => {
     if (lc["$run"]) {
       return fn(lc);
@@ -8,3 +10,9 @@ module.exports = fn => {
     return response[0];
   };
 };
+
+spy.instances = lc => ({
+  $spierFactory: new LaconiaContextSpierFactory(lc)
+});
+
+module.exports = spy;

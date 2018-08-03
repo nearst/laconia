@@ -5,24 +5,89 @@ const _ = require("lodash");
 
 describe("S3Spier", () => {
   let lc;
+  let s3;
+
+  beforeEach(() => {
+    lc = {
+      event: { foo: "bar" },
+      context: { functionName: "function name" }
+    };
+
+    s3 = {
+      putObject: jest.fn().mockImplementation(yields()),
+      getObject: jest.fn().mockImplementation(
+        yields({
+          Body: JSON.stringify({})
+        })
+      ),
+      deleteObject: jest.fn().mockImplementation(yields()),
+      listObjects: jest.fn().mockImplementation(
+        yields({
+          Contents: []
+        })
+      )
+    };
+
+    AWSMock.mock("S3", "deleteObject", s3.deleteObject);
+    AWSMock.mock("S3", "listObjects", s3.listObjects);
+    AWSMock.mock("S3", "putObject", s3.putObject);
+    AWSMock.mock("S3", "getObject", s3.getObject);
+  });
 
   afterEach(() => {
     AWSMock.restore();
   });
 
-  describe("#track", () => {
-    let s3;
-    beforeEach(() => {
-      lc = {
-        event: { foo: "bar" },
-        context: { functionName: "function name" }
-      };
-      s3 = {
-        putObject: jest.fn().mockImplementation(yields())
-      };
-      AWSMock.mock("S3", "putObject", s3.putObject);
+  const sharedListObjectsTest = operation => {
+    it("should only retrieve objects related to the function name", async () => {
+      const spier = new S3Spier("bucket name", "function name");
+      await operation(spier);
+      expect(s3.listObjects).toBeCalledWith(
+        expect.objectContaining({
+          Bucket: "bucket name",
+          Prefix: "function name"
+        }),
+        expect.any(Function)
+      );
+    });
+  };
+
+  const sharedMultiOperationTest = (operation, s3method) => {
+    it("should only retrieve objects related to the function name", async () => {
+      const spier = new S3Spier("bucket name", "function name");
+      await operation(spier);
+      expect(s3.listObjects).toBeCalledWith(
+        expect.objectContaining({
+          Bucket: "bucket name",
+          Prefix: "function name"
+        }),
+        expect.any(Function)
+      );
     });
 
+    it("should operate on all objects returned", async () => {
+      const keys = ["1", "2"];
+      s3.listObjects.mockImplementation(
+        yields({
+          Contents: keys.map(k => ({ Key: k }))
+        })
+      );
+      const spier = new S3Spier("bucket name", "function name");
+      await operation(spier);
+      expect(s3method()).toHaveBeenCalledTimes(keys.length);
+      keys.forEach(k => {
+        expect(s3method()).toBeCalledWith(
+          expect.objectContaining({
+            Bucket: "bucket name",
+            Key: k
+          }),
+          expect.any(Function)
+        );
+      });
+    });
+  };
+
+  describe("#track", () => {
     it("should call s3 with the configured bucket name", async () => {
       const spier = new S3Spier("bucket name", "function name");
       await spier.track(lc);
@@ -68,5 +133,22 @@ describe("S3Spier", () => {
         expect.any(Function)
       );
     });
+  });
+
+  describe("#clear", () => {
+    sharedListObjectsTest(spier => spier.clear());
+    sharedMultiOperationTest(spier => spier.clear(), () => s3.deleteObject);
+  });
+
+  describe("#getInvocations", () => {
+    sharedListObjectsTest(spier => spier.getInvocations());
+    sharedMultiOperationTest(
+      spier => spier.getInvocations(),
+      () => s3.getObject
+    );
+  });
+
+  describe("#waitForTotalInvocations", () => {
+    sharedListObjectsTest(spier => spier.waitForTotalInvocations(0));
   });
 });

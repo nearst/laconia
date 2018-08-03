@@ -15,6 +15,9 @@
     "type": "git",
     "url": "https://github.com/ceilfors/laconia.git"
   },
+  "dependencies": {
+    "p-wait-for": "^1.0.0"
+  },
   "engines": {
     "node": ">=8.10"
   },

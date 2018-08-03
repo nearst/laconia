@@ -2,7 +2,8 @@ const frisby = require("frisby");
 const uuidv4 = require("uuid/v4");
 const Joi = frisby.Joi;
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
-const { laconiaTest, tracker } = require("laconia-test");
+const { laconiaTest } = require("laconia-test");
+const { tracker } = require("laconia-test-helper");
 
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
 const SERVERLESS_STAGE = process.env.NODE_VERSION;

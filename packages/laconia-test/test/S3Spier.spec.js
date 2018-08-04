@@ -1,3 +1,4 @@
+const delay = require("delay");
 const AWSMock = require("aws-sdk-mock");
 const S3Spier = require("../src/S3Spier");
 const { yields } = require("laconia-test-helper");
@@ -150,5 +151,23 @@ describe("S3Spier", () => {
 
   describe("#waitForTotalInvocations", () => {
     sharedListObjectsTest(spier => spier.waitForTotalInvocations(0));
+
+    it(
+      "should wait for total invocations",
+      async () => {
+        const spier = new S3Spier("bucket name", "function name");
+        await Promise.all([
+          spier.waitForTotalInvocations(2),
+          delay(50).then(_ => {
+            s3.listObjects.mockImplementation(
+              yields({
+                Contents: [{ Key: "key" }, { Key: "key2" }]
+              })
+            );
+          })
+        ]);
+      },
+      100
+    );
   });
 });

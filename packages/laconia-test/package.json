@@ -19,13 +19,13 @@
     "laconia-core": "^0.2.1",
     "p-wait-for": "^1.0.0"
   },
+  "devDependencies": {
+    "delay": "^3.0.0"
+  },
   "peerDependencies": {
     "aws-sdk": "^2.0.1"
   },
   "engines": {
     "node": ">=8.10"
-  },
-  "devDependencies": {
-    "delay": "^3.0.0"
   }
 }

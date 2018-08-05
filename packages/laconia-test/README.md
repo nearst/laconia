@@ -8,7 +8,7 @@
 
 Integration test is a very important layer to be tested in the Serverless Architecture,
 due to the nature of its ecosystem dependencies. Laconia Test package aims to make integration
-test easy especially when you are testing your system from end to end.
+test easy especially when you are testing your system end to end.
 
 ## Features
 
@@ -17,7 +17,8 @@ test easy especially when you are testing your system from end to end.
 * Console.log your Lambda logs on invocation error
 * Spy on indirect Lambda invocations
 
-The example of an automatic Lambda logs and augmented stacktrace print out:
+The example of an automatic Lambda logs and augmented stacktrace print out when
+your Lambda is invoked with laconia-test:
 
 ```js
 ...
@@ -82,13 +83,14 @@ await laconiaTest("capture-card-payment").requestResponse({
 
 Lambda configuration:
 
-* Set LACONIA_TEST_SPY_BUCKET environment variable. This is required as the invocation records are stored in an S3 bucket. The bucket must already exist.
+* Set LACONIA_TEST_SPY_BUCKET environment variable. This is required as the invocation
+  records are stored in an S3 bucket. The bucket must already be created.
 
-IAM permissions:
+IAM permission configuration:
 
 * Permissions must be updated to allow Lambda and your test environment to read and write to the configured S3 bucket.
 
-Lambda handler:
+Lambda handler code:
 
 ```js
 const { laconia } = require("laconia-core");
@@ -103,8 +105,8 @@ Test code:
 
 ```js
 it("should capture all card payments", async () => {
-  await laconiaTest(name("process-card-payments")).fireAndForget();
-  const captureCardPayment = laconiaTest(name("capture-card-payment"), {
+  await laconiaTest("process-card-payments").fireAndForget();
+  const captureCardPayment = laconiaTest("capture-card-payment", {
     spy: {
       bucketName: "spy"
     }
@@ -114,7 +116,7 @@ it("should capture all card payments", async () => {
   const capturedPaymentReferences = invocations
     .map(t => t.event.paymentReference)
     .sort();
-  expect(capturedPaymentReferences).toEqual(paymentReferences);
+  expect(capturedPaymentReferences).toEqual(expectedPaymentReferences);
 });
 ```
 

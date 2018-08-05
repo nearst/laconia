@@ -12,40 +12,43 @@ test easy especially when you are testing your system from end to end.
 
 ## Features
 
-* Invoke your Lambda under test easily
-* Console.log your Lambda logs and stacktrace on invocation error
+* Invoke your Lambda under test
+* Augment invocation error stacktrace to include Lambda error stacktrace
+* Console.log your Lambda logs on invocation error
 * Spy on indirect Lambda invocations
 
 The example of an automatic Lambda logs and augmented stacktrace print out:
 
 ```js
-  ● order flow › error scenario › capture-card-payment › should throw an error when paymentReference is not defined
+...
+● order flow › error scenario › capture-card-payment › should throw an error when paymentReference is not defined
 
-    expect(function).toThrow(string)
+  expect(function).toThrow(string)
 
-    Expected the function to throw an error matching:
-      "paymentReference is not required"
-    Instead, it threw:
-      Error in laconia-acceptance-node8-capture-card-payment: paymentReference is required
-          62 |       if (data.FunctionError === "Handled") {
-        > 63 |         throw new HandledInvokeLaconiaError(
-             |               ^
-          64 |           this.functionName,
+  Expected the function to throw an error matching:
+    "paymentReference is not required"
+  Instead, it threw:
+    Error in laconia-acceptance-node8-capture-card-payment: paymentReference is required
+        62 |       if (data.FunctionError === "Handled") {
+      > 63 |         throw new HandledInvokeLaconiaError(
+            |               ^
+        64 |           this.functionName,
 
-          at LambdaInvoker._invoke (../laconia-core/src/invoke.js:63:15)
-// Augmented stacktrace
-          Caused by an error in laconia-acceptance-node8-capture-card-payment Lambda:
-          at handler (../../../../../../var/task/src/capture-card-payment.js:6:11)
-          at ../../../../../../var/task/node_modules/laconia-test/src/spy.js:9:41
-          at laconia (../../../../../../var/task/node_modules/laconia-core/src/laconia.js:12:28)
+        at LambdaInvoker._invoke (../laconia-core/src/invoke.js:63:15)
+// - Augmented stacktrace
+        Caused by an error in laconia-acceptance-node8-capture-card-payment Lambda:
+        at handler (../../../../../../var/task/src/capture-card-payment.js:6:11)
+        at ../../../../../../var/task/node_modules/laconia-test/src/spy.js:9:41
+        at laconia (../../../../../../var/task/node_modules/laconia-core/src/laconia.js:12:28)
 
 ...
-// Lambda log printed automatically
-  console.log ../laconia-test/src/LaconiaTester.js:14
-    laconia-acceptance-node8-capture-card-payment Lambda logs:
-    START RequestId: 5e906334-9826-11e8-98c4-3987e5661f37 Version: $LATEST
-    2018-08-04T20:38:40.266Z	5e906334-9826-11e8-98c4-3987e5661f37	{"errorMessage":"paymentReference is required","errorType":"Error","stackTrace":["handler (/var/task/src/capture-card-payment.js:6:11)","/var/task/node_modules/laconia-test/src/spy.js:9:41","laconia (/var/task/node_modules/laconia-core/src/laconia.js:12:28)","<anonymous>"]}
-    END RequestId: 5e906334-9826-11e8-98c4-3987e5661f37
+// - Lambda log printed automatically
+console.log ../laconia-test/src/LaconiaTester.js:14
+  laconia-acceptance-node8-capture-card-payment Lambda logs:
+  START RequestId: 5e906334-9826-11e8-98c4-3987e5661f37 Version: $LATEST
+  2018-08-04T20:38:40.266Z	5e906334-9826-11e8-98c4-3987e5661f37	{"errorMessage":"paymentReference is required","errorType":"Error","stackTrace":["..."]}
+  END RequestId: 5e906334-9826-11e8-98c4-3987e5661f37
+...
 ```
 
 ## FAQ
@@ -60,7 +63,7 @@ npm install --save laconia-test
 
 ## Invocation
 
-See `laconia-core` documentation for more details on usage and API.
+See `laconia-core`'s `invoke` documentation for more details on usage and API. The arugments are exactly the same.
 
 ### Usage
 
@@ -71,15 +74,19 @@ await laconiaTest("capture-card-payment").requestResponse({
 });
 ```
 
-### API
-
-#### laconiaTest()
-
 ## Spy
 
 ### Usage
 
-In your Lambda:
+Lambda configuration:
+
+* Set LACONIA_TEST_SPY_BUCKET environment variable. This is required as the invocation records are stored in an S3 bucket. The bucket must already exist.
+
+IAM permissions:
+
+* Permissions must be updated to allow Lambda and your test environment to read and write to the configured S3 bucket.
+
+Lambda handler:
 
 ```js
 const { laconia } = require("laconia-core");
@@ -90,27 +97,107 @@ const handler = async ({ event }) => {};
 module.exports.handler = laconia(spy(handler)).register(spy.instances);
 ```
 
-In your test:
+Test code:
 
 ```js
-const captureCardPayment = laconiaTest(name("capture-card-payment"), {
-  spy: {
-    bucketName: name("tracker")
-  }
+it("should capture all card payments", async () => {
+  await laconiaTest(name("process-card-payments")).fireAndForget();
+  const captureCardPayment = laconiaTest(name("capture-card-payment"), {
+    spy: {
+      bucketName: "spy"
+    }
+  });
+  await captureCardPayment.spy.waitForTotalInvocations(10);
+  const invocations = await captureCardPayment.spy.getInvocations();
+  const capturedPaymentReferences = invocations
+    .map(t => t.event.paymentReference)
+    .sort();
+  expect(capturedPaymentReferences).toEqual(paymentReferences);
 });
-captureCardPayment.spy.clear();
-captureCardPayment.spy.waitForTotalInvocations(10);
-captureCardPayment.spy.getInvocations();
 ```
 
 ### API
 
-#### laconiaTest(functionName, options)
+#### `spy(laconiaHandler)`
 
-#### spy
+Enable spying feature in a Lambda.
 
-#### spy.clear()
+* `laconiaHandler`
+  * The handler you would pass to `laconia()`
 
-#### spy.waitForTotalInvocations()
+Example:
 
-#### spy.getInvocations()
+```js
+const handler = async ({ event }) => {};
+
+laconia(spy(handler)).register(spy.instances);
+```
+
+#### `spy.instances`
+
+To be used to register instances that will used for spy function to work.
+
+Example:
+
+```js
+const handler = async ({ event }) => {};
+
+laconia(spy(handler)).register(spy.instances);
+```
+
+#### `laconiaTest(functionName, { spy })`
+
+* `functionName` specifies the Lambda function name that will be invoked
+* `options`:
+  * `spy`:
+    * `bucketName` specifies the bucket name where the invocation records are stored
+    * `options`
+      * `s3 = new AWS.S3()`
+        * _Optional_
+        * Set this option if there's a need to customise its instantiation
+        * USed for S3 interaction
+
+Example:
+
+```js
+laconiaTest("capture-card-payment", {
+  spy: {
+    bucketName: "spy",
+    s3: new AWS.S3()
+  }
+});
+```
+
+#### `laconiaTest.spy`
+
+The spy object that can be used to get the list of invocations done
+in a Lambda.
+
+#### `laconiaTest.spy.clear()`
+
+Clear spy invocation records in the S3 bucket configured.
+
+#### `laconiaTest.spy.waitForTotalInvocations(totalInvocations)`
+
+Waits until the lambda under test has been invoked for `totalInvocations` times
+
+* `totalInvocations`
+  * The number of invocation laconiaTest will wait to
+
+#### `laconiaTest.spy.getInvocations()`
+
+Returns an array of invocation records. Only `event` is currently recorded.
+
+Example:
+
+```js
+it("should capture all card payments", async () => {
+  const captureCardPayment = laconiaTest(name("capture-card-payment"), {
+    spy: {
+      bucketName: "spy"
+    }
+  });
+  const invocations = await captureCardPayment.spy.getInvocations();
+  console.log(invocations.map(t => t.event));
+});
+```

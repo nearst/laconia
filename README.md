@@ -22,6 +22,10 @@ The following modules are available as NPM packages:
 
   [Documentation](packages/laconia-batch/README.md)
 
+* laconia-test: Makes Lambda integration testing a breeze.
+
+  [Documentation](packages/laconia-test/README.md)
+
 ## FAQ
 
 1.  I already am using another framework like Serverless Framework or SAM, why should I use laconia?

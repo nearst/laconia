@@ -158,7 +158,7 @@ describe("S3Spier", () => {
         const spier = new S3Spier("bucket name", "function name");
         await Promise.all([
           spier.waitForTotalInvocations(2),
-          delay(50).then(_ => {
+          delay(25).then(_ => {
             s3.listObjects.mockImplementation(
               yields({
                 Contents: [{ Key: "key" }, { Key: "key2" }]

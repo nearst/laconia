@@ -40,7 +40,9 @@ The example of an automatic Lambda logs and augmented stacktrace print out:
         at handler (../../../../../../var/task/src/capture-card-payment.js:6:11)
         at ../../../../../../var/task/node_modules/laconia-test/src/spy.js:9:41
         at laconia (../../../../../../var/task/node_modules/laconia-core/src/laconia.js:12:28)
+```
 
+```
 ...
 // - Lambda log printed automatically
 console.log ../laconia-test/src/LaconiaTester.js:14

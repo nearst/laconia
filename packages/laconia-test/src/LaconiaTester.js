@@ -1,4 +1,4 @@
-const { HandledInvokeLaconiaError } = require("laconia-core");
+const { HandledInvokeLaconiaError } = require("laconia-invoke");
 
 module.exports = class LaconiaTester {
   constructor(invoker, { logger = console.log } = {}) {

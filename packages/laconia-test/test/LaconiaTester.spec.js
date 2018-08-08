@@ -1,5 +1,5 @@
 const LaconiaTester = require("../src/LaconiaTester");
-const { HandledInvokeLaconiaError } = require("laconia-core");
+const { HandledInvokeLaconiaError } = require("laconia-invoke");
 
 const errorPayload = {
   errorMessage: "paymentReference is required",

@@ -1,4 +1,4 @@
-const { invoke } = require("laconia-core");
+const { invoke } = require("laconia-invoke");
 const { laconiaBatch, dynamoDb } = require("laconia-batch");
 
 const instances = ({ env }) => ({

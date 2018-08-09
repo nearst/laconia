@@ -8,12 +8,12 @@ module.exports = class EnvVarInvokeFactory {
     this.env = env;
   }
 
-  makeInstances() {
+  makeInstances(options) {
     return Object.keys(this.env)
       .filter(k => k.startsWith("LACONIA_INVOKE"))
       .reduce((acc, k) => {
         const key = macroCaseToCamelCase(k.replace("LACONIA_INVOKE_", ""));
-        acc[key] = invoke(this.env[k]);
+        acc[key] = invoke(this.env[k], options);
         return acc;
       }, {});
   }

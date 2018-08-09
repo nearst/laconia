@@ -43,5 +43,13 @@ describe("EnvVarInvokeFactory", () => {
     expect(instances.exclaim.functionName).toEqual("exclaim");
   });
 
-  xit("delegates options to invoke", () => {});
+  it("delegates options to invoke", () => {
+    const invokeFactory = new EnvVarInvokeFactory({
+      LACONIA_INVOKE_HELLO_WORLD: "lambda name"
+    });
+    const lambda = jest.fn();
+    const instances = invokeFactory.makeInstances({ lambda });
+    const helloWorld = instances.helloWorld;
+    expect(helloWorld.lambda).toBe(lambda);
+  });
 });

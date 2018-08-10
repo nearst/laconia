@@ -51,7 +51,7 @@ functions:
     timeout: 6 # Force recursion
     handler: src/process-card-payments.handler
     environment:
-      CAPTURE_CARD_PAYMENT_FUNCTION_NAME: ${self:custom.fullName}-capture-card-payment
+      LACONIA_INVOKE_CAPTURE_CARD_PAYMENT: ${self:custom.fullName}-capture-card-payment 
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
   capture-card-payment:
     handler: src/capture-card-payment.handler

@@ -1,9 +1,5 @@
-const { invoke } = require("laconia-invoke");
+const { instances } = require("laconia-invoke");
 const { laconiaBatch, dynamoDb } = require("laconia-batch");
-
-const instances = ({ env }) => ({
-  captureCardPayment: invoke(env.CAPTURE_CARD_PAYMENT_FUNCTION_NAME)
-});
 
 module.exports.handler = laconiaBatch(
   _ =>

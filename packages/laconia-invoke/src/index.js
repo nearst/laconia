@@ -1,8 +1,11 @@
+const invoke = require("./invoke");
+const HandledInvokeLaconiaError = require("./HandledInvokeLaconiaError");
+const UnhandledInvokeLaconiaError = require("./UnhandledInvokeLaconiaError");
 const EnvVarInvokeFactory = require("./EnvVarInvokeFactory");
 
-module.exports.invoke = require("./invoke");
-module.exports.HandledInvokeLaconiaError = require("./HandledInvokeLaconiaError");
-module.exports.UnhandledInvokeLaconiaError = require("./UnhandledInvokeLaconiaError");
+module.exports = exports = invoke;
+exports.default = invoke;
 
-module.exports.instances = ({ env }) =>
-  new EnvVarInvokeFactory(env).makeInstances();
+exports.HandledInvokeLaconiaError = HandledInvokeLaconiaError;
+exports.UnhandledInvokeLaconiaError = UnhandledInvokeLaconiaError;
+exports.instances = ({ env }) => new EnvVarInvokeFactory(env).makeInstances();

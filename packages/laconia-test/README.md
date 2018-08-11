@@ -104,6 +104,8 @@ module.exports.handler = laconia(spy(handler)).register(spy.instances);
 Test code:
 
 ```js
+const laconiaTest = require("laconia-test");
+
 it("should capture all card payments", async () => {
   await laconiaTest("process-card-payments").fireAndForget();
   const captureCardPayment = laconiaTest("capture-card-payment", {

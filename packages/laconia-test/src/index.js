@@ -1,3 +1,7 @@
-module.exports.laconiaTest = require("./laconiaTest");
-module.exports.spy = require("./spy");
-module.exports.LaconiaContextSpierFactory = require("./LaconiaContextSpierFactory");
+const laconiaTest = require("./laconiaTest");
+const spy = require("./spy");
+
+module.exports = exports = laconiaTest;
+exports.default = laconiaTest;
+
+exports.spy = spy;

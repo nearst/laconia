@@ -209,7 +209,7 @@ An `invoke` function is injected to LaconiaContext by default, or you can
 import it manually.
 
 ```js
-const { laconia } = require("laconia-core");
+const laconia = require("laconia-core");
 
 module.exports.handler = laconia(async ({ invoke }) => {
   // Waits for Lambda response before continuing
@@ -271,7 +271,7 @@ An instantiated `recurse` function is injected to LaconiaContext by default, or
 you can import it manually from laconia-core.
 
 ```js
-const { laconia } = require("laconia-core");
+const laconia = require("laconia-core");
 
 module.exports.handler = laconia(({ event, recurse }) => {
   if (event.input !== 3) {

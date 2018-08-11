@@ -1,4 +1,4 @@
-const { laconia } = require("laconia-core");
+const laconia = require("laconia-core");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");

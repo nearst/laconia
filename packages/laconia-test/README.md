@@ -93,7 +93,7 @@ IAM permission configuration:
 Lambda handler code:
 
 ```js
-const { laconia } = require("laconia-core");
+const laconia = require("laconia-core");
 const { spy } = require("laconia-test");
 
 const handler = async ({ event }) => {};

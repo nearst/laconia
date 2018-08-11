@@ -1,4 +1,4 @@
-const { laconiaBatch, s3 } = require("laconia-batch");
+const laconiaBatch = require("laconia-batch");
 const { tracker } = require("laconia-test-helper");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 
@@ -9,7 +9,7 @@ const instances = ({ context, env }) => ({
 
 module.exports.handler = laconiaBatch(
   _ =>
-    s3({
+    laconiaBatch.s3({
       path: ".",
       s3Params: {
         Bucket: process.env["RESTAURANT_BUCKET_NAME"],

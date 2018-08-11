@@ -1,9 +1,9 @@
 const invoke = require("laconia-invoke");
-const { laconiaBatch, dynamoDb } = require("laconia-batch");
+const laconiaBatch = require("laconia-batch");
 
 module.exports.handler = laconiaBatch(
   _ =>
-    dynamoDb({
+    laconiaBatch.dynamoDb({
       operation: "SCAN",
       dynamoDbParams: {
         TableName: process.env["ORDER_TABLE_NAME"]

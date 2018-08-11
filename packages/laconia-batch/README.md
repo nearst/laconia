@@ -39,11 +39,11 @@ These are the currently supported input sources:
 Example of batch processing by scanning a dynamodb table:
 
 ```js
-const { laconiaBatch, dynamoDb } = require("laconia-batch");
+const laconiaBatch = require("laconia-batch");
 
 module.exports.handler = laconiaBatch(
   _ =>
-    dynamoDb({
+    laconiaBatch.dynamoDb({
       operation: "SCAN",
       dynamoDbParams: { TableName: "Music" }
     }),

@@ -14,9 +14,13 @@
 
 The following modules are available as NPM packages:
 
-* laconia-core: Micro dependency injection framework. Also provides help on Lambda invocations.
+* laconia-core: Micro dependency injection framework.
 
   [Documentation](packages/laconia-core/README.md)
+
+* laconia-invoke: Invokes Lambdas like regular functions.
+
+  [Documentation](packages/laconia-invoke/README.md)
 
 * laconia-batch: Reads large number of records without time limit.
 

@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 
-> 🛡️ Laconia Core — Micro dependency injection framework. Also provides help on Lambda invocations.
+> 🛡️ Laconia Core — Micro dependency injection framework.
 
 An AWS Lambda handler function is a single entry point for both injecting dependencies
 and function execution. In non-serverless development, you can and will normally
@@ -108,22 +108,6 @@ Example:
 laconia(({ event, context }) => true);
 ```
 
-#### Laconia helpers
-
-LaconiaContext contains some helpers that you can use by default. They are accessible
-via the following keys:
-
-* `invoke`
-* `recurse`
-
-The details of these helpers are covered in the different section of this documentation.
-
-Example:
-
-```js
-laconia(({ invoke, recurse }) => true);
-```
-
 #### Environment Variables
 
 It is very common to set environment variables for your Lambda functions.
@@ -195,105 +179,4 @@ laconia(({ service }) => service.call())
   .run({
     service: jest.mock()
   });
-```
-
-## Lambda Invocation
-
-Laconia provides more predictable user experience of invoking other Lambda by:
-
-* Automatically stringifying the JSON payload
-* Throwing an error when FunctionError is returned instead of failing silently
-* Throwing an error when statusCode returned is not expected
-
-An `invoke` function is injected to LaconiaContext by default, or you can
-import it manually.
-
-```js
-const laconia = require("laconia-core");
-
-module.exports.handler = laconia(async ({ invoke }) => {
-  // Waits for Lambda response before continuing
-  await invoke("function-name").requestResponse({ foo: "bar" });
-  // Invokes a Lambda and not wait for it to return
-  await invoke("function-name").fireAndForget({ foo: "bar" });
-});
-```
-
-### API
-
-#### `invoke(functionName, options)`
-
-* `functionName` specifies the Lambda function name that will be invoked
-* `options`:
-  * `lambda = new AWS.Lambda()`
-    * _Optional_
-    * Set this option if there's a need to cutomise the AWS.Lambda instantation
-    * Used for Lambda invocation
-
-Example:
-
-```js
-// Customise AWS.Lambda instantiation
-invoke("name", {
-  lambda: new AWS.Lambda({ apiVersion: "2015-03-31" })
-});
-```
-
-#### `requestResponse(payload)`
-
-Synchronous Lambda invocation.
-
-* `payload`
-  * The payload used for the Lambda invocation
-
-Example:
-
-```js
-invoke("fn").requestResponse({ foo: "bar" });
-```
-
-#### `fireAndForget(payload)`
-
-Asynchronous Lambda invocation.
-
-* `payload`
-  * The payload used for the Lambda invocation
-
-Example:
-
-```js
-invoke("fn").fireAndForget({ foo: "bar" });
-```
-
-## Recursion
-
-An instantiated `recurse` function is injected to LaconiaContext by default, or
-you can import it manually from laconia-core.
-
-```js
-const laconia = require("laconia-core");
-
-module.exports.handler = laconia(({ event, recurse }) => {
-  if (event.input !== 3) {
-    return recurse({ input: event.input + 1 });
-  }
-});
-```
-
-### API
-
-#### `recurse(payload = {})`
-
-* This `Function` can be called to recurse the Lambda
-* `payload` will be made available in the invoked Lambda's `event` object
-* Do not call this function to stop the recursion
-
-Example:
-
-```js
-laconia(({ event, recurse }) => {
-  if (event.input !== 3) {
-    return recurse({ input: event.input + 1 });
-  }
-});
 ```

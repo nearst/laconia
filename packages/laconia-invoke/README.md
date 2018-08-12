@@ -13,7 +13,7 @@
 
 Here are the user experience improvements that laconia-invoke does for you:
 
-* Automatically stringifying JSON request and response payload
+* Automatically stringifying JSON request payload and parsing JSON response payload
 * Throwing an error when FunctionError is returned instead of failing silently
 * Augmenting stacktrace in the FunctionError thrown based on the stacktrace returned by Lambda invocation
 * Set the FunctionError object's name and message thrown based on the error returned by Lambda invocation
@@ -39,8 +39,8 @@ LACONIA_INVOKE_VARIABLE_NAME: lambdaName
 ```
 
 `laconia-invoke` will scan all environment variables that start with LACONIA_INVOKE and
-injects the `invoke` instances to `LaconiaContext`. The name of the instances will be extracted from the environment variable name, then
-converted to camel case. What you'll get in your `LaconiaContext` from the above configuration will be
+inject the `invoke` instances to `LaconiaContext`. The name of the instances will be extracted from the environment variable name, then
+converted to camel case. The instance you'll get in your `LaconiaContext` from the above configuration will be
 `variableName`.
 
 Example usage:
@@ -67,10 +67,10 @@ module.exports.handler = laconia(handler).register(invoke.instances);
 
 ### API
 
-#### `instances`
+#### `invoke.instances`
 
 Scans environment variables set in the current Lambda and automatically
-creates instances of `invoke`.
+creates instances of `invoke`. To be used together with `laconia-core`.
 
 Example:
 

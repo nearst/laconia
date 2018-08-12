@@ -147,7 +147,9 @@ describe("order flow", () => {
         await laconiaTest(name("calculate-total-order")).fireAndForget();
         await calculateTotalOrderTracker.waitUntil(10);
         const ticks = await calculateTotalOrderTracker.getTicks();
-        const actualTotalOrder = ticks.sort();
+        const actualTotalOrder = ticks.sort(
+          (a, b) => a.restaurantId - b.restaurantId
+        );
 
         const expectedTotalOrder = [
           { restaurantId: 1, total: 10 },

@@ -38,7 +38,7 @@
   "devDependencies": {
     "aws-sdk": "^2.0.1",
     "aws-sdk-mock": "^1.7.0",
-    "coveralls": "^3.0.0",
+    "coveralls": "^3.0.2",
     "dynamodb-local": "0.0.18",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",

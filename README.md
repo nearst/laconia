@@ -10,6 +10,20 @@
 
 > 🛡️ Laconia — Micro AWS Lambda framework
 
+_Laconia is still in active development, please ⭐ the project to support its development!_
+
+## Features
+
+Laconia shields you from common AWS Lambda problems so that you can regain focus back
+on developing your application.
+
+* **Non intrusive**: Switch to other technologies without significant application code change
+* **Clean**: Enables and encourages good coding practices, such as by supporting Dependency Injection
+* **Lightweight**: Features are modularised, so you can use just what you need and keep your Lambdas performant
+* **Focused**: Designed specifically for AWS Lambda and Node.js, hence there is no unnecessary layer of abstraction
+* **Versatile**: Compatible and tested to work with Serverless Framework. Can also be used with or without other frameworks.
+* **Quality assured**: Ultra high test coverage
+
 ## Modules
 
 The following modules are available as NPM packages:

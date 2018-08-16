@@ -21,19 +21,22 @@ so that your unit tests will not execute the code that instantiates your Lambda 
 
 Check out [FAQ](https://github.com/ceilfors/laconia#faq)
 
-## Usage
+## Features
 
-Install laconia-core using yarn:
+* Dependency injection
+* Reduce boilerplate code that is needed to avoid common Lambda programming error
 
-```
-yarn add laconia-core
-```
+One of the problem in AWS Lambda is the `UnhandledPromiseRejectionWarning` problem where
+[you can't throw an error out of your handler function](https://stackoverflow.com/questions/49894595/unhandled-promise-rejection-on-aws-lambda-with-async-await).
+By simply using `laconia`, you will avoid this common problem.
 
-Or via npm:
+## Install
 
 ```
 npm install --save laconia-core
 ```
+
+## Dependency Injection
 
 To fully understand how Laconia's Dependency Injection works, let's have a look into an
 example below. _This is not a running code as there are a lot of code that have been trimmed down,

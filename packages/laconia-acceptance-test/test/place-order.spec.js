@@ -19,7 +19,10 @@ describe("place-order", () => {
       merge: {
         body: JSON.stringify({
           order
-        })
+        }),
+        headers: {
+          Authorization: "secret"
+        }
       }
     });
 
@@ -30,8 +33,15 @@ describe("place-order", () => {
       },
       idGenerator: {
         generate: jest.fn().mockReturnValue("123")
-      }
+      },
+      apiKey: "secret"
     };
+  });
+
+  it("should throw error when apiKey is wrong", async () => {
+    lc.apiKey = "wrong";
+
+    await expect(handler.run(lc)).rejects.toThrow("Wrong API Key");
   });
 
   it("should store order to order table", async () => {

@@ -14,6 +14,14 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 
 jest.setTimeout(10000);
 
+frisby.globalSetup({
+  request: {
+    headers: {
+      Authorization: "supersecretkey"
+    }
+  }
+});
+
 const deleteAllItems = async tableName => {
   const params = { TableName: tableName };
   const data = await documentClient.scan(params).promise();

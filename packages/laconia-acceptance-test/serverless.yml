@@ -1,8 +1,8 @@
 service: laconia-acceptance
 
 plugins:
- - serverless-s3-remover
- - serverless-s3-sync
+  - serverless-s3-remover
+  - serverless-s3-sync
 
 provider:
   name: aws
@@ -32,12 +32,12 @@ custom:
   restaurantBucketName: ${self:custom.fullName}-restaurant
   orderDynamoDbBatchTableName: ${self:custom.fullName}-order
   remover:
-     buckets:
-       - ${self:custom.trackerBucketName}
+    buckets:
+      - ${self:custom.trackerBucketName}
   s3Sync:
     - bucketName: ${self:custom.restaurantBucketName}
       localDir: src/resources
-  
+
 functions:
   place-order:
     handler: src/place-order.handler
@@ -47,11 +47,12 @@ functions:
           method: post
     environment:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
+      LACONIA_SSM_SECRET_API_KEY: /Laconia/Acceptance/apikey
   process-card-payments:
     timeout: 6 # Force recursion
     handler: src/process-card-payments.handler
     environment:
-      LACONIA_INVOKE_CAPTURE_CARD_PAYMENT: ${self:custom.fullName}-capture-card-payment 
+      LACONIA_INVOKE_CAPTURE_CARD_PAYMENT: ${self:custom.fullName}-capture-card-payment
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
   capture-card-payment:
     handler: src/capture-card-payment.handler
@@ -75,10 +76,10 @@ resources:
     OrderTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        AttributeDefinitions: 
+        AttributeDefinitions:
           - AttributeName: "orderId"
             AttributeType: "S"
-        KeySchema: 
+        KeySchema:
           - AttributeName: "orderId"
             KeyType: "HASH"
         ProvisionedThroughput:

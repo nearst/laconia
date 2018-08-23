@@ -28,6 +28,9 @@ module.exports = class EnvVarSsmSecretFactory {
         WithDecryption: true
       })
       .promise();
+    if (data.InvalidParameters.length > 0) {
+      throw new Error(data.InvalidParameters);
+    }
     return data.Parameters.reduce((acc, p) => {
       acc[p.Name] = p.Value;
       return acc;

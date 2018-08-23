@@ -5,60 +5,105 @@ const EnvVarSsmSecretFactory = require("../src/EnvVarSsmSecretFactory");
 describe("EnvVarSsmSecretFactory", () => {
   let ssm;
 
-  beforeEach(() => {
-    ssm = {
-      getParameters: jest.fn().mockImplementation(
-        yields({
-          Parameters: [{ Name: "/path/to/api/key", Value: "api key secret" }]
-        })
-      )
-    };
-    AWS.mock("SSM", "getParameters", ssm.getParameters);
-  });
-
   afterEach(() => {
     AWS.restore();
   });
 
-  it("creates simple instance name based on the env var name", async () => {
-    const secretFactory = new EnvVarSsmSecretFactory({
-      LACONIA_SSM_API_KEY: "super secret"
+  describe("when single parameter is retrieved", () => {
+    beforeEach(() => {
+      ssm = {
+        getParameters: jest.fn().mockImplementation(
+          yields({
+            Parameters: [{ Name: "/path/to/api/key", Value: "api key secret" }],
+            InvalidParameters: []
+          })
+        )
+      };
+      AWS.mock("SSM", "getParameters", ssm.getParameters);
     });
-    const instances = await secretFactory.makeInstances();
-    expect(instances).toHaveProperty("apiKey");
+
+    it("creates simple instance name based on the env var name", async () => {
+      const secretFactory = new EnvVarSsmSecretFactory({
+        LACONIA_SSM_API_KEY: "super secret"
+      });
+      const instances = await secretFactory.makeInstances();
+      expect(instances).toHaveProperty("apiKey");
+    });
+
+    it("should retrieve one parameter from SSM based on the env var value", async () => {
+      const secretFactory = new EnvVarSsmSecretFactory({
+        LACONIA_SSM_API_KEY: "/path/to/api/key"
+      });
+      await secretFactory.makeInstances();
+      expect(ssm.getParameters).toBeCalledWith(
+        expect.objectContaining({ Names: ["/path/to/api/key"] }),
+        expect.any(Function)
+      );
+    });
+
+    it("should return one secret returned by SSM", async () => {
+      const secretFactory = new EnvVarSsmSecretFactory({
+        LACONIA_SSM_API_KEY: "/path/to/api/key"
+      });
+      const result = await secretFactory.makeInstances();
+
+      expect(result).toHaveProperty("apiKey", "api key secret");
+    });
+
+    it("should hit SSM with Decryption option", async () => {
+      const secretFactory = new EnvVarSsmSecretFactory({
+        LACONIA_SSM_API_KEY: "/path/to/api/key"
+      });
+      await secretFactory.makeInstances();
+
+      expect(ssm.getParameters).toBeCalledWith(
+        expect.objectContaining({ WithDecryption: true }),
+        expect.any(Function)
+      );
+    });
   });
 
-  it("should retrieve one parameter from SSM based on the env var value", async () => {
-    const secretFactory = new EnvVarSsmSecretFactory({
-      LACONIA_SSM_API_KEY: "/path/to/api/key"
+  describe("when InvalidParameters are returned", () => {
+    it("should throw error", async () => {
+      ssm.getParameters = jest.fn().mockImplementation(
+        yields({
+          Parameters: [{ Name: "/path/to/api/key", Value: "api key secret" }],
+          InvalidParameters: ["secret pathway"]
+        })
+      );
+      AWS.mock("SSM", "getParameters", ssm.getParameters);
+      const secretFactory = new EnvVarSsmSecretFactory({
+        LACONIA_SSM_API_KEY: "/path/to/api/key"
+      });
+      await expect(secretFactory.makeInstances()).rejects.toThrow(
+        /secret pathway/
+      );
     });
-    await secretFactory.makeInstances();
-    expect(ssm.getParameters).toBeCalledWith(
-      expect.objectContaining({ Names: ["/path/to/api/key"] }),
-      expect.any(Function)
-    );
   });
 
-  it("should return one secret returned by SSM", async () => {
-    const secretFactory = new EnvVarSsmSecretFactory({
-      LACONIA_SSM_API_KEY: "/path/to/api/key"
+  describe("when multiple parameters are retrieved", () => {
+    beforeEach(() => {
+      ssm.getParameters = jest.fn().mockImplementation(
+        yields({
+          Parameters: [
+            { Name: "/path/to/api/key", Value: "api key secret" },
+            { Name: "/otherpath", Value: "secret sauce" }
+          ],
+          InvalidParameters: []
+        })
+      );
+      AWS.mock("SSM", "getParameters", ssm.getParameters);
     });
-    const result = await secretFactory.makeInstances();
 
-    expect(result).toHaveProperty("apiKey", "api key secret");
-  });
+    it("should return multiple secrets returned by SSM", async () => {
+      const secretFactory = new EnvVarSsmSecretFactory({
+        LACONIA_SSM_API_KEY: "/path/to/api/key",
+        LACONIA_SSM_RECIPE: "/otherpath"
+      });
+      const result = await secretFactory.makeInstances();
 
-  it("should hit SSM with Decryption option", async () => {
-    const secretFactory = new EnvVarSsmSecretFactory({
-      LACONIA_SSM_API_KEY: "/path/to/api/key"
+      expect(result).toHaveProperty("apiKey", "api key secret");
+      expect(result).toHaveProperty("recipe", "secret sauce");
     });
-    await secretFactory.makeInstances();
-
-    expect(ssm.getParameters).toBeCalledWith(
-      expect.objectContaining({ WithDecryption: true }),
-      expect.any(Function)
-    );
   });
-
-  xit("should throw error when InvalidParameters is returned", () => {});
 });

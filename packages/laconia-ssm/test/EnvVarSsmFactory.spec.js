@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk-mock");
 const { yields } = require("laconia-test-helper");
-const EnvVarSsmSecretFactory = require("../src/EnvVarSsmSecretFactory");
+const EnvVarSsmSecretFactory = require("../src/EnvVarSsmFactory");
 
 describe("EnvVarSsmSecretFactory", () => {
   let ssm;

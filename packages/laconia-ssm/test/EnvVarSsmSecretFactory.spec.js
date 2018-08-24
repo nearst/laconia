@@ -9,6 +9,36 @@ describe("EnvVarSsmSecretFactory", () => {
     AWS.restore();
   });
 
+  describe("when there is no parameter to be retrieved", () => {
+    beforeEach(() => {
+      ssm = {
+        getParameters: jest.fn().mockImplementation(
+          yields({
+            Parameters: [],
+            InvalidParameters: []
+          })
+        )
+      };
+      AWS.mock("SSM", "getParameters", ssm.getParameters);
+    });
+
+    it("return empty instances", async () => {
+      const secretFactory = new EnvVarSsmSecretFactory({
+        API_KEY: "super secret"
+      });
+      const instances = await secretFactory.makeInstances();
+      expect(instances).toEqual({});
+    });
+
+    it("should not call SSM", async () => {
+      const secretFactory = new EnvVarSsmSecretFactory({
+        API_KEY: "super secret"
+      });
+      await secretFactory.makeInstances();
+      expect(ssm.getParameters).not.toBeCalled();
+    });
+  });
+
   describe("when single parameter is retrieved", () => {
     beforeEach(() => {
       ssm = {
@@ -68,7 +98,7 @@ describe("EnvVarSsmSecretFactory", () => {
       ssm.getParameters = jest.fn().mockImplementation(
         yields({
           Parameters: [{ Name: "/path/to/api/key", Value: "api key secret" }],
-          InvalidParameters: ["secret pathway"]
+          InvalidParameters: ["secret pathway", "boom"]
         })
       );
       AWS.mock("SSM", "getParameters", ssm.getParameters);
@@ -76,7 +106,7 @@ describe("EnvVarSsmSecretFactory", () => {
         LACONIA_SSM_API_KEY: "/path/to/api/key"
       });
       await expect(secretFactory.makeInstances()).rejects.toThrow(
-        /secret pathway/
+        /Invalid parameters: secret pathway, boom/
       );
     });
   });

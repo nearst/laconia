@@ -29,7 +29,9 @@ module.exports = class EnvVarSsmSecretFactory {
       })
       .promise();
     if (data.InvalidParameters.length > 0) {
-      throw new Error(data.InvalidParameters);
+      throw new Error(
+        `Invalid parameters: ${data.InvalidParameters.join(", ")}`
+      );
     }
     return data.Parameters.reduce((acc, p) => {
       acc[p.Name] = p.Value;
@@ -39,6 +41,8 @@ module.exports = class EnvVarSsmSecretFactory {
 
   async makeInstances() {
     const envVar = this._getEnvVar();
+    if (Object.keys(envVar).length === 0) return {};
+
     const parameterMap = await this._getParameterMap(Object.values(envVar));
 
     return Object.keys(envVar).reduce((acc, envKey) => {

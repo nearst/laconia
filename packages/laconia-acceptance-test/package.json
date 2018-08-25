@@ -29,6 +29,7 @@
     "laconia-batch": "^0.4.0",
     "laconia-core": "^0.4.0",
     "laconia-invoke": "^0.4.0",
+    "laconia-ssm": "^0.4.0",
     "laconia-test": "^0.4.0",
     "pino": "^4.16.1",
     "uuid": "^3.2.1"

@@ -22,6 +22,10 @@ provider:
         - "dynamodb:Query"
         - "dynamodb:PutItem"
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "ssm:GetParameters"
+      Resource: "arn:aws:ssm:*:*:parameter/${self:custom.fullName}/*"
   environment:
     TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
     LACONIA_TEST_SPY_BUCKET: ${self:custom.trackerBucketName}
@@ -47,7 +51,7 @@ functions:
           method: post
     environment:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
-      LACONIA_SSM_SECRET_API_KEY: /Laconia/Acceptance/apikey
+      LACONIA_SSM_API_KEY: /${self:custom.fullName}/apikey
   process-card-payments:
     timeout: 6 # Force recursion
     handler: src/process-card-payments.handler

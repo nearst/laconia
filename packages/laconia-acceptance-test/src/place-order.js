@@ -1,4 +1,5 @@
 const laconia = require("laconia-core");
+const ssm = require("laconia-ssm");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");
@@ -11,8 +12,7 @@ const validateApiKey = (event, apiKey) => {
 
 const instances = ({ env }) => ({
   orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
-  idGenerator: new UuidIdGenerator(),
-  apiKey: "supersecretkey"
+  idGenerator: new UuidIdGenerator()
 });
 
 module.exports.handler = laconia(
@@ -29,4 +29,6 @@ module.exports.handler = laconia(
     await orderRepository.save(order);
     return { statusCode: 200, body: JSON.stringify({ orderId }) };
   }
-).register(instances);
+)
+  .register(instances)
+  .register(ssm.envVarInstances);

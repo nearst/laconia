@@ -51,7 +51,8 @@ Set your lambda environment variable:
 LACONIA_INVOKE_CALL_CAPTURE_CARD_PAYMENT_LAMBDA: capture-card-payment
 ```
 
-Once the environment variable is set, you will be able to invoke `capture-card-payment` lambda by registering the instances function
+Once the environment variable is set, you will be able to invoke `capture-card-payment` lambda by
+registering the `envVarInstances` function
 provided by `laconia-invoke`:
 
 ```js
@@ -62,12 +63,12 @@ const handler = async ({ captureCardPaymentLambda }) => {
   await captureCardPaymentLambda.requestResponse();
 };
 
-module.exports.handler = laconia(handler).register(invoke.instances);
+module.exports.handler = laconia(handler).register(invoke.envVarInstances);
 ```
 
 ### API
 
-#### `invoke.instances`
+#### `invoke.envVarInstances`
 
 Scans environment variables set in the current Lambda and automatically
 creates instances of `invoke`. To be used together with `laconia-core`.

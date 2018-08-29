@@ -1,4 +1,4 @@
-# laconia-ssm
+# @laconia/ssm
 
 [![CircleCI](https://img.shields.io/circleci/project/github/ceilfors/laconia/master.svg)](https://circleci.com/gh/ceilfors/laconia)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
@@ -9,5 +9,5 @@
 ## Install
 
 ```
-npm install --save laconia-ssm
+npm install --save @laconia/ssm
 ```

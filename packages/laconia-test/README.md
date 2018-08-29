@@ -1,4 +1,4 @@
-# laconia-test
+# @laconia/test
 
 [![CircleCI](https://img.shields.io/circleci/project/github/ceilfors/laconia/master.svg)](https://circleci.com/gh/ceilfors/laconia)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
@@ -18,7 +18,7 @@ test easy especially when you are testing your system end to end.
 * Spy on indirect Lambda invocations
 
 The example of an automatic Lambda logs and augmented stacktrace print out when
-your Lambda is invoked with laconia-test:
+your Lambda is invoked with @laconia/test:
 
 ```js
 ...
@@ -61,12 +61,12 @@ Check out [FAQ](https://github.com/ceilfors/laconia#faq)
 ## Install
 
 ```
-npm install --save laconia-test
+npm install --save @laconia/test
 ```
 
 ## Invocation
 
-See `laconia-core`'s `invoke` documentation for more details on usage and API. The arugments are exactly the same.
+See `@laconia/invoke`'s documentation for more details on usage and API. The arugments are exactly the same.
 
 ### Usage
 
@@ -93,8 +93,8 @@ IAM permission configuration:
 Lambda handler code:
 
 ```js
-const laconia = require("laconia-core");
-const { spy } = require("laconia-test");
+const laconia = require("@laconia/core");
+const { spy } = require("@laconia/test");
 
 const handler = async ({ event }) => {};
 
@@ -104,7 +104,7 @@ module.exports.handler = laconia(spy(handler)).register(spy.instances);
 Test code:
 
 ```js
-const laconiaTest = require("laconia-test");
+const laconiaTest = require("@laconia/test");
 
 it("should capture all card payments", async () => {
   await laconiaTest("process-card-payments").fireAndForget();

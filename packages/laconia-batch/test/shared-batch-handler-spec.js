@@ -1,6 +1,6 @@
 const AWSMock = require("aws-sdk-mock");
-const { matchers } = require("laconia-test-helper");
-const { LaconiaContext } = require("laconia-core");
+const { matchers } = require("@laconia/test-helper");
+const { LaconiaContext } = require("@laconia/core");
 expect.extend(matchers);
 
 exports.sharedBehaviour = batchHandler => {

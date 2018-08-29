@@ -1,7 +1,7 @@
 const delay = require("delay");
 const AWSMock = require("aws-sdk-mock");
 const S3Spier = require("../src/S3Spier");
-const { yields } = require("laconia-test-helper");
+const { yields } = require("@laconia/test-helper");
 const _ = require("lodash");
 
 describe("S3Spier", () => {

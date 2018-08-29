@@ -1,4 +1,4 @@
-const { yields } = require("laconia-test-helper");
+const { yields } = require("@laconia/test-helper");
 const recurse = require("../src/recurse");
 const AWSMock = require("aws-sdk-mock");
 

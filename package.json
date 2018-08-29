@@ -17,11 +17,11 @@
     "test:packagelint":
       "lerna exec pjl-cli -- -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json",
     "deploy-acceptance":
-      "lerna exec --scope laconia-acceptance-test npm run deploy",
+      "lerna exec --scope @laconia/acceptance-test npm run deploy",
     "remove-acceptance":
-      "lerna exec --scope laconia-acceptance-test npm run remove",
+      "lerna exec --scope @laconia/acceptance-test npm run remove",
     "acceptance-test":
-      "lerna exec --scope laconia-acceptance-test npm run test",
+      "lerna exec --scope @laconia/acceptance-test npm run test",
     "posttest": "npm run test:jslint && npm run test:packagelint",
     "publish:coverage": "cat ./coverage/lcov.info | coveralls"
   },
@@ -64,5 +64,6 @@
       "laconia-acceptance-test"
     ],
     "setupTestFrameworkScriptFile": "./src/setupTests"
-  }
+  },
+  "private": true
 }

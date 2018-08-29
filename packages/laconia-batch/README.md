@@ -1,4 +1,4 @@
-# laconia-batch
+# @laconia/batch
 
 [![CircleCI](https://img.shields.io/circleci/project/github/ceilfors/laconia/master.svg)](https://circleci.com/gh/ceilfors/laconia)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
@@ -9,7 +9,7 @@
 Reads large number of records without Lambda time limit.
 
 AWS Lambda maximum execution duration per request is 300 seconds, hence it is
-impossible to utilise a Lambda to execute a long running task. `laconia-batch`
+impossible to utilise a Lambda to execute a long running task. `@laconia/batch`
 handles your batch processing needs by providing a beautifully designed API
 which abstracts the time limitaton problem.
 
@@ -19,16 +19,16 @@ Check out [FAQ](https://github.com/ceilfors/laconia#faq)
 
 ## Usage
 
-Install laconia-batch using yarn:
+Install @laconia/batch using yarn:
 
 ```
-yarn add laconia-batch
+yarn add @laconia/batch
 ```
 
 Or via npm:
 
 ```
-npm install --save laconia-batch
+npm install --save @laconia/batch
 ```
 
 These are the currently supported input sources:
@@ -39,7 +39,7 @@ These are the currently supported input sources:
 Example of batch processing by scanning a dynamodb table:
 
 ```js
-const laconiaBatch = require("laconia-batch");
+const laconiaBatch = require("@laconia/batch");
 
 module.exports.handler = laconiaBatch(
   _ =>
@@ -56,7 +56,7 @@ option.
 
 ### How it works
 
-`laconia-batch` works around the Lambda's time limitation by using recursion.
+`@laconia/batch` works around the Lambda's time limitation by using recursion.
 It will automatically recurse when Lambda timeout is about to happen, then resumes
 from where it left off in the new invocation.
 
@@ -106,7 +106,7 @@ laconiaBatch(_ => dynamoDb(), {
 
 #### Events
 
-There are events that you can listen to when `laconia-batch` is working.
+There are events that you can listen to when `@laconia/batch` is working.
 
 * item: `laconiaContext, item`
   * Fired on every item read.

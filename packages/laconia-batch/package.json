@@ -1,5 +1,5 @@
 {
-  "name": "laconia-batch",
+  "name": "@laconia/batch",
   "version": "0.4.0",
   "description": "Reads large number of records without Lambda time limit",
   "keywords": ["aws", "lambda", "laconia", "serverless"],
@@ -17,13 +17,13 @@
   },
   "dependencies": {
     "bottleneck": "^2.1.0",
-    "laconia-core": "^0.4.0",
-    "laconia-invoke": "^0.4.0",
+    "@laconia/core": "^0.4.0",
+    "@laconia/invoke": "^0.4.0",
     "lodash.get": "^4.4.2",
     "lodash.isplainobject": "^4.0.6"
   },
   "devDependencies": {
-    "laconia-test-helper": "^0.3.0"
+    "@laconia/test-helper": "^0.3.0"
   },
   "peerDependencies": {
     "aws-sdk": "^2.0.1"

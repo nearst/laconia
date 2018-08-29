@@ -1,4 +1,4 @@
-# laconia-core
+# @laconia/core
 
 [![CircleCI](https://img.shields.io/circleci/project/github/ceilfors/laconia/master.svg)](https://circleci.com/gh/ceilfors/laconia)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
@@ -10,7 +10,7 @@ An AWS Lambda handler function is a single entry point for both injecting depend
 and function execution. In non-serverless development, you can and will normally
 only focus on the latter. This brings a unique challenge to AWS Lambda development
 as it is very difficult to test a handler function when it is responsible for doing
-both the object creations and the application run. laconia-core is a simple dependency
+both the object creations and the application run. @laconia/core is a simple dependency
 injection framework for your Lambda code, hence solving this problem for you.
 
 Laconia explicitly splits the responsibility of the object creations and Lambda function execution.
@@ -33,7 +33,7 @@ By simply using `laconia`, you will avoid this common problem.
 ## Install
 
 ```
-npm install --save laconia-core
+npm install --save @laconia/core
 ```
 
 ## Dependency Injection

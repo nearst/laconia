@@ -1,7 +1,7 @@
 const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");
 const DynamoDbItemReader = require("../src/DynamoDbItemReader");
-const { yields, collectNexts } = require("laconia-test-helper");
+const { yields, collectNexts } = require("@laconia/test-helper");
 
 describe("DynamoDb Item Reader", () => {
   let documentClient;

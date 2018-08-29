@@ -1,5 +1,5 @@
-const invoke = require("laconia-invoke");
-const laconiaBatch = require("laconia-batch");
+const invoke = require("@laconia/invoke");
+const laconiaBatch = require("@laconia/batch");
 
 module.exports.handler = laconiaBatch(
   _ =>

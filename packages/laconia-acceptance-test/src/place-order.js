@@ -1,5 +1,5 @@
-const laconia = require("laconia-core");
-const ssm = require("laconia-ssm");
+const laconia = require("@laconia/core");
+const ssm = require("@laconia/ssm");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");

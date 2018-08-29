@@ -1,5 +1,5 @@
 const BatchProcessor = require("../src/BatchProcessor");
-const { matchers, recordTimestamps } = require("laconia-test-helper");
+const { matchers, recordTimestamps } = require("@laconia/test-helper");
 expect.extend(matchers);
 
 const arrayReader = array =>

@@ -1,4 +1,4 @@
-# laconia-invoke
+# @laconia/invoke
 
 [![CircleCI](https://img.shields.io/circleci/project/github/ceilfors/laconia/master.svg)](https://circleci.com/gh/ceilfors/laconia)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
@@ -11,7 +11,7 @@
 * **Convention over configuration**: Set environment variables and you are good to go
 * **Predictable user experience**: Avoid common Lambda invocation programming error
 
-Here are the user experience improvements that laconia-invoke does for you:
+Here are the user experience improvements that @laconia/invoke does for you:
 
 * Automatically stringifying JSON request payload and parsing JSON response payload
 * Throwing an error when FunctionError is returned instead of failing silently
@@ -22,13 +22,13 @@ Here are the user experience improvements that laconia-invoke does for you:
 ## Install
 
 ```
-npm install --save laconia-invoke
+npm install --save @laconia/invoke
 ```
 
 ## Convention over configuration
 
 One of the philosophy of Laconia is convention over configuration. You can
-use `laconia-invoke` by simply setting environment variables and the
+use `@laconia/invoke` by simply setting environment variables and the
 creation of `invoke` function will be done automagically and injected
 to your `LaconiaContext`.
 
@@ -38,7 +38,7 @@ The environment variable that you set must follow this convention:
 LACONIA_INVOKE_VARIABLE_NAME: lambdaName
 ```
 
-`laconia-invoke` will scan all environment variables that start with LACONIA_INVOKE and
+`@laconia/invoke` will scan all environment variables that start with LACONIA_INVOKE and
 inject the `invoke` instances to `LaconiaContext`. The name of the instances will be extracted from the environment variable name, then
 converted to camel case. The instance you'll get in your `LaconiaContext` from the above configuration will be
 `variableName`.
@@ -53,11 +53,11 @@ LACONIA_INVOKE_CALL_CAPTURE_CARD_PAYMENT_LAMBDA: capture-card-payment
 
 Once the environment variable is set, you will be able to invoke `capture-card-payment` lambda by
 registering the `envVarInstances` function
-provided by `laconia-invoke`:
+provided by `@laconia/invoke`:
 
 ```js
-const invoke = require("laconia-invoke");
-const laconia = require("laconia-core");
+const invoke = require("@laconia/invoke");
+const laconia = require("@laconia/core");
 
 const handler = async ({ captureCardPaymentLambda }) => {
   await captureCardPaymentLambda.requestResponse();
@@ -71,13 +71,13 @@ module.exports.handler = laconia(handler).register(invoke.envVarInstances);
 #### `invoke.envVarInstances`
 
 Scans environment variables set in the current Lambda and automatically
-creates instances of `invoke`. To be used together with `laconia-core`.
+creates instances of `invoke`. To be used together with `@laconia/core`.
 
 Example:
 
 ```js
-const invoke = require("laconia-invoke");
-const laconia = require("laconia-core");
+const invoke = require("@laconia/invoke");
+const laconia = require("@laconia/core");
 
 const handler = async ({ captureCardPaymentLambda }) => {
   /* logic */

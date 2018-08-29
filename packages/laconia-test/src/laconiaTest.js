@@ -1,4 +1,4 @@
-const invoke = require("laconia-invoke");
+const invoke = require("@laconia/invoke");
 const LaconiaTester = require("./LaconiaTester");
 const S3Spier = require("./S3Spier");
 

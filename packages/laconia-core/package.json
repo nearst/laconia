@@ -1,5 +1,5 @@
 {
-  "name": "laconia-core",
+  "name": "@laconia/core",
   "version": "0.4.0",
   "description": "Micro dependency injection framework",
   "keywords": ["aws", "lambda", "laconia", "serverless"],
@@ -16,7 +16,7 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "devDependencies": {
-    "laconia-test-helper": "^0.3.0"
+    "@laconia/test-helper": "^0.3.0"
   },
   "peerDependencies": {
     "aws-sdk": "^2.0.1"

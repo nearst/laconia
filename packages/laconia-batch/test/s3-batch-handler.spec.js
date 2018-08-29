@@ -2,7 +2,7 @@ const AWSMock = require("aws-sdk-mock");
 const laconiaBatch = require("../src/laconiaBatch");
 const s3 = require("../src/s3");
 const { sharedBehaviour } = require("./shared-batch-handler-spec");
-const { s3Body } = require("laconia-test-helper");
+const { s3Body } = require("@laconia/test-helper");
 
 describe("s3 batch handler", () => {
   beforeEach(() => {

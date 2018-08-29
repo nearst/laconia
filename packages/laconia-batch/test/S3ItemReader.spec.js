@@ -7,7 +7,7 @@ const {
   s3Body,
   collectNexts,
   reduceNexts
-} = require("laconia-test-helper");
+} = require("@laconia/test-helper");
 
 describe("S3 Item Reader", () => {
   let s3;

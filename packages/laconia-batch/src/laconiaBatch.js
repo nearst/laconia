@@ -1,4 +1,4 @@
-const laconia = require("laconia-core");
+const laconia = require("@laconia/core");
 const BatchProcessor = require("./BatchProcessor");
 const recurse = require("./recurse");
 const EventEmitter = require("events");

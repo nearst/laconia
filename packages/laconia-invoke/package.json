@@ -1,5 +1,5 @@
 {
-  "name": "laconia-invoke",
+  "name": "@laconia/invoke",
   "version": "0.4.0",
   "description": "Invokes Lambdas like regular functions",
   "keywords": ["aws", "lambda", "laconia", "serverless"],
@@ -14,6 +14,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ceilfors/laconia.git"
+  },
+  "devDependencies": {
+    "@laconia/test-helper": "^0.3.0"
   },
   "peerDependencies": {
     "aws-sdk": "^2.0.1"

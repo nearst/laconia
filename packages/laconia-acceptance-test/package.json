@@ -1,5 +1,5 @@
 {
-  "name": "laconia-acceptance-test",
+  "name": "@laconia/acceptance-test",
   "version": "0.4.0",
   "description": "",
   "keywords": ["aws", "lambda", "laconia", "serverless"],
@@ -26,18 +26,18 @@
       "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
   },
   "dependencies": {
-    "laconia-batch": "^0.4.0",
-    "laconia-core": "^0.4.0",
-    "laconia-invoke": "^0.4.0",
-    "laconia-ssm": "^0.4.0",
-    "laconia-test": "^0.4.0",
+    "@laconia/batch": "^0.4.0",
+    "@laconia/core": "^0.4.0",
+    "@laconia/invoke": "^0.4.0",
+    "@laconia/ssm": "^0.4.0",
+    "@laconia/test": "^0.4.0",
     "pino": "^4.16.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
     "aws-event-mocks": "^0.0.0",
     "frisby": "^2.0.16",
-    "laconia-test-helper": "^0.3.0",
+    "@laconia/test-helper": "^0.3.0",
     "serverless": "^1.30.0",
     "serverless-s3-remover": "^0.4.1",
     "serverless-s3-sync": "^1.6.1"

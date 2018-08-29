@@ -3,7 +3,7 @@ const HandledInvokeLaconiaError = require("../src/HandledInvokeLaconiaError");
 const UnhandledInvokeLaconiaError = require("../src/UnhandledInvokeLaconiaError");
 const AWSMock = require("aws-sdk-mock");
 const AWS = require("aws-sdk");
-const { yields } = require("laconia-test-helper");
+const { yields } = require("@laconia/test-helper");
 
 describe("invoke", () => {
   let invokeMock;

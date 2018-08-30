@@ -1,24 +1,10 @@
 const AWS = require("aws-sdk");
+const { EnvVarInstanceFactory } = require("@laconia/core");
 
-const macroCaseToCamelCase = str =>
-  str.toLowerCase().replace(/_([a-z])/g, g => g[1].toUpperCase());
-
-const toObjKey = envKey =>
-  macroCaseToCamelCase(envKey.replace("LACONIA_SSM_", ""));
-
-module.exports = class EnvVarSsmSecretFactory {
+module.exports = class EnvVarSsmSecretFactory extends EnvVarInstanceFactory {
   constructor(env, { ssm = new AWS.SSM() } = {}) {
-    this.env = env;
+    super(env, "LACONIA_SSM_");
     this.ssm = ssm;
-  }
-
-  _getEnvVar() {
-    return Object.keys(this.env)
-      .filter(k => k.startsWith("LACONIA_SSM"))
-      .reduce((envVar, k) => {
-        envVar[k] = this.env[k];
-        return envVar;
-      }, {});
   }
 
   async _getParameterMap(names) {
@@ -39,15 +25,11 @@ module.exports = class EnvVarSsmSecretFactory {
     }, {});
   }
 
-  async makeInstances() {
-    const envVar = this._getEnvVar();
-    if (Object.keys(envVar).length === 0) return {};
+  _makeInstance(value, options) {
+    return this._parameterMap[value];
+  }
 
-    const parameterMap = await this._getParameterMap(Object.values(envVar));
-
-    return Object.keys(envVar).reduce((acc, envKey) => {
-      acc[toObjKey(envKey)] = parameterMap[envVar[envKey]];
-      return acc;
-    }, {});
+  async _preMakeInstance(envVar) {
+    this._parameterMap = await this._getParameterMap(Object.values(envVar));
   }
 };

@@ -1,20 +1,12 @@
+const { EnvVarInstanceFactory } = require("@laconia/core");
 const invoke = require("./invoke");
 
-const macroCaseToCamelCase = str =>
-  str.toLowerCase().replace(/_([a-z])/g, g => g[1].toUpperCase());
-
-module.exports = class EnvVarInvokeFactory {
+module.exports = class EnvVarInvokeFactory extends EnvVarInstanceFactory {
   constructor(env) {
-    this.env = env;
+    super(env, "LACONIA_INVOKE_");
   }
 
-  makeInstances(options) {
-    return Object.keys(this.env)
-      .filter(k => k.startsWith("LACONIA_INVOKE"))
-      .reduce((acc, k) => {
-        const key = macroCaseToCamelCase(k.replace("LACONIA_INVOKE_", ""));
-        acc[key] = invoke(this.env[k], options);
-        return acc;
-      }, {});
+  _makeInstance(value, options) {
+    return invoke(value, options);
   }
 };

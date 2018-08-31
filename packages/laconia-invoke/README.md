@@ -83,7 +83,7 @@ const handler = async ({ captureCardPaymentLambda }) => {
   /* logic */
 };
 
-module.exports.handler = laconia(handler).register(invoke.instances);
+module.exports.handler = laconia(handler).register(invoke.envVarInstances);
 ```
 
 ## Manual instantiation

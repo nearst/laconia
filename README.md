@@ -26,23 +26,11 @@ on developing your application.
 
 ## Modules
 
-The following modules are available as NPM packages:
-
-* @laconia/core: Micro dependency injection framework.
-
-  [Documentation](packages/laconia-core/README.md)
-
-* @laconia/invoke: Invokes Lambdas like regular functions.
-
-  [Documentation](packages/laconia-invoke/README.md)
-
-* @laconia/batch: Reads large number of records without time limit.
-
-  [Documentation](packages/laconia-batch/README.md)
-
-* @laconia/test: Makes Lambda integration testing a breeze.
-
-  [Documentation](packages/laconia-test/README.md)
+* [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework.
+* [@laconia/invoke](packages/laconia-invoke/README.md): Invokes Lambdas like regular functions.
+* [@laconia/ssm](packages/laconia-ssm/README.md): Retrieves parameters and secrets from AWS SSM.
+* [@laconia/batch](packages/laconia-batch/README.md): Reads large number of records without time limit.
+* [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration testing a breeze.
 
 ## FAQ
 
@@ -50,7 +38,7 @@ The following modules are available as NPM packages:
 
     Tools like Serverless Framework or SAM are more focused on helping the
     build and deployment of your application. Laconia however is more focused on
-    how you craft your application. In fact, both tools can be used together and
+    how you craft your application. In fact, both tools are designed to be used together and
     can be seen in action in [laconia's acceptance test](packages/laconia-acceptance-test).
 
 ## License

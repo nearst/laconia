@@ -26,11 +26,11 @@ on developing your application.
 
 ## Modules
 
-* [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework.
-* [@laconia/invoke](packages/laconia-invoke/README.md): Invokes Lambdas like regular functions.
-* [@laconia/ssm](packages/laconia-ssm/README.md): Retrieves parameters and secrets from AWS SSM.
-* [@laconia/batch](packages/laconia-batch/README.md): Reads large number of records without time limit.
-* [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration testing a breeze.
+* [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework
+* [@laconia/invoke](packages/laconia-invoke/README.md): Invokes Lambdas like regular functions
+* [@laconia/ssm](packages/laconia-ssm/README.md): Retrieves parameters and secrets from AWS SSM
+* [@laconia/batch](packages/laconia-batch/README.md): Reads large number of records without time limit
+* [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration testing a breeze
 
 ## FAQ
 

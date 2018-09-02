@@ -8,7 +8,7 @@
     "postclean": "rm -rf node_modules",
     "postinstall": "lerna bootstrap",
     "test": "jest '/test' --coverage",
-    "test:watch": "jest --runInBand --watch '/test'",
+    "test:watch": "jest --watch",
     "test:integration": "jest '/integration-test'",
     "test:acceptance": "npm run deploy-acceptance && npm run acceptance-test",
     "test:all":
@@ -63,6 +63,7 @@
       "laconia-test-helper",
       "laconia-acceptance-test"
     ],
+    "testPathIgnorePatterns": ["/acceptance-test/"],
     "setupTestFrameworkScriptFile": "./src/setupTests"
   },
   "private": true

@@ -9,7 +9,8 @@
     "postinstall": "lerna bootstrap",
     "test": "jest '/test' --coverage",
     "test:watch": "jest --watch",
-    "test:integration": "jest '/integration-test'",
+    "test:integration":
+      "lerna exec --scope @laconia/batch npm run test:integration",
     "test:acceptance": "npm run deploy-acceptance && npm run acceptance-test",
     "test:all":
       "npm run test && npm run test:integration && npm run test:acceptance",
@@ -63,7 +64,7 @@
       "laconia-test-helper",
       "laconia-acceptance-test"
     ],
-    "testPathIgnorePatterns": ["/acceptance-test/"],
+    "testPathIgnorePatterns": ["/acceptance-test/", "/integration-test/"],
     "setupTestFrameworkScriptFile": "./src/setupTests"
   },
   "private": true

@@ -20,7 +20,6 @@ module.exports = class EnvVarInstanceFactory {
       }, {});
   }
 
-  _makeInstance(value, options) {}
   _preMakeInstance() {}
 
   async makeInstances(options) {

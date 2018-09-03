@@ -7,7 +7,7 @@
     "clean:lerna": "lerna clean --yes || true",
     "postclean": "rm -rf node_modules",
     "postinstall": "lerna bootstrap",
-    "test": "jest '/test' --coverage",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
     "test:integration":
       "lerna exec --scope @laconia/batch npm run test:integration",

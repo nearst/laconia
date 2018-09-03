@@ -8,16 +8,27 @@ const prefixKeys = (prefix, object) => {
 
 module.exports = class LaconiaContext {
   constructor(baseContext) {
-    this.register(baseContext);
+    this.registerInstances(baseContext);
+    this._factoryFns = [];
   }
 
-  register(instance) {
-    Object.keys(instance).forEach(key => {
-      this[key] = instance[key];
+  registerInstances(instances) {
+    Object.keys(instances).forEach(key => {
+      this[key] = instances[key];
     });
   }
 
-  _registerWithPrefix(instance) {
-    this.register(prefixKeys("$", instance));
+  registerFactory(factory) {
+    this._factoryFns.push(factory);
+  }
+
+  async refresh() {
+    for (const factoryFn of this._factoryFns) {
+      this.registerInstances(await factoryFn(this));
+    }
+  }
+
+  _registerInstancesWithPrefix(instances) {
+    this.registerInstances(prefixKeys("$", instances));
   }
 };

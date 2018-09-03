@@ -1,12 +1,11 @@
 const CoreLaconiaContext = require("./CoreLaconiaContext");
 
 module.exports = fn => {
-  const instanceFns = [];
+  const laconiaContext = new CoreLaconiaContext({});
+
   const laconia = async (event, context, callback) => {
-    const laconiaContext = new CoreLaconiaContext({ event, context });
-    for (const instanceFn of instanceFns) {
-      laconiaContext.register(await instanceFn(laconiaContext));
-    }
+    laconiaContext.registerInstances({ event, context });
+    await laconiaContext.refresh();
 
     try {
       const result = await fn(laconiaContext);
@@ -20,8 +19,8 @@ module.exports = fn => {
     run: laconiaContext => {
       return fn({ $run: true, ...laconiaContext });
     },
-    register: instanceFn => {
-      instanceFns.push(instanceFn);
+    register: factoryFn => {
+      laconiaContext.registerFactory(factoryFn);
       return laconia;
     }
   });

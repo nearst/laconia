@@ -98,7 +98,7 @@ const { spy } = require("@laconia/test");
 
 const handler = async ({ event }) => {};
 
-module.exports.handler = laconia(spy(handler)).register(spy.instances);
+module.exports.handler = laconia(spy(handler)).register(spy.instances());
 ```
 
 Test code:
@@ -136,7 +136,7 @@ Example:
 ```js
 const handler = async ({ event }) => {};
 
-laconia(spy(handler)).register(spy.instances);
+laconia(spy(handler)).register(spy.instances());
 ```
 
 #### `spy.instances`
@@ -148,7 +148,7 @@ Example:
 ```js
 const handler = async ({ event }) => {};
 
-laconia(spy(handler)).register(spy.instances);
+laconia(spy(handler)).register(spy.instances());
 ```
 
 #### `laconiaTest(functionName, { spy })`

@@ -31,4 +31,4 @@ module.exports.handler = laconia(
   }
 )
   .register(instances)
-  .register(ssm.envVarInstances);
+  .register(ssm.envVarInstances());

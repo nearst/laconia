@@ -70,7 +70,7 @@ describe("spy", () => {
         env: {
           LACONIA_TEST_SPY_BUCKET: "bucket"
         }
-      });
+      })();
       expect(result).toHaveProperty("$spierFactory");
     });
   });

@@ -38,7 +38,7 @@ const handler = async ({ mySecret }) => {
   // use mySecret
 };
 
-module.exports.handler = laconia(handler).register(ssm.envVarInstances);
+module.exports.handler = laconia(handler).register(ssm.envVarInstances());
 ```
 
 All SSM parameters are decrypted by default.
@@ -61,5 +61,5 @@ const handler = async ({ someSecret }) => {
   /* logic */
 };
 
-module.exports.handler = laconia(handler).register(invoke.envVarInstances);
+module.exports.handler = laconia(handler).register(ssm.envVarInstances());
 ```

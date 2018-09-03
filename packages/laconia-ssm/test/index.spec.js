@@ -7,7 +7,7 @@ describe("laconia-ssm", () => {
     });
 
     it("returns an empty instance when no env var is configured", async () => {
-      const instances = await laconiaSsm.envVarInstances({ env: {} });
+      const instances = await laconiaSsm.envVarInstances()({ env: {} });
       expect(instances).toBeEmpty();
     });
   });

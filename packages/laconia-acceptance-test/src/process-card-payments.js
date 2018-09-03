@@ -11,7 +11,7 @@ module.exports.handler = laconiaBatch(
     }),
   { itemsPerSecond: 2 }
 )
-  .register(invoke.envVarInstances)
+  .register(invoke.envVarInstances())
   .on("item", ({ captureCardPayment }, item) =>
     captureCardPayment.fireAndForget({
       paymentReference: item.paymentReference

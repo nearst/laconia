@@ -7,7 +7,7 @@ describe("laconia-invoke", () => {
     });
 
     it("returns an empty instance when no env var is configured", async () => {
-      const instances = await laconiaInvoke.envVarInstances({ env: {} });
+      const instances = await laconiaInvoke.envVarInstances()({ env: {} });
       expect(instances).toBeEmpty();
     });
   });

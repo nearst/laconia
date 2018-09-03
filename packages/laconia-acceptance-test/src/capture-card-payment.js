@@ -7,4 +7,4 @@ const handler = async ({ event }) => {
   }
 };
 
-module.exports.handler = laconia(spy(handler)).register(spy.instances);
+module.exports.handler = laconia(spy(handler)).register(spy.instances());

@@ -1,4 +1,4 @@
 const EnvVarSsmFactory = require("./EnvVarSsmFactory");
 
-exports.envVarInstances = ({ env }) =>
+exports.envVarInstances = () => ({ env }) =>
   new EnvVarSsmFactory(env).makeInstances();

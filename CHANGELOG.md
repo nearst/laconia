@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0]
+
+### Changed
+
+* `@laconia/invoke`
+  * Change usage from `invoke.envVarInstances` to `invoke.envVarInstances()` for future extensibility
+* `@laconia/ssm`
+  * Change usage from `ssm.envVarInstances` to `ssm.envVarInstances()` for future extensibility
+* `@laconia/test`
+  * Change usage from `spy.instances` to `spy.instances()` for future extensibility
+
 ## [0.5.0]
 
 ### Added
@@ -85,7 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v0.6.0...HEAD
+[0.5.0]: https://github.com/ceilfors/laconia/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/ceilfors/laconia/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/ceilfors/laconia/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/ceilfors/laconia/compare/v0.2.1...v0.3.0

@@ -63,7 +63,7 @@ const handler = async ({ captureCardPaymentLambda }) => {
   await captureCardPaymentLambda.requestResponse();
 };
 
-module.exports.handler = laconia(handler).register(invoke.envVarInstances);
+module.exports.handler = laconia(handler).register(invoke.envVarInstances());
 ```
 
 ### API
@@ -83,7 +83,7 @@ const handler = async ({ captureCardPaymentLambda }) => {
   /* logic */
 };
 
-module.exports.handler = laconia(handler).register(invoke.envVarInstances);
+module.exports.handler = laconia(handler).register(invoke.envVarInstances());
 ```
 
 ## Manual instantiation

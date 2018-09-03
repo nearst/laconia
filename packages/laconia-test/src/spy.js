@@ -11,7 +11,7 @@ const spy = fn => {
   };
 };
 
-spy.instances = lc => ({
+spy.instances = () => lc => ({
   $spierFactory: new LaconiaContextSpierFactory(lc)
 });
 

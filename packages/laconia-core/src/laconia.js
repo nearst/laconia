@@ -19,8 +19,8 @@ module.exports = fn => {
     run: laconiaContext => {
       return fn({ $run: true, ...laconiaContext });
     },
-    register: factoryFn => {
-      laconiaContext.registerFactory(factoryFn);
+    register: (factoryFn, options = {}) => {
+      laconiaContext.registerFactory(factoryFn, options.cache);
       return laconia;
     }
   });

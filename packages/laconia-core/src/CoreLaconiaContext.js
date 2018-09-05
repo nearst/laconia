@@ -22,7 +22,7 @@ module.exports = class CoreLaconiaContext extends LaconiaContext {
     this._registerInstancesWithPrefix(coreInstances);
   }
 
-  registerFactory(factory, { cache = true, maxAge = Infinity } = {}) {
-    super.registerFactory(cache ? cacheResult(factory, maxAge) : factory);
+  registerFactory(factory, { enabled = true, maxAge = 300000 } = {}) {
+    super.registerFactory(enabled ? cacheResult(factory, maxAge) : factory);
   }
 };

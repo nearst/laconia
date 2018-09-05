@@ -77,6 +77,28 @@ describe("handler", () => {
         })
       );
     });
+
+    it("should cache factoryfn by default", async () => {
+      const factoryFn = jest.fn().mockImplementation(() => ({}));
+      const handler = await laconia(jest.fn()).register(factoryFn);
+      await handler({ foo: "event" }, { fiz: "context" }, callback);
+      await handler({ foo: "event" }, { fiz: "context" }, callback);
+
+      expect(factoryFn).toHaveBeenCalledTimes(1);
+    });
+
+    it("should be able to turn off caching", async () => {
+      const factoryFn = jest.fn().mockImplementation(() => ({}));
+      const handler = await laconia(jest.fn()).register(factoryFn, {
+        cache: {
+          enabled: false
+        }
+      });
+      await handler({ foo: "event" }, { fiz: "context" }, callback);
+      await handler({ foo: "event" }, { fiz: "context" }, callback);
+
+      expect(factoryFn).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe("callback behaviour", () => {

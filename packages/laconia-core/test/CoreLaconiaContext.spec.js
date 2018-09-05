@@ -30,7 +30,7 @@ describe("laconiaContext", () => {
     });
 
     it("should be able to turn off cache", async () => {
-      lc.registerFactory(factory, { cache: false });
+      lc.registerFactory(factory, { enabled: false });
       await lc.refresh();
       await lc.refresh();
       expect(factory).toHaveBeenCalledTimes(2);

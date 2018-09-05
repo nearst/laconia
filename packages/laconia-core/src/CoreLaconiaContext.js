@@ -1,12 +1,30 @@
 const LaconiaContext = require("./LaconiaContext");
 
-const memoize = fn => {
-  let result;
+const simpleCache = maxAge => {
+  let value;
+  let lastModified;
+
+  return {
+    hasExpired: () => {
+      return Date.now() - lastModified > maxAge;
+    },
+    set: v => {
+      lastModified = Date.now();
+      value = v;
+    },
+    get: () => value,
+    isEmpty: () => value === undefined
+  };
+};
+
+const cacheResult = (fn, maxAge) => {
+  const cache = simpleCache(maxAge);
+
   return async () => {
-    if (result === undefined) {
-      result = await fn(arguments);
+    if (cache.isEmpty() || cache.hasExpired()) {
+      cache.set(await fn(arguments));
     }
-    return result;
+    return cache.get();
   };
 };
 
@@ -20,7 +38,7 @@ module.exports = class CoreLaconiaContext extends LaconiaContext {
     this._registerInstancesWithPrefix(coreInstances);
   }
 
-  registerFactory(factory) {
-    super.registerFactory(memoize(factory));
+  registerFactory(factory, { cache = true, maxAge = Infinity } = {}) {
+    super.registerFactory(cache ? cacheResult(factory, maxAge) : factory);
   }
 };

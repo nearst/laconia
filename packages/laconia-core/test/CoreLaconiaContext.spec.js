@@ -1,3 +1,4 @@
+const delay = require("delay");
 const CoreLaconiaContext = require("../src/CoreLaconiaContext");
 
 describe("laconiaContext", () => {
@@ -13,16 +14,34 @@ describe("laconiaContext", () => {
   });
 
   describe("#registerFactory", () => {
-    it("should memoize all factory fns by default", async () => {
-      const lc = new CoreLaconiaContext({});
-      const factory = jest.fn().mockImplementation(() => ({ env: "bar" }));
+    let lc;
+    let factory;
+
+    beforeEach(() => {
+      lc = new CoreLaconiaContext({});
+      factory = jest.fn().mockImplementation(() => ({ env: "bar" }));
+    });
+
+    it("should cache by default", async () => {
       lc.registerFactory(factory);
       await lc.refresh();
       await lc.refresh();
-      expect(lc).toHaveProperty("env", "bar");
       expect(factory).toHaveBeenCalledTimes(1);
     });
 
-    xit("should have ttl", () => {});
+    it("should be able to turn off cache", async () => {
+      lc.registerFactory(factory, { cache: false });
+      await lc.refresh();
+      await lc.refresh();
+      expect(factory).toHaveBeenCalledTimes(2);
+    });
+
+    it("should expire cache based on maxAge option", async () => {
+      lc.registerFactory(factory, { maxAge: 1 });
+      await lc.refresh();
+      await delay(5);
+      await lc.refresh();
+      expect(factory).toHaveBeenCalledTimes(2);
+    });
   });
 });

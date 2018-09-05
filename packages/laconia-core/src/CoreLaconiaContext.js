@@ -1,24 +1,8 @@
 const LaconiaContext = require("./LaconiaContext");
-
-const simpleCache = maxAge => {
-  let value;
-  let lastModified;
-
-  return {
-    hasExpired: () => {
-      return Date.now() - lastModified > maxAge;
-    },
-    set: v => {
-      lastModified = Date.now();
-      value = v;
-    },
-    get: () => value,
-    isEmpty: () => value === undefined
-  };
-};
+const SingleCache = require("./SingleCache");
 
 const cacheResult = (fn, maxAge) => {
-  const cache = simpleCache(maxAge);
+  const cache = new SingleCache(maxAge);
 
   return async () => {
     if (cache.isEmpty() || cache.hasExpired()) {

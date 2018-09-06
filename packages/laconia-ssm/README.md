@@ -43,6 +43,12 @@ module.exports.handler = laconia(handler).register(ssm.envVarInstances());
 
 All SSM parameters are decrypted by default.
 
+## Caching
+
+All of the SSM parameters retrieved are cached by default i.e. subsequent calls to your warm
+Lambda will not hit SSM. To understand more on the caching behaviour, go to `@laconia/core`'s
+documentation.
+
 ### API
 
 #### `ssm.envVarInstances`

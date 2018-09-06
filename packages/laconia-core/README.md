@@ -24,7 +24,9 @@ Check out [FAQ](https://github.com/ceilfors/laconia#faq)
 ## Features
 
 * Dependency injection
-* Reduce boilerplate code that is needed to avoid common Lambda programming error
+* Caching for heavy instance creation
+* Reduce boilerplate code
+* Avoid common Lambda programming error
 
 One of the problem in AWS Lambda is the `UnhandledPromiseRejectionWarning` problem where
 [you can't throw an error out of your handler function](https://stackoverflow.com/questions/49894595/unhandled-promise-rejection-on-aws-lambda-with-async-await).
@@ -127,6 +129,13 @@ Example:
 laconia(({ env }) => true);
 ```
 
+#### Cache
+
+When `#register` is called, all of the instances returned by the function specified will be
+cached by default and will expire every 5 minutes. It is therefore a good practice to offload
+some of the heavy operations that don't change on every Lambda run to `LaconiaContext`.
+This feature can be turned off, see API section.
+
 ### API
 
 #### `laconia(fn)`
@@ -145,14 +154,20 @@ laconia(() => "value");
 laconia(() => Promise.resolve("value"));
 ```
 
-#### `register(instanceFn)`
+#### `register(factoryFn, options)`
 
 Registers objects into LaconiaContext. Objects registered here will be made
 available in the Lambda function execution.
 
-* `instanceFn(laconiaContext)`
+* `factoryFn(laconiaContext)`
   * This `Function` is called when your Lambda is invoked
   * An object which contains the instances to be registered must be returned
+* `options`:
+  * `cache`
+    * `enabled = true`
+      * Set to false to turn off caching
+    * `maxAge = 300000`
+      * Your factoryFn will be called when the cache has reached its maximum age specified by this option
 
 Example:
 
@@ -161,6 +176,21 @@ Example:
 laconia(({ service }) => service.call()).register(() => ({
   service: new SomeService()
 }));
+
+// Reduce maxAge
+const handler = () => {};
+laconia(handler).register(
+  async () => (
+    {
+      /* heavy operations */
+    },
+    {
+      cache: {
+        maxAge: 1000
+      }
+    }
+  )
+);
 ```
 
 #### `run(laconiaContext)`

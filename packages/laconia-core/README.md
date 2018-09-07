@@ -180,16 +180,14 @@ laconia(({ service }) => service.call()).register(() => ({
 // Reduce maxAge
 const handler = () => {};
 laconia(handler).register(
-  async () => (
-    {
-      /* heavy operations */
-    },
-    {
-      cache: {
-        maxAge: 1000
-      }
+  async () => ({
+    /* heavy operations */
+  }),
+  {
+    cache: {
+      maxAge: 1000
     }
-  )
+  }
 );
 ```
 

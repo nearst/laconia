@@ -1,6 +1,6 @@
 {
   "name": "@laconia/ssm",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Retrieves parameters and secrets from AWS SSM.",
   "keywords": [
     "aws",
@@ -23,7 +23,7 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^0.6.0"
+    "@laconia/core": "^0.7.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "^0.5.0"

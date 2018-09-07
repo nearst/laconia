@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0]
+
+### Changed
+
+* `@laconia/ssm`
+  * Rename package from @laconia/ssm to @laconia/ssm-config
+
 ## [0.7.0]
 
 ### Added

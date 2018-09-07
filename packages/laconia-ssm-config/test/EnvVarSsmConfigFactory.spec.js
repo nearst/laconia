@@ -1,8 +1,8 @@
 const AWS = require("aws-sdk-mock");
 const { yields } = require("@laconia/test-helper");
-const EnvVarSsmFactory = require("../src/EnvVarSsmFactory");
+const EnvVarSsmConfigFactory = require("../src/EnvVarSsmConfigFactory");
 
-describe("EnvVarSsmFactory", () => {
+describe("EnvVarSsmConfigFactory", () => {
   let ssm;
 
   afterEach(() => {
@@ -23,7 +23,7 @@ describe("EnvVarSsmFactory", () => {
     });
 
     it("return empty instances", async () => {
-      const secretFactory = new EnvVarSsmFactory({
+      const secretFactory = new EnvVarSsmConfigFactory({
         API_KEY: "super secret"
       });
       const instances = await secretFactory.makeInstances();
@@ -31,7 +31,7 @@ describe("EnvVarSsmFactory", () => {
     });
 
     it("should not call SSM", async () => {
-      const secretFactory = new EnvVarSsmFactory({
+      const secretFactory = new EnvVarSsmConfigFactory({
         API_KEY: "super secret"
       });
       await secretFactory.makeInstances();
@@ -53,16 +53,16 @@ describe("EnvVarSsmFactory", () => {
     });
 
     it("creates simple instance name based on the env var name", async () => {
-      const secretFactory = new EnvVarSsmFactory({
-        LACONIA_SSM_API_KEY: "super secret"
+      const secretFactory = new EnvVarSsmConfigFactory({
+        LACONIA_SSMCONFIG_API_KEY: "super secret"
       });
       const instances = await secretFactory.makeInstances();
       expect(instances).toHaveProperty("apiKey");
     });
 
     it("should retrieve one parameter from SSM based on the env var value", async () => {
-      const secretFactory = new EnvVarSsmFactory({
-        LACONIA_SSM_API_KEY: "/path/to/api/key"
+      const secretFactory = new EnvVarSsmConfigFactory({
+        LACONIA_SSMCONFIG_API_KEY: "/path/to/api/key"
       });
       await secretFactory.makeInstances();
       expect(ssm.getParameters).toBeCalledWith(
@@ -72,8 +72,8 @@ describe("EnvVarSsmFactory", () => {
     });
 
     it("should return one secret returned by SSM", async () => {
-      const secretFactory = new EnvVarSsmFactory({
-        LACONIA_SSM_API_KEY: "/path/to/api/key"
+      const secretFactory = new EnvVarSsmConfigFactory({
+        LACONIA_SSMCONFIG_API_KEY: "/path/to/api/key"
       });
       const result = await secretFactory.makeInstances();
 
@@ -81,8 +81,8 @@ describe("EnvVarSsmFactory", () => {
     });
 
     it("should hit SSM with Decryption option", async () => {
-      const secretFactory = new EnvVarSsmFactory({
-        LACONIA_SSM_API_KEY: "/path/to/api/key"
+      const secretFactory = new EnvVarSsmConfigFactory({
+        LACONIA_SSMCONFIG_API_KEY: "/path/to/api/key"
       });
       await secretFactory.makeInstances();
 
@@ -102,8 +102,8 @@ describe("EnvVarSsmFactory", () => {
         })
       );
       AWS.mock("SSM", "getParameters", ssm.getParameters);
-      const secretFactory = new EnvVarSsmFactory({
-        LACONIA_SSM_API_KEY: "/path/to/api/key"
+      const secretFactory = new EnvVarSsmConfigFactory({
+        LACONIA_SSMCONFIG_API_KEY: "/path/to/api/key"
       });
       await expect(secretFactory.makeInstances()).rejects.toThrow(
         /Invalid parameters: secret pathway, boom/
@@ -126,9 +126,9 @@ describe("EnvVarSsmFactory", () => {
     });
 
     it("should return multiple secrets returned by SSM", async () => {
-      const secretFactory = new EnvVarSsmFactory({
-        LACONIA_SSM_API_KEY: "/path/to/api/key",
-        LACONIA_SSM_RECIPE: "/otherpath"
+      const secretFactory = new EnvVarSsmConfigFactory({
+        LACONIA_SSMCONFIG_API_KEY: "/path/to/api/key",
+        LACONIA_SSMCONFIG_RECIPE: "/otherpath"
       });
       const result = await secretFactory.makeInstances();
 

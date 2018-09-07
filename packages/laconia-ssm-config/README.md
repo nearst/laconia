@@ -1,4 +1,4 @@
-# @laconia/ssm
+# @laconia/ssm-config
 
 [![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
@@ -13,7 +13,7 @@
 ## Install
 
 ```
-npm install --save @laconia/ssm
+npm install --save @laconia/ssm-config
 ```
 
 ## Usage
@@ -24,14 +24,14 @@ Set your lambda environment variable:
 LACONIA_SSM_MY_SECRET: /path/to/my/secret
 ```
 
-`@laconia/ssm` will scan all environment variables that start with LACONIA_SSM and
+`@laconia/ssm-config` will scan all environment variables that start with LACONIA_SSM and
 inject the retrieved SSM parameters to `LaconiaContext`. The name of the instances
 will be extracted from the environment variable name, then
 converted to camel case. The instance you'll get in your `LaconiaContext` from the above configuration will be
 `mySecret`:
 
 ```js
-const ssm = require("@laconia/ssm");
+const ssmConfig = require("@laconia/ssm-config");
 const laconia = require("@laconia/core");
 
 const handler = async ({ mySecret }) => {
@@ -60,7 +60,7 @@ is used to retrieve the parameters. All parameters are decrypted by default.
 Example:
 
 ```js
-const ssm = require("@laconia/ssm");
+const ssmConfig = require("@laconia/ssm-config");
 const laconia = require("@laconia/core");
 
 const handler = async ({ someSecret }) => {

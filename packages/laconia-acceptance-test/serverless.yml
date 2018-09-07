@@ -51,7 +51,7 @@ functions:
           method: post
     environment:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
-      LACONIA_SSM_API_KEY: /${self:custom.fullName}/apikey
+      LACONIA_SSMCONFIG_API_KEY: /${self:custom.fullName}/apikey
   process-card-payments:
     timeout: 6 # Force recursion
     handler: src/process-card-payments.handler

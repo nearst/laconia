@@ -2,21 +2,14 @@
   "name": "@laconia/acceptance-test",
   "version": "0.7.0",
   "description": "",
-  "keywords": [
-    "aws",
-    "lambda",
-    "laconia",
-    "serverless"
-  ],
+  "keywords": ["aws", "lambda", "laconia", "serverless"],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {
     "url": "https://github.com/ceilfors/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": [
-    "src"
-  ],
+  "files": ["src"],
   "main": "src/index.js",
   "repository": {
     "type": "git",
@@ -26,15 +19,17 @@
     "test": "npm run test:8",
     "test:8": "AWS_REGION=eu-west-1 NODE_VERSION=node8 jest /acceptance-test",
     "deploy": "npm run deploy:8",
-    "deploy:8": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls deploy",
+    "deploy:8":
+      "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls deploy",
     "remove": "npm run remove:8",
-    "remove:8": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
+    "remove:8":
+      "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
   },
   "dependencies": {
     "@laconia/batch": "^0.7.0",
     "@laconia/core": "^0.7.0",
     "@laconia/invoke": "^0.7.0",
-    "@laconia/ssm": "^0.7.0",
+    "@laconia/ssm-config": "^0.7.0",
     "@laconia/test": "^0.7.0",
     "pino": "^4.16.1",
     "uuid": "^3.2.1"

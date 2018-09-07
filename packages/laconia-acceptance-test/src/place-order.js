@@ -1,5 +1,5 @@
 const laconia = require("@laconia/core");
-const ssm = require("@laconia/ssm");
+const ssmConfig = require("@laconia/ssm-config");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");
@@ -31,4 +31,4 @@ module.exports.handler = laconia(
   }
 )
   .register(instances)
-  .register(ssm.envVarInstances());
+  .register(ssmConfig.envVarInstances());

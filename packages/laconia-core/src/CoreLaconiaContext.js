@@ -4,9 +4,9 @@ const SingleCache = require("./SingleCache");
 const cacheResult = (fn, maxAge) => {
   const cache = new SingleCache(maxAge);
 
-  return async () => {
+  return async (...args) => {
     if (cache.isEmpty() || cache.hasExpired()) {
-      cache.set(await fn(arguments));
+      cache.set(await fn(...args));
     }
     return cache.get();
   };

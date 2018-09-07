@@ -18,7 +18,7 @@ describe("laconiaContext", () => {
     let factory;
 
     beforeEach(() => {
-      lc = new CoreLaconiaContext({});
+      lc = new CoreLaconiaContext({ one: 1 });
       factory = jest.fn().mockImplementation(() => ({ env: "bar" }));
     });
 
@@ -42,6 +42,12 @@ describe("laconiaContext", () => {
       await delay(5);
       await lc.refresh();
       expect(factory).toHaveBeenCalledTimes(2);
+    });
+
+    it("should be able to access lc in cached factory", async () => {
+      lc.registerFactory(({ one }) => ({ two: one + 1 }));
+      await lc.refresh();
+      expect(lc.two).toEqual(2);
     });
   });
 });

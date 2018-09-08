@@ -1,8 +1,21 @@
 const createEvent = require("aws-event-mocks");
 const handler = require("../src/place-order").handler;
 
+const createOrderEvent = order =>
+  createEvent({
+    template: "aws:apiGateway",
+    merge: {
+      body: JSON.stringify({
+        order
+      }),
+      headers: {
+        Authorization: "secret"
+      }
+    }
+  });
+
 describe("place-order", () => {
-  let order, event, lc;
+  let order, lc;
 
   beforeEach(() => {
     order = {
@@ -14,27 +27,17 @@ describe("place-order", () => {
         food: "chicken"
       }
     };
-    event = createEvent({
-      template: "aws:apiGateway",
-      merge: {
-        body: JSON.stringify({
-          order
-        }),
-        headers: {
-          Authorization: "secret"
-        }
-      }
-    });
 
     lc = {
-      event,
+      event: createOrderEvent(order),
       orderRepository: {
         save: jest.fn().mockReturnValue(Promise.resolve())
       },
       idGenerator: {
         generate: jest.fn().mockReturnValue("123")
       },
-      apiKey: "secret"
+      apiKey: "secret",
+      restaurants: [5]
     };
   });
 
@@ -42,6 +45,13 @@ describe("place-order", () => {
     lc.apiKey = "wrong";
 
     await expect(handler.run(lc)).rejects.toThrow("Wrong API Key");
+  });
+
+  it("should throw error when restaurantId is not valid", async () => {
+    order.restaurantId = 1;
+    lc.event = createOrderEvent(order);
+
+    await expect(handler.run(lc)).rejects.toThrow("Invalid restaurant id");
   });
 
   it("should store order to order table", async () => {

@@ -1,6 +1,12 @@
 const _ = require("lodash");
 
-const yields = arg => (params, callback) => callback(null, arg);
+const yields = arg => (params, callback) => {
+  if (typeof arg !== "function") {
+    callback(null, arg);
+  } else {
+    callback(null, arg(params));
+  }
+};
 
 const s3Body = object =>
   yields({

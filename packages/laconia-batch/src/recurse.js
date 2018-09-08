@@ -1,4 +1,4 @@
-const invoke = require("@laconia/invoke");
+const invoker = require("@laconia/invoker");
 const isplainobject = require("lodash.isplainobject");
 const _ = { isPlainObject: isplainobject };
 
@@ -6,7 +6,7 @@ module.exports = ({ event, context }) => (payload = {}) => {
   if (!_.isPlainObject(payload)) {
     throw new Error("Payload must be an object");
   }
-  return invoke(context.functionName).fireAndForget(
+  return invoker(context.functionName).fireAndForget(
     Object.assign({}, event, payload)
   );
 };

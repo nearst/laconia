@@ -66,7 +66,7 @@ npm install --save @laconia/test
 
 ## Invocation
 
-See `@laconia/invoke`'s documentation for more details on usage and API. The arugments are exactly the same.
+See `@laconia/invoker`'s documentation for more details on usage and API. The arugments are exactly the same.
 
 ### Usage
 

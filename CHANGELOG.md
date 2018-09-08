@@ -12,7 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * `@laconia/ssm`
-  * Rename package from @laconia/ssm to @laconia/ssm-config
+  * **BREAKING** Rename package from @laconia/ssm to @laconia/ssm-config
+  * **BREAKING** Rename environment prefix from LACONIA_SSM\_ to LACONIA_SSMCONFIG\_
+* `@laconia/invoke`
+  * **BREAKING** Rename package from @laconia/invoke to @laconia/invoker as `invoke` is not a noun
+  * **BREAKING** Rename environment prefix from LACONIA_INVOKE\_ to LACONIA_INVOKER\_
 
 ## [0.7.0]
 
@@ -26,11 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * `@laconia/invoke`
-  * Change usage from `invoke.envVarInstances` to `invoke.envVarInstances()` for future extensibility
+  * **BREAKING** Change usage from `invoke.envVarInstances` to `invoke.envVarInstances()` for future extensibility
 * `@laconia/ssm`
-  * Change usage from `ssm.envVarInstances` to `ssm.envVarInstances()` for future extensibility
+  * **BREAKING** Change usage from `ssm.envVarInstances` to `ssm.envVarInstances()` for future extensibility
 * `@laconia/test`
-  * Change usage from `spy.instances` to `spy.instances()` for future extensibility
+  * **BREAKING** Change usage from `spy.instances` to `spy.instances()` for future extensibility
 
 ## [0.5.0]
 
@@ -42,13 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Rename all packages to become scoped packages
+* **BREAKING** Rename all packages to become scoped packages
   * `laconia-core` becomes `@laconia/core`
   * `laconia-invoke` becomes `@laconia/invoke`
   * `laconia-batch` becomes `@laconia/batch`
   * `laconia-test` becomes `@laconia/test`
 * `@laconia/invoke`
-  * Rename `invoke.instances` to `invoke.envVarInstances`
+  * **BREAKING** Rename `invoke.instances` to `invoke.envVarInstances`
 
 ## [0.4.0]
 
@@ -110,7 +114,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v0.7.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/ceilfors/laconia/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/ceilfors/laconia/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/ceilfors/laconia/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/ceilfors/laconia/compare/v0.4.0...v0.5.0

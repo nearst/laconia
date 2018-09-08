@@ -1,4 +1,4 @@
-const invoke = require("@laconia/invoke");
+const laconiaInvoker = require("@laconia/invoker");
 const LaconiaTester = require("./LaconiaTester");
 const S3Spier = require("./S3Spier");
 
@@ -25,7 +25,7 @@ const createSpier = (functionName, options) => {
 };
 
 module.exports = (functionName, options = {}) => {
-  const invoker = invoke(functionName, options);
+  const invoker = laconiaInvoker(functionName, options);
   invoker.requestLogs = true;
   const laconiaTester = new LaconiaTester(invoker);
   if (isSpyOptionsSet(options)) {

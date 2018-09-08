@@ -1,22 +1,15 @@
 {
-  "name": "@laconia/invoke",
+  "name": "@laconia/invoker",
   "version": "0.7.0",
   "description": "Invokes Lambdas like regular functions",
-  "keywords": [
-    "aws",
-    "lambda",
-    "laconia",
-    "serverless"
-  ],
+  "keywords": ["aws", "lambda", "laconia", "serverless"],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {
     "url": "https://github.com/ceilfors/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": [
-    "src"
-  ],
+  "files": ["src"],
   "main": "src/index.js",
   "repository": {
     "type": "git",

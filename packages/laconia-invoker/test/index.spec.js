@@ -1,13 +1,13 @@
-const laconiaInvoke = require("../src/index");
+const laconiaInvoker = require("../src/index");
 
-describe("laconia-invoke", () => {
+describe("laconia-invoker", () => {
   describe("#envVarInstances", () => {
     it("has instances function", () => {
-      expect(laconiaInvoke.envVarInstances).toBeFunction();
+      expect(laconiaInvoker.envVarInstances).toBeFunction();
     });
 
     it("returns an empty instance when no env var is configured", async () => {
-      const instances = await laconiaInvoke.envVarInstances()({ env: {} });
+      const instances = await laconiaInvoker.envVarInstances()({ env: {} });
       expect(instances).toBeEmpty();
     });
   });

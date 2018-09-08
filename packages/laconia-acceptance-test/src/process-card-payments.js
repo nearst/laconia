@@ -1,4 +1,4 @@
-const invoke = require("@laconia/invoke");
+const invoker = require("@laconia/invoker");
 const laconiaBatch = require("@laconia/batch");
 
 module.exports.handler = laconiaBatch(
@@ -11,7 +11,7 @@ module.exports.handler = laconiaBatch(
     }),
   { itemsPerSecond: 2 }
 )
-  .register(invoke.envVarInstances())
+  .register(invoker.envVarInstances())
   .on("item", ({ captureCardPayment }, item) =>
     captureCardPayment.fireAndForget({
       paymentReference: item.paymentReference

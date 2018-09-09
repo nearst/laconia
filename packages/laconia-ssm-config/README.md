@@ -18,17 +18,14 @@ npm install --save @laconia/ssm-config
 
 ## Usage
 
-Set your lambda environment variable:
+Set your lambda environment variable with LACONIA_SSMCONFIG prefix:
 
 ```yml
-LACONIA_SSM_MY_SECRET: /path/to/my/secret
+LACONIA_SSMCONFIG_MY_SECRET: /path/to/my/secret
 ```
 
-`@laconia/ssm-config` will scan all environment variables that start with LACONIA_SSM and
-inject the retrieved SSM parameters to `LaconiaContext`. The name of the instances
-will be extracted from the environment variable name, then
-converted to camel case. The instance you'll get in your `LaconiaContext` from the above configuration will be
-`mySecret`:
+`/path/to/my/secret` parameter will be retrieved from SSM, decrypted, and made available as
+`mySecret` in your `LaconiaContext`:
 
 ```js
 const ssmConfig = require("@laconia/ssm-config");
@@ -38,10 +35,8 @@ const handler = async ({ mySecret }) => {
   // use mySecret
 };
 
-module.exports.handler = laconia(handler).register(ssm.envVarInstances());
+module.exports.handler = laconia(handler).register(ssmConfig.envVarInstances());
 ```
-
-All SSM parameters are decrypted by default.
 
 ## Caching
 
@@ -49,12 +44,20 @@ All of the SSM parameters retrieved are cached by default i.e. subsequent calls 
 Lambda will not hit SSM. To understand more on the caching behaviour, go to `@laconia/core`'s
 documentation.
 
+### IAM Permissions
+
+Your Lambda is required to have IAM permissions for `SSM:GetParameters` action
+
 ### API
 
-#### `ssm.envVarInstances`
+#### `ssmConfig.envVarInstances`
 
-Scans environment variables set in the current Lambda and automatically
-retrieves parameters from SSM. [SSM#getParameters](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SSM.html#getParameters-property)
+Scan all environment variables that starts with LACONIA_SSMCONFIG and
+return the derived instances. The name of the instances
+will be extracted from the environment variable name, then
+converted to camel case.
+
+[SSM#getParameters](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SSM.html#getParameters-property)
 is used to retrieve the parameters. All parameters are decrypted by default.
 
 Example:
@@ -63,9 +66,10 @@ Example:
 const ssmConfig = require("@laconia/ssm-config");
 const laconia = require("@laconia/core");
 
+// LACONIA_SSMCONFIG_SOME_SECRET env var will turn into someSecret
 const handler = async ({ someSecret }) => {
   /* logic */
 };
 
-module.exports.handler = laconia(handler).register(ssm.envVarInstances());
+module.exports.handler = laconia(handler).register(ssmConfig.envVarInstances());
 ```

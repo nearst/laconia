@@ -28,6 +28,7 @@ on developing your application.
 
 * [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework
 * [@laconia/invoker](packages/laconia-invoker/README.md): Invokes Lambdas like regular functions
+* [@laconia/s3-config](packages/laconia-s3-config/README.md): Retrieves application config from S3
 * [@laconia/ssm-config](packages/laconia-ssm-config/README.md): Retrieves parameters and secrets from AWS SSM
 * [@laconia/batch](packages/laconia-batch/README.md): Reads large number of records without time limit
 * [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration testing a breeze

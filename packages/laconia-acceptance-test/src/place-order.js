@@ -44,7 +44,8 @@ const handler = async ({
   return { statusCode: 200, body: JSON.stringify({ orderId }) };
 };
 
-module.exports.handler = laconia(handler)
-  .register(s3Config.envVarInstances())
-  .register(ssmConfig.envVarInstances())
-  .register(instances);
+module.exports.handler = laconia(handler).register([
+  s3Config.envVarInstances(),
+  ssmConfig.envVarInstances(),
+  instances
+]);

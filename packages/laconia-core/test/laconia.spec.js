@@ -99,6 +99,60 @@ describe("handler", () => {
 
       expect(factoryFn).toHaveBeenCalledTimes(2);
     });
+
+    describe("when registering an array", () => {
+      let factoryFn1;
+      let factoryFn2;
+      let handlerArgs;
+
+      beforeEach(() => {
+        factoryFn1 = jest.fn().mockImplementation(() => ({ foo: "bar" }));
+        factoryFn2 = jest.fn().mockImplementation(() => ({ boo: "baz" }));
+        handlerArgs = [{ foo: "event" }, { fiz: "context" }, callback];
+      });
+
+      it("should be return instances created by the array of factoryFns", async () => {
+        const handler = jest.fn();
+        await laconia(handler).register([factoryFn1, factoryFn2])(
+          ...handlerArgs
+        );
+
+        expect(handler).toBeCalledWith(
+          expect.objectContaining({
+            foo: "bar",
+            boo: "baz"
+          })
+        );
+      });
+
+      it("should cache all by default", async () => {
+        const handler = await laconia(jest.fn()).register([
+          factoryFn1,
+          factoryFn2
+        ]);
+        await handler(...handlerArgs);
+        await handler(...handlerArgs);
+
+        expect(factoryFn1).toHaveBeenCalledTimes(1);
+        expect(factoryFn2).toHaveBeenCalledTimes(1);
+      });
+
+      it("should be able to turn off caching", async () => {
+        const handler = await laconia(jest.fn()).register(
+          [factoryFn1, factoryFn2],
+          {
+            cache: {
+              enabled: false
+            }
+          }
+        );
+        await handler(...handlerArgs);
+        await handler(...handlerArgs);
+
+        expect(factoryFn1).toHaveBeenCalledTimes(2);
+        expect(factoryFn2).toHaveBeenCalledTimes(2);
+      });
+    });
   });
 
   describe("callback behaviour", () => {

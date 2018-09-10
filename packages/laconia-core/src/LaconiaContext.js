@@ -6,6 +6,14 @@ const prefixKeys = (prefix, object) => {
   return Object.assign({}, ...keyValues);
 };
 
+const parallelFactoryFns = factoryFns => async (...args) => {
+  const responses = await Promise.all(factoryFns.map(f => f(...args)));
+  return responses.reduce(
+    (allInstances, instances) => Object.assign(allInstances, instances),
+    {}
+  );
+};
+
 module.exports = class LaconiaContext {
   constructor(baseContext) {
     this.registerInstances(baseContext);
@@ -18,8 +26,12 @@ module.exports = class LaconiaContext {
     });
   }
 
-  registerFactory(factory) {
+  registerFactory(factory, options = {}) {
     this._factoryFns.push(factory);
+  }
+
+  registerFactories(factories, options = {}) {
+    this.registerFactory(parallelFactoryFns(factories), options);
   }
 
   async refresh() {

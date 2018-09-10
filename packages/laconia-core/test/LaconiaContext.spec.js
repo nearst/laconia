@@ -1,4 +1,5 @@
 const LaconiaContext = require("../src/LaconiaContext");
+const delay = require("delay");
 
 describe("laconiaContext", () => {
   it("should be able to register new instance", () => {
@@ -53,6 +54,44 @@ describe("laconiaContext", () => {
       await lc.refresh();
       await lc.refresh();
       expect(factory).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("#registerFactories", () => {
+    it("should be able to register sync factoryFn", async () => {
+      const lc = new LaconiaContext({});
+      lc.registerFactories([() => ({ foo: "boo" }), () => ({ bar: "baz" })]);
+      await lc.refresh();
+      expect(lc).toHaveProperty("foo", "boo");
+      expect(lc).toHaveProperty("bar", "baz");
+    });
+
+    it(
+      "should parallelize call to factoryFns which are registered together",
+      async () => {
+        const lc = new LaconiaContext({});
+        lc.registerFactories([
+          () => delay(5).then(() => ({})),
+          () => delay(5).then(() => ({})),
+          () => delay(5).then(() => ({})),
+          () => delay(5).then(() => ({})),
+          () => delay(5).then(() => ({}))
+        ]);
+        await lc.refresh();
+      },
+      10
+    );
+
+    it("should be able to use instance created by prior factory", async () => {
+      const lc = new LaconiaContext({});
+      lc.registerFactory(() => ({ env: 1 }));
+      lc.registerFactories([
+        ({ env }) => ({ foo: env + 1 }),
+        ({ env }) => ({ bar: env + 2 })
+      ]);
+      await lc.refresh();
+      expect(lc).toHaveProperty("foo", 2);
+      expect(lc).toHaveProperty("bar", 3);
     });
   });
 });

@@ -154,12 +154,12 @@ laconia(() => "value");
 laconia(() => Promise.resolve("value"));
 ```
 
-#### `register(factoryFn, options)`
+#### `register(factory, options)`
 
 Registers objects into LaconiaContext. Objects registered here will be made
 available in the Lambda function execution.
 
-* `factoryFn(laconiaContext)`
+* `factory(laconiaContext)`
   * This `Function` is called when your Lambda is invoked
   * An object which contains the instances to be registered must be returned
 * `options`:
@@ -167,7 +167,7 @@ available in the Lambda function execution.
     * `enabled = true`
       * Set to false to turn off caching
     * `maxAge = 300000`
-      * Your factoryFn will be called when the cache has reached its maximum age specified by this option
+      * Your factory will be called when the cache has reached its maximum age specified by this option
 
 Example:
 

@@ -1,21 +1,23 @@
 const laconia = require("../src/laconia");
 
-describe("handler", () => {
+describe("laconia", () => {
   let callback;
+  let handlerArgs;
 
   beforeEach(() => {
     callback = jest.fn();
+    handlerArgs = [{ foo: "event" }, { fiz: "context" }, callback];
   });
 
   it("should call Lambda callback with null when there is no value returned", async () => {
-    await laconia(() => {})({}, {}, callback);
+    await laconia(() => {})(...handlerArgs);
     expect(callback).toBeCalledWith(null, undefined);
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it("should delegate AWS parameters to handler function", async () => {
     const handler = jest.fn();
-    await laconia(handler)({ foo: "event" }, { fiz: "context" }, callback);
+    await laconia(handler)(...handlerArgs);
     expect(handler).toBeCalledWith(
       expect.objectContaining({
         event: { foo: "event" },
@@ -39,7 +41,7 @@ describe("handler", () => {
 
     it("should not set a flag when the handler is being called normally", async () => {
       const handler = jest.fn();
-      await laconia(handler)({ foo: "event" }, { fiz: "context" }, callback);
+      await laconia(handler)(...handlerArgs);
       expect(handler).not.toBeCalledWith(
         expect.objectContaining({ $run: true })
       );
@@ -47,75 +49,69 @@ describe("handler", () => {
   });
 
   describe("#register", () => {
-    it("should be able to add instances by calling 'register'", async () => {
-      const handler = jest.fn();
-      await laconia(handler)
-        .register(lc => ({ foo: "bar" }))
-        .register(lc => ({ boo: "baz" }))(
-        { foo: "event" },
-        { fiz: "context" },
-        callback
-      );
+    describe("when registering a function", () => {
+      it("should be able to add instances by calling 'register'", async () => {
+        const handler = jest.fn();
+        await laconia(handler)
+          .register(lc => ({ foo: "bar" }))
+          .register(lc => ({ boo: "baz" }))(...handlerArgs);
 
-      expect(handler).toBeCalledWith(
-        expect.objectContaining({
-          foo: "bar",
-          boo: "baz"
-        })
-      );
-    });
-
-    it("should be able to add async instances by calling 'register'", async () => {
-      const handler = jest.fn();
-      await laconia(handler).register(async lc => {
-        return Promise.resolve({ foo: "bar" });
-      })({ foo: "event" }, { fiz: "context" }, callback);
-
-      expect(handler).toBeCalledWith(
-        expect.objectContaining({
-          foo: "bar"
-        })
-      );
-    });
-
-    it("should cache factoryfn by default", async () => {
-      const factoryFn = jest.fn().mockImplementation(() => ({}));
-      const handler = await laconia(jest.fn()).register(factoryFn);
-      await handler({ foo: "event" }, { fiz: "context" }, callback);
-      await handler({ foo: "event" }, { fiz: "context" }, callback);
-
-      expect(factoryFn).toHaveBeenCalledTimes(1);
-    });
-
-    it("should be able to turn off caching", async () => {
-      const factoryFn = jest.fn().mockImplementation(() => ({}));
-      const handler = await laconia(jest.fn()).register(factoryFn, {
-        cache: {
-          enabled: false
-        }
+        expect(handler).toBeCalledWith(
+          expect.objectContaining({
+            foo: "bar",
+            boo: "baz"
+          })
+        );
       });
-      await handler({ foo: "event" }, { fiz: "context" }, callback);
-      await handler({ foo: "event" }, { fiz: "context" }, callback);
 
-      expect(factoryFn).toHaveBeenCalledTimes(2);
+      it("should be able to add async instances by calling 'register'", async () => {
+        const handler = jest.fn();
+        await laconia(handler).register(async lc => {
+          return Promise.resolve({ foo: "bar" });
+        })(...handlerArgs);
+
+        expect(handler).toBeCalledWith(
+          expect.objectContaining({
+            foo: "bar"
+          })
+        );
+      });
+
+      it("should cache factory by default", async () => {
+        const factory = jest.fn().mockImplementation(() => ({}));
+        const handler = await laconia(jest.fn()).register(factory);
+        await handler(...handlerArgs);
+        await handler(...handlerArgs);
+
+        expect(factory).toHaveBeenCalledTimes(1);
+      });
+
+      it("should be able to turn off caching", async () => {
+        const factory = jest.fn().mockImplementation(() => ({}));
+        const handler = await laconia(jest.fn()).register(factory, {
+          cache: {
+            enabled: false
+          }
+        });
+        await handler(...handlerArgs);
+        await handler(...handlerArgs);
+
+        expect(factory).toHaveBeenCalledTimes(2);
+      });
     });
 
     describe("when registering an array", () => {
-      let factoryFn1;
-      let factoryFn2;
-      let handlerArgs;
+      let factory1;
+      let factory2;
 
       beforeEach(() => {
-        factoryFn1 = jest.fn().mockImplementation(() => ({ foo: "bar" }));
-        factoryFn2 = jest.fn().mockImplementation(() => ({ boo: "baz" }));
-        handlerArgs = [{ foo: "event" }, { fiz: "context" }, callback];
+        factory1 = jest.fn().mockImplementation(() => ({ foo: "bar" }));
+        factory2 = jest.fn().mockImplementation(() => ({ boo: "baz" }));
       });
 
       it("should be return instances created by the array of factoryFns", async () => {
         const handler = jest.fn();
-        await laconia(handler).register([factoryFn1, factoryFn2])(
-          ...handlerArgs
-        );
+        await laconia(handler).register([factory1, factory2])(...handlerArgs);
 
         expect(handler).toBeCalledWith(
           expect.objectContaining({
@@ -126,20 +122,17 @@ describe("handler", () => {
       });
 
       it("should cache all by default", async () => {
-        const handler = await laconia(jest.fn()).register([
-          factoryFn1,
-          factoryFn2
-        ]);
+        const handler = await laconia(jest.fn()).register([factory1, factory2]);
         await handler(...handlerArgs);
         await handler(...handlerArgs);
 
-        expect(factoryFn1).toHaveBeenCalledTimes(1);
-        expect(factoryFn2).toHaveBeenCalledTimes(1);
+        expect(factory1).toHaveBeenCalledTimes(1);
+        expect(factory2).toHaveBeenCalledTimes(1);
       });
 
       it("should be able to turn off caching", async () => {
         const handler = await laconia(jest.fn()).register(
-          [factoryFn1, factoryFn2],
+          [factory1, factory2],
           {
             cache: {
               enabled: false
@@ -149,8 +142,8 @@ describe("handler", () => {
         await handler(...handlerArgs);
         await handler(...handlerArgs);
 
-        expect(factoryFn1).toHaveBeenCalledTimes(2);
-        expect(factoryFn2).toHaveBeenCalledTimes(2);
+        expect(factory1).toHaveBeenCalledTimes(2);
+        expect(factory2).toHaveBeenCalledTimes(2);
       });
     });
   });

@@ -19,11 +19,11 @@ module.exports = fn => {
     run: laconiaContext => {
       return fn({ $run: true, ...laconiaContext });
     },
-    register: (factoryFn, options = {}) => {
-      if (Array.isArray(factoryFn)) {
-        laconiaContext.registerFactories(factoryFn, options.cache);
+    register: (factory, options = {}) => {
+      if (Array.isArray(factory)) {
+        laconiaContext.registerFactories(factory, options.cache);
       } else {
-        laconiaContext.registerFactory(factoryFn, options.cache);
+        laconiaContext.registerFactory(factory, options.cache);
       }
       return laconia;
     }

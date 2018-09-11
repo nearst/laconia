@@ -156,11 +156,13 @@ laconia(() => Promise.resolve("value"));
 
 #### `register(factory, options)`
 
-Registers objects into LaconiaContext. Objects registered here will be made
-available in the Lambda function execution.
+Registers objects created by the factory function into LaconiaContext.
+Objects registered here will be made available in the Lambda function execution.
+You can pass an array for the list of array to be called in parallel.
 
 * `factory(laconiaContext)`
   * This `Function` is called when your Lambda is invoked
+  * When an `Array` is specified, the list of factories within the array will be called concurrently with Promise.all
   * An object which contains the instances to be registered must be returned
 * `options`:
   * `cache`
@@ -176,6 +178,13 @@ Example:
 laconia(({ service }) => service.call()).register(() => ({
   service: new SomeService()
 }));
+
+// Register concurrent factories
+const handler = () => {};
+laconia(handler).register([
+  ssmConfig.envVarInstances(),
+  s3Config.envVarInstances()
+]);
 
 // Reduce maxAge
 const handler = () => {};

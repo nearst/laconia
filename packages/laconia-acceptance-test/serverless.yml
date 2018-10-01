@@ -3,12 +3,14 @@ service: laconia-acceptance
 plugins:
   - serverless-s3-remover
   - serverless-s3-sync
+  - serverless-plugin-tracing
 
 provider:
   name: aws
   runtime: ${env:NODE_RUNTIME, 'nodejs8.10' }
   stage: ${env:NODE_VERSION, 'node8' }
   region: ${env:AWS_REGION, 'eu-west-1'}
+  tracing: true
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -21,6 +23,8 @@ provider:
         - "dynamodb:Scan"
         - "dynamodb:Query"
         - "dynamodb:PutItem"
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
       Resource: "*"
     - Effect: "Allow"
       Action:

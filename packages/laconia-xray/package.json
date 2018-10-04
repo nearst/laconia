@@ -1,0 +1,33 @@
+{
+  "name": "@laconia/xray",
+  "version": "0.10.0",
+  "description": "Enables X-Ray integration to Laconia",
+  "keywords": ["aws", "lambda", "laconia", "serverless"],
+  "homepage": "https://github.com/ceilfors/laconia",
+  "bugs": {
+    "url": "https://github.com/ceilfors/laconia/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Wisen Tanasa <wisen@ceilfors.com>",
+  "files": ["src"],
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ceilfors/laconia.git"
+  },
+  "dependencies": {
+    "aws-xray-sdk-core": "^2.0.0"
+  },
+  "devDependencies": {
+    "@laconia/test-helper": "^0.9.0"
+  },
+  "peerDependencies": {
+    "aws-sdk": "^2.0.1"
+  },
+  "engines": {
+    "node": ">=8.10"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

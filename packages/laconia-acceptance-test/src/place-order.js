@@ -1,6 +1,7 @@
 const laconia = require("@laconia/core");
 const ssmConfig = require("@laconia/ssm-config");
 const s3Config = require("@laconia/s3-config");
+const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");
@@ -44,8 +45,10 @@ const handler = async ({
   return { statusCode: 200, body: JSON.stringify({ orderId }) };
 };
 
-module.exports.handler = laconia(handler).register([
-  s3Config.envVarInstances(),
-  ssmConfig.envVarInstances(),
-  instances
-]);
+module.exports.handler = laconia(handler)
+  .register(xray.awsInstances())
+  .register([
+    s3Config.envVarInstances(),
+    ssmConfig.envVarInstances(),
+    instances
+  ]);

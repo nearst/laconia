@@ -26,6 +26,10 @@ module.exports = fn => {
         laconiaContext.registerFactory(factory, options.cache);
       }
       return laconia;
+    },
+    postProcessor: postProcessor => {
+      laconiaContext.registerPostProcessor(postProcessor);
+      return laconia;
     }
   });
 };

@@ -148,6 +148,23 @@ describe("laconia", () => {
     });
   });
 
+  describe("#postProcessor", () => {
+    it("should register post processor function", async () => {
+      const handler = jest.fn();
+      await laconia(handler)
+        .register(() => ({ foo: { value: 1 } }))
+        .postProcessor(({ foo }) => {
+          foo.value = 2;
+        })(...handlerArgs);
+
+      expect(handler).toBeCalledWith(
+        expect.objectContaining({
+          foo: expect.objectContaining({ value: 2 })
+        })
+      );
+    });
+  });
+
   describe("callback behaviour", () => {
     describe("when synchronous code is returned", () => {
       it("should call Lambda callback with the handler return value to Lambda callback", async () => {

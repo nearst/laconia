@@ -94,4 +94,41 @@ describe("laconiaContext", () => {
       expect(lc).toHaveProperty("bar", 3);
     });
   });
+
+  describe("#registerPostProcessor", () => {
+    describe("when refresh is called", () => {
+      it("should be able register 1 post processor", async () => {
+        const lc = new LaconiaContext({});
+        const postProcessor = jest.fn();
+
+        lc.registerInstances({ foo: "bar" });
+        lc.registerPostProcessor(postProcessor);
+
+        await lc.refresh();
+
+        expect(postProcessor).toBeCalledWith(
+          expect.objectContaining({ foo: "bar" })
+        );
+      });
+
+      it("should be able to register multiple post processors", async () => {
+        const lc = new LaconiaContext({});
+        const postProcessor1 = jest.fn();
+        const postProcessor2 = jest.fn();
+
+        lc.registerInstances({ foo: "bar" });
+        lc.registerPostProcessor(postProcessor1);
+        lc.registerPostProcessor(postProcessor2);
+
+        await lc.refresh();
+
+        expect(postProcessor1).toBeCalledWith(
+          expect.objectContaining({ foo: "bar" })
+        );
+        expect(postProcessor2).toBeCalledWith(
+          expect.objectContaining({ foo: "bar" })
+        );
+      });
+    });
+  });
 });

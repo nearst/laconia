@@ -1,4 +1,3 @@
-const AWS = require("aws-sdk");
 const invoker = require("./invoker");
 const HandledInvokeLaconiaError = require("./HandledInvokeLaconiaError");
 const UnhandledInvokeLaconiaError = require("./UnhandledInvokeLaconiaError");
@@ -9,5 +8,5 @@ exports.default = invoker;
 
 exports.HandledInvokeLaconiaError = HandledInvokeLaconiaError;
 exports.UnhandledInvokeLaconiaError = UnhandledInvokeLaconiaError;
-exports.envVarInstances = () => ({ env, $lambda = new AWS.Lambda() } = {}) =>
+exports.envVarInstances = () => ({ env, $lambda } = {}) =>
   new EnvVarInvokerFactory(env).makeInstances({ lambda: $lambda });

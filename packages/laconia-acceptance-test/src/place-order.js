@@ -46,9 +46,9 @@ const handler = async ({
 };
 
 module.exports.handler = laconia(handler)
-  .register(xray.awsInstances())
   .register([
     s3Config.envVarInstances(),
     ssmConfig.envVarInstances(),
     instances
-  ]);
+  ])
+  .postProcessor(xray.postProcessor());

@@ -1,3 +1,3 @@
-const XRayInstanceFactory = require("./XRayInstanceFactory");
+const xrayPostProcessor = require("./xrayPostProcessor");
 
-exports.awsInstances = () => () => new XRayInstanceFactory().makeInstances();
+exports.postProcessor = () => xrayPostProcessor;

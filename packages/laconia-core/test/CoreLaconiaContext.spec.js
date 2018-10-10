@@ -19,6 +19,16 @@ describe("laconiaContext", () => {
       const lc = new CoreLaconiaContext({});
       expect(lc.$lambda).toBeInstanceOf(AWS.Lambda);
     });
+
+    it("should include S3", () => {
+      const lc = new CoreLaconiaContext({});
+      expect(lc.$s3).toBeInstanceOf(AWS.S3);
+    });
+
+    it("should include SSM", () => {
+      const lc = new CoreLaconiaContext({});
+      expect(lc.$ssm).toBeInstanceOf(AWS.SSM);
+    });
   });
 
   describe("#registerFactory", () => {

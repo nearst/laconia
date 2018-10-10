@@ -14,7 +14,9 @@ const cacheResult = (fn, maxAge) => {
 };
 
 const awsInstances = {
-  lambda: new AWS.Lambda()
+  lambda: new AWS.Lambda(),
+  s3: new AWS.S3(),
+  ssm: new AWS.SSM()
 };
 
 module.exports = class CoreLaconiaContext extends LaconiaContext {

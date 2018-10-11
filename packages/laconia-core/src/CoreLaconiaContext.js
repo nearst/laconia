@@ -14,9 +14,9 @@ const cacheResult = (fn, maxAge) => {
 };
 
 const awsInstances = {
-  lambda: new AWS.Lambda(),
-  s3: new AWS.S3(),
-  ssm: new AWS.SSM()
+  $lambda: new AWS.Lambda(),
+  $s3: new AWS.S3(),
+  $ssm: new AWS.SSM()
 };
 
 module.exports = class CoreLaconiaContext extends LaconiaContext {
@@ -27,7 +27,7 @@ module.exports = class CoreLaconiaContext extends LaconiaContext {
     };
     this.registerInstances(coreInstances);
     this._registerInstancesWithPrefix(coreInstances);
-    this._registerInstancesWithPrefix(awsInstances);
+    this.registerFactory(() => awsInstances);
   }
 
   registerFactory(factory, { enabled = true, maxAge = 300000 } = {}) {

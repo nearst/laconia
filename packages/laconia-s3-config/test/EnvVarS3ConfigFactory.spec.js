@@ -1,9 +1,11 @@
+const AWSSDK = require("aws-sdk");
 const AWS = require("aws-sdk-mock");
 const { yields, s3Body } = require("@laconia/test-helper");
 const EnvVarS3ConfigFactory = require("../src/EnvVarS3ConfigFactory");
 
 describe("EnvVarS3ConfigFactory", () => {
   let s3;
+  let awsS3;
 
   afterEach(() => {
     AWS.restore();
@@ -16,15 +18,19 @@ describe("EnvVarS3ConfigFactory", () => {
         .mockImplementation(s3Body({ applicationName: "hello" }))
     };
     AWS.mock("S3", "getObject", s3.getObject);
+    awsS3 = new AWSSDK.S3();
   });
 
   describe("when there is no env var set", () => {
     let s3ConfigFactory;
 
     beforeEach(() => {
-      s3ConfigFactory = new EnvVarS3ConfigFactory({
-        NOTHING: "empty"
-      });
+      s3ConfigFactory = new EnvVarS3ConfigFactory(
+        {
+          NOTHING: "empty"
+        },
+        awsS3
+      );
     });
 
     it("return empty instances", async () => {
@@ -42,9 +48,12 @@ describe("EnvVarS3ConfigFactory", () => {
     let s3ConfigFactory;
 
     beforeEach(() => {
-      s3ConfigFactory = new EnvVarS3ConfigFactory({
-        LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.json"
-      });
+      s3ConfigFactory = new EnvVarS3ConfigFactory(
+        {
+          LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.json"
+        },
+        awsS3
+      );
     });
 
     it("should call S3 with the configured env var value", async () => {
@@ -68,10 +77,13 @@ describe("EnvVarS3ConfigFactory", () => {
     let s3ConfigFactory;
 
     beforeEach(() => {
-      s3ConfigFactory = new EnvVarS3ConfigFactory({
-        LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.json",
-        LACONIA_S3CONFIG_OTHER_CONF: "otherbucket/nested/bar/other.json"
-      });
+      s3ConfigFactory = new EnvVarS3ConfigFactory(
+        {
+          LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.json",
+          LACONIA_S3CONFIG_OTHER_CONF: "otherbucket/nested/bar/other.json"
+        },
+        awsS3
+      );
 
       s3.getObject.mockImplementation(
         yields(({ Bucket }) => {
@@ -116,9 +128,12 @@ describe("EnvVarS3ConfigFactory", () => {
     let s3ConfigFactory;
 
     beforeEach(() => {
-      s3ConfigFactory = new EnvVarS3ConfigFactory({
-        LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.txt"
-      });
+      s3ConfigFactory = new EnvVarS3ConfigFactory(
+        {
+          LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.txt"
+        },
+        awsS3
+      );
     });
 
     it("should throw error", async () => {

@@ -154,7 +154,9 @@ describe("laconia", () => {
       await laconia(handler)
         .register(() => ({ foo: { value: 1 } }))
         .postProcessor(({ foo }) => {
-          foo.value = 2;
+          if (foo) {
+            foo.value = 2;
+          }
         })(...handlerArgs);
 
       expect(handler).toBeCalledWith(

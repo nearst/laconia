@@ -1,4 +1,3 @@
-const AWS = require("aws-sdk");
 const { EnvVarInstanceFactory } = require("@laconia/core");
 
 const createS3Params = objectPath => {
@@ -12,7 +11,7 @@ const createS3Params = objectPath => {
 };
 
 module.exports = class EnvVarS3ConfigFactory extends EnvVarInstanceFactory {
-  constructor(env, { s3 = new AWS.S3() } = {}) {
+  constructor(env, s3) {
     super(env, "LACONIA_S3CONFIG_");
     this.s3 = s3;
   }

@@ -1,8 +1,7 @@
-const AWS = require("aws-sdk");
 const { EnvVarInstanceFactory } = require("@laconia/core");
 
 module.exports = class EnvVarSsmConfigFactory extends EnvVarInstanceFactory {
-  constructor(env, { ssm = new AWS.SSM() } = {}) {
+  constructor(env, ssm) {
     super(env, "LACONIA_SSMCONFIG_");
     this.ssm = ssm;
   }

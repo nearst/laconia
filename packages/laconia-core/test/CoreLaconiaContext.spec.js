@@ -15,18 +15,21 @@ describe("laconiaContext", () => {
   });
 
   describe("AWS Services", () => {
-    it("should include Lambda", () => {
+    it("should include Lambda", async () => {
       const lc = new CoreLaconiaContext({});
+      await lc.refresh();
       expect(lc.$lambda).toBeInstanceOf(AWS.Lambda);
     });
 
-    it("should include S3", () => {
+    it("should include S3", async () => {
       const lc = new CoreLaconiaContext({});
+      await lc.refresh();
       expect(lc.$s3).toBeInstanceOf(AWS.S3);
     });
 
-    it("should include SSM", () => {
+    it("should include SSM", async () => {
       const lc = new CoreLaconiaContext({});
+      await lc.refresh();
       expect(lc.$ssm).toBeInstanceOf(AWS.SSM);
     });
   });

@@ -96,19 +96,16 @@ describe("laconiaContext", () => {
   });
 
   describe("#registerPostProcessor", () => {
-    describe("when refresh is called", () => {
+    describe("when there is one factory", () => {
       it("should be able register 1 post processor", async () => {
         const lc = new LaconiaContext({});
         const postProcessor = jest.fn();
 
-        lc.registerInstances({ foo: "bar" });
+        lc.registerFactory(() => ({ foo: "bar" }));
         lc.registerPostProcessor(postProcessor);
-
         await lc.refresh();
 
-        expect(postProcessor).toBeCalledWith(
-          expect.objectContaining({ foo: "bar" })
-        );
+        expect(postProcessor).toBeCalledWith({ foo: "bar" });
       });
 
       it("should be able to register multiple post processors", async () => {
@@ -116,18 +113,43 @@ describe("laconiaContext", () => {
         const postProcessor1 = jest.fn();
         const postProcessor2 = jest.fn();
 
-        lc.registerInstances({ foo: "bar" });
+        lc.registerFactory(() => ({ foo: "bar" }));
         lc.registerPostProcessor(postProcessor1);
         lc.registerPostProcessor(postProcessor2);
-
         await lc.refresh();
 
-        expect(postProcessor1).toBeCalledWith(
-          expect.objectContaining({ foo: "bar" })
-        );
-        expect(postProcessor2).toBeCalledWith(
-          expect.objectContaining({ foo: "bar" })
-        );
+        expect(postProcessor1).toBeCalledWith({ foo: "bar" });
+        expect(postProcessor2).toBeCalledWith({ foo: "bar" });
+      });
+    });
+    describe("when there are multiple factories", () => {
+      it("should post process on every factory call", async () => {
+        const lc = new LaconiaContext({});
+        const postProcessor = jest.fn();
+
+        lc.registerFactory(() => ({ factory1: "factory1" }));
+        lc.registerFactory(() => ({ factory2: "factory2" }));
+        lc.registerPostProcessor(postProcessor);
+        await lc.refresh();
+
+        expect(postProcessor).toBeCalledTimes(2);
+        expect(postProcessor).toBeCalledWith({ factory1: "factory1" });
+        expect(postProcessor).toBeCalledWith({ factory2: "factory2" });
+      });
+
+      it("should be able to take post-processed value from second factory", async () => {
+        const lc = new LaconiaContext({});
+
+        lc.registerFactory(() => ({ foo: { value: "bar" } }));
+        lc.registerFactory(({ foo }) => ({ faz: foo.value }));
+        lc.registerPostProcessor(lc => {
+          if (lc.foo) {
+            lc.foo.value = `${lc.foo.value}-modified`;
+          }
+        });
+        await lc.refresh();
+
+        expect(lc).toHaveProperty("faz", "bar-modified");
       });
     });
   });

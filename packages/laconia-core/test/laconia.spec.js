@@ -153,7 +153,7 @@ describe("laconia", () => {
       const handler = jest.fn();
       await laconia(handler)
         .register(() => ({ foo: { value: 1 } }))
-        .postProcessor(({ foo }) => {
+        .postProcessor(async ({ foo }) => {
           if (foo) {
             foo.value = 2;
           }

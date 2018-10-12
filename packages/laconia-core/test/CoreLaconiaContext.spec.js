@@ -4,31 +4,31 @@ const CoreLaconiaContext = require("../src/CoreLaconiaContext");
 
 describe("laconiaContext", () => {
   it("should include process.env", () => {
-    const lc = new CoreLaconiaContext({});
+    const lc = new CoreLaconiaContext();
     expect(lc).toHaveProperty("env", process.env);
   });
 
   it("should make built-in instances available after being overridden", () => {
-    const lc = new CoreLaconiaContext({});
+    const lc = new CoreLaconiaContext();
     lc.registerInstances({ env: "bar" });
     expect(lc).toHaveProperty("$env", process.env);
   });
 
   describe("AWS Services", () => {
     it("should include Lambda", async () => {
-      const lc = new CoreLaconiaContext({});
+      const lc = new CoreLaconiaContext();
       await lc.refresh();
       expect(lc.$lambda).toBeInstanceOf(AWS.Lambda);
     });
 
     it("should include S3", async () => {
-      const lc = new CoreLaconiaContext({});
+      const lc = new CoreLaconiaContext();
       await lc.refresh();
       expect(lc.$s3).toBeInstanceOf(AWS.S3);
     });
 
     it("should include SSM", async () => {
-      const lc = new CoreLaconiaContext({});
+      const lc = new CoreLaconiaContext();
       await lc.refresh();
       expect(lc.$ssm).toBeInstanceOf(AWS.SSM);
     });
@@ -39,7 +39,7 @@ describe("laconiaContext", () => {
     let factory;
 
     beforeEach(() => {
-      lc = new CoreLaconiaContext({ one: 1 });
+      lc = new CoreLaconiaContext();
       factory = jest.fn().mockImplementation(() => ({ env: "bar" }));
     });
 
@@ -66,6 +66,7 @@ describe("laconiaContext", () => {
     });
 
     it("should be able to access lc in cached factory", async () => {
+      lc.registerInstances({ one: 1 });
       lc.registerFactory(({ one }) => ({ two: one + 1 }));
       await lc.refresh();
       expect(lc.two).toEqual(2);

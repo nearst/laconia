@@ -1,7 +1,7 @@
 const CoreLaconiaContext = require("./CoreLaconiaContext");
 
 module.exports = fn => {
-  const laconiaContext = new CoreLaconiaContext({});
+  const laconiaContext = new CoreLaconiaContext();
 
   const laconia = async (event, context, callback) => {
     laconiaContext.registerInstances({ event, context });

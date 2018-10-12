@@ -15,10 +15,9 @@ const parallelFactoryFns = factoryFns => async (...args) => {
 };
 
 module.exports = class LaconiaContext {
-  constructor(baseContext) {
+  constructor() {
     this._factoryFns = [];
     this._postProcessorFns = [];
-    this.registerInstances(baseContext);
   }
 
   registerInstances(instances) {
@@ -45,7 +44,7 @@ module.exports = class LaconiaContext {
       this.registerInstances(instances);
 
       for (const postProcessorFn of this._postProcessorFns) {
-        postProcessorFn(instances);
+        await postProcessorFn(instances);
       }
     }
   }

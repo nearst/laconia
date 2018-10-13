@@ -22,7 +22,11 @@ const isSpyOptionsSet = options =>
   getSpyOptions(options).bucketName !== undefined;
 
 const createSpier = (functionName, options) => {
-  return new S3Spier(options.spy.bucketName, functionName, options.spy.options);
+  return new S3Spier(
+    options.spy.bucketName,
+    functionName,
+    options.spy.s3 || new AWS.S3()
+  );
 };
 
 module.exports = (functionName, options = {}) => {

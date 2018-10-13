@@ -1,4 +1,5 @@
 const delay = require("delay");
+const AWSSDK = require("aws-sdk");
 const AWSMock = require("aws-sdk-mock");
 const S3Spier = require("../src/S3Spier");
 const { yields } = require("@laconia/test-helper");
@@ -7,6 +8,7 @@ const _ = require("lodash");
 describe("S3Spier", () => {
   let lc;
   let s3;
+  let awsS3;
 
   beforeEach(() => {
     lc = {
@@ -33,6 +35,8 @@ describe("S3Spier", () => {
     AWSMock.mock("S3", "listObjects", s3.listObjects);
     AWSMock.mock("S3", "putObject", s3.putObject);
     AWSMock.mock("S3", "getObject", s3.getObject);
+
+    awsS3 = new AWSSDK.S3();
   });
 
   afterEach(() => {
@@ -41,7 +45,7 @@ describe("S3Spier", () => {
 
   const sharedListObjectsTest = operation => {
     it("should only retrieve objects related to the function name", async () => {
-      const spier = new S3Spier("bucket name", "function name");
+      const spier = new S3Spier("bucket name", "function name", awsS3);
       await operation(spier);
       expect(s3.listObjects).toBeCalledWith(
         expect.objectContaining({
@@ -55,7 +59,7 @@ describe("S3Spier", () => {
 
   const sharedMultiOperationTest = (operation, s3method) => {
     it("should only retrieve objects related to the function name", async () => {
-      const spier = new S3Spier("bucket name", "function name");
+      const spier = new S3Spier("bucket name", "function name", awsS3);
       await operation(spier);
       expect(s3.listObjects).toBeCalledWith(
         expect.objectContaining({
@@ -73,7 +77,7 @@ describe("S3Spier", () => {
           Contents: keys.map(k => ({ Key: k }))
         })
       );
-      const spier = new S3Spier("bucket name", "function name");
+      const spier = new S3Spier("bucket name", "function name", awsS3);
       await operation(spier);
       expect(s3method()).toHaveBeenCalledTimes(keys.length);
       keys.forEach(k => {
@@ -90,7 +94,7 @@ describe("S3Spier", () => {
 
   describe("#track", () => {
     it("should call s3 with the configured bucket name", async () => {
-      const spier = new S3Spier("bucket name", "function name");
+      const spier = new S3Spier("bucket name", "function name", awsS3);
       await spier.track(lc);
       expect(s3.putObject).toBeCalledWith(
         expect.objectContaining({ Bucket: "bucket name" }),
@@ -99,7 +103,7 @@ describe("S3Spier", () => {
     });
 
     it("should generate unique bucket item name", async () => {
-      const spier = new S3Spier("bucket name", "function name");
+      const spier = new S3Spier("bucket name", "function name", awsS3);
       await spier.track(_.merge(lc, { context: { awsRequestId: "123" } }));
       await spier.track(_.merge(lc, { context: { awsRequestId: "456" } }));
 
@@ -112,7 +116,7 @@ describe("S3Spier", () => {
     });
 
     it("should track event object", async () => {
-      const spier = new S3Spier("bucket name", "function name");
+      const spier = new S3Spier("bucket name", "function name", awsS3);
       await spier.track(lc);
       expect(s3.putObject).toBeCalledWith(
         expect.objectContaining({ Body: expect.any(String) }),
@@ -124,7 +128,7 @@ describe("S3Spier", () => {
     });
 
     it("should make sure the object stored in S3 openable easily in a browser and an edito", async () => {
-      const spier = new S3Spier("bucket name", "function name");
+      const spier = new S3Spier("bucket name", "function name", awsS3);
       await spier.track(lc);
       expect(s3.putObject).toBeCalledWith(
         expect.objectContaining({
@@ -155,7 +159,7 @@ describe("S3Spier", () => {
     it(
       "should wait for total invocations",
       async () => {
-        const spier = new S3Spier("bucket name", "function name");
+        const spier = new S3Spier("bucket name", "function name", awsS3);
         await Promise.all([
           spier.waitForTotalInvocations(2),
           delay(25).then(_ => {

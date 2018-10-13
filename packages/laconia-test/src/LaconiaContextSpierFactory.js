@@ -22,7 +22,7 @@ module.exports = class LaconiaContextSpierFactory {
       return new NullSpier();
     } else {
       const functionName = this.lc.context.functionName;
-      return new S3Spier(bucketName, functionName);
+      return new S3Spier(bucketName, functionName, this.lc.$s3);
     }
   }
 };

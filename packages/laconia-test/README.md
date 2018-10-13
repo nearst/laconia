@@ -155,13 +155,16 @@ laconia(spy(handler)).register(spy.instances());
 
 * `functionName` specifies the Lambda function name that will be invoked
 * `options`:
+  * `lambda = new AWS.Lambda()`
+    * _Optional_
+    * Set this option if there's a need to customise its instantiation
+    * USed for S3 interaction
   * `spy`:
     * `bucketName` specifies the bucket name where the invocation records are stored
-    * `options`
-      * `s3 = new AWS.S3()`
-        * _Optional_
-        * Set this option if there's a need to customise its instantiation
-        * USed for S3 interaction
+    * `s3 = new AWS.S3()`
+      * _Optional_
+      * Set this option if there's a need to customise its instantiation
+      * USed for S3 interaction
 
 Example:
 

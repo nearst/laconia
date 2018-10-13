@@ -46,7 +46,7 @@ describe("laconiaTest", () => {
     it("should be able to override s3", () => {
       const s3 = jest.fn();
       const result = laconiaTest("operation", {
-        spy: { bucketName: "bucket name", options: { s3 } }
+        spy: { bucketName: "bucket name", s3 }
       });
 
       expect(result.spy.s3).toBe(s3);

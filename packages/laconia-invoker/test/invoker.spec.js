@@ -1,16 +1,18 @@
+const AWSSDK = require("aws-sdk");
 const laconiaInvoker = require("../src/invoker");
 const HandledInvokeLaconiaError = require("../src/HandledInvokeLaconiaError");
 const UnhandledInvokeLaconiaError = require("../src/UnhandledInvokeLaconiaError");
 const AWSMock = require("aws-sdk-mock");
-const AWS = require("aws-sdk");
 const { yields } = require("@laconia/test-helper");
 
 describe("invoke", () => {
   let invokeMock;
+  let awsLambda;
 
   beforeEach(() => {
     invokeMock = jest.fn();
     AWSMock.mock("Lambda", "invoke", invokeMock);
+    awsLambda = new AWSSDK.Lambda();
   });
 
   afterEach(() => {
@@ -35,7 +37,7 @@ describe("invoke", () => {
             StatusCode: expectedStatusCode
           })
         );
-        const invoker = laconiaInvoker("heavy-operation");
+        const invoker = laconiaInvoker("heavy-operation", awsLambda);
         try {
           await invoker[method]();
           throw new Error("should not reach here");
@@ -66,7 +68,7 @@ describe("invoke", () => {
             StatusCode: expectedStatusCode
           })
         );
-        const invoker = laconiaInvoker("heavy-operation");
+        const invoker = laconiaInvoker("heavy-operation", awsLambda);
         try {
           await invoker[method]();
           throw new Error("should not reach here");
@@ -97,7 +99,7 @@ describe("invoke", () => {
         invokeMock.mockImplementation(
           yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
         );
-        const invoker = laconiaInvoker("foobar");
+        const invoker = laconiaInvoker("foobar", awsLambda);
         return invoker[method]({ biz: "baz" });
       });
 
@@ -127,7 +129,7 @@ describe("invoke", () => {
       invokeMock.mockImplementation(
         yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
       );
-      const invoker = laconiaInvoker("foobar");
+      const invoker = laconiaInvoker("foobar", awsLambda);
       await invoker[method]();
       const invokeParams = invokeMock.mock.calls[0][0];
       expect(invokeParams).not.toHaveProperty("Payload");
@@ -137,7 +139,7 @@ describe("invoke", () => {
       invokeMock.mockImplementation(
         yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
       );
-      const invoker = laconiaInvoker("foobar");
+      const invoker = laconiaInvoker("foobar", awsLambda);
       await invoker[method]();
       const invokeParams = invokeMock.mock.calls[0][0];
       expect(invokeParams).not.toHaveProperty("Payload");
@@ -152,7 +154,7 @@ describe("invoke", () => {
           invokeMock.mockImplementation(
             yields({ FunctionError: undefined, StatusCode: statusCode })
           );
-          const invoker = laconiaInvoker("foobar");
+          const invoker = laconiaInvoker("foobar", awsLambda);
           return expect(invoker[method]()).rejects.toThrow(
             `Status code returned was: ${statusCode}`
           );
@@ -187,7 +189,7 @@ describe("invoke", () => {
     });
 
     it("should return Payload response", async () => {
-      const invoker = laconiaInvoker("foobar");
+      const invoker = laconiaInvoker("foobar", awsLambda);
       const response = await invoker.requestResponse();
       expect(response).toEqual("response");
     });
@@ -200,13 +202,13 @@ describe("invoke", () => {
           Payload: '{"value":"response"}'
         })
       );
-      const invoker = laconiaInvoker("foobar");
+      const invoker = laconiaInvoker("foobar", awsLambda);
       const response = await invoker.requestResponse();
       expect(response).toEqual({ value: "response" });
     });
 
     it("should set LogType to None", async () => {
-      const invoker = laconiaInvoker("foobar");
+      const invoker = laconiaInvoker("foobar", awsLambda);
       await invoker.requestResponse();
       expect(invokeMock).toBeCalledWith(
         expect.objectContaining({ LogType: "None" }),
@@ -216,7 +218,9 @@ describe("invoke", () => {
 
     describe("when requestLogs is enabled", () => {
       it("should set LogType to Tail", async () => {
-        const invoker = laconiaInvoker("foobar", { requestLogs: true });
+        const invoker = laconiaInvoker("foobar", awsLambda, {
+          requestLogs: true
+        });
         await invoker.requestResponse();
         expect(invokeMock).toBeCalledWith(
           expect.objectContaining({ LogType: "Tail" }),
@@ -239,7 +243,7 @@ describe("invoke", () => {
               "U1RBUlQgUmVxdWVzdElkOiBhNzVmMjIzZi0zMWI5LTExZTctYmRmYy0xMzJkMDc0Zjc3YzggVmVyc2lvbjogJExBVEVTVAoyMDE3LTA1LTA1VDE3OjM4OjMwLjY4NloJYTc1ZjIyM2YtMzFiOS0xMWU3LWJkZmMtMTMyZDA3NGY3N2M4CXsibmFtZSI6ImpvbmF0aGFuIn0KRU5EIFJlcXVlc3RJZDogYTc1ZjIyM2YtMzFiOS0xMWU3LWJkZmMtMTMyZDA3NGY3N2M4ClJFUE9SVCBSZXF1ZXN0SWQ6IGE3NWYyMjNmLTMxYjktMTFlNy1iZGZjLTEzMmQwNzRmNzdjOAlEdXJhdGlvbjogMTAwMjcuMjkgbXMJQmlsbGVkIER1cmF0aW9uOiAxMDEwMCBtcyAJTWVtb3J5IFNpemU6IDEyOCBNQglNYXggTWVtb3J5IFVzZWQ6IDE3IE1CCQo="
           })
         );
-        const invoker = laconiaInvoker("heavy-operation");
+        const invoker = laconiaInvoker("heavy-operation", awsLambda);
         try {
           await invoker.requestResponse();
           throw new Error("should not reach here");
@@ -253,11 +257,5 @@ REPORT RequestId: a75f223f-31b9-11e7-bdfc-132d074f77c8	Duration: 10027.29 ms	Bil
         }
       });
     });
-  });
-
-  it("should be able to override lambda", () => {
-    const lambda = new AWS.Lambda();
-    const invoker = laconiaInvoker("foobar", { lambda });
-    expect(invoker.lambda).toBe(lambda);
   });
 });

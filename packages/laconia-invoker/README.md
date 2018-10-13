@@ -93,22 +93,15 @@ does not satisfy your need.
 
 ### API
 
-#### `invoker(functionName, options)`
+#### `invoker(functionName, lambda, options)`
 
 * `functionName` specifies the Lambda function name that will be invoked
-* `options`:
-  * `lambda = new AWS.Lambda()`
-    * _Optional_
-    * Set this option if there's a need to cutomise the AWS.Lambda instantation
-    * Used for Lambda invocation
+* `lambda` specifies the Lambda instance that will be used to invoke the lambda
 
 Example:
 
 ```js
-// Customise AWS.Lambda instantiation
-invoker("name", {
-  lambda: new AWS.Lambda({ apiVersion: "2015-03-31" })
-});
+invoker("name", new AWS.Lambda({ apiVersion: "2015-03-31" }));
 ```
 
 ## Invocations

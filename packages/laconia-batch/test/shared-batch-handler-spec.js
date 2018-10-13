@@ -1,3 +1,4 @@
+const AWSSDK = require("aws-sdk");
 const AWSMock = require("aws-sdk-mock");
 const { matchers } = require("@laconia/test-helper");
 const { LaconiaContext } = require("@laconia/core");
@@ -5,12 +6,14 @@ expect.extend(matchers);
 
 exports.sharedBehaviour = batchHandler => {
   describe("shared batch behaviour", () => {
+    let awsLambda;
     let invokeMock, event, context, callback;
     let itemListener, stopListener, endListener, startListener;
 
     beforeEach(() => {
       invokeMock = jest.fn();
       AWSMock.mock("Lambda", "invoke", invokeMock);
+      awsLambda = new AWSSDK.Lambda();
 
       itemListener = jest.fn();
       stopListener = jest.fn();
@@ -31,6 +34,7 @@ exports.sharedBehaviour = batchHandler => {
     describe("when finish processing in a single lambda execution", () => {
       beforeEach(async () => {
         await batchHandler()
+          .register(() => ({ $lambda: awsLambda }))
           .on("start", startListener)
           .on("item", itemListener)
           .on("stop", stopListener)
@@ -70,6 +74,7 @@ exports.sharedBehaviour = batchHandler => {
       beforeEach(async () => {
         context.getRemainingTimeInMillis = () => 5000;
         await batchHandler()
+          .register(() => ({ $lambda: awsLambda }))
           .on("start", startListener)
           .on("item", itemListener)
           .on("stop", stopListener)
@@ -104,20 +109,18 @@ exports.sharedBehaviour = batchHandler => {
     describe("when timeNeededToRecurseInMillis is configured", () => {
       it("stops if time is not enough to process items", async () => {
         context.getRemainingTimeInMillis = () => 10000;
-        await batchHandler({ timeNeededToRecurseInMillis: 10000 }).on(
-          "stop",
-          stopListener
-        )(event, context, callback);
+        await batchHandler({ timeNeededToRecurseInMillis: 10000 })
+          .register(() => ({ $lambda: awsLambda }))
+          .on("stop", stopListener)(event, context, callback);
 
         expect(stopListener).toHaveBeenCalled();
       });
 
       it("does not stop if time is enough to process items", async () => {
         context.getRemainingTimeInMillis = () => 10001;
-        await batchHandler({ timeNeededToRecurseInMillis: 10000 }).on(
-          "stop",
-          stopListener
-        )(event, context, callback);
+        await batchHandler({ timeNeededToRecurseInMillis: 10000 })
+          .register(() => ({ $lambda: awsLambda }))
+          .on("stop", stopListener)(event, context, callback);
 
         expect(stopListener).not.toHaveBeenCalled();
       });
@@ -127,6 +130,7 @@ exports.sharedBehaviour = batchHandler => {
       it("should process all items", async done => {
         context.getRemainingTimeInMillis = () => 5000;
         const handler = batchHandler()
+          .register(() => ({ $lambda: awsLambda }))
           .on("item", itemListener)
           .on("end", () => {
             try {

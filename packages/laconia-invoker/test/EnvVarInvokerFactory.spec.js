@@ -47,9 +47,8 @@ describe("EnvVarInvokerFactory", () => {
     const invokeFactory = new EnvVarInvokerFactory({
       LACONIA_INVOKER_HELLO_WORLD: "lambda name"
     });
-    const lambda = jest.fn();
-    const instances = await invokeFactory.makeInstances({ lambda });
+    const instances = await invokeFactory.makeInstances({ requestLogs: true });
     const helloWorld = instances.helloWorld;
-    expect(helloWorld.lambda).toBe(lambda);
+    expect(helloWorld.requestLogs).toBe(true);
   });
 });

@@ -12,7 +12,7 @@ describe("laconia-invoker", () => {
       expect(instances).toBeEmpty();
     });
 
-    it("should be able to override lambda", async () => {
+    it("should be able to set lambda instance", async () => {
       const lambda = new AWS.Lambda();
       const instances = await laconiaInvoker.envVarInstances()({
         env: { LACONIA_INVOKER_MY_FUNC: "func" },

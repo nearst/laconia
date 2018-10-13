@@ -151,6 +151,7 @@ describe("dynamodb batch handler", () => {
           documentClient
         })
       )
+        .register(() => ({ $lambda: new AWS.Lambda() }))
         .on("item", itemListener)
         .on("end", () => {
           expect(invokeMock).toHaveBeenCalledTimes(3);

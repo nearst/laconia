@@ -33,7 +33,6 @@
     "@laconia/ssm-config": "^0.10.0",
     "@laconia/test": "^0.10.0",
     "@laconia/xray": "^0.10.0",
-    "aws-xray-sdk-core": "^2.0.0",
     "pino": "^4.16.1",
     "serverless-plugin-tracing": "^2.0.0",
     "uuid": "^3.2.1"

@@ -11,3 +11,32 @@
 ```
 npm install --save @laconia/xray
 ```
+
+## Usage
+
+@laconia/xray postProcessor will scan through all of the instances registered in `LaconiaContext`
+and call `AWSXRay.captureAWSClient()` to it.
+
+Example:
+
+```js
+const laconia = require("@laconia/core");
+const xray = require("@laconia/xray");
+
+module.exports.handler = laconia(handler).postProcessor(xray.postProcessor());
+```
+
+## API
+
+#### `xray.postProcessor`
+
+Calls `AWSXRay.captureAWSClient()` to all registered AWS service objects.
+
+Example:
+
+```js
+const laconia = require("@laconia/core");
+const xray = require("@laconia/xray");
+
+module.exports.handler = laconia(handler).postProcessor(xray.postProcessor());
+```

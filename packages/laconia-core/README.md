@@ -200,6 +200,34 @@ laconia(handler).register(
 );
 ```
 
+#### `postProcessor(postProcessorFn)`
+
+Upon Lambda runtime execution, every postProcessorFn will be called on every factory functions
+individually.
+
+* `postProcessorFn(instances)`
+  * This `Function` is called when your Lambda is invoked
+
+Example:
+
+```js
+// Print object registered
+laconia(({ service }) => service.call())
+  .register(() => ({
+    service: new SomeService()
+  }))
+  .postProcessor(instances => console.log(instances));
+
+// Enable xray
+const xray = require("@laconia/xray");
+
+laconia(({ service }) => service.call())
+  .register(() => ({
+    service: new SomeService()
+  }))
+  .postProcessor(xray.postProcessor());
+```
+
 #### `run(laconiaContext)`
 
 Runs Lambda handler function with the specified `laconiaContext` and bypasses

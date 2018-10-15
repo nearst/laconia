@@ -17,6 +17,8 @@
 
 # Release
 
+Ensure everything is running when they're clean first by running: `npm run clean && npm install && npm run test:all`.
+
 Run `npx lerna publish`. This command will do everything for you:
 
 1.  Version update to all packages' package.json

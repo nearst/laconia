@@ -37,7 +37,8 @@ describe("place-order", () => {
         generate: jest.fn().mockReturnValue("123")
       },
       apiKey: "secret",
-      restaurants: [5]
+      restaurants: [5],
+      enabled: true
     };
   });
 
@@ -78,6 +79,11 @@ describe("place-order", () => {
     const orderResult = lc.orderRepository.save.mock.calls[0][0];
 
     expect(orderResult.orderId).toBeString();
+  });
+
+  it("should be able to turn lambda off", async () => {
+    lc.enabled = false;
+    await expect(handler.run(lc)).rejects.toThrow("Place order lambda is off");
   });
 
   it("should call id generator to generate random order id on every call", async () => {

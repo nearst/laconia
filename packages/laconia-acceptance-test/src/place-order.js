@@ -1,6 +1,7 @@
 const laconia = require("@laconia/core");
 const ssmConfig = require("@laconia/ssm-config");
 const s3Config = require("@laconia/s3-config");
+const booleanConfig = require("@laconia/boolean-config");
 const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const UuidIdGenerator = require("./UuidIdGenerator");
@@ -18,6 +19,12 @@ const validateRestaurantId = (restaurants, restaurantId) => {
   }
 };
 
+const validateEnabledFlag = enabled => {
+  if (!enabled) {
+    throw new Error("Place order lambda is off");
+  }
+};
+
 const instances = ({ env }) => ({
   orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
   idGenerator: new UuidIdGenerator()
@@ -28,8 +35,10 @@ const handler = async ({
   orderRepository,
   idGenerator,
   apiKey,
-  restaurants
+  restaurants,
+  enabled
 }) => {
+  validateEnabledFlag(enabled);
   validateApiKey(event, apiKey);
   const orderId = idGenerator.generate();
   const order = Object.assign(
@@ -49,6 +58,7 @@ module.exports.handler = laconia(handler)
   .register([
     s3Config.envVarInstances(),
     ssmConfig.envVarInstances(),
+    booleanConfig.envVarInstances(),
     instances
   ])
   .postProcessor(xray.postProcessor());

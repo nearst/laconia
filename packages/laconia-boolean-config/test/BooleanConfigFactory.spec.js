@@ -1,28 +1,28 @@
-const EnvVarBooleanConfigFactory = require("../src/EnvVarBooleanConfigFactory");
+const BooleanConfigFactory = require("../src/BooleanConfigFactory");
 
-describe("EnvVarBooleanConfigFactory", () => {
-  describe("when there is no env var set", () => {
-    let booleanConfigFactory;
+describe("BooleanConfigFactory", () => {
+  // describe("when there is no env var set", () => {
+  //   let booleanConfigFactory;
 
-    beforeEach(() => {
-      booleanConfigFactory = new EnvVarBooleanConfigFactory({
-        NOTHING: "empty"
-      });
-    });
+  //   beforeEach(() => {
+  //     booleanConfigFactory = new BooleanConfigFactory({
+  //       NOTHING: "empty"
+  //     });
+  //   });
 
-    it("return empty instances", async () => {
-      const instances = await booleanConfigFactory.makeInstances();
-      expect(instances).toEqual({});
-    });
-  });
+  //   it("return empty instances", async () => {
+  //     const instances = await booleanConfigFactory.makeInstances();
+  //     expect(instances).toEqual({});
+  //   });
+  // });
 
   describe("when there is one env var set", () => {
     let booleanConfigFactory;
 
     ["true", "TRUE", "yes", "anything"].forEach(truthyValue => {
       it(`converts truthy value '${truthyValue}' to true`, async () => {
-        booleanConfigFactory = new EnvVarBooleanConfigFactory({
-          LACONIA_BOOLEANCONFIG_ENABLE_FEATURE: truthyValue
+        booleanConfigFactory = new BooleanConfigFactory({
+          enableFeature: truthyValue
         });
         const instances = await booleanConfigFactory.makeInstances();
         expect(instances).toHaveProperty("enableFeature", true);
@@ -42,8 +42,8 @@ describe("EnvVarBooleanConfigFactory", () => {
       "off"
     ].forEach(falsyValue => {
       it(`converts falsy value '${falsyValue}' to false`, async () => {
-        booleanConfigFactory = new EnvVarBooleanConfigFactory({
-          LACONIA_BOOLEANCONFIG_ENABLE_FEATURE: falsyValue
+        booleanConfigFactory = new BooleanConfigFactory({
+          enableFeature: falsyValue
         });
         const instances = await booleanConfigFactory.makeInstances();
         expect(instances).toHaveProperty("enableFeature", false);
@@ -53,9 +53,9 @@ describe("EnvVarBooleanConfigFactory", () => {
 
   describe("when there is multiple env vars set", () => {
     it("should return multiple instances", async () => {
-      const booleanConfigFactory = new EnvVarBooleanConfigFactory({
-        LACONIA_BOOLEANCONFIG_ENABLE_FEATURE_A: "off",
-        LACONIA_BOOLEANCONFIG_ENABLE_FEATURE_B: "no"
+      const booleanConfigFactory = new BooleanConfigFactory({
+        enableFeatureA: "off",
+        enableFeatureB: "no"
       });
       const instances = await booleanConfigFactory.makeInstances();
       expect(instances).toHaveProperty("enableFeatureA", false);

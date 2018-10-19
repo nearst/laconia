@@ -3,7 +3,9 @@ const UnhandledInvokeLaconiaError = require("./UnhandledInvokeLaconiaError");
 
 const validateStatusCode = (statusCode, expectedStatusCode) => {
   if (statusCode !== expectedStatusCode) {
-    throw new Error(`Status code returned was: ${statusCode}`);
+    throw new Error(
+      `Status code returned was: ${statusCode}, expected status code is: ${expectedStatusCode}`
+    );
   }
 };
 

@@ -22,8 +22,13 @@ module.exports = class EnvVarInstanceFactory {
 
   _preMakeInstance() {}
 
+  _makeInstance(value, options) {
+    return value;
+  }
+
   async makeInstances(options) {
     const envVar = this._getEnvVar();
+
     if (Object.keys(envVar).length === 0) return {};
 
     await this._preMakeInstance(envVar);

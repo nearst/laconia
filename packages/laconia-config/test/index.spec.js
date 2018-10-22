@@ -1,13 +1,13 @@
-const booleanConfig = require("../src/index");
+const config = require("../src/index");
 
-describe("@laconia/boolean-config", () => {
+describe("@laconia/config", () => {
   describe("#envVarInstances", () => {
     it("has envVarInstances function", () => {
-      expect(booleanConfig.envVarInstances).toBeFunction();
+      expect(config.envVarInstances).toBeFunction();
     });
 
     it("returns an empty instance when no env var is configured", async () => {
-      const instances = await booleanConfig.envVarInstances()({ env: {} });
+      const instances = await config.envVarInstances()({ env: {} });
       expect(instances).toBeEmpty();
     });
   });

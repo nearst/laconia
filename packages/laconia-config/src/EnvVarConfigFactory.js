@@ -1,50 +1,39 @@
 const { EnvVarInstanceFactory } = require("@laconia/core");
 
-const removeValueTypePrefix = (valueType, rawInstance) =>
+const removeValueType = (valueType, rawInstance) =>
   rawInstance.replace(new RegExp(`^${valueType}:`), "");
 
 const getValueType = rawInstance => {
   return rawInstance.split(":")[0];
 };
 
-const distributeToMap = (valueTypes, rawInstances) => {
-  const valueTypeToInstancesMap = new Map(valueTypes.map(v => [v, {}]));
-
-  for (const [instanceName, rawInstance] of Object.entries(rawInstances)) {
-    const valueType = getValueType(rawInstance);
-    const instances = valueTypeToInstancesMap.get(valueType);
-    instances[instanceName] = removeValueTypePrefix(valueType, rawInstance);
-  }
-
-  return valueTypeToInstancesMap;
+const filterAndRemoveType = (type, typedValues) => {
+  return Object.entries(typedValues)
+    .filter(([name, value]) => getValueType(value) === type)
+    .map(([name, value]) => [name, removeValueType(type, value)])
+    .reduce((acc, [name, value]) => {
+      acc[name] = value;
+      return acc;
+    }, {});
 };
 
 module.exports = class EnvVarConfigFactory extends EnvVarInstanceFactory {
-  constructor(env, factoryMap) {
+  constructor(env, converters) {
     super(env, "LACONIA_CONFIG_");
-    this.factoryMap = factoryMap;
-  }
-
-  _makeValueTypeInstances(valueTypes, valueTypeToInstancesMap) {
-    return Promise.all(
-      valueTypes.map(valueType =>
-        this.factoryMap[valueType].makeInstances(
-          valueTypeToInstancesMap.get(valueType)
-        )
-      )
-    );
+    this.converters = converters;
   }
 
   async makeInstances(options) {
-    const rawInstances = await super.makeInstances(options);
-    if (Object.keys(rawInstances).length === 0) return {};
+    const typedValues = await super.makeInstances(options);
+    if (Object.keys(typedValues).length === 0) return {};
 
-    const valueTypes = Object.keys(this.factoryMap);
-    const valueTypeToInstancesMap = distributeToMap(valueTypes, rawInstances);
-    const valueTypeInstances = await this._makeValueTypeInstances(
-      valueTypes,
-      valueTypeToInstancesMap
+    const types = Object.keys(this.converters);
+    const conversionResults = await Promise.all(
+      types.map(type => {
+        const values = filterAndRemoveType(type, typedValues);
+        return this.converters[type].convertMultiple(values);
+      })
     );
-    return Object.assign({}, ...valueTypeInstances);
+    return Object.assign({}, ...conversionResults);
   }
 };

@@ -57,7 +57,7 @@ functions:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
       LACONIA_SSMCONFIG_API_KEY: /${self:custom.fullName}/apikey
       LACONIA_S3CONFIG_RESTAURANTS: ${self:custom.restaurantBucketName}/restaurants.json
-      LACONIA_BOOLEANCONFIG_ENABLED: true
+      LACONIA_CONFIG_ENABLED: boolean:true
   process-card-payments:
     timeout: 6 # Force recursion
     handler: src/process-card-payments.handler

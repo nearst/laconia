@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@laconia/batch": "^0.11.0",
-    "@laconia/boolean-config": "^0.11.0",
+    "@laconia/config": "^0.11.0",
     "@laconia/core": "^0.11.0",
     "@laconia/invoker": "^0.11.0",
     "@laconia/s3-config": "^0.11.0",

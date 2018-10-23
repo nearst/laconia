@@ -55,7 +55,7 @@ functions:
           method: post
     environment:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
-      LACONIA_SSMCONFIG_API_KEY: /${self:custom.fullName}/apikey
+      LACONIA_CONFIG_API_KEY: ssm:/${self:custom.fullName}/apikey
       LACONIA_S3CONFIG_RESTAURANTS: ${self:custom.restaurantBucketName}/restaurants.json
       LACONIA_CONFIG_ENABLED: boolean:true
   process-card-payments:

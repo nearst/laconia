@@ -1,5 +1,4 @@
 const laconia = require("@laconia/core");
-const ssmConfig = require("@laconia/ssm-config");
 const s3Config = require("@laconia/s3-config");
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
@@ -55,10 +54,5 @@ const handler = async ({
 };
 
 module.exports.handler = laconia(handler)
-  .register([
-    s3Config.envVarInstances(),
-    ssmConfig.envVarInstances(),
-    config.envVarInstances(),
-    instances
-  ])
+  .register([s3Config.envVarInstances(), config.envVarInstances(), instances])
   .postProcessor(xray.postProcessor());

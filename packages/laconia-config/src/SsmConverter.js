@@ -1,8 +1,5 @@
-const { EnvVarInstanceFactory } = require("@laconia/core");
-
-module.exports = class EnvVarSsmConfigFactory extends EnvVarInstanceFactory {
-  constructor(env, ssm) {
-    super(env, "LACONIA_SSMCONFIG_");
+module.exports = class SsmConverter {
+  constructor(ssm) {
     this.ssm = ssm;
   }
 
@@ -24,11 +21,11 @@ module.exports = class EnvVarSsmConfigFactory extends EnvVarInstanceFactory {
     }, {});
   }
 
-  _makeInstance(value, options) {
-    return this._parameterMap[value];
-  }
-
-  async _preMakeInstance(envVar) {
-    this._parameterMap = await this._getParameterMap(Object.values(envVar));
+  async convertMultiple(values) {
+    const parameterMap = await this._getParameterMap(Object.values(values));
+    return Object.keys(values).reduce((acc, value) => {
+      acc[value] = parameterMap[values[value]];
+      return acc;
+    }, {});
   }
 };

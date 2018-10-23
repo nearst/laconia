@@ -1,9 +1,9 @@
 const AWSSDK = require("aws-sdk");
 const AWS = require("aws-sdk-mock");
 const { yields, s3Body } = require("@laconia/test-helper");
-const EnvVarS3ConfigFactory = require("../src/EnvVarS3ConfigFactory");
+const S3Converter = require("../src/S3Converter");
 
-describe("EnvVarS3ConfigFactory", () => {
+describe("S3Converter", () => {
   let s3;
   let awsS3;
 
@@ -22,42 +22,36 @@ describe("EnvVarS3ConfigFactory", () => {
   });
 
   describe("when there is no env var set", () => {
-    let s3ConfigFactory;
+    let s3Converter;
 
     beforeEach(() => {
-      s3ConfigFactory = new EnvVarS3ConfigFactory(
-        {
-          NOTHING: "empty"
-        },
-        awsS3
-      );
+      s3Converter = new S3Converter(awsS3);
     });
 
     it("return empty instances", async () => {
-      const instances = await s3ConfigFactory.makeInstances();
+      const instances = await s3Converter.convertMultiple({});
       expect(instances).toEqual({});
     });
 
     it("should not call S3", async () => {
-      await s3ConfigFactory.makeInstances();
+      await s3Converter.convertMultiple({});
       expect(s3.getObject).not.toBeCalled();
     });
   });
 
-  describe("when there is one env var set", () => {
-    let s3ConfigFactory;
+  describe("when there is one value", () => {
+    let s3Converter;
+    let values;
 
     beforeEach(() => {
-      s3ConfigFactory = new EnvVarS3ConfigFactory(
-        {
-          LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.json"
-        },
-        awsS3
-      );
+      s3Converter = new S3Converter(awsS3);
+      values = {
+        myConf: "mybucket/nested/name.json"
+      };
     });
 
-    it("should call S3 with the configured env var value", async () => {
-      await s3ConfigFactory.makeInstances();
+    it("should call S3 with the specified value", async () => {
+      await s3Converter.convertMultiple(values);
       expect(s3.getObject).toBeCalledWith(
         {
           Bucket: "mybucket",
@@ -68,22 +62,21 @@ describe("EnvVarS3ConfigFactory", () => {
     });
 
     it("should return app config instance", async () => {
-      const instances = await s3ConfigFactory.makeInstances();
+      const instances = await s3Converter.convertMultiple(values);
       expect(instances).toHaveProperty("myConf", { applicationName: "hello" });
     });
   });
 
-  describe("when there is multiple env vars set", () => {
-    let s3ConfigFactory;
+  describe("when there is multiple values specified", () => {
+    let s3Converter;
+    let values;
 
     beforeEach(() => {
-      s3ConfigFactory = new EnvVarS3ConfigFactory(
-        {
-          LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.json",
-          LACONIA_S3CONFIG_OTHER_CONF: "otherbucket/nested/bar/other.json"
-        },
-        awsS3
-      );
+      values = {
+        myConf: "mybucket/nested/name.json",
+        otherConf: "otherbucket/nested/bar/other.json"
+      };
+      s3Converter = new S3Converter(awsS3);
 
       s3.getObject.mockImplementation(
         yields(({ Bucket }) => {
@@ -99,7 +92,7 @@ describe("EnvVarS3ConfigFactory", () => {
     });
 
     it("should call S3 with the configured env var value", async () => {
-      await s3ConfigFactory.makeInstances();
+      await s3Converter.convertMultiple(values);
       expect(s3.getObject).toHaveBeenCalledTimes(2);
       expect(s3.getObject).toBeCalledWith(
         {
@@ -118,26 +111,25 @@ describe("EnvVarS3ConfigFactory", () => {
     });
 
     it("should return multiple instances", async () => {
-      const instances = await s3ConfigFactory.makeInstances();
+      const instances = await s3Converter.convertMultiple(values);
       expect(instances).toHaveProperty("myConf", { applicationName: "hello" });
       expect(instances).toHaveProperty("otherConf", { username: "admin" });
     });
   });
 
   describe("when file extension is not .json", () => {
-    let s3ConfigFactory;
+    let s3Converter;
+    let values;
 
     beforeEach(() => {
-      s3ConfigFactory = new EnvVarS3ConfigFactory(
-        {
-          LACONIA_S3CONFIG_MY_CONF: "mybucket/nested/name.txt"
-        },
-        awsS3
-      );
+      values = {
+        myConf: "mybucket/nested/name.txt"
+      };
+      s3Converter = new S3Converter(awsS3);
     });
 
     it("should throw error", async () => {
-      expect(s3ConfigFactory.makeInstances()).rejects.toThrow(
+      expect(s3Converter.convertMultiple(values)).rejects.toThrow(
         /Object path must have .json extension/
       );
     });

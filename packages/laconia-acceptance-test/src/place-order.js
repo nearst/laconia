@@ -1,5 +1,4 @@
 const laconia = require("@laconia/core");
-const s3Config = require("@laconia/s3-config");
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
@@ -54,5 +53,5 @@ const handler = async ({
 };
 
 module.exports.handler = laconia(handler)
-  .register([s3Config.envVarInstances(), config.envVarInstances(), instances])
+  .register([config.envVarInstances(), instances])
   .postProcessor(xray.postProcessor());

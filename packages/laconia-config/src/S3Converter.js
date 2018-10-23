@@ -1,5 +1,3 @@
-const { EnvVarInstanceFactory } = require("@laconia/core");
-
 const createS3Params = objectPath => {
   const splitPath = objectPath.split("/");
   const Bucket = splitPath.shift();
@@ -10,16 +8,15 @@ const createS3Params = objectPath => {
   };
 };
 
-module.exports = class EnvVarS3ConfigFactory extends EnvVarInstanceFactory {
-  constructor(env, s3) {
-    super(env, "LACONIA_S3CONFIG_");
+module.exports = class S3Converter {
+  constructor(s3) {
     this.s3 = s3;
   }
 
-  async _preMakeInstance(envVar) {
-    this._objectMap = {};
-    return Promise.all(
-      Object.values(envVar).map(objectPath => {
+  async _getObjectMap(objectPaths) {
+    const objectMap = {};
+    await Promise.all(
+      objectPaths.map(objectPath => {
         if (!objectPath.endsWith(".json")) {
           throw new Error(
             `Object path must have .json extension. ${objectPath} was found`
@@ -29,13 +26,19 @@ module.exports = class EnvVarS3ConfigFactory extends EnvVarInstanceFactory {
           .getObject(createS3Params(objectPath))
           .promise()
           .then(data => {
-            this._objectMap[objectPath] = JSON.parse(data.Body);
+            objectMap[objectPath] = JSON.parse(data.Body);
           });
       })
     );
+
+    return objectMap;
   }
 
-  _makeInstance(value) {
-    return this._objectMap[value];
+  async convertMultiple(values) {
+    const objectMap = await this._getObjectMap(Object.values(values));
+    return Object.keys(values).reduce((acc, value) => {
+      acc[value] = objectMap[values[value]];
+      return acc;
+    }, {});
   }
 };

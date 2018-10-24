@@ -24,6 +24,7 @@ describe("BooleanConverter", () => {
       "",
       " ",
       "no",
+      "n",
       "off"
     ].forEach(falsyValue => {
       it(`converts falsy value '${falsyValue}' to false`, async () => {

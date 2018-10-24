@@ -8,6 +8,14 @@ const createS3Params = objectPath => {
   };
 };
 
+const validateObjectPath = objectPath => {
+  if (!objectPath.endsWith(".json")) {
+    throw new Error(
+      `Object path must have .json extension. ${objectPath} was found`
+    );
+  }
+};
+
 module.exports = class S3Converter {
   constructor(s3) {
     this.s3 = s3;
@@ -17,11 +25,6 @@ module.exports = class S3Converter {
     const objectMap = {};
     await Promise.all(
       objectPaths.map(objectPath => {
-        if (!objectPath.endsWith(".json")) {
-          throw new Error(
-            `Object path must have .json extension. ${objectPath} was found`
-          );
-        }
         return this.s3
           .getObject(createS3Params(objectPath))
           .promise()
@@ -35,9 +38,11 @@ module.exports = class S3Converter {
   }
 
   async convertMultiple(values) {
-    const objectMap = await this._getObjectMap(Object.values(values));
-    return Object.keys(values).reduce((acc, value) => {
-      acc[value] = objectMap[values[value]];
+    const objectPaths = Object.values(values);
+    objectPaths.forEach(o => validateObjectPath(o));
+    const objectMap = await this._getObjectMap(objectPaths);
+    return Object.keys(values).reduce((acc, key) => {
+      acc[key] = objectMap[values[key]];
       return acc;
     }, {});
   }

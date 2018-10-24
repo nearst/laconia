@@ -129,7 +129,7 @@ describe("S3Converter", () => {
     });
 
     it("should throw error", async () => {
-      expect(s3Converter.convertMultiple(values)).rejects.toThrow(
+      await expect(s3Converter.convertMultiple(values)).rejects.toThrow(
         /Object path must have .json extension/
       );
     });

@@ -1,20 +1,22 @@
+const validateSsmData = data => {
+  if (data.InvalidParameters.length > 0) {
+    throw new Error(`Invalid parameters: ${data.InvalidParameters.join(", ")}`);
+  }
+};
+
 module.exports = class SsmConverter {
   constructor(ssm) {
     this.ssm = ssm;
   }
 
-  async _getParameterMap(names) {
+  async _getParameterMap(parameterNames) {
     const data = await this.ssm
       .getParameters({
-        Names: names,
+        Names: parameterNames,
         WithDecryption: true
       })
       .promise();
-    if (data.InvalidParameters.length > 0) {
-      throw new Error(
-        `Invalid parameters: ${data.InvalidParameters.join(", ")}`
-      );
-    }
+    validateSsmData(data);
     return data.Parameters.reduce((acc, p) => {
       acc[p.Name] = p.Value;
       return acc;
@@ -23,8 +25,8 @@ module.exports = class SsmConverter {
 
   async convertMultiple(values) {
     const parameterMap = await this._getParameterMap(Object.values(values));
-    return Object.keys(values).reduce((acc, value) => {
-      acc[value] = parameterMap[values[value]];
+    return Object.keys(values).reduce((acc, key) => {
+      acc[key] = parameterMap[values[key]];
       return acc;
     }, {});
   }

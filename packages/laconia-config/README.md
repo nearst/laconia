@@ -17,21 +17,21 @@ npm install --save @laconia/config
 Set your lambda environment variable with LACONIA_CONFIG prefix:
 
 ```yml
-LACONIA_SSMCONFIG_MY_SECRET: ssm:/path/to/my/secret
+LACONIA_CONFIG_MY_SECRET: ssm:/path/to/my/secret
 ```
 
 `/path/to/my/secret` parameter will be retrieved from SSM, decrypted, and made available as
 `mySecret` in your `LaconiaContext`:
 
 ```js
-const ssmConfig = require("@laconia/ssm-config");
+const config = require("@laconia/config");
 const laconia = require("@laconia/core");
 
 const handler = async ({ mySecret }) => {
   // use mySecret
 };
 
-module.exports.handler = laconia(handler).register(ssmConfig.envVarInstances());
+module.exports.handler = laconia(handler).register(config.envVarInstances());
 ```
 
 ## Types of config source

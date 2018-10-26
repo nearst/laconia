@@ -30,8 +30,6 @@
     "@laconia/config": "^0.11.0",
     "@laconia/core": "^0.11.0",
     "@laconia/invoker": "^0.11.0",
-    "@laconia/s3-config": "^0.11.0",
-    "@laconia/ssm-config": "^0.11.0",
     "@laconia/test": "^0.11.0",
     "@laconia/xray": "^0.11.0",
     "pino": "^4.16.1",

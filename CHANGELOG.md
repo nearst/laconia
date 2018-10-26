@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0]
+
+### Added
+
+* `@laconia/config`
+  * Merged `@laconia/s3-config` and `@laconia/ssm-config` here.
+  * Add boolean conversion support
+
+### Changed
+
+* `@laconia/s3-config`
+  * **BREAKING** This package is now merged to `@laconia/config`. Change your environment variable from LACONIA_S3CONFIG_VAR: foo to LACONIA_CONFIG_VAR: s3:foo
+* `@laconia/ssm-config`
+  * **BREAKING**This package is now merged to `@laconia/config`. Change your environment variable from LACONIA_SSMCONFIG_VAR: foo to LACONIA_CONFIG_VAR: ssm:foo
+
 ## [0.11.0]
 
 ### Added

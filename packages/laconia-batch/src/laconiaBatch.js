@@ -13,8 +13,8 @@ module.exports = (
   reader,
   { timeNeededToRecurseInMillis = 5000, itemsPerSecond } = {}
 ) => {
-  const handler = laconia(laconiaContext => {
-    const { event, context } = laconiaContext;
+  const handler = laconia((event, laconiaContext) => {
+    const { context } = laconiaContext;
     const itemReader = reader(laconiaContext);
     const batchProcessor = new BatchProcessor(
       itemReader.next.bind(itemReader),

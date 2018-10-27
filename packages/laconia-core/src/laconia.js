@@ -8,7 +8,7 @@ module.exports = fn => {
     await laconiaContext.refresh();
 
     try {
-      const result = await fn(laconiaContext);
+      const result = await fn(event, laconiaContext);
       callback(null, result);
     } catch (err) {
       callback(err);
@@ -16,8 +16,8 @@ module.exports = fn => {
   };
 
   return Object.assign(laconia, {
-    run: laconiaContext => {
-      return fn({ $run: true, ...laconiaContext });
+    run: (event, laconiaContext) => {
+      return fn(event, { $run: true, ...laconiaContext });
     },
     register: (factory, options = {}) => {
       if (Array.isArray(factory)) {

@@ -19,8 +19,8 @@ describe("laconia", () => {
     const handler = jest.fn();
     await laconia(handler)(...handlerArgs);
     expect(handler).toBeCalledWith(
+      { foo: "event" },
       expect.objectContaining({
-        event: { foo: "event" },
         context: { fiz: "context" }
       })
     );
@@ -28,21 +28,28 @@ describe("laconia", () => {
 
   it("should be able to run handler without executing Lambda logic", () => {
     const handler = jest.fn();
-    laconia(handler).run({ foo: "bar" });
-    expect(handler).toBeCalledWith(expect.objectContaining({ foo: "bar" }));
+    laconia(handler).run({ foo: "bar" }, { context: { fiz: "context" } });
+    expect(handler).toBeCalledWith(
+      { foo: "bar" },
+      expect.objectContaining({ context: { fiz: "context" } })
+    );
   });
 
   describe("run flag", () => {
     it("should set a flag when #run is called", () => {
       const handler = jest.fn();
       laconia(handler).run({});
-      expect(handler).toBeCalledWith(expect.objectContaining({ $run: true }));
+      expect(handler).toBeCalledWith(
+        expect.any(Object),
+        expect.objectContaining({ $run: true })
+      );
     });
 
     it("should not set a flag when the handler is being called normally", async () => {
       const handler = jest.fn();
       await laconia(handler)(...handlerArgs);
       expect(handler).not.toBeCalledWith(
+        expect.any(Object),
         expect.objectContaining({ $run: true })
       );
     });
@@ -57,6 +64,7 @@ describe("laconia", () => {
           .register(lc => ({ boo: "baz" }))(...handlerArgs);
 
         expect(handler).toBeCalledWith(
+          expect.any(Object),
           expect.objectContaining({
             foo: "bar",
             boo: "baz"
@@ -71,6 +79,7 @@ describe("laconia", () => {
         })(...handlerArgs);
 
         expect(handler).toBeCalledWith(
+          expect.any(Object),
           expect.objectContaining({
             foo: "bar"
           })
@@ -109,11 +118,12 @@ describe("laconia", () => {
         factory2 = jest.fn().mockImplementation(() => ({ boo: "baz" }));
       });
 
-      it("should be return instances created by the array of factoryFns", async () => {
+      it("should return instances created by the array of factoryFns", async () => {
         const handler = jest.fn();
         await laconia(handler).register([factory1, factory2])(...handlerArgs);
 
         expect(handler).toBeCalledWith(
+          expect.any(Object),
           expect.objectContaining({
             foo: "bar",
             boo: "baz"
@@ -160,6 +170,7 @@ describe("laconia", () => {
         })(...handlerArgs);
 
       expect(handler).toBeCalledWith(
+        expect.any(Object),
         expect.objectContaining({
           foo: expect.objectContaining({ value: 2 })
         })

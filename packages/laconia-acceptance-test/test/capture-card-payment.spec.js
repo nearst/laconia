@@ -9,7 +9,7 @@ describe("capture-card-payment", () => {
 
   it("throws error if paymentReference is not defined", async () => {
     event = {};
-    await expect(handler.run({ event })).rejects.toThrow(
+    await expect(handler.run(event)).rejects.toThrow(
       "paymentReference is required"
     );
   });

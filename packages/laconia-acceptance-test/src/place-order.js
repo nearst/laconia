@@ -28,14 +28,10 @@ const instances = ({ env }) => ({
   idGenerator: new UuidIdGenerator()
 });
 
-const handler = async ({
+const handler = async (
   event,
-  orderRepository,
-  idGenerator,
-  apiKey,
-  restaurants,
-  enabled
-}) => {
+  { orderRepository, idGenerator, apiKey, restaurants, enabled }
+) => {
   validateEnabledFlag(enabled);
   validateApiKey(event, apiKey);
   const orderId = idGenerator.generate();

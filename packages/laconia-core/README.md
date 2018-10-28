@@ -57,7 +57,7 @@ const instances = ({ env }) => ({
 // Handler function, which do not have any object instantiations
 module.exports.handler = laconia(
   // Instances made available via destructuring
-  async ({ event, orderRepository, idGenerator }) => {
+  async (event, { orderRepository, idGenerator }) => {
     await orderRepository.save(order);
   }
 ).register(instances);
@@ -101,16 +101,16 @@ to get just the information you need.
 
 #### AWS Event and Context
 
-When Laconia is adopted, the handler function signature will change. Without Laconia,
+When Laconia is adopted, the handler function signature will change slightly. Without Laconia,
 your handler signature would be `event, context, callback`. With Laconia, your handler
-signature would be `laconiaContext`. The `event` and `context` are always available in LaconiaContext.
+signature would be `event, LaconiaContext`. The `context` are always available in LaconiaContext.
 `callback` is not made available as this should not be necessary anymore when you are
 using Node 8, just `return` the value that you want to return to the caller inside the handler function.
 
 Example:
 
 ```js
-laconia(({ event, context }) => true);
+laconia((event, { context }) => true);
 ```
 
 #### Environment Variables
@@ -126,7 +126,7 @@ with key `env`.
 Example:
 
 ```js
-laconia(({ env }) => true);
+laconia((event, { env }) => true);
 ```
 
 #### Cache
@@ -140,9 +140,9 @@ This feature can be turned off, see API section.
 
 #### `laconia(fn)`
 
-* `fn(laconiaContext)`
+* `fn(event, laconiaContext)`
   * This `Function` is called when your Lambda is invoked
-  * Will be called with `laconiaContext` object, which can be destructured to `{event, context}`
+  * Will be called with `laconiaContext` object, which can be destructured to retrieve your dependencies
 
 Example:
 
@@ -175,7 +175,7 @@ Example:
 
 ```js
 // Register an object with key 'service'
-laconia(({ service }) => service.call()).register(() => ({
+laconia((event, { service }) => service.call()).register(() => ({
   service: new SomeService()
 }));
 
@@ -212,7 +212,7 @@ Example:
 
 ```js
 // Print object registered
-laconia(({ service }) => service.call())
+laconia((event, { service }) => service.call())
   .register(() => ({
     service: new SomeService()
   }))
@@ -221,14 +221,14 @@ laconia(({ service }) => service.call())
 // Enable xray
 const xray = require("@laconia/xray");
 
-laconia(({ service }) => service.call())
+laconia((event, { service }) => service.call())
   .register(() => ({
     service: new SomeService()
   }))
   .postProcessor(xray.postProcessor());
 ```
 
-#### `run(laconiaContext)`
+#### `run(event, laconiaContext)`
 
 Runs Lambda handler function with the specified `laconiaContext` and bypasses
 the LaconiaContext registration step. This function should only be used in a
@@ -240,11 +240,11 @@ unit test.
 ```js
 // Runs a handler function with a LaconiaContext that contains a mock service object.
 // `SomeService` will not be instantiated
-laconia(({ service }) => service.call())
+laconia((event, { service }) => service.call())
   .register(() => ({
     service: new SomeService()
   }))
-  .run({
+  .run(mockEvent, {
     service: jest.mock()
   });
 ```

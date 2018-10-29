@@ -3,10 +3,12 @@ const laconia = require("../src/laconia");
 describe("laconia", () => {
   let callback;
   let handlerArgs;
+  let event;
 
   beforeEach(() => {
     callback = jest.fn();
-    handlerArgs = [{ foo: "event" }, { fiz: "context" }, callback];
+    event = { foo: "event" };
+    handlerArgs = [event, { fiz: "context" }, callback];
   });
 
   it("should call Lambda callback with null when there is no value returned", async () => {
@@ -155,6 +157,17 @@ describe("laconia", () => {
         expect(factory1).toHaveBeenCalledTimes(2);
         expect(factory2).toHaveBeenCalledTimes(2);
       });
+    });
+  });
+
+  describe("#register $inputConverter", () => {
+    xit("should be called when the handler is called", async () => {
+      const inputConverter = { convert: jest.fn() };
+      await laconia(jest.fn())
+        .register(lc => ({ $inputConverter: inputConverter }))
+        .register(lc => ({ boo: "baz" }))(...handlerArgs);
+
+      expect(inputConverter.convert).toBeCalledWith(event);
     });
   });
 

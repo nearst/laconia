@@ -3,12 +3,15 @@ const CoreLaconiaContext = require("./CoreLaconiaContext");
 module.exports = fn => {
   const laconiaContext = new CoreLaconiaContext();
 
+  const convertInput = event => laconiaContext.$inputConverter.convert(event);
+
   const laconia = async (event, context, callback) => {
     laconiaContext.registerInstances({ event, context });
     await laconiaContext.refresh();
 
     try {
-      const result = await fn(event, laconiaContext);
+      const input = await convertInput(event);
+      const result = await fn(input, laconiaContext);
       callback(null, result);
     } catch (err) {
       callback(err);

@@ -1,6 +1,6 @@
 {
   "name": "@laconia/acceptance-test",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "",
   "keywords": [
     "aws",
@@ -31,11 +31,11 @@
     "remove:8": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
   },
   "dependencies": {
-    "@laconia/batch": "^0.12.0",
-    "@laconia/config": "^0.12.0",
-    "@laconia/core": "^0.12.0",
-    "@laconia/invoker": "^0.12.0",
-    "@laconia/test": "^0.12.0",
+    "@laconia/batch": "^0.13.0",
+    "@laconia/config": "^0.13.0",
+    "@laconia/core": "^0.13.0",
+    "@laconia/invoker": "^0.13.0",
+    "@laconia/test": "^0.13.0",
     "@laconia/xray": "^0.11.0",
     "pino": "^4.16.1",
     "serverless-plugin-tracing": "^2.0.0",

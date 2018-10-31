@@ -2,6 +2,7 @@ const frisby = require("frisby");
 const uuidv4 = require("uuid/v4");
 const Joi = frisby.Joi;
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
+const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
 const laconiaTest = require("@laconia/test");
 const { tracker } = require("@laconia/test-helper");
 
@@ -72,6 +73,7 @@ const getOrderUrl = async () => {
 
 describe("order flow", () => {
   let orderRepository;
+  let totalOrderStorage;
   let orderMap;
   let orderUrl;
 
@@ -89,6 +91,10 @@ describe("order flow", () => {
   beforeAll(async () => {
     await deleteAllItems(name("order"));
     orderRepository = new DynamoDbOrderRepository(name("order"));
+    totalOrderStorage = new S3TotalOrderStorage(
+      new AWS.S3(),
+      name("total-order")
+    );
   });
 
   beforeAll(async () => {
@@ -173,6 +179,12 @@ describe("order flow", () => {
         ];
 
         expect(actualTotalOrder).toEqual(expectedTotalOrder);
+
+        const totalOrderJsons = await totalOrderStorage.getJsons();
+        const actualTotalOrderJsons = totalOrderJsons.sort(
+          (a, b) => a.restaurantId - b.restaurantId
+        );
+        expect(actualTotalOrderJsons).toEqual(expectedTotalOrder);
       },
       20000
     );

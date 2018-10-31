@@ -37,6 +37,7 @@ provider:
 custom:
   fullName: ${self:service}-${self:provider.stage}
   trackerBucketName: ${self:custom.fullName}-tracker
+  totalOrderBucketName: ${self:custom.fullName}-total-order
   restaurantBucketName: ${self:custom.fullName}-restaurant
   orderDynamoDbBatchTableName: ${self:custom.fullName}-order
   remover:
@@ -71,6 +72,7 @@ functions:
     handler: src/calculate-total-order.handler
     environment:
       RESTAURANT_BUCKET_NAME: ${self:custom.restaurantBucketName}
+      TOTAL_ORDER_BUCKET_NAME: ${self:custom.totalOrderBucketName}
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
 
 resources:
@@ -79,6 +81,10 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.trackerBucketName}
+    TotalOrderBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.totalOrderBucketName}
     RestaurantBucket:
       Type: AWS::S3::Bucket
       Properties:

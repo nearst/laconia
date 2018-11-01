@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `@laconia/core`
   * **BREAKING** Moved `event` out of `LaconiaContext`. `laconia()` will call your handler function with the parameter of `event, LaconiaContext` instead of just `LaconiaContext`
     * Change your handler function from `({ event, dependency }) => {}` to `(event, { dependency }) => {}`
+    * Change unit test usage of #run from `.run({ event, dependency })` to `.run(event, { dependency })`
 
 ## [0.12.0]
 

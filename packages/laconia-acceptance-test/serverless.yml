@@ -74,6 +74,14 @@ functions:
       RESTAURANT_BUCKET_NAME: ${self:custom.restaurantBucketName}
       TOTAL_ORDER_BUCKET_NAME: ${self:custom.totalOrderBucketName}
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
+  convert-total-order-to-csv:
+    handler: src/convert-total-order-to-csv.handler
+    events:
+      - s3:
+          bucket: ${self:custom.totalOrderBucketName}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: json/
 
 resources:
   Resources:
@@ -81,10 +89,6 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.trackerBucketName}
-    TotalOrderBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:custom.totalOrderBucketName}
     RestaurantBucket:
       Type: AWS::S3::Bucket
       Properties:

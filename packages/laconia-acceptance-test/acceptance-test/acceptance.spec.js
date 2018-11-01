@@ -102,6 +102,7 @@ describe("order flow", () => {
   });
   beforeAll(() => captureCardPayment.spy.clear());
   beforeAll(() => calculateTotalOrderTracker.clear());
+  beforeAll(() => totalOrderStorage.clear());
 
   beforeAll(async () => {
     const orders = [

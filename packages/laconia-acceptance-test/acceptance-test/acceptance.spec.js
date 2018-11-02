@@ -182,10 +182,28 @@ describe("order flow", () => {
         expect(actualTotalOrder).toEqual(expectedTotalOrder);
 
         const totalOrderJsons = await totalOrderStorage.getJsons();
-        const actualTotalOrderJsons = totalOrderJsons.sort(
+        const sortedTotalOrderJsons = totalOrderJsons.sort(
           (a, b) => a.restaurantId - b.restaurantId
         );
-        expect(actualTotalOrderJsons).toEqual(expectedTotalOrder);
+        expect(sortedTotalOrderJsons).toEqual(expectedTotalOrder);
+
+        const expectedTotalOrderXmls = [
+          "<TotalOrder><RestaurantId>1</RestaurantId><Total>10</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>2</RestaurantId><Total>8</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>3</RestaurantId><Total>0</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>4</RestaurantId><Total>0</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>5</RestaurantId><Total>15</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>6</RestaurantId><Total>31</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>7</RestaurantId><Total>0</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>8</RestaurantId><Total>0</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>9</RestaurantId><Total>110</Total></TotalOrder>",
+          "<TotalOrder><RestaurantId>10</RestaurantId><Total>0</Total></TotalOrder>"
+        ];
+        const totalOrderXmls = await totalOrderStorage.getXmls();
+        expect(totalOrderXmls.length).toEqual(10);
+        totalOrderXmls.forEach(totalOrderXml =>
+          expect(expectedTotalOrderXmls).toContain(totalOrderXml)
+        );
       },
       20000
     );

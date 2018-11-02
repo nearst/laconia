@@ -14,12 +14,12 @@ module.exports = class S3TotalOrderStorage {
       .promise();
   }
 
-  async putCsv(totalOrder) {
+  async putXml(totalOrder) {
     return this.s3
       .putObject({
         Bucket: this.bucket,
-        Key: `csv/${totalOrder.restaurantId}`,
-        Body: JSON.stringify(totalOrder)
+        Key: `xml/${Date.now()}`,
+        Body: totalOrder
       })
       .promise();
   }
@@ -42,6 +42,17 @@ module.exports = class S3TotalOrderStorage {
     );
   }
 
+  async getObject(key) {
+    const object = await this.s3
+      .getObject({
+        Bucket: this.bucket,
+        Key: key
+      })
+      .promise();
+
+    return JSON.parse(object.Body.toString());
+  }
+
   async getJsons() {
     const objects = await this.s3
       .listObjects({
@@ -60,6 +71,27 @@ module.exports = class S3TotalOrderStorage {
       )
     ).then(results => {
       return results.map(result => JSON.parse(result.Body.toString()));
+    });
+  }
+
+  async getXmls() {
+    const objects = await this.s3
+      .listObjects({
+        Bucket: this.bucket,
+        Prefix: "xml"
+      })
+      .promise();
+    return Promise.all(
+      objects.Contents.map(t =>
+        this.s3
+          .getObject({
+            Bucket: this.bucket,
+            Key: t.Key
+          })
+          .promise()
+      )
+    ).then(results => {
+      return results.map(result => result.Body.toString());
     });
   }
 };

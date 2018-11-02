@@ -74,8 +74,10 @@ functions:
       RESTAURANT_BUCKET_NAME: ${self:custom.restaurantBucketName}
       TOTAL_ORDER_BUCKET_NAME: ${self:custom.totalOrderBucketName}
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
-  convert-total-order-to-csv:
-    handler: src/convert-total-order-to-csv.handler
+  convert-total-order-to-xml:
+    handler: src/convert-total-order-to-xml.handler
+    environment:
+      TOTAL_ORDER_BUCKET_NAME: ${self:custom.totalOrderBucketName}
     events:
       - s3:
           bucket: ${self:custom.totalOrderBucketName}

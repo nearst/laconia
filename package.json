@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/ceilfors/laconia#readme",
   "devDependencies": {
+    "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.7.15",
     "aws-sdk-mock": "^1.7.0",
     "coveralls": "^3.0.2",

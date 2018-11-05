@@ -16,7 +16,7 @@ const validateObjectPath = objectPath => {
   }
 };
 
-module.exports = class S3Converter {
+module.exports = class S3ConfigConverter {
   constructor(s3) {
     this.s3 = s3;
   }

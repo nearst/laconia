@@ -1,13 +1,13 @@
-const BooleanConverter = require("../src/BooleanConverter");
+const BooleanConfigConverter = require("../src/BooleanConfigConverter");
 
-describe("BooleanConverter", () => {
+describe("BooleanConfigConverter", () => {
   describe("when there is one env var set", () => {
-    let booleanConverter;
+    let configConverter;
 
     ["true", "TRUE", "yes", "anything"].forEach(truthyValue => {
       it(`converts truthy value '${truthyValue}' to true`, async () => {
-        booleanConverter = new BooleanConverter();
-        const booleans = await booleanConverter.convertMultiple({
+        configConverter = new BooleanConfigConverter();
+        const booleans = await configConverter.convertMultiple({
           enableFeature: truthyValue
         });
         expect(booleans).toHaveProperty("enableFeature", true);
@@ -28,8 +28,8 @@ describe("BooleanConverter", () => {
       "off"
     ].forEach(falsyValue => {
       it(`converts falsy value '${falsyValue}' to false`, async () => {
-        booleanConverter = new BooleanConverter();
-        const instances = await booleanConverter.convertMultiple({
+        configConverter = new BooleanConfigConverter();
+        const instances = await configConverter.convertMultiple({
           enableFeature: falsyValue
         });
         expect(instances).toHaveProperty("enableFeature", false);
@@ -39,8 +39,8 @@ describe("BooleanConverter", () => {
 
   describe("when there is multiple env vars set", () => {
     it("should return multiple instances", async () => {
-      const booleanConverter = new BooleanConverter();
-      const booleans = await booleanConverter.convertMultiple({
+      const configConverter = new BooleanConfigConverter();
+      const booleans = await configConverter.convertMultiple({
         enableFeatureA: "off",
         enableFeatureB: "no"
       });

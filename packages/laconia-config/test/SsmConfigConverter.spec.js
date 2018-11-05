@@ -1,9 +1,9 @@
 const AWSSDK = require("aws-sdk");
 const AWS = require("aws-sdk-mock");
 const { yields } = require("@laconia/test-helper");
-const SsmConverter = require("../src/SsmConverter");
+const SsmConfigConverter = require("../src/SsmConfigConverter");
 
-describe("SsmConverter", () => {
+describe("SsmConfigConverter", () => {
   let ssm;
   let awsSsm;
 
@@ -30,8 +30,8 @@ describe("SsmConverter", () => {
     });
 
     it("return empty instances", async () => {
-      const ssmConverter = new SsmConverter(awsSsm);
-      const instances = await ssmConverter.convertMultiple({});
+      const configConverter = new SsmConfigConverter(awsSsm);
+      const instances = await configConverter.convertMultiple({});
       expect(instances).toEqual({});
     });
   });
@@ -47,8 +47,8 @@ describe("SsmConverter", () => {
     });
 
     it("should retrieve one parameter from SSM", async () => {
-      const ssmConverter = new SsmConverter(awsSsm);
-      await ssmConverter.convertMultiple({
+      const configConverter = new SsmConfigConverter(awsSsm);
+      await configConverter.convertMultiple({
         apiKey: "/path/to/api/key"
       });
       expect(ssm.getParameters).toBeCalledWith(
@@ -58,8 +58,8 @@ describe("SsmConverter", () => {
     });
 
     it("should return one secret returned by SSM", async () => {
-      const ssmConverter = new SsmConverter(awsSsm);
-      const result = await ssmConverter.convertMultiple({
+      const configConverter = new SsmConfigConverter(awsSsm);
+      const result = await configConverter.convertMultiple({
         apiKey: "/path/to/api/key"
       });
 
@@ -67,8 +67,8 @@ describe("SsmConverter", () => {
     });
 
     it("should hit SSM with Decryption option", async () => {
-      const ssmConverter = new SsmConverter(awsSsm);
-      await ssmConverter.convertMultiple({
+      const configConverter = new SsmConfigConverter(awsSsm);
+      await configConverter.convertMultiple({
         apiKey: "/path/to/api/key"
       });
 
@@ -87,9 +87,9 @@ describe("SsmConverter", () => {
           InvalidParameters: ["secret pathway", "boom"]
         })
       );
-      const ssmConverter = new SsmConverter(awsSsm);
+      const configConverter = new SsmConfigConverter(awsSsm);
       await expect(
-        ssmConverter.convertMultiple({
+        configConverter.convertMultiple({
           apiKey: "/path/to/api/key"
         })
       ).rejects.toThrow(/Invalid parameters: secret pathway, boom/);
@@ -110,8 +110,8 @@ describe("SsmConverter", () => {
     });
 
     it("should return multiple secrets returned by SSM", async () => {
-      const ssmConverter = new SsmConverter(awsSsm);
-      const result = await ssmConverter.convertMultiple({
+      const configConverter = new SsmConfigConverter(awsSsm);
+      const result = await configConverter.convertMultiple({
         apiKey: "/path/to/api/key",
         recipe: "/otherpath"
       });

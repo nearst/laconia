@@ -4,7 +4,7 @@ const validateSsmData = data => {
   }
 };
 
-module.exports = class SsmConverter {
+module.exports = class SsmConfigConverter {
   constructor(ssm) {
     this.ssm = ssm;
   }

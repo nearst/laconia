@@ -3,7 +3,7 @@ const convertToBoolean = value => {
   return !falsyValues.includes(value.toLowerCase().trim());
 };
 
-module.exports = class BooleanConverter {
+module.exports = class BooleanConfigConverter {
   convertMultiple(values) {
     return Object.keys(values).reduce((acc, key) => {
       acc[key] = convertToBoolean(values[key]);

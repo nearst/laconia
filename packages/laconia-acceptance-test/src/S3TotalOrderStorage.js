@@ -42,17 +42,6 @@ module.exports = class S3TotalOrderStorage {
     );
   }
 
-  async getObject(key) {
-    const object = await this.s3
-      .getObject({
-        Bucket: this.bucket,
-        Key: key
-      })
-      .promise();
-
-    return JSON.parse(object.Body.toString());
-  }
-
   async getJsons() {
     const objects = await this.s3
       .listObjects({

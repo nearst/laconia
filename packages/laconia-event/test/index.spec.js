@@ -7,7 +7,7 @@ describe("@laconia/event", () => {
     });
 
     it("returns an instance of inputConverter", () => {
-      const instances = event.s3()();
+      const instances = event.s3()({});
       expect(instances).toHaveProperty("$inputConverter");
     });
   });

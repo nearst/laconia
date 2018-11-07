@@ -1,30 +1,23 @@
+const pWaitFor = require("p-wait-for");
+
 module.exports = class S3TotalOrderStorage {
   constructor(s3, bucket) {
     this.s3 = s3;
     this.bucket = bucket;
   }
 
-  async putJson(totalOrder) {
+  async put(type, totalOrder) {
+    const body = type === "json" ? JSON.stringify(totalOrder) : totalOrder;
     return this.s3
       .putObject({
         Bucket: this.bucket,
-        Key: `json/${Date.now()}`,
-        Body: JSON.stringify(totalOrder)
+        Key: `${type}/${Date.now()}`,
+        Body: body
       })
       .promise();
   }
 
-  async putXml(totalOrder) {
-    return this.s3
-      .putObject({
-        Bucket: this.bucket,
-        Key: `xml/${Date.now()}`,
-        Body: totalOrder
-      })
-      .promise();
-  }
-
-  async clear() {
+  async clearAll() {
     const objects = await this.s3
       .listObjects({
         Bucket: this.bucket
@@ -42,11 +35,11 @@ module.exports = class S3TotalOrderStorage {
     );
   }
 
-  async getJsons() {
+  async getAll(type) {
     const objects = await this.s3
       .listObjects({
         Bucket: this.bucket,
-        Prefix: "json"
+        Prefix: type
       })
       .promise();
     return Promise.all(
@@ -59,28 +52,26 @@ module.exports = class S3TotalOrderStorage {
           .promise()
       )
     ).then(results => {
-      return results.map(result => JSON.parse(result.Body.toString()));
+      return results.map(
+        result =>
+          type === "json"
+            ? JSON.parse(result.Body.toString())
+            : result.Body.toString()
+      );
     });
   }
 
-  async getXmls() {
+  async getTotal(type) {
     const objects = await this.s3
       .listObjects({
         Bucket: this.bucket,
-        Prefix: "xml"
+        Prefix: type
       })
       .promise();
-    return Promise.all(
-      objects.Contents.map(t =>
-        this.s3
-          .getObject({
-            Bucket: this.bucket,
-            Key: t.Key
-          })
-          .promise()
-      )
-    ).then(results => {
-      return results.map(result => result.Body.toString());
-    });
+    return Number(objects.Contents.length);
+  }
+
+  waitUntil(type, totalObjects) {
+    return pWaitFor(async () => (await this.getTotal(type)) >= totalObjects);
   }
 };

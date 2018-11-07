@@ -4,7 +4,6 @@ const Joi = frisby.Joi;
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
 const laconiaTest = require("@laconia/test");
-const { tracker } = require("@laconia/test-helper");
 
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
 const SERVERLESS_STAGE = process.env.NODE_VERSION;
@@ -83,11 +82,6 @@ describe("order flow", () => {
     }
   });
 
-  const calculateTotalOrderTracker = tracker(
-    name("calculate-total-order"),
-    name("tracker")
-  );
-
   beforeAll(async () => {
     await deleteAllItems(name("order"));
     orderRepository = new DynamoDbOrderRepository(name("order"));
@@ -101,8 +95,7 @@ describe("order flow", () => {
     orderUrl = await getOrderUrl();
   });
   beforeAll(() => captureCardPayment.spy.clear());
-  beforeAll(() => calculateTotalOrderTracker.clear());
-  beforeAll(() => totalOrderStorage.clear());
+  beforeAll(() => totalOrderStorage.clearAll());
 
   beforeAll(async () => {
     const orders = [
@@ -160,11 +153,6 @@ describe("order flow", () => {
       "should calculate total order for every restaurants",
       async () => {
         await laconiaTest(name("calculate-total-order")).fireAndForget();
-        await calculateTotalOrderTracker.waitUntil(10);
-        const ticks = await calculateTotalOrderTracker.getTicks();
-        const actualTotalOrder = ticks.sort(
-          (a, b) => a.restaurantId - b.restaurantId
-        );
 
         const expectedTotalOrder = [
           { restaurantId: 1, total: 10 },
@@ -178,35 +166,37 @@ describe("order flow", () => {
           { restaurantId: 9, total: 110 },
           { restaurantId: 10, total: 0 }
         ];
+        await totalOrderStorage.waitUntil("json", 10);
 
-        expect(actualTotalOrder).toEqual(expectedTotalOrder);
-
-        const totalOrderJsons = await totalOrderStorage.getJsons();
+        const totalOrderJsons = await totalOrderStorage.getAll("json");
         const sortedTotalOrderJsons = totalOrderJsons.sort(
           (a, b) => a.restaurantId - b.restaurantId
         );
         expect(sortedTotalOrderJsons).toEqual(expectedTotalOrder);
-
-        const expectedTotalOrderXmls = [
-          "<TotalOrder><RestaurantId>1</RestaurantId><Total>10</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>2</RestaurantId><Total>8</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>3</RestaurantId><Total>0</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>4</RestaurantId><Total>0</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>5</RestaurantId><Total>15</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>6</RestaurantId><Total>31</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>7</RestaurantId><Total>0</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>8</RestaurantId><Total>0</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>9</RestaurantId><Total>110</Total></TotalOrder>",
-          "<TotalOrder><RestaurantId>10</RestaurantId><Total>0</Total></TotalOrder>"
-        ];
-        const totalOrderXmls = await totalOrderStorage.getXmls();
-        expect(totalOrderXmls.length).toEqual(10);
-        totalOrderXmls.forEach(totalOrderXml =>
-          expect(expectedTotalOrderXmls).toContain(totalOrderXml)
-        );
       },
       20000
     );
+
+    it("should convert total order for every restaurants to xml", async () => {
+      const expectedTotalOrderXmls = [
+        "<TotalOrder><RestaurantId>1</RestaurantId><Total>10</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>2</RestaurantId><Total>8</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>3</RestaurantId><Total>0</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>4</RestaurantId><Total>0</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>5</RestaurantId><Total>15</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>6</RestaurantId><Total>31</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>7</RestaurantId><Total>0</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>8</RestaurantId><Total>0</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>9</RestaurantId><Total>110</Total></TotalOrder>",
+        "<TotalOrder><RestaurantId>10</RestaurantId><Total>0</Total></TotalOrder>"
+      ];
+      await totalOrderStorage.waitUntil("xml", 10);
+      const totalOrderXmls = await totalOrderStorage.getAll("xml");
+      expect(totalOrderXmls.length).toEqual(10);
+      totalOrderXmls.forEach(totalOrderXml =>
+        expect(expectedTotalOrderXmls).toContain(totalOrderXml)
+      );
+    });
   });
 
   describe("error scenario", () => {

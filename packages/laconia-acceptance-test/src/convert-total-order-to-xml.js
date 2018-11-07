@@ -9,7 +9,8 @@ const instances = ({ $s3, env }) => ({
 const handler = async (s3Event, { totalOrderStorage }) => {
   const totalOrder = await s3Event.getJson();
 
-  await totalOrderStorage.putXml(
+  await totalOrderStorage.put(
+    "xml",
     `<TotalOrder><RestaurantId>${
       totalOrder.restaurantId
     }</RestaurantId><Total>${totalOrder.total}</Total></TotalOrder>`

@@ -33,6 +33,7 @@
     "@laconia/invoker": "^0.13.0",
     "@laconia/test": "^0.13.0",
     "@laconia/xray": "^0.11.0",
+    "p-wait-for": "^1.0.0",
     "pino": "^4.16.1",
     "serverless-plugin-tracing": "^2.0.0",
     "uuid": "^3.2.1"

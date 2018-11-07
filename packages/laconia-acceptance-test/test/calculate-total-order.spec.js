@@ -5,7 +5,7 @@ describe("calculate-total-order", () => {
 
   beforeEach(() => {
     tracker = { tick: jest.fn() };
-    totalOrderStorage = { putJson: jest.fn() };
+    totalOrderStorage = { put: jest.fn() };
     orderRepository = {
       findByRestaurantId: jest
         .fn()
@@ -32,18 +32,7 @@ describe("calculate-total-order", () => {
     );
     await Promise.resolve();
 
-    expect(tracker.tick).toBeCalledWith({ restaurantId, total: 15 });
-  });
-
-  it("calculates total order for every restaurant id", async () => {
-    await handler.emit(
-      "item",
-      { tracker, totalOrderStorage, orderRepository },
-      restaurantId
-    );
-    await Promise.resolve();
-
-    expect(totalOrderStorage.putJson).toBeCalledWith({
+    expect(totalOrderStorage.put).toBeCalledWith("json", {
       restaurantId,
       total: 15
     });

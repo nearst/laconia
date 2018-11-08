@@ -29,6 +29,7 @@ on developing your application.
 * [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework
 * [@laconia/invoker](packages/laconia-invoker/README.md): Invokes Lambdas like regular functions
 * [@laconia/config](packages/laconia-config/README.md): Externalizes application secret and configuration
+* [@laconia/event](packages/laconia-event/README.md): Extracts and converts AWS events into friendlier format
 * [@laconia/batch](packages/laconia-batch/README.md): Reads large number of records without time limit
 * [@laconia/xray](packages/laconia-xray/README.md): Enables X-Ray integration to Laconia
 * [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration testing a breeze

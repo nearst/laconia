@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.1]
+
+### Added
+
+* `@laconia/event`
+  * Created a new package to support s3 event parsing
+
 ## [0.13.0]
 
 ### Changed

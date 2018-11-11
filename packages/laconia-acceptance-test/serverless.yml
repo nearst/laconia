@@ -3,6 +3,7 @@ service: laconia-acceptance
 plugins:
   - serverless-s3-remover
   - serverless-s3-sync
+  - serverless-pseudo-parameters
   - serverless-plugin-tracing
 
 provider:
@@ -29,7 +30,11 @@ provider:
     - Effect: "Allow"
       Action:
         - "ssm:GetParameters"
-      Resource: "arn:aws:ssm:*:*:parameter/${self:custom.fullName}/*"
+      Resource: "arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:custom.fullName}/*"
+    - Effect: "Allow"
+      Action:
+        - kinesis:PutRecord
+      Resource: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
   environment:
     TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
     LACONIA_TEST_SPY_BUCKET: ${self:custom.trackerBucketName}
@@ -39,6 +44,7 @@ custom:
   trackerBucketName: ${self:custom.fullName}-tracker
   totalOrderBucketName: ${self:custom.fullName}-total-order
   restaurantBucketName: ${self:custom.fullName}-restaurant
+  orderEventsStreamName: ${self:custom.fullName}-order-events
   orderDynamoDbBatchTableName: ${self:custom.fullName}-order
   remover:
     buckets:
@@ -84,6 +90,17 @@ functions:
           event: s3:ObjectCreated:*
           rules:
             - prefix: json/
+  notify-restaurant:
+    handler: src/notify-restaurant.handler
+    environment:
+      TOTAL_ORDER_BUCKET_NAME: ${self:custom.totalOrderBucketName}
+    events:
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt:
+              - OrderEventsStream
+              - Arn
 
 resources:
   Resources:
@@ -95,6 +112,11 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.restaurantBucketName}
+    OrderEventsStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${self:custom.orderEventsStreamName}
+        ShardCount: 1
     OrderTable:
       Type: "AWS::DynamoDB::Table"
       Properties:

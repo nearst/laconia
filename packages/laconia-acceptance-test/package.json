@@ -36,6 +36,7 @@
     "p-wait-for": "^1.0.0",
     "pino": "^4.16.1",
     "serverless-plugin-tracing": "^2.0.0",
+    "serverless-pseudo-parameters": "^2.2.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

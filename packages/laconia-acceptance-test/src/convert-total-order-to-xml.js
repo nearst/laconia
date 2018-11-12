@@ -17,4 +17,7 @@ const handler = async (s3Event, { totalOrderStorage }) => {
   );
 };
 
-module.exports.handler = laconia(handler).register([instances, event.s3()]);
+module.exports.handler = laconia(handler).register([
+  instances,
+  event.s3Event()
+]);

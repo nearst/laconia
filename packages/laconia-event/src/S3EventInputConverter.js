@@ -1,6 +1,6 @@
 const S3Event = require("./S3Event");
 
-module.exports = class S3InputConverter {
+module.exports = class S3EventInputConverter {
   constructor(s3) {
     this.s3 = s3;
   }

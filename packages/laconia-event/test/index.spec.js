@@ -22,4 +22,15 @@ describe("@laconia/event", () => {
       expect(instances).toHaveProperty("$inputConverter");
     });
   });
+
+  describe("#s3Json", () => {
+    it("has s3Json function", () => {
+      expect(event.s3Json).toBeFunction();
+    });
+
+    it("returns an instance of inputConverter", () => {
+      const instances = event.s3Json()({});
+      expect(instances).toHaveProperty("$inputConverter");
+    });
+  });
 });

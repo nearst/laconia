@@ -6,9 +6,7 @@ const instances = ({ $s3, env }) => ({
   totalOrderStorage: new S3TotalOrderStorage($s3, env.TOTAL_ORDER_BUCKET_NAME)
 });
 
-const handler = async (s3Event, { totalOrderStorage }) => {
-  const totalOrder = await s3Event.getJson();
-
+const handler = async (totalOrder, { totalOrderStorage }) => {
   await totalOrderStorage.put(
     "xml",
     `<TotalOrder><RestaurantId>${
@@ -17,7 +15,4 @@ const handler = async (s3Event, { totalOrderStorage }) => {
   );
 };
 
-module.exports.handler = laconia(handler).register([
-  instances,
-  event.s3Event()
-]);
+module.exports.handler = laconia(handler).register([instances, event.s3Json()]);

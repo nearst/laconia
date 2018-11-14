@@ -1,9 +1,8 @@
-const { Readable } = require("stream");
 const AWS = require("aws-sdk");
 const AWSMock = require("aws-sdk-mock");
 const createEvent = require("aws-event-mocks");
 const { s3Body } = require("@laconia/test-helper");
-const S3StreamInputConverter = require("../src/S3StreamInputConverter");
+const S3JsonInputConverter = require("../src/S3JsonInputConverter");
 
 const createS3Event = key => {
   return createEvent({
@@ -26,7 +25,7 @@ const createS3Event = key => {
   });
 };
 
-describe("S3StreamInputConverter", () => {
+describe("S3JsonInputConverter", () => {
   let s3;
   const event = createS3Event("object-key");
 
@@ -41,15 +40,15 @@ describe("S3StreamInputConverter", () => {
     AWSMock.restore();
   });
 
-  it("should convert event to stream", () => {
-    const inputConverter = new S3StreamInputConverter(new AWS.S3());
-    const input = inputConverter.convert(event);
-    expect(input).toBeInstanceOf(Readable);
+  it("should convert event to json", async () => {
+    const inputConverter = new S3JsonInputConverter(new AWS.S3());
+    const input = await inputConverter.convert(event);
+    expect(input).toEqual({ foo: "bar" });
   });
 
   it("should call AWS sdk with the correct parameter", async () => {
-    const inputConverter = new S3StreamInputConverter(new AWS.S3());
-    inputConverter.convert(event);
+    const inputConverter = new S3JsonInputConverter(new AWS.S3());
+    await inputConverter.convert(event);
 
     expect(s3.getObject).toBeCalledWith(
       {

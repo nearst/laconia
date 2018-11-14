@@ -6,18 +6,9 @@ module.exports = class S3JsonInputConverter extends S3EventInputConverter {
     this.s3 = s3;
   }
 
-  getObject(bucket, key) {
-    return this.s3
-      .getObject({
-        Bucket: bucket,
-        Key: key
-      })
-      .promise();
-  }
-
   async convert(event) {
-    const { bucket, key } = super.convert(event);
-    const object = await this.getObject(bucket, key);
+    const s3Event = super.convert(event);
+    const object = await this.s3.getObject(s3Event.toParams()).promise();
     return JSON.parse(object.Body.toString());
   }
 };

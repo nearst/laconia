@@ -7,13 +7,8 @@ module.exports = class S3StreamInputConverter extends S3EventInputConverter {
   }
 
   convert(event) {
-    const { key, bucket } = super.convert(event);
-    var stream = this.s3
-      .getObject({
-        Bucket: bucket,
-        Key: key
-      })
-      .createReadStream();
+    const s3Event = super.convert(event);
+    const stream = this.s3.getObject(s3Event.toParams()).createReadStream();
     stream.setEncoding("utf8");
     return stream;
   }

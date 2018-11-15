@@ -1,6 +1,6 @@
 {
   "name": "@laconia/config",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Externalizes application secret and configuration",
   "keywords": [
     "aws",

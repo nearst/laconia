@@ -1,7 +1,7 @@
 {
   "name": "@laconia/event",
   "version": "0.13.0",
-  "description": "",
+  "description": "Converts AWS events into non-AWS or humane format",
   "keywords": ["aws", "lambda", "laconia", "serverless"],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {

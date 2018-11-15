@@ -24,6 +24,11 @@ on developing your application.
 * **Versatile**: Compatible and tested to work with Serverless Framework. Can also be used with or without other frameworks.
 * **Quality assured**: Ultra high test coverage
 
+## Documentation
+
+Laconia's documentation is captured in every modules README. To understand more about what it does, start from
+@laconia/core's README.
+
 ## Modules
 
 * [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework

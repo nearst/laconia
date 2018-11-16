@@ -2,6 +2,7 @@ const laconia = require("@laconia/core");
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
+const KinesisOrderStream = require("./KinesisOrderStream");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");
 
@@ -25,12 +26,13 @@ const validateEnabledFlag = enabled => {
 
 const instances = ({ env }) => ({
   orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
-  idGenerator: new UuidIdGenerator()
+  idGenerator: new UuidIdGenerator(),
+  orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
 });
 
 const handler = async (
   event,
-  { orderRepository, idGenerator, apiKey, restaurants, enabled }
+  { orderRepository, orderStream, idGenerator, apiKey, restaurants, enabled }
 ) => {
   validateEnabledFlag(enabled);
   validateApiKey(event, apiKey);
@@ -45,6 +47,8 @@ const handler = async (
   validateRestaurantId(restaurants, order.restaurantId);
   log.info(order, "Saving order");
   await orderRepository.save(order);
+  await orderStream.send(order);
+
   return { statusCode: 200, body: JSON.stringify({ orderId }) };
 };
 

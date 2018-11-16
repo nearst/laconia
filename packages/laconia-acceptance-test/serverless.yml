@@ -62,6 +62,7 @@ functions:
           method: post
     environment:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
+      ORDER_STREAM_NAME: ${self:custom.orderEventsStreamName}
       LACONIA_CONFIG_API_KEY: ssm:/${self:custom.fullName}/apikey
       LACONIA_CONFIG_RESTAURANTS: s3:${self:custom.restaurantBucketName}/restaurants.json
       LACONIA_CONFIG_ENABLED: boolean:true

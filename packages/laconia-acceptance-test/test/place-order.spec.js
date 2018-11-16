@@ -33,6 +33,9 @@ describe("place-order", () => {
       orderRepository: {
         save: jest.fn().mockReturnValue(Promise.resolve())
       },
+      orderStream: {
+        send: jest.fn().mockReturnValue(Promise.resolve())
+      },
       idGenerator: {
         generate: jest.fn().mockReturnValue("123")
       },
@@ -63,6 +66,12 @@ describe("place-order", () => {
     expect(lc.orderRepository.save).toBeCalledWith(
       expect.objectContaining(order)
     );
+  });
+
+  it("should store order to order stream", async () => {
+    await handler.run(event, lc);
+
+    expect(lc.orderStream.send).toBeCalledWith(expect.objectContaining(order));
   });
 
   it("should return orderId upon successful save", async () => {

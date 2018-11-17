@@ -1,13 +1,8 @@
 const laconia = require("@laconia/core");
+const event = require("@laconia/event");
 
-const parsePayload = record => {
-  let json = Buffer.from(record.kinesis.data, "base64").toString("utf8");
-  return JSON.parse(json);
+const handler = async orders => {
+  console.log(orders);
 };
 
-const handler = async event => {
-  const events = event.Records.map(parsePayload);
-  console.log(events);
-};
-
-module.exports.handler = laconia(handler);
+module.exports.handler = laconia(handler).register(event.kinesisJson());

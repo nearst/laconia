@@ -33,4 +33,15 @@ describe("@laconia/event", () => {
       expect(instances).toHaveProperty("$inputConverter");
     });
   });
+
+  describe("#kinesisJson", () => {
+    it("has kinesisJson function", () => {
+      expect(event.kinesisJson).toBeFunction();
+    });
+
+    it("returns an instance of inputConverter", () => {
+      const instances = event.kinesisJson()({});
+      expect(instances).toHaveProperty("$inputConverter");
+    });
+  });
 });

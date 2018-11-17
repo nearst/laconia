@@ -20,9 +20,9 @@ Register the supported event source and you are done!
 const laconia = require("@laconia/core");
 const event = require("@laconia/event");
 
-const handler = async object => {
+const handler = async (s3Object, laconiaContext) => {
   // The S3 object that has triggered the event
-  console.log(object);
+  console.log(s3Object);
 };
 
 module.exports.handler = laconia(handler).register(event.s3Json());
@@ -30,12 +30,14 @@ module.exports.handler = laconia(handler).register(event.s3Json());
 
 ## Types of event source
 
-These are the supported event sources:
+These are the supported event triggers:
 
-* S3
+* S3. Available input converters:
   * s3Json
   * s3Stream
   * s3Event
+* Kinesis. Available input converters:
+  * kinesisJson
 
 ## API
 
@@ -99,4 +101,45 @@ const handler = async s3Event => {
 };
 
 module.exports.handler = laconia(handler).register(event.s3());
+```
+
+#### `event.kinesisJson`
+
+Creates an instance of `inputConverter` that will parse kinesis event data into
+JSON format. Kinesis event data is stored in base64 and stored in a nested structure,
+
+Example:
+
+```js
+const laconia = require("@laconia/core");
+const event = require("@laconia/event");
+
+const handler = async records => {
+  console.log(records); // Prints: [{ mykey: 'my value'}]
+};
+
+module.exports.handler = laconia(handler).register(event.kinesisJson());
+
+// Calls handler with example Kinesis event
+module.exports.handler({
+  Records: [
+    {
+      eventID:
+        "shardId-000000000000:49545115243490985018280067714973144582180062593244200961",
+      eventVersion: "1.0",
+      kinesis: {
+        partitionKey: "partitionKey-3",
+        data: "eyJteWtleSI6Im15IHZhbHVlIn0=", // This is a JSON.stringified of { mykey: 'my value' }
+        kinesisSchemaVersion: "1.0",
+        sequenceNumber:
+          "49545115243490985018280067714973144582180062593244200961"
+      },
+      invokeIdentityArn: identityarn,
+      eventName: "aws:kinesis:record",
+      eventSourceARN: eventsourcearn,
+      eventSource: "aws:kinesis",
+      awsRegion: "us-east-1"
+    }
+  ]
+});
 ```

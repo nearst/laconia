@@ -106,7 +106,8 @@ module.exports.handler = laconia(handler).register(event.s3());
 #### `event.kinesisJson`
 
 Creates an instance of `inputConverter` that will parse kinesis event data into
-JSON format. Kinesis event data is stored in base64 and stored in a nested structure,
+JSON format. The `inputConverter` will also handle the Kinesis event data format which are
+stored in base64 and buried in a nested structure.
 
 Example:
 
@@ -120,25 +121,13 @@ const handler = async records => {
 
 module.exports.handler = laconia(handler).register(event.kinesisJson());
 
-// Calls handler with example Kinesis event
+// Calls handler with an example Kinesis event
 module.exports.handler({
   Records: [
     {
-      eventID:
-        "shardId-000000000000:49545115243490985018280067714973144582180062593244200961",
-      eventVersion: "1.0",
       kinesis: {
-        partitionKey: "partitionKey-3",
-        data: "eyJteWtleSI6Im15IHZhbHVlIn0=", // This is a JSON.stringified of { mykey: 'my value' }
-        kinesisSchemaVersion: "1.0",
-        sequenceNumber:
-          "49545115243490985018280067714973144582180062593244200961"
-      },
-      invokeIdentityArn: identityarn,
-      eventName: "aws:kinesis:record",
-      eventSourceARN: eventsourcearn,
-      eventSource: "aws:kinesis",
-      awsRegion: "us-east-1"
+        data: "eyJteWtleSI6Im15IHZhbHVlIn0=" // This is the value you'll get from object: { mykey: 'my value' }
+      }
     }
   ]
 });

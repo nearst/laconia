@@ -27,6 +27,10 @@ provider:
         - "xray:PutTraceSegments"
         - "xray:PutTelemetryRecords"
       Resource: "*"
+    - Effect: Allow
+      Action: sns:Publish
+      Resource:
+        - arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:${self:custom.restaurantNotificationTopicName}
     - Effect: "Allow"
       Action:
         - "ssm:GetParameters"
@@ -45,6 +49,7 @@ custom:
   totalOrderBucketName: ${self:custom.fullName}-total-order
   restaurantBucketName: ${self:custom.fullName}-restaurant
   orderEventsStreamName: ${self:custom.fullName}-order-events
+  restaurantNotificationTopicName: ${self:custom.fullName}-restaurant-notification
   orderDynamoDbBatchTableName: ${self:custom.fullName}-order
   remover:
     buckets:
@@ -95,6 +100,7 @@ functions:
     handler: src/notify-restaurant.handler
     environment:
       TOTAL_ORDER_BUCKET_NAME: ${self:custom.totalOrderBucketName}
+      RESTAURANT_NOTIFICATION_TOPIC_ARN: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:${self:custom.restaurantNotificationTopicName}
     events:
       - stream:
           type: kinesis
@@ -118,6 +124,11 @@ resources:
       Properties:
         Name: ${self:custom.orderEventsStreamName}
         ShardCount: 1
+    RestaurantNotificationTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: ${self:custom.restaurantNotificationTopicName}
+        TopicName: ${self:custom.restaurantNotificationTopicName}
     OrderTable:
       Type: "AWS::DynamoDB::Table"
       Properties:

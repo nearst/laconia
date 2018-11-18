@@ -1,6 +1,6 @@
 {
   "name": "@laconia/event",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Converts AWS events into non-AWS or humane format",
   "keywords": [
     "aws",

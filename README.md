@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Laconia" src="docs/shield.png">
+  <img alt="Laconia" src="docs/logo/png/2_vertical@1x.png">
 </p>
 
 # Laconia

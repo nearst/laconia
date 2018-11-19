@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1633px" height="435px" viewBox="0 0 1633 435" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
+    <title>2_horizontal</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-630.000000, -1312.000000)">
+            <g id="Group-2" transform="translate(330.000000, 267.000000)">
+                <g id="2_horizontal" transform="translate(300.000000, 1045.000000)">
+                    <g id="logo-copy">
+                        <polygon id="Path" fill="#1DBAB0" points="63.253012 99.0738349 175.672785 0.44140625 377.51004 96.2447971 308.694055 305.424442 261.89335 320.373494 175.672785 99.0738349"></polygon>
+                        <polygon id="Path-2" fill="#29807A" points="0 129.610442 153.796025 131.495553 170.682731 175.425156 86.3308148 302.301205"></polygon>
+                        <polygon id="Path-3" fill="#1DBAB0" points="186.624993 214.951807 74.2971888 387.445874 240.588208 434.402344 381.526104 353.480385 381.526104 310.672448 240.588208 353.480385"></polygon>
+                    </g>
+                    <text id="laconia-copy" font-family="SFProDisplay-Medium, SF Pro Display" font-size="360" font-weight="400" letter-spacing="3.5999999" fill="#29807A">
+                        <tspan x="521" y="345">laconia</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

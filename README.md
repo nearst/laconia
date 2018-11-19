@@ -1,8 +1,6 @@
 <p align="center">
-  <img alt="Laconia" src="docs/logo/png/2_vertical@1x.png">
+  <img alt="Laconia" src="docs/logo/2/png/2_vertical@0.5x.png">
 </p>
-
-# Laconia
 
 [![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)

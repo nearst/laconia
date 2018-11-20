@@ -108,6 +108,13 @@ functions:
             Fn::GetAtt:
               - OrderEventsStream
               - Arn
+  fake-restaurant:
+    handler: src/fake-restaurant.handler
+    events:
+      - sns:
+          topicName: ${self:custom.restaurantNotificationTopicName}
+          arn:
+            Ref: RestaurantNotificationTopic
 
 resources:
   Resources:

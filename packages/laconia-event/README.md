@@ -28,9 +28,7 @@ const handler = async (s3Object, laconiaContext) => {
 module.exports.handler = laconia(handler).register(event.s3Json());
 ```
 
-## Types of event source
-
-These are the supported event triggers:
+## Types of supported event triggers
 
 * S3. Available input converters:
   * s3Json
@@ -38,6 +36,8 @@ These are the supported event triggers:
   * s3Event
 * Kinesis. Available input converters:
   * kinesisJson
+* Sns. Available input converters:
+  * snsJson
 
 ## API
 
@@ -81,7 +81,9 @@ module.exports.handler = laconia(handler).register(event.s3Stream());
 #### `event.s3Event`
 
 _To reduce your code dependency to AWS, prefer the use of other s3 `inputConverters` before
-using `s3Event` inputConverter to reduce your code dependency to AWS_
+using `s3Event` inputConverter. This inputConverter should only be used when
+you don't actually need to retrieve the object from S3, such as listening to
+s3:ObjectRemoved:Delete events_
 
 Creates an instance of `inputConverter` that will extract S3 information
 into a `S3Event` object, which has the following property:
@@ -127,6 +129,35 @@ module.exports.handler({
     {
       kinesis: {
         data: "eyJteWtleSI6Im15IHZhbHVlIn0=" // This is the value you'll get from object: { mykey: 'my value' }
+      }
+    }
+  ]
+});
+```
+
+#### `event.snsJson`
+
+Creates an instance of `inputConverter` that will parse sns message into
+JSON format.
+
+Example:
+
+```js
+const laconia = require("@laconia/core");
+const event = require("@laconia/event");
+
+const handler = async message => {
+  console.log(message); // Prints: { mykey: 'my value'}
+};
+
+module.exports.handler = laconia(handler).register(event.snsJson());
+
+// Calls handler with an example SNS event
+module.exports.handler({
+  Records: [
+    {
+      Sns: {
+        Message: '{"mykey":"my value"}'
       }
     }
   ]

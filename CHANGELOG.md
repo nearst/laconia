@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* `@laconia/event`
+  * Support sns input converter:
+    * snsJson
+
 ## [0.13.2]
 
 ### Added

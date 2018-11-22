@@ -57,6 +57,12 @@ custom:
   s3Sync:
     - bucketName: ${self:custom.restaurantBucketName}
       localDir: src/resources
+  apigatewayUrl:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api.#{AWS::Region}.amazonaws.com/${self:provider.stage}"
 
 functions:
   place-order:
@@ -71,6 +77,14 @@ functions:
       LACONIA_CONFIG_API_KEY: ssm:/${self:custom.fullName}/apikey
       LACONIA_CONFIG_RESTAURANTS: s3:${self:custom.restaurantBucketName}/restaurants.json
       LACONIA_CONFIG_ENABLED: boolean:true
+  accept-order:
+    handler: src/accept-order.handler
+    events:
+      - http:
+          path: order/{id}/accept
+          method: put
+    environment:
+      ORDER_STREAM_NAME: ${self:custom.orderEventsStreamName}
   process-card-payments:
     timeout: 6 # Force recursion
     handler: src/process-card-payments.handler
@@ -115,6 +129,8 @@ functions:
           topicName: ${self:custom.restaurantNotificationTopicName}
           arn:
             Ref: RestaurantNotificationTopic
+    environment:
+      API_BASE_URL: ${self:custom.apigatewayUrl}
 
 resources:
   Resources:

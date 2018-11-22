@@ -10,8 +10,12 @@ const instances = ({ $sns, env }) => ({
   )
 });
 
-const handler = async (orders, { restaurantNotificationTopic }) => {
-  return Promise.all(orders.map(o => restaurantNotificationTopic.publish(o)));
+const handler = async (orderEvents, { restaurantNotificationTopic }) => {
+  return Promise.all(
+    orderEvents
+      .filter(o => o.eventType === "placed")
+      .map(o => restaurantNotificationTopic.publish(o))
+  );
 };
 
 module.exports.handler = laconia(handler).register([

@@ -47,7 +47,11 @@ const handler = async (
   validateRestaurantId(restaurants, order.restaurantId);
   log.info(order, "Saving order");
   await orderRepository.save(order);
-  await orderStream.send(order);
+  await orderStream.send({
+    eventType: "placed",
+    orderId,
+    restaurantId: order.restaurantId
+  });
 
   return { statusCode: 200, body: JSON.stringify({ orderId }) };
 };

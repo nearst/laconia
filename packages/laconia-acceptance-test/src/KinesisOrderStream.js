@@ -5,13 +5,13 @@ module.exports = class KinesisOrderStream {
     this.streamName = streamName;
   }
 
-  send(order) {
+  send(orderEvent) {
     const kinesis = new AWS.Kinesis();
 
     return kinesis
       .putRecord({
-        Data: JSON.stringify(order),
-        PartitionKey: order.orderId,
+        Data: JSON.stringify(orderEvent),
+        PartitionKey: orderEvent.orderId,
         StreamName: process.env.ORDER_STREAM_NAME
       })
       .promise();

@@ -71,7 +71,11 @@ describe("place-order", () => {
   it("should store order to order stream", async () => {
     await handler.run(event, lc);
 
-    expect(lc.orderStream.send).toBeCalledWith(expect.objectContaining(order));
+    expect(lc.orderStream.send).toBeCalledWith({
+      orderId: "123",
+      eventType: "placed",
+      restaurantId: 5
+    });
   });
 
   it("should return orderId upon successful save", async () => {

@@ -39,6 +39,10 @@ provider:
       Action:
         - kinesis:PutRecord
       Resource: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
+    - Effect: Allow
+      Action:
+        - sqs:*
+      Resource: arn:aws:sqs:#{AWS::Region}:#{AWS::AccountId}:${self:custom.userEmailQueueName}
   environment:
     TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
     LACONIA_TEST_SPY_BUCKET: ${self:custom.trackerBucketName}
@@ -47,6 +51,7 @@ custom:
   fullName: ${self:service}-${self:provider.stage}
   trackerBucketName: ${self:custom.fullName}-tracker
   totalOrderBucketName: ${self:custom.fullName}-total-order
+  userEmailQueueName: ${self:custom.fullName}-user-email-queue
   restaurantBucketName: ${self:custom.fullName}-restaurant
   orderEventsStreamName: ${self:custom.fullName}-order-events
   restaurantNotificationTopicName: ${self:custom.fullName}-restaurant-notification
@@ -122,6 +127,26 @@ functions:
             Fn::GetAtt:
               - OrderEventsStream
               - Arn
+  notify-user:
+    handler: src/notify-user.handler
+    environment:
+      USER_EMAIL_QUEUE_URL:
+        Ref: UserEmailQueue
+    events:
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt:
+              - OrderEventsStream
+              - Arn
+  send-email:
+    handler: src/send-email.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - UserEmailQueue
+              - Arn
   fake-restaurant:
     handler: src/fake-restaurant.handler
     events:
@@ -152,6 +177,10 @@ resources:
       Properties:
         DisplayName: ${self:custom.restaurantNotificationTopicName}
         TopicName: ${self:custom.restaurantNotificationTopicName}
+    UserEmailQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:custom.userEmailQueueName}
     OrderTable:
       Type: "AWS::DynamoDB::Table"
       Properties:

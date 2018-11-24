@@ -3,6 +3,7 @@ const S3StreamInputConverter = require("./S3StreamInputConverter");
 const S3JsonInputConverter = require("./S3JsonInputConverter");
 const KinesisJsonInputConverter = require("./KinesisJsonInputConverter");
 const SnsJsonInputConverter = require("./SnsJsonInputConverter");
+const SqsJsonInputConverter = require("./SqsJsonInputConverter");
 
 exports.s3Event = () => () => ({
   $inputConverter: new S3EventInputConverter()
@@ -22,4 +23,8 @@ exports.kinesisJson = () => () => ({
 
 exports.snsJson = () => () => ({
   $inputConverter: new SnsJsonInputConverter()
+});
+
+exports.sqsJson = () => () => ({
+  $inputConverter: new SqsJsonInputConverter()
 });

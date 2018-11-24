@@ -1,7 +1,8 @@
 const laconia = require("@laconia/core");
+const event = require("@laconia/event");
 
-const handler = async event => {
-  console.log(event.Records.map(r => JSON.parse(r.body)));
+const handler = async orderEvents => {
+  console.log(orderEvents);
 };
 
-module.exports.handler = laconia(handler);
+module.exports.handler = laconia(handler).register(event.sqsJson());

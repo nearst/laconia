@@ -6,7 +6,8 @@ describe("@laconia/event", () => {
     "s3Stream",
     "s3Json",
     "kinesisJson",
-    "snsJson"
+    "snsJson",
+    "sqsJson"
   ];
 
   inputConverterFactories.forEach(factoryName => {

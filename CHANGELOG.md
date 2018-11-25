@@ -10,15 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * `@laconia/event`
-  * Support sns input converter:
+  * Support SNS input converter:
     * snsJson
+  * Support SQS input converter:
+    * sqsJson
 
 ## [0.13.2]
 
 ### Added
 
 * `@laconia/event`
-  * Support kinesis input converter:
+  * Support Kinesis input converter:
     * kinesisJson
 
 ## [0.13.1]

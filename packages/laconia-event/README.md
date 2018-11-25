@@ -163,3 +163,29 @@ module.exports.handler({
   ]
 });
 ```
+
+#### `event.sqsJson`
+
+Creates an instance of `inputConverter` that will parse SQS message body into JSON format.
+
+Example:
+
+```js
+const laconia = require("@laconia/core");
+const event = require("@laconia/event");
+
+const handler = async messages => {
+  console.log(messages); // Prints: [{ mykey: 'my value'}]
+};
+
+module.exports.handler = laconia(handler).register(event.sqsJson());
+
+// Calls handler with an example SQS event
+module.exports.handler({
+  Records: [
+    {
+      body: '{"mykey":"my value"}'
+    }
+  ]
+});
+```

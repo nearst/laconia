@@ -81,6 +81,11 @@ describe("order flow", () => {
       bucketName: name("tracker")
     }
   });
+  const sendEmail = laconiaTest(name("send-email"), {
+    spy: {
+      bucketName: name("tracker")
+    }
+  });
 
   beforeAll(async () => {
     await deleteAllItems(name("order"));
@@ -95,6 +100,7 @@ describe("order flow", () => {
     orderUrl = await getOrderUrl();
   });
   beforeAll(() => captureCardPayment.spy.clear());
+  beforeAll(() => sendEmail.spy.clear());
   beforeAll(() => totalOrderStorage.clearAll());
 
   beforeAll(async () => {
@@ -130,6 +136,21 @@ describe("order flow", () => {
         expect(savedOrder.orderId).toEqual(orderId);
       });
     });
+
+    it(
+      "should invoke send email lambda, which is coming from the chain of place-order, notify-restaurant, fake-restaurant, accept-order, and notify-user",
+      async () => {
+        await sendEmail.spy.waitForTotalInvocations(1);
+        const invocations = await sendEmail.spy.getInvocations();
+        expect(JSON.parse(invocations[0].event.Records[0].body)).toEqual(
+          expect.objectContaining({
+            eventType: "accepted",
+            orderId: expect.any(String)
+          })
+        );
+      },
+      20000
+    );
 
     it(
       "should capture all card payments",

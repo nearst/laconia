@@ -7,7 +7,9 @@ const createApiGatewayEvent = body =>
     merge: {
       body: JSON.stringify(body),
       path: "search",
-      resourcePath: "search",
+      requestContext: {
+        resourcePath: "search"
+      },
       queryStringParameters: {
         q: "input"
       }
@@ -25,15 +27,22 @@ describe("laconiaApi", () => {
     handlerArgs = [event, { fiz: "context" }, callback];
   });
 
-  xit("should return the returned result", async () => {
+  it("should return the returned result", async () => {
     const handler = ({ res }) => {
       return res.status(202).send({ status: "ok" });
     };
-    const result = await laconiaApi(handler)(...handlerArgs);
-    expect(result).toEqual({});
+    await laconiaApi(handler)(...handlerArgs);
+    expect(callback).toBeCalledWith(
+      null,
+      expect.objectContaining({
+        body: '{"status":"ok"}',
+        headers: { "content-type": "application/json" },
+        statusCode: 202
+      })
+    );
   });
 
-  it("should inject req and res object when being called", async () => {
+  it("should call handler with req and res object", async () => {
     const handler = jest.fn();
     await laconiaApi(handler)(...handlerArgs);
     expect(handler).toBeCalledWith(
@@ -63,11 +72,13 @@ describe("laconiaApi", () => {
   });
 
   it("should be able to parse one path parameter", async () => {
-    event = createEvent({
+    createEvent({
       template: "aws:apiGateway",
       merge: {
         path: "order/5/accept",
-        resourcePath: "order/{orderId}/accept",
+        requestContext: {
+          resourcePath: "order/{orderId}/accept"
+        },
         pathParameters: {
           orderId: "5"
         }
@@ -91,11 +102,13 @@ describe("laconiaApi", () => {
   });
 
   it("should be able to parse multiple path parameters", async () => {
-    event = createEvent({
+    createEvent({
       template: "aws:apiGateway",
       merge: {
         path: "order/5/accept/myparam",
-        resourcePath: "order/{orderId}/accept/{someOtherParam}"
+        requestContext: {
+          resourcePath: "order/{orderId}/accept/{someOtherParam}"
+        }
       }
     });
     const handler = jest.fn();
@@ -110,6 +123,22 @@ describe("laconiaApi", () => {
         })
       }),
       expect.any(Object)
+    );
+  });
+
+  it("throw an error when requestContext is not available", async () => {
+    createEvent({
+      template: "aws:apiGateway",
+      merge: {
+        requestContext: null
+      }
+    });
+    const handler = jest.fn();
+    await laconiaApi(handler)(...handlerArgs);
+    expect(callback).toBeCalledWith(
+      new Error(
+        "requestContext is not available in the event object. Laconia API only supports Lambda Proxy Integration."
+      )
     );
   });
 });

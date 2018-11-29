@@ -1,21 +1,7 @@
-const createEvent = require("aws-event-mocks");
 const handler = require("../src/place-order").handler;
 
-const createOrderEvent = order =>
-  createEvent({
-    template: "aws:apiGateway",
-    merge: {
-      body: JSON.stringify({
-        order
-      }),
-      headers: {
-        Authorization: "secret"
-      }
-    }
-  });
-
 describe("place-order", () => {
-  let order, lc, event;
+  let order, lc, req, res;
 
   beforeEach(() => {
     order = {
@@ -28,7 +14,16 @@ describe("place-order", () => {
       }
     };
 
-    event = createOrderEvent(order);
+    req = {
+      headers: {
+        authorization: "secret"
+      },
+      body: { order }
+    };
+    res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
     lc = {
       orderRepository: {
         save: jest.fn().mockReturnValue(Promise.resolve())
@@ -48,20 +43,21 @@ describe("place-order", () => {
   it("should throw error when apiKey is wrong", async () => {
     lc.apiKey = "wrong";
 
-    await expect(handler.run(event, lc)).rejects.toThrow("Wrong API Key");
+    await expect(handler.run({ req, res }, lc)).rejects.toThrow(
+      "Wrong API Key"
+    );
   });
 
   it("should throw error when restaurantId is not valid", async () => {
     order.restaurantId = 1;
-    event = createOrderEvent(order);
 
-    await expect(handler.run(event, lc)).rejects.toThrow(
+    await expect(handler.run({ req, res }, lc)).rejects.toThrow(
       "Invalid restaurant id"
     );
   });
 
   it("should store order to order table", async () => {
-    await handler.run(event, lc);
+    await handler.run({ req, res }, lc);
 
     expect(lc.orderRepository.save).toBeCalledWith(
       expect.objectContaining(order)
@@ -69,7 +65,7 @@ describe("place-order", () => {
   });
 
   it("should store order to order stream", async () => {
-    await handler.run(event, lc);
+    await handler.run({ req, res }, lc);
 
     expect(lc.orderStream.send).toBeCalledWith({
       orderId: "123",
@@ -79,16 +75,14 @@ describe("place-order", () => {
   });
 
   it("should return orderId upon successful save", async () => {
-    const response = await handler.run(event, lc);
+    await handler.run({ req, res }, lc);
 
-    expect(response).toEqual(
-      expect.objectContaining({ body: JSON.stringify({ orderId: "123" }) })
-    );
+    expect(res.send).toBeCalledWith({ orderId: "123" });
   });
 
   it("should set orderId to order body", async () => {
     lc.idGenerator.generate.mockReturnValueOnce("123");
-    await handler.run(event, lc);
+    await handler.run({ req, res }, lc);
 
     expect(lc.orderRepository.save).toHaveBeenCalledTimes(1);
     const orderResult = lc.orderRepository.save.mock.calls[0][0];
@@ -98,7 +92,7 @@ describe("place-order", () => {
 
   it("should be able to turn lambda off", async () => {
     lc.enabled = false;
-    await expect(handler.run(event, lc)).rejects.toThrow(
+    await expect(handler.run({ req, res }, lc)).rejects.toThrow(
       "Place order lambda is off"
     );
   });
@@ -108,8 +102,8 @@ describe("place-order", () => {
       .mockReturnValueOnce("123")
       .mockReturnValueOnce("456");
 
-    await handler.run(event, lc);
-    await handler.run(event, lc);
+    await handler.run({ req, res }, lc);
+    await handler.run({ req, res }, lc);
 
     expect(lc.orderRepository.save).toHaveBeenCalledTimes(2);
     expect(lc.idGenerator.generate).toHaveBeenCalledTimes(2);

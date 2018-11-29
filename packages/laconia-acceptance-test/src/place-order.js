@@ -1,4 +1,4 @@
-const laconia = require("@laconia/core");
+const laconiaApi = require("@laconia/api");
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
@@ -6,8 +6,8 @@ const KinesisOrderStream = require("./KinesisOrderStream");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");
 
-const validateApiKey = (event, apiKey) => {
-  if (event.headers["Authorization"] !== apiKey) {
+const validateApiKey = (req, apiKey) => {
+  if (req.headers.authorization !== apiKey) {
     throw new Error("Unauthorized: Wrong API Key");
   }
 };
@@ -31,17 +31,17 @@ const instances = ({ env }) => ({
 });
 
 const handler = async (
-  event,
+  { req, res },
   { orderRepository, orderStream, idGenerator, apiKey, restaurants, enabled }
 ) => {
   validateEnabledFlag(enabled);
-  validateApiKey(event, apiKey);
+  validateApiKey(req, apiKey);
   const orderId = idGenerator.generate();
   const order = Object.assign(
     {
       orderId
     },
-    JSON.parse(event.body).order
+    req.body.order
   );
 
   validateRestaurantId(restaurants, order.restaurantId);
@@ -53,9 +53,9 @@ const handler = async (
     restaurantId: order.restaurantId
   });
 
-  return { statusCode: 200, body: JSON.stringify({ orderId }) };
+  return res.status(200).send({ orderId });
 };
 
-module.exports.handler = laconia(handler)
+module.exports.handler = laconiaApi(handler)
   .register([config.envVarInstances(), instances])
   .postProcessor(xray.postProcessor());

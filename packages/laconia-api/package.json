@@ -1,7 +1,8 @@
 {
   "name": "@laconia/api",
   "version": "0.13.3",
-  "description": "",
+  "description":
+    "Converts API Gateway events into express-like req and res objects",
   "keywords": ["aws", "lambda", "laconia", "serverless"],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {

@@ -30,6 +30,7 @@ Laconia's documentation is captured in every modules README. To understand more 
 ## Modules
 
 * [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework
+* [@laconia/api](packages/laconia-api/README.md): Converts API Gateway events into express-like req and res objects
 * [@laconia/invoker](packages/laconia-invoker/README.md): Invokes Lambdas like regular functions
 * [@laconia/config](packages/laconia-config/README.md): Externalizes application secret and configuration
 * [@laconia/event](packages/laconia-event/README.md): Converts AWS events into non-AWS or humane format

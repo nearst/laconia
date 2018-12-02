@@ -11,6 +11,22 @@ describe("laconia", () => {
     handlerArgs = [event, { fiz: "context" }, callback];
   });
 
+  it("should throw an error when a handler is not specified", async () => {
+    expect(() => laconia()).toThrow(
+      new TypeError(
+        "laconia() expects to be passed a function, you passed: undefined"
+      )
+    );
+  });
+
+  it("should throw an error when the handler specified is not a function", async () => {
+    expect(() => laconia("my string")).toThrow(
+      new TypeError(
+        "laconia() expects to be passed a function, you passed a non function: my string"
+      )
+    );
+  });
+
   it("should call Lambda callback with null when there is no value returned", async () => {
     await laconia(() => {})(...handlerArgs);
     expect(callback).toBeCalledWith(null, undefined);

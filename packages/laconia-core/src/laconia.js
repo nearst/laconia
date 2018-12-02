@@ -1,6 +1,18 @@
 const CoreLaconiaContext = require("./CoreLaconiaContext");
 
+const checkFunction = fn => {
+  if (!fn)
+    throw new TypeError(
+      `laconia() expects to be passed a function, you passed: ${fn}`
+    );
+  if (typeof fn !== "function")
+    throw new TypeError(
+      `laconia() expects to be passed a function, you passed a non function: ${fn}`
+    );
+};
+
 module.exports = fn => {
+  checkFunction(fn);
   const laconiaContext = new CoreLaconiaContext();
 
   const convertInput = event => laconiaContext.$inputConverter.convert(event);

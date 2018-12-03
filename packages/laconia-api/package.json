@@ -1,23 +1,29 @@
 {
   "name": "@laconia/api",
-  "version": "0.13.3",
-  "description":
-    "Converts API Gateway events into express-like req and res objects",
-  "keywords": ["aws", "lambda", "laconia", "serverless"],
+  "version": "0.14.0",
+  "description": "Converts API Gateway events into express-like req and res objects",
+  "keywords": [
+    "aws",
+    "lambda",
+    "laconia",
+    "serverless"
+  ],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {
     "url": "https://github.com/ceilfors/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^0.13.0",
+    "@laconia/core": "^0.14.0",
     "lambda-api": "^0.9.2"
   },
   "devDependencies": {

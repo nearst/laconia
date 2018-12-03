@@ -1,6 +1,6 @@
 {
   "name": "@laconia/config",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Externalizes application secret and configuration",
   "keywords": [
     "aws",
@@ -23,7 +23,7 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^0.13.0"
+    "@laconia/core": "^0.14.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "^0.9.0"

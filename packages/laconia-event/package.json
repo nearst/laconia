@@ -1,6 +1,6 @@
 {
   "name": "@laconia/event",
-  "version": "0.13.3",
+  "version": "0.14.0",
   "description": "Converts AWS events into non-AWS or humane format",
   "keywords": [
     "aws",
@@ -23,7 +23,7 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^0.13.0"
+    "@laconia/core": "^0.14.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "^0.9.0"

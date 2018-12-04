@@ -22,7 +22,7 @@ describe("laconia", () => {
   it("should throw an error when the handler specified is not a function", async () => {
     expect(() => laconia("my string")).toThrow(
       new TypeError(
-        "laconia() expects to be passed a function, you passed a non function: my string"
+        'laconia() expects to be passed a function, you passed: "my string"'
       )
     );
   });
@@ -74,7 +74,7 @@ describe("laconia", () => {
   });
 
   describe("#register", () => {
-    describe("when registering a function", () => {
+    describe("when registering a single factory", () => {
       it("should be able to add instances by calling 'register'", async () => {
         const handler = jest.fn();
         await laconia(handler)
@@ -124,6 +124,14 @@ describe("laconia", () => {
         await handler(...handlerArgs);
 
         expect(factory).toHaveBeenCalledTimes(2);
+      });
+
+      it("should throw an error when the factory is not a function", async () => {
+        expect(() => laconia(jest.fn()).register({ foo: "bar" })).toThrow(
+          new TypeError(
+            'register() expects to be passed a function, you passed: {"foo":"bar"}'
+          )
+        );
       });
     });
 

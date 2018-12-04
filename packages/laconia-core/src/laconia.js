@@ -1,18 +1,16 @@
 const CoreLaconiaContext = require("./CoreLaconiaContext");
 
-const checkFunction = fn => {
-  if (!fn)
+const checkFunction = (functionName, argument) => {
+  if (typeof argument !== "function")
     throw new TypeError(
-      `laconia() expects to be passed a function, you passed: ${fn}`
-    );
-  if (typeof fn !== "function")
-    throw new TypeError(
-      `laconia() expects to be passed a function, you passed a non function: ${fn}`
+      `${functionName}() expects to be passed a function, you passed: ${JSON.stringify(
+        argument
+      )}`
     );
 };
 
 module.exports = fn => {
-  checkFunction(fn);
+  checkFunction("laconia", fn);
   const laconiaContext = new CoreLaconiaContext();
 
   const convertInput = event => laconiaContext.$inputConverter.convert(event);
@@ -38,6 +36,7 @@ module.exports = fn => {
       if (Array.isArray(factory)) {
         laconiaContext.registerFactories(factory, options.cache);
       } else {
+        checkFunction("register", factory);
         laconiaContext.registerFactory(factory, options.cache);
       }
       return laconia;

@@ -181,6 +181,14 @@ describe("laconia", () => {
         expect(factory1).toHaveBeenCalledTimes(2);
         expect(factory2).toHaveBeenCalledTimes(2);
       });
+
+      xit("should throw an error when the factory is not a function", async () => {
+        expect(() => laconia(jest.fn()).register([{ foo: "bar" }])).toThrow(
+          new TypeError(
+            'register() expects to be passed a function, you passed: {"foo":"bar"}'
+          )
+        );
+      });
     });
   });
 

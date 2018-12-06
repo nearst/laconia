@@ -34,6 +34,7 @@ module.exports = fn => {
     },
     register: (factory, options = {}) => {
       if (Array.isArray(factory)) {
+        factory.forEach(f => checkFunction("register", f));
         laconiaContext.registerFactories(factory, options.cache);
       } else {
         checkFunction("register", factory);

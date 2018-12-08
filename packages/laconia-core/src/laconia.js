@@ -43,6 +43,7 @@ module.exports = fn => {
       return laconia;
     },
     postProcessor: postProcessor => {
+      checkFunction("postProcessor", postProcessor);
       laconiaContext.registerPostProcessor(postProcessor);
       return laconia;
     }

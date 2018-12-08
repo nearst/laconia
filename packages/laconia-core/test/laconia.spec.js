@@ -232,8 +232,8 @@ describe("laconia", () => {
       );
     });
 
-    xit("should throw an error when postProcessor is not a function", async () => {
-      expect(() => laconia(jest.fn()).postProcessor([{ foo: "bar" }])).toThrow(
+    it("should throw an error when postProcessor is not a function", async () => {
+      expect(() => laconia(jest.fn()).postProcessor({ foo: "bar" })).toThrow(
         new TypeError(
           'postProcessor() expects to be passed a function, you passed: {"foo":"bar"}'
         )

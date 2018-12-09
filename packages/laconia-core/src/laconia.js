@@ -14,14 +14,27 @@ module.exports = fn => {
   const laconiaContext = new CoreLaconiaContext();
 
   const convertInput = event => laconiaContext.$inputConverter.convert(event);
+  let _preHandle = () => {};
+  let _postHandle = () => {};
+
+  const applyPreHandle = async callback => {
+    const response = await _preHandle(laconiaContext);
+    if (response !== undefined) {
+      callback(null, response);
+      return false;
+    }
+    return true;
+  };
 
   const laconia = async (event, context, callback) => {
     laconiaContext.registerInstances({ event, context });
+    if ((await applyPreHandle(callback)) === false) return;
     await laconiaContext.refresh();
 
     try {
       const input = await convertInput(event);
       const result = await fn(input, laconiaContext);
+      await _postHandle(laconiaContext, result);
       callback(null, result);
     } catch (err) {
       callback(err);
@@ -40,6 +53,16 @@ module.exports = fn => {
         checkFunction("register", factory);
         laconiaContext.registerFactory(factory, options.cache);
       }
+      return laconia;
+    },
+    preHandle: preHandle => {
+      checkFunction("preHandle", preHandle);
+      _preHandle = preHandle;
+      return laconia;
+    },
+    postHandle: postHandle => {
+      checkFunction("postHandle", postHandle);
+      _postHandle = postHandle;
       return laconia;
     },
     postProcessor: postProcessor => {

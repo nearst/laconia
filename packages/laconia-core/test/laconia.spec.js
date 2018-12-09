@@ -4,8 +4,10 @@ describe("laconia", () => {
   let callback;
   let handlerArgs;
   let event;
+  let handler;
 
   beforeEach(() => {
+    handler = jest.fn();
     callback = jest.fn();
     event = { foo: "event" };
     handlerArgs = [event, { fiz: "context" }, callback];
@@ -34,7 +36,6 @@ describe("laconia", () => {
   });
 
   it("should delegate AWS parameters to handler function", async () => {
-    const handler = jest.fn();
     await laconia(handler)(...handlerArgs);
     expect(handler).toBeCalledWith(
       { foo: "event" },
@@ -45,7 +46,6 @@ describe("laconia", () => {
   });
 
   it("should be able to run handler without executing Lambda logic", () => {
-    const handler = jest.fn();
     laconia(handler).run({ foo: "bar" }, { context: { fiz: "context" } });
     expect(handler).toBeCalledWith(
       { foo: "bar" },
@@ -55,7 +55,6 @@ describe("laconia", () => {
 
   describe("run flag", () => {
     it("should set a flag when #run is called", () => {
-      const handler = jest.fn();
       laconia(handler).run({});
       expect(handler).toBeCalledWith(
         expect.any(Object),
@@ -64,7 +63,6 @@ describe("laconia", () => {
     });
 
     it("should not set a flag when the handler is being called normally", async () => {
-      const handler = jest.fn();
       await laconia(handler)(...handlerArgs);
       expect(handler).not.toBeCalledWith(
         expect.any(Object),
@@ -76,7 +74,6 @@ describe("laconia", () => {
   describe("#register", () => {
     describe("when registering a single factory", () => {
       it("should be able to add instances by calling 'register'", async () => {
-        const handler = jest.fn();
         await laconia(handler)
           .register(lc => ({ foo: "bar" }))
           .register(lc => ({ boo: "baz" }))(...handlerArgs);
@@ -91,7 +88,6 @@ describe("laconia", () => {
       });
 
       it("should be able to add async instances by calling 'register'", async () => {
-        const handler = jest.fn();
         await laconia(handler).register(async lc => {
           return Promise.resolve({ foo: "bar" });
         })(...handlerArgs);
@@ -145,7 +141,6 @@ describe("laconia", () => {
       });
 
       it("should return instances created by the array of factoryFns", async () => {
-        const handler = jest.fn();
         await laconia(handler).register([factory1, factory2])(...handlerArgs);
 
         expect(handler).toBeCalledWith(
@@ -215,7 +210,6 @@ describe("laconia", () => {
 
   describe("#postProcessor", () => {
     it("should register post processor function", async () => {
-      const handler = jest.fn();
       await laconia(handler)
         .register(() => ({ foo: { value: 1 } }))
         .postProcessor(async ({ foo }) => {
@@ -236,6 +230,91 @@ describe("laconia", () => {
       expect(() => laconia(jest.fn()).postProcessor({ foo: "bar" })).toThrow(
         new TypeError(
           'postProcessor() expects to be passed a function, you passed: {"foo":"bar"}'
+        )
+      );
+    });
+  });
+
+  describe("#preHandle", () => {
+    let preHandle;
+
+    beforeEach(() => {
+      preHandle = jest.fn();
+    });
+
+    it("should be called with LaconiaContext", async () => {
+      await laconia(jest.fn()).preHandle(preHandle)(...handlerArgs);
+      expect(preHandle).toBeCalledWith(
+        expect.objectContaining({
+          context: { fiz: "context" }
+        })
+      );
+    });
+
+    it("should be called before handler", async () => {
+      await laconia(handler).preHandle(preHandle)(...handlerArgs);
+      expect(handler).toHaveBeenCalled();
+      expect(preHandle).toHaveBeenCalledBefore(handler);
+    });
+
+    describe("when non undefined is returned", () => {
+      beforeEach(() => {
+        preHandle.mockResolvedValue("return fast");
+      });
+
+      it("should call Lambda callback with the returned value", async () => {
+        await laconia(handler).preHandle(preHandle)(...handlerArgs);
+        expect(callback).toBeCalledWith(null, "return fast");
+      });
+
+      it("should not call handler", async () => {
+        await laconia(handler).preHandle(preHandle)(...handlerArgs);
+        expect(handler).not.toHaveBeenCalled();
+      });
+    });
+
+    it("should throw an error when preHandle is not a function", async () => {
+      expect(() => laconia(handler).preHandle({ foo: "bar" })).toThrow(
+        new TypeError(
+          'preHandle() expects to be passed a function, you passed: {"foo":"bar"}'
+        )
+      );
+    });
+  });
+
+  describe("#postHandle", () => {
+    let postHandle;
+
+    beforeEach(() => {
+      handler.mockResolvedValue("output");
+      postHandle = jest.fn();
+    });
+
+    it("should be called with LaconiaContext", async () => {
+      await laconia(handler).postHandle(postHandle)(...handlerArgs);
+      expect(postHandle).toBeCalledWith(
+        expect.objectContaining({
+          context: { fiz: "context" }
+        }),
+        expect.anything()
+      );
+    });
+
+    it("should be called with handler result", async () => {
+      await laconia(handler).postHandle(postHandle)(...handlerArgs);
+      expect(postHandle).toBeCalledWith(expect.anything(), "output");
+    });
+
+    it("should be called after handler", async () => {
+      await laconia(handler).postHandle(postHandle)(...handlerArgs);
+      expect(handler).toHaveBeenCalled();
+      expect(handler).toHaveBeenCalledBefore(postHandle);
+    });
+
+    it("should throw an error when postHandle is not a function", async () => {
+      expect(() => laconia(handler).postHandle({ foo: "bar" })).toThrow(
+        new TypeError(
+          'postHandle() expects to be passed a function, you passed: {"foo":"bar"}'
         )
       );
     });

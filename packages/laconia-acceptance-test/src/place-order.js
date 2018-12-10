@@ -30,7 +30,7 @@ const instances = ({ env }) => ({
   orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
 });
 
-const handler = async (
+exports.mainHandler = async (
   { req, res },
   { orderRepository, orderStream, idGenerator, apiKey, restaurants, enabled }
 ) => {
@@ -56,6 +56,6 @@ const handler = async (
   return res.status(200).send({ orderId });
 };
 
-module.exports.handler = laconiaApi(handler)
+exports.handler = laconiaApi(exports.mainHandler)
   .register([config.envVarInstances(), instances])
   .postProcessor(xray.postProcessor());

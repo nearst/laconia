@@ -1,0 +1,27 @@
+{
+  "name": "@laconia/middleware-lambda-warmer",
+  "version": "0.14.0",
+  "description": "Integrates Lambda with lambda-warmer",
+  "keywords": ["aws", "lambda", "laconia", "serverless"],
+  "homepage": "https://github.com/ceilfors/laconia",
+  "bugs": {
+    "url": "https://github.com/ceilfors/laconia/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Wisen Tanasa <wisen@ceilfors.com>",
+  "files": ["src"],
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ceilfors/laconia.git"
+  },
+  "dependencies": {
+    "lambda-warmer": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=8.10"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,3 +1,4 @@
+const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
 const laconiaApi = require("@laconia/api");
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
@@ -56,6 +57,8 @@ exports.mainHandler = async (
   return res.status(200).send({ orderId });
 };
 
-exports.handler = laconiaApi(exports.mainHandler)
+const app = laconiaApi(exports.mainHandler)
   .register([config.envVarInstances(), instances])
   .postProcessor(xray.postProcessor());
+
+exports.handler = lambdaWarmer(app);

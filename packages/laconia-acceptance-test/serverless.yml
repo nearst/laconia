@@ -76,6 +76,13 @@ functions:
       - http:
           path: order
           method: post
+      - schedule:
+          name: warmer-schedule-name
+          rate: rate(30 days)
+          enabled: true
+          input:
+            warmer: true
+            concurrency: 1
     environment:
       ORDER_TABLE_NAME: ${self:custom.orderDynamoDbBatchTableName}
       ORDER_STREAM_NAME: ${self:custom.orderEventsStreamName}

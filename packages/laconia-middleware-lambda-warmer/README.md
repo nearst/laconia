@@ -5,3 +5,21 @@
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 
 > 🛡️ Laconia Middleware for Lambda Warmer — Integrates Lambda with lambda-warmer
+
+## Install
+
+```
+npm install --save @laconia/middleware-lambda-warmer
+```
+
+## Usage
+
+```js
+const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
+const laconia = require("@laconia/core");
+
+const handler = (event, laconiaContext) => {};
+const app = laconia(handler);
+
+exports.handler = lambdaWarmer(app);
+```

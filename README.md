@@ -37,6 +37,8 @@ Laconia's documentation is captured in every modules README. To understand more 
 * [@laconia/batch](packages/laconia-batch/README.md): Reads large number of records without time limit
 * [@laconia/xray](packages/laconia-xray/README.md): Enables X-Ray integration to Laconia
 * [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration testing a breeze
+* [@laconia/middleware-lambda-warmer](packages/laconia-middleware-lambda-warmer/README.md): Integrates Lambda with lambda-warmer
+* [@laconia/middleware-serverless-plugin-warmup](packages/laconia-middleware-serverless-plugin-warmup/README.md): Makes Lambda integration testing a breeze
 
 ## FAQ
 

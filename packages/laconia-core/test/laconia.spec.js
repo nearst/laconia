@@ -90,13 +90,17 @@ describe("laconia", () => {
         );
       });
 
-      xit("should throw an error when the required dependency is not available", async () => {
+      it("should throw an error when the required dependency is not available", async () => {
         const app = laconia((event, { fooo }) => {}).register(lc => ({
           foo: "bar"
         }));
 
-        await expect(app(...handlerArgs)).rejects.toThrow(
-          "The dependency fooo is not available. Have you registered your dependency? These are the dependencies available in LaconiaContext: foo. "
+        await app(...handlerArgs);
+        const errorMessage = callback.mock.calls[0][0].message;
+        expect(errorMessage).toEqual(
+          expect.stringMatching(
+            /The dependency fooo is not available. Have you registered your dependency\? These are the dependencies available in LaconiaContext: .*foo.*/
+          )
         );
       });
 

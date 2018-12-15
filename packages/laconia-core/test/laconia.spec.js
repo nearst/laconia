@@ -90,6 +90,16 @@ describe("laconia", () => {
         );
       });
 
+      xit("should throw an error when the required dependency is not available", async () => {
+        const app = laconia((event, { fooo }) => {}).register(lc => ({
+          foo: "bar"
+        }));
+
+        await expect(app(...handlerArgs)).rejects.toThrow(
+          "The dependency fooo is not available. Have you registered your dependency? These are the dependencies available in LaconiaContext: foo. "
+        );
+      });
+
       it("should be able to add async instances by calling 'register'", async () => {
         const handler = jest.fn();
         await laconia(handler).register(async lc => {

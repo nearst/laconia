@@ -9,29 +9,9 @@ const checkFunction = (functionName, argument) => {
     );
 };
 
-const proxyHandler = {
-  get: (laconiaContext, instanceName) => {
-    if (instanceName in laconiaContext) {
-      return laconiaContext[instanceName];
-    } else {
-      if (
-        instanceName !== "asymmetricMatch" &&
-        !instanceName.startsWith("$") &&
-        !instanceName.startsWith("_")
-      ) {
-        throw new Error(
-          `The dependency ${instanceName} is not available. Have you registered your dependency? These are the dependencies available in LaconiaContext: ${Object.getOwnPropertyNames(
-            laconiaContext
-          )}`
-        );
-      }
-    }
-  }
-};
-
 module.exports = fn => {
   checkFunction("laconia", fn);
-  const laconiaContext = new Proxy(new CoreLaconiaContext(), proxyHandler);
+  const laconiaContext = new CoreLaconiaContext();
 
   const convertInput = event => laconiaContext.$inputConverter.convert(event);
 

@@ -17,6 +17,14 @@ describe("laconiaContext", () => {
     expect(lc).toHaveProperty("env", "bar");
   });
 
+  it("should throw an error when the referenced dependency is not registered", async () => {
+    const lc = new LaconiaContext();
+    lc.registerInstances({ foo: "bar", fiz: "baz" });
+    expect(() => lc.fooo).toThrow(
+      "The dependency fooo is not available. Have you registered your dependency? These are the dependencies available in LaconiaContext: foo, fiz"
+    );
+  });
+
   describe("#registerFactory", () => {
     it("should be able to register sync factoryFn", async () => {
       const lc = new LaconiaContext();

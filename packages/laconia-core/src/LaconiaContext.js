@@ -14,10 +14,36 @@ const parallelFactoryFns = factoryFns => async (...args) => {
   );
 };
 
+const jestInjectedProperty = "asymmetricMatch";
+
+const checkInstanceName = (laconiaContext, instanceName) => {
+  if (instanceName !== jestInjectedProperty && !instanceName.startsWith("$")) {
+    throw new Error(
+      `The dependency ${instanceName} is not available. Have you registered your dependency? These are the dependencies available in LaconiaContext: ${Object.getOwnPropertyNames(
+        laconiaContext
+      ).join(", ")}`
+    );
+  }
+};
+
+const validInstanceNameHandler = {
+  get: (laconiaContext, instanceName) => {
+    if (instanceName in laconiaContext) {
+      return laconiaContext[instanceName];
+    } else {
+      checkInstanceName(laconiaContext, instanceName);
+    }
+  }
+};
+
+const factoryFns = Symbol("factoryFns");
+const postProcessorFns = Symbol("postProcessorFns");
+
 module.exports = class LaconiaContext {
   constructor() {
-    this._factoryFns = [];
-    this._postProcessorFns = [];
+    this[factoryFns] = [];
+    this[postProcessorFns] = [];
+    return new Proxy(this, validInstanceNameHandler);
   }
 
   registerInstances(instances) {
@@ -27,7 +53,7 @@ module.exports = class LaconiaContext {
   }
 
   registerFactory(factory, options = {}) {
-    this._factoryFns.push(factory);
+    this[factoryFns].push(factory);
   }
 
   registerFactories(factories, options = {}) {
@@ -35,15 +61,15 @@ module.exports = class LaconiaContext {
   }
 
   registerPostProcessor(postProcessor) {
-    this._postProcessorFns.push(postProcessor);
+    this[postProcessorFns].push(postProcessor);
   }
 
   async refresh() {
-    for (const factoryFn of this._factoryFns) {
+    for (const factoryFn of this[factoryFns]) {
       const instances = await factoryFn(this);
       this.registerInstances(instances);
 
-      for (const postProcessorFn of this._postProcessorFns) {
+      for (const postProcessorFn of this[postProcessorFns]) {
         await postProcessorFn(instances);
       }
     }

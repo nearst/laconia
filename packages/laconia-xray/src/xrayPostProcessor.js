@@ -26,8 +26,8 @@ const isAwsService = obj => {
   return obj.serviceIdentifier && getPrototypeNames(obj).includes("Service");
 };
 
-module.exports = lc => {
-  Object.values(lc).forEach(instance => {
+module.exports = instances => {
+  Object.values(instances).forEach(instance => {
     if (isAwsService(instance)) {
       AWSXRay.captureAWSClient(instance);
     }

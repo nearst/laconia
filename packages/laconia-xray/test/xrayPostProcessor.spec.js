@@ -3,29 +3,29 @@ const xrayPostProcessor = require("../src/xrayPostProcessor");
 
 describe("xrayPostProcessor", () => {
   it("calls captureAWSClient on a single AWS Service", async () => {
-    const lc = {
+    const instances = {
       $lambda: new AWS.Lambda()
     };
-    xrayPostProcessor(lc);
-    expect(lc.$lambda).toBeInstanceOf(AWS.Lambda);
-    expect(lc.$lambda.customRequestHandler).toBeFunction();
+    xrayPostProcessor(instances);
+    expect(instances.$lambda).toBeInstanceOf(AWS.Lambda);
+    expect(instances.$lambda.customRequestHandler).toBeFunction();
   });
 
   it("calls captureAWSClient on multiple AWS services", async () => {
-    const lc = {
+    const instances = {
       $lambda: new AWS.Lambda(),
       $s3: new AWS.S3()
     };
-    xrayPostProcessor(lc);
-    expect(lc.$lambda.customRequestHandler).toBeFunction();
-    expect(lc.$s3.customRequestHandler).toBeFunction();
+    xrayPostProcessor(instances);
+    expect(instances.$lambda.customRequestHandler).toBeFunction();
+    expect(instances.$s3.customRequestHandler).toBeFunction();
   });
 
   it("ignores non AWS service instance", async () => {
-    const lc = {
+    const instances = {
       $lambda: "not aws service"
     };
-    xrayPostProcessor(lc);
-    expect(lc.$lambda).toEqual("not aws service");
+    xrayPostProcessor(instances);
+    expect(instances.$lambda).toEqual("not aws service");
   });
 });

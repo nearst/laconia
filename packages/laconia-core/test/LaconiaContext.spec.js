@@ -25,6 +25,13 @@ describe("laconiaContext", () => {
     );
   });
 
+  it("should be able to stringify", () => {
+    const lc = new LaconiaContext();
+    lc.registerInstances({ env: "bar" });
+    const result = JSON.parse(JSON.stringify(lc));
+    expect(result).toHaveProperty("env", "bar");
+  });
+
   describe("#registerFactory", () => {
     it("should be able to register sync factoryFn", async () => {
       const lc = new LaconiaContext();

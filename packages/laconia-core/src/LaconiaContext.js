@@ -14,10 +14,14 @@ const parallelFactoryFns = factoryFns => async (...args) => {
   );
 };
 
-const jestInjectedProperty = "asymmetricMatch";
+const JEST_INJECTED_PROPERTY = "asymmetricMatch";
+const ignoredProperties = [JEST_INJECTED_PROPERTY, "toJSON"];
 
 const checkInstanceName = (laconiaContext, instanceName) => {
-  if (instanceName !== jestInjectedProperty && !instanceName.startsWith("$")) {
+  if (
+    !ignoredProperties.includes(instanceName) &&
+    !instanceName.startsWith("$")
+  ) {
     throw new Error(
       `The dependency ${instanceName} is not available. Have you registered your dependency? These are the dependencies available in LaconiaContext: ${Object.getOwnPropertyNames(
         laconiaContext

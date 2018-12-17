@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+* `@laconia/core`
+  * **BREAKING** #11 Throw error when unregistered dependencies are referenced from LaconiaContext
+
 ### Added
 
 * `@laconia/middleware-lambda-warmer`

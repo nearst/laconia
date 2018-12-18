@@ -18,10 +18,7 @@ const JEST_INJECTED_PROPERTY = "asymmetricMatch";
 const ignoredProperties = [JEST_INJECTED_PROPERTY, "toJSON"];
 
 const checkInstanceName = (laconiaContext, instanceName) => {
-  if (
-    !ignoredProperties.includes(instanceName) &&
-    !instanceName.startsWith("$")
-  ) {
+  if (!ignoredProperties.includes(instanceName)) {
     throw new Error(
       `The dependency ${instanceName} is not available. Have you registered your dependency? These are the dependencies available in LaconiaContext: ${Object.getOwnPropertyNames(
         laconiaContext

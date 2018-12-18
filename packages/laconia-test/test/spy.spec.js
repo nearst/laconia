@@ -46,26 +46,6 @@ describe("spy", () => {
     expect(spier.track).toBeCalledWith(lc);
   });
 
-  describe("when $run flag is true", () => {
-    beforeEach(() => {
-      lc = { ...lc, $run: true };
-    });
-    it("should not create a new spier", async () => {
-      await spy(lower)(event, lc);
-      expect(spierFactory.makeSpier).not.toBeCalled();
-    });
-
-    it("should call the lower order function", async () => {
-      await spy(lower)(event, lc);
-      expect(lower).toBeCalledWith(event, lc);
-    });
-
-    it("should delegate the return value of the lower order function", async () => {
-      const result = await spy(lower)(event, lc);
-      expect(result).toEqual("result");
-    });
-  });
-
   describe("instances", () => {
     it("should be able to retrieve $spierFactory", () => {
       const result = spy.instances({

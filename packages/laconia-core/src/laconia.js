@@ -30,9 +30,6 @@ module.exports = fn => {
   };
 
   return Object.assign(laconia, {
-    run: (event, laconiaContext) => {
-      return fn(event, { $run: true, ...laconiaContext });
-    },
     register: (factory, options = {}) => {
       if (Array.isArray(factory)) {
         factory.forEach(f => checkFunction("register", f));

@@ -1,11 +1,10 @@
 const laconia = require("@laconia/core");
 const event = require("@laconia/event");
-const AWS = require("aws-sdk");
 const SnsRestaurantNotificationTopic = require("./SnsRestaurantNotificationTopic");
 
 const instances = ({ $sns, env }) => ({
   restaurantNotificationTopic: new SnsRestaurantNotificationTopic(
-    new AWS.SNS(),
+    $sns,
     env.RESTAURANT_NOTIFICATION_TOPIC_ARN
   )
 });

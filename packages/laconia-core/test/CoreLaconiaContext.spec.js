@@ -32,6 +32,12 @@ describe("laconiaContext", () => {
       await lc.refresh();
       expect(lc.$ssm).toBeInstanceOf(AWS.SSM);
     });
+
+    it("should include SNS", async () => {
+      const lc = new CoreLaconiaContext();
+      await lc.refresh();
+      expect(lc.$sns).toBeInstanceOf(AWS.SNS);
+    });
   });
 
   describe("#registerFactory", () => {

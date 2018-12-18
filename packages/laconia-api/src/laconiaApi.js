@@ -16,18 +16,12 @@ const getRoutePath = event => {
 module.exports = fn => {
   const lambdaApiApp = lambdaApi();
 
-  const handler = laconia((event, laconiaContext) => {
+  return laconia((event, laconiaContext) => {
     lambdaApiApp.any(getRoutePath(event), async (req, res) => {
       return fn({ req, res }, laconiaContext);
     });
 
     const { context } = laconiaContext;
     return lambdaApiApp.run(event, context);
-  });
-
-  return Object.assign(handler, {
-    run: ({ req, res }, laconiaContext) => {
-      return fn({ req, res }, { $run: true, ...laconiaContext });
-    }
   });
 };

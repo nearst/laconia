@@ -1,16 +1,22 @@
 {
   "name": "@laconia/middleware-serverless-plugin-warmup",
-  "version": "0.14.0",
-  "description":
-    "Short circuit Lambda run when it's called by serverless-plugin-warmup",
-  "keywords": ["aws", "lambda", "laconia", "serverless"],
+  "version": "0.15.0",
+  "description": "Short circuit Lambda run when it's called by serverless-plugin-warmup",
+  "keywords": [
+    "aws",
+    "lambda",
+    "laconia",
+    "serverless"
+  ],
   "homepage": "https://github.com/ceilfors/laconia",
   "bugs": {
     "url": "https://github.com/ceilfors/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "main": "src/index.js",
   "repository": {
     "type": "git",

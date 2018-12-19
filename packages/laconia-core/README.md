@@ -55,18 +55,18 @@ const instances = ({ env }) => ({
 });
 
 // Handler function, which do not have any object instantiations
-module.exports.handler = laconia(
+exports.app = async (event, { orderRepository, idGenerator }) => {
   // Instances made available via destructuring
-  async (event, { orderRepository, idGenerator }) => {
-    await orderRepository.save(order);
-  }
-).register(instances);
+  await orderRepository.save(order);
+};
+
+exports.handler = laconia(exports.app).register(instances);
 ```
 
 Unit test code:
 
 ```js
-const handler = require("../src/place-order").handler;
+const app = require("../src/place-order").app;
 
 // Creates a mock Laconia context
 beforeEach(() => {
@@ -77,9 +77,9 @@ beforeEach(() => {
   };
 });
 
-// Runs handler function without worrying about the objects creation
+// Runs app function without worrying about the objects creation
 it("should store order to order table", async () => {
-  await handler.run(lc);
+  await app(event, lc);
 
   expect(lc.orderRepository.save).toBeCalledWith(
     expect.objectContaining(order)
@@ -226,25 +226,4 @@ laconia((event, { service }) => service.call())
     service: new SomeService()
   }))
   .postProcessor(xray.postProcessor());
-```
-
-#### `run(event, laconiaContext)`
-
-Runs Lambda handler function with the specified `laconiaContext` and bypasses
-the LaconiaContext registration step. This function should only be used in a
-unit test.
-
-* `laconiaContext`
-  * A plain object that should represent the LaconiaContext to be used in the function execution
-
-```js
-// Runs a handler function with a LaconiaContext that contains a mock service object.
-// `SomeService` will not be instantiated
-laconia((event, { service }) => service.call())
-  .register(() => ({
-    service: new SomeService()
-  }))
-  .run(mockEvent, {
-    service: jest.mock()
-  });
 ```

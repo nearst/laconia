@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * `@laconia/core`
   * **BREAKING** #11 Throw error when unregistered dependencies are referenced from LaconiaContext
+  * **BREAKING** Remove #run method from laconia.
+    * Export your app function separately for unit testing purposes
+    * Change unit test usage of #run from `handler.run({ event, dependency })` to `app(event, { dependency })`
 
 ### Added
 

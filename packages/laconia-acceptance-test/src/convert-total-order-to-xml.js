@@ -1,5 +1,4 @@
-const laconia = require("@laconia/core");
-const event = require("@laconia/event");
+const laconiaEvent = require("@laconia/event").s3Json();
 const S3TotalOrderStorage = require("./S3TotalOrderStorage");
 
 const instances = ({ $s3, env }) => ({
@@ -15,4 +14,4 @@ const handler = async (totalOrder, { totalOrderStorage }) => {
   );
 };
 
-module.exports.handler = laconia(handler).register([instances, event.s3Json()]);
+module.exports.handler = laconiaEvent(handler).register(instances);

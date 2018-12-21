@@ -4,7 +4,6 @@ describe("@laconia/event", () => {
   const inputConverterFactories = [
     "s3Event",
     "s3Stream",
-    "s3Json",
     "kinesisJson",
     "snsJson",
     "sqsJson"
@@ -21,5 +20,9 @@ describe("@laconia/event", () => {
         expect(instances).toHaveProperty("$inputConverter");
       });
     });
+  });
+
+  it("has s3Json event handler", () => {
+    expect(event.s3Json).toBeFunction();
   });
 });

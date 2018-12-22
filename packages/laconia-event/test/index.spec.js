@@ -1,28 +1,18 @@
 const event = require("../src/index");
 
 describe("@laconia/event", () => {
-  const inputConverterFactories = [
+  const eventHandlers = [
     "s3Event",
     "s3Stream",
     "kinesisJson",
+    "s3Json",
     "snsJson",
     "sqsJson"
   ];
 
-  inputConverterFactories.forEach(factoryName => {
-    describe(`#${factoryName}`, () => {
-      it(`has ${factoryName} function`, () => {
-        expect(event[factoryName]).toBeFunction();
-      });
-
-      it("returns an instance of inputConverter", () => {
-        const instances = event[factoryName]()({});
-        expect(instances).toHaveProperty("$inputConverter");
-      });
+  eventHandlers.forEach(eventHandler => {
+    it(`has ${eventHandler} event handler`, () => {
+      expect(event[eventHandler]).toBeFunction();
     });
-  });
-
-  it("has s3Json event handler", () => {
-    expect(event.s3Json).toBeFunction();
   });
 });

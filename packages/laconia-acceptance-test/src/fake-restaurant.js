@@ -1,5 +1,4 @@
-const laconia = require("@laconia/core");
-const event = require("@laconia/event");
+const laconiaEvent = require("@laconia/event").snsJson();
 const r2 = require("r2");
 
 const handler = async (order, { env }) => {
@@ -11,4 +10,4 @@ const handler = async (order, { env }) => {
   }
 };
 
-module.exports.handler = laconia(handler).register(event.snsJson());
+module.exports.handler = laconiaEvent(handler);

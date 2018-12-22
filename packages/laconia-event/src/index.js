@@ -6,24 +6,10 @@ const KinesisJsonInputConverter = require("./KinesisJsonInputConverter");
 const SnsJsonInputConverter = require("./SnsJsonInputConverter");
 const SqsJsonInputConverter = require("./SqsJsonInputConverter");
 
-exports.s3Event = () => () => ({
-  $inputConverter: new S3EventInputConverter()
-});
-
-exports.s3Stream = () => ({ $s3 }) => ({
-  $inputConverter: new S3StreamInputConverter($s3)
-});
-
+exports.s3Event = () => laconiaEvent(() => new S3EventInputConverter());
+exports.s3Stream = () =>
+  laconiaEvent(({ $s3 }) => new S3StreamInputConverter($s3));
 exports.s3Json = () => laconiaEvent(({ $s3 }) => new S3JsonInputConverter($s3));
-
-exports.kinesisJson = () => () => ({
-  $inputConverter: new KinesisJsonInputConverter()
-});
-
-exports.snsJson = () => () => ({
-  $inputConverter: new SnsJsonInputConverter()
-});
-
-exports.sqsJson = () => () => ({
-  $inputConverter: new SqsJsonInputConverter()
-});
+exports.kinesisJson = () => laconiaEvent(() => new KinesisJsonInputConverter());
+exports.snsJson = () => laconiaEvent(() => new SnsJsonInputConverter());
+exports.sqsJson = () => laconiaEvent(() => new SqsJsonInputConverter());

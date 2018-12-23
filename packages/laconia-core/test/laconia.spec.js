@@ -175,27 +175,6 @@ describe("laconia", () => {
     });
   });
 
-  describe("#register $inputConverter", () => {
-    it("should be called when the handler is called", async () => {
-      const inputConverter = { convert: jest.fn() };
-      await laconia(jest.fn()).register(lc => ({
-        $inputConverter: inputConverter
-      }))(...handlerArgs);
-
-      expect(inputConverter.convert).toBeCalledWith(event);
-    });
-
-    it("should call fn with the converted event", async () => {
-      const fn = jest.fn();
-      const inputConverter = { convert: jest.fn().mockResolvedValue("input") };
-      await laconia(fn).register(lc => ({
-        $inputConverter: inputConverter
-      }))(...handlerArgs);
-
-      expect(fn).toBeCalledWith("input", expect.any(Object));
-    });
-  });
-
   describe("#postProcessor", () => {
     it("should register post processor function", async () => {
       const handler = jest.fn();

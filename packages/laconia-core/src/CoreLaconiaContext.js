@@ -24,10 +24,7 @@ module.exports = class CoreLaconiaContext extends LaconiaContext {
   constructor(baseContext) {
     super(baseContext);
     const coreInstances = {
-      env: process.env,
-      inputConverter: {
-        convert: event => event
-      }
+      env: process.env
     };
     this.registerInstances(coreInstances);
     this._registerInstancesWithPrefix(coreInstances);

@@ -66,6 +66,14 @@
       "laconia-test-helper",
       "laconia-acceptance-test"
     ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
     "testPathIgnorePatterns": ["/acceptance-test/", "/integration-test/"],
     "setupTestFrameworkScriptFile": "./src/setupTests"
   },

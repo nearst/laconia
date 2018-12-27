@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0]
+
+### Changed
+
+* `@laconia/event`
+  * **BREAKING** #12 Change @laconia/event API. Check out the latest docuemntation for the latest way to use the module.
+
 ## [0.15.0]
 
 ### Changed
@@ -217,7 +224,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v0.15.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v0.16.0...HEAD
+[0.15.0]: https://github.com/ceilfors/laconia/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/ceilfors/laconia/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/ceilfors/laconia/compare/v0.13.3...v0.14.0
 [0.13.3]: https://github.com/ceilfors/laconia/compare/v0.13.2...v0.13.3

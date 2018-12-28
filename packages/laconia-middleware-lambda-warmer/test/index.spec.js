@@ -12,6 +12,7 @@ describe("middleware-lambda-warmer", () => {
 
   beforeEach(() => {
     next = jest.fn();
+    lambdaWarmer.mockReset();
     middleware = middlewareLambdaWarmer();
   });
 

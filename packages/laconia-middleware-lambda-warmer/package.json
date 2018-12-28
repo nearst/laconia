@@ -1,6 +1,6 @@
 {
   "name": "@laconia/middleware-lambda-warmer",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Integrates Lambda with lambda-warmer",
   "keywords": [
     "aws",

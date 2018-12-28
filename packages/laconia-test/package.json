@@ -1,6 +1,6 @@
 {
   "name": "@laconia/test",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Makes Lambda integration testing a breeze",
   "keywords": [
     "aws",
@@ -23,7 +23,7 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "@laconia/invoker": "^0.15.0",
+    "@laconia/invoker": "^0.16.0",
     "p-wait-for": "^1.0.0"
   },
   "devDependencies": {

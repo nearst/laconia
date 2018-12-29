@@ -32,7 +32,7 @@ const instances = ({ env }) => ({
 });
 
 exports.mainHandler = async (
-  { req, res },
+  { req },
   { orderRepository, orderStream, idGenerator, apiKey, restaurants, enabled }
 ) => {
   validateEnabledFlag(enabled);
@@ -54,7 +54,7 @@ exports.mainHandler = async (
     restaurantId: order.restaurantId
   });
 
-  return res.status(200).send({ orderId });
+  return { orderId };
 };
 
 const app = laconiaApi(exports.mainHandler)

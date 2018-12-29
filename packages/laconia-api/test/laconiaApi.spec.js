@@ -12,6 +12,9 @@ const createApiGatewayEvent = body =>
       },
       queryStringParameters: {
         q: "input"
+      },
+      headers: {
+        Authorization: "secret"
       }
     }
   });
@@ -28,8 +31,8 @@ describe("laconiaApi", () => {
   });
 
   it("should return the returned result", async () => {
-    const handler = ({ res }) => {
-      return res.status(202).send({ status: "ok" });
+    const handler = () => {
+      return { status: "ok" };
     };
     await laconiaApi(handler)(...handlerArgs);
     expect(callback).toBeCalledWith(
@@ -37,12 +40,12 @@ describe("laconiaApi", () => {
       expect.objectContaining({
         body: '{"status":"ok"}',
         headers: { "content-type": "application/json" },
-        statusCode: 202
+        statusCode: 200
       })
     );
   });
 
-  it("should call handler with req and res object", async () => {
+  it("should call handler with req", async () => {
     const handler = jest.fn();
     await laconiaApi(handler)(...handlerArgs);
     expect(handler).toBeCalledWith(
@@ -50,10 +53,11 @@ describe("laconiaApi", () => {
         req: expect.objectContaining({
           query: {
             q: "input"
-          }
-        }),
-        res: expect.objectContaining({
-          send: expect.any(Function)
+          },
+          headers: expect.objectContaining({
+            authorization: "secret"
+          }),
+          body: { foo: "event" }
         })
       },
       expect.any(Object)
@@ -94,31 +98,6 @@ describe("laconiaApi", () => {
           },
           params: {
             orderId: "5"
-          }
-        })
-      }),
-      expect.any(Object)
-    );
-  });
-
-  it("should be able to parse multiple path parameters", async () => {
-    createEvent({
-      template: "aws:apiGateway",
-      merge: {
-        path: "order/5/accept/myparam",
-        requestContext: {
-          resourcePath: "order/{orderId}/accept/{someOtherParam}"
-        }
-      }
-    });
-    const handler = jest.fn();
-    await laconiaApi(handler)(...handlerArgs);
-    expect(handler).toBeCalledWith(
-      expect.objectContaining({
-        req: expect.objectContaining({
-          params: {
-            orderId: "5",
-            someOtherParam: "myparam"
           }
         })
       }),

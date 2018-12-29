@@ -1,27 +1,43 @@
 const laconia = require("@laconia/core");
-const lambdaApi = require("lambda-api");
 
-const convertApigatewayToLambdaApi = resourcePath =>
-  resourcePath.replace(/{([^}]*)}/g, ":$1");
-
-const getRoutePath = event => {
+const validateApigatewayEvent = event => {
   if (!event.requestContext) {
     throw new Error(
       "requestContext is not available in the event object. Laconia API only supports Lambda Proxy Integration."
     );
   }
-  return convertApigatewayToLambdaApi(event.requestContext.resourcePath);
+};
+
+const parseBody = body => {
+  try {
+    return JSON.parse(body);
+  } catch (e) {
+    return body;
+  }
 };
 
 module.exports = fn => {
-  const lambdaApiApp = lambdaApi();
+  return laconia(async (event, laconiaContext) => {
+    validateApigatewayEvent(event);
+    const req = {
+      query: event.queryStringParameters,
+      pathParameters: event.pathParameters,
+      params: event.pathParameters,
+      headers: Object.keys(event.headers).reduce(
+        (acc, header) =>
+          Object.assign(acc, {
+            [header.toLowerCase()]: event.headers[header]
+          }),
+        {}
+      ),
+      body: parseBody(event.body)
+    };
 
-  return laconia((event, laconiaContext) => {
-    lambdaApiApp.any(getRoutePath(event), async (req, res) => {
-      return fn({ req, res }, laconiaContext);
-    });
-
-    const { context } = laconiaContext;
-    return lambdaApiApp.run(event, context);
+    const result = await fn({ req }, laconiaContext);
+    return {
+      body: JSON.stringify(result),
+      headers: { "content-type": "application/json" },
+      statusCode: 200
+    };
   });
 };

@@ -1,4 +1,4 @@
-const ApiGatewayMergedInputConverter = require("../src/ApiGatewayMergedInputConverter");
+const ApiGatewayBodyInputConverter = require("../src/ApiGatewayBodyInputConverter");
 
 const createApiGatewayEvent = ({
   body = {},
@@ -15,11 +15,11 @@ const createApiGatewayEvent = ({
   headers
 });
 
-describe("ApiGatewayMergedInputConverter", () => {
+describe("ApiGatewayBodyInputConverter", () => {
   let inputConverter;
 
   beforeEach(() => {
-    inputConverter = new ApiGatewayMergedInputConverter();
+    inputConverter = new ApiGatewayBodyInputConverter();
   });
 
   describe("when content type is application/json", () => {
@@ -29,7 +29,9 @@ describe("ApiGatewayMergedInputConverter", () => {
         headers: { "Content-Type": "application/json" }
       });
       const input = await inputConverter.convert(event);
-      expect(input).toEqual({ foo: "bar" });
+      expect(input).toEqual(
+        expect.objectContaining({ payload: { foo: "bar" } })
+      );
     });
 
     it("should convert pathParameters into input object", async () => {
@@ -39,7 +41,11 @@ describe("ApiGatewayMergedInputConverter", () => {
         headers: { "Content-Type": "application/json" }
       });
       const input = await inputConverter.convert(event);
-      expect(input).toEqual({ pathParam1: "pathParam" });
+      expect(input).toEqual(
+        expect.objectContaining({
+          headers: expect.objectContaining({ pathParam1: "pathParam" })
+        })
+      );
     });
 
     it("should convert queryStringParameters into input object", async () => {
@@ -49,12 +55,16 @@ describe("ApiGatewayMergedInputConverter", () => {
         headers: { "Content-Type": "application/json" }
       });
       const input = await inputConverter.convert(event);
-      expect(input).toEqual({ queryParam1: "queryParam" });
+      expect(input).toEqual(
+        expect.objectContaining({
+          headers: expect.objectContaining({ queryParam1: "queryParam" })
+        })
+      );
     });
   });
 
   describe("when content type is x-www-form-urlencoded", () => {
-    it("should be able to parse ", async () => {
+    it("should parse form data into payload", async () => {
       let event = createApiGatewayEvent({
         body: "field1=one&field2=two",
         headers: {
@@ -62,7 +72,9 @@ describe("ApiGatewayMergedInputConverter", () => {
         }
       });
       const input = await inputConverter.convert(event);
-      expect(input).toEqual({ field1: "one", field2: "two" });
+      expect(input).toEqual(
+        expect.objectContaining({ payload: { field1: "one", field2: "two" } })
+      );
     });
   });
 

@@ -6,13 +6,15 @@ module.exports = class ApiGatewayMergedInputConverter {
         "application/x-www-form-urlencoded"
       )
     ) {
-      return querystring.parse(event.body);
+      return { payload: querystring.parse(event.body) };
     } else {
-      return Object.assign(
-        JSON.parse(event.body),
-        event.pathParameters,
-        event.queryStringParameters
-      );
+      return {
+        payload: JSON.parse(event.body),
+        headers: Object.assign(
+          event.pathParameters,
+          event.queryStringParameters
+        )
+      };
     }
   }
 };

@@ -12,7 +12,8 @@ const createApiGatewayEvent = ({
   stage: "dev",
   pathParameters,
   queryStringParameters,
-  headers
+  headers,
+  isBase64Encoded: false
 });
 
 describe("ApiGatewayBodyInputConverter", () => {
@@ -23,23 +24,24 @@ describe("ApiGatewayBodyInputConverter", () => {
   });
 
   describe("when content type is application/json", () => {
-    it("should convert JSON body into input object", async () => {
-      const event = createApiGatewayEvent({
+    let event;
+
+    beforeEach(() => {
+      event = createApiGatewayEvent({
         body: JSON.stringify({ foo: "bar" }),
         headers: { "Content-Type": "application/json" }
       });
+    });
+
+    it("should convert JSON body into payload", async () => {
       const input = await inputConverter.convert(event);
       expect(input).toEqual(
         expect.objectContaining({ payload: { foo: "bar" } })
       );
     });
 
-    it("should convert pathParameters into input object", async () => {
-      const event = createApiGatewayEvent({
-        body: JSON.stringify({}),
-        pathParameters: { pathParam1: "pathParam" },
-        headers: { "Content-Type": "application/json" }
-      });
+    it("should convert pathParameters into headers", async () => {
+      event.pathParameters = { pathParam1: "pathParam" };
       const input = await inputConverter.convert(event);
       expect(input).toEqual(
         expect.objectContaining({
@@ -48,12 +50,8 @@ describe("ApiGatewayBodyInputConverter", () => {
       );
     });
 
-    it("should convert queryStringParameters into input object", async () => {
-      const event = createApiGatewayEvent({
-        body: JSON.stringify({}),
-        queryStringParameters: { queryParam1: "queryParam" },
-        headers: { "Content-Type": "application/json" }
-      });
+    it("should convert queryStringParameters into headers", async () => {
+      event.queryStringParameters = { queryParam1: "queryParam" };
       const input = await inputConverter.convert(event);
       expect(input).toEqual(
         expect.objectContaining({
@@ -61,6 +59,29 @@ describe("ApiGatewayBodyInputConverter", () => {
         })
       );
     });
+
+    it("should keep original headers", async () => {
+      event.queryStringParameters = { queryParam1: "queryParam" };
+      const input = await inputConverter.convert(event);
+      expect(input).toEqual(
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            "Content-Type": "application/json"
+          })
+        })
+      );
+    });
+
+    it("should decode base64 payload", async () => {
+      event.body = "eyJmb28iOiJiYXIifQ==";
+      event.isBase64Encoded = true;
+      const input = await inputConverter.convert(event);
+      expect(input).toEqual(
+        expect.objectContaining({ payload: { foo: "bar" } })
+      );
+    });
+
+    xit("should throw an error when body is not JSON parsable", () => {});
   });
 
   describe("when content type is x-www-form-urlencoded", () => {
@@ -78,5 +99,7 @@ describe("ApiGatewayBodyInputConverter", () => {
     });
   });
 
-  xit("should ... when body is not an object", () => {});
+  describe("when body is a buffer", () => {
+    xit("should set the payload as is", () => {});
+  });
 });

@@ -1,4 +1,4 @@
-const ApiGatewayBodyInputConverter = require("../src/ApiGatewayBodyInputConverter");
+const ApiGatewayParamsInputConverter = require("../src/ApiGatewayParamsInputConverter");
 
 const createApiGatewayEvent = ({
   body = {},
@@ -16,11 +16,11 @@ const createApiGatewayEvent = ({
   isBase64Encoded: false
 });
 
-describe("ApiGatewayBodyInputConverter", () => {
+describe("ApiGatewayParamsInputConverter", () => {
   let inputConverter;
 
   beforeEach(() => {
-    inputConverter = new ApiGatewayBodyInputConverter();
+    inputConverter = new ApiGatewayParamsInputConverter();
   });
 
   let event;
@@ -34,25 +34,31 @@ describe("ApiGatewayBodyInputConverter", () => {
 
   it("should convert JSON body into payload", async () => {
     const input = await inputConverter.convert(event);
-    expect(input).toEqual(expect.objectContaining({ payload: { foo: "bar" } }));
+    expect(input).toEqual(
+      expect.objectContaining({ payload: { body: { foo: "bar" } } })
+    );
   });
 
-  it("should convert pathParameters into headers", async () => {
+  it("should convert pathParameters into payload", async () => {
     event.pathParameters = { pathParam1: "pathParam" };
     const input = await inputConverter.convert(event);
     expect(input).toEqual(
       expect.objectContaining({
-        headers: expect.objectContaining({ pathParam1: "pathParam" })
+        payload: expect.objectContaining({
+          pathParam1: "pathParam"
+        })
       })
     );
   });
 
-  it("should convert queryStringParameters into headers", async () => {
+  it("should convert queryStringParameters into payload", async () => {
     event.queryStringParameters = { queryParam1: "queryParam" };
     const input = await inputConverter.convert(event);
     expect(input).toEqual(
       expect.objectContaining({
-        headers: expect.objectContaining({ queryParam1: "queryParam" })
+        payload: expect.objectContaining({
+          queryParam1: "queryParam"
+        })
       })
     );
   });

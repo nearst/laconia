@@ -9,11 +9,7 @@ const validateApigatewayEvent = event => {
 };
 
 const parseBody = body => {
-  try {
-    return JSON.parse(body);
-  } catch (e) {
-    return body;
-  }
+  return JSON.parse(body);
 };
 
 module.exports = fn => {

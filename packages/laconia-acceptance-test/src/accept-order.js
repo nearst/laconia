@@ -1,14 +1,12 @@
-const laconiaApi = require("@laconia/api");
+const laconiaApi = require("@laconia/api").params();
 const KinesisOrderStream = require("./KinesisOrderStream");
 
 const instances = ({ env }) => ({
   orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
 });
 
-const handler = async ({ req }, { orderStream }) => {
-  console.log(req);
-  const orderId = req.pathParameters.id;
-  await orderStream.send({ eventType: "accepted", orderId });
+const handler = async ({ id }, { orderStream }) => {
+  await orderStream.send({ eventType: "accepted", orderId: id });
   return { status: "ok" };
 };
 

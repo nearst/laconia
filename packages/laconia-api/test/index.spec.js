@@ -8,7 +8,7 @@ describe("laconiaApi", () => {
     expect(index).toBeFunction();
   });
 
-  const eventHandlers = ["params"];
+  const eventHandlers = ["params", "body"];
 
   eventHandlers.forEach(eventHandler => {
     describe(`#${eventHandler}`, () => {

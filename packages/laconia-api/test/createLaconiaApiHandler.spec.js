@@ -46,4 +46,19 @@ describe("createLaconiaApiHandler", () => {
     await createLaconiaApiHandler(inputConverterFactory)(app)(...handlerArgs);
     expect(app).toBeCalledWith("converted value", expect.any(LaconiaContext));
   });
+
+  it("should call the app with headers parameter when headers option is set to true", async () => {
+    inputConverter.convert.mockResolvedValue({
+      payload: "converted value",
+      headers: { header1: "value1" }
+    });
+    await createLaconiaApiHandler(inputConverterFactory, { headers: true })(
+      app
+    )(...handlerArgs);
+    expect(app).toBeCalledWith(
+      "converted value",
+      { header1: "value1" },
+      expect.any(LaconiaContext)
+    );
+  });
 });

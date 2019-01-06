@@ -1,5 +1,5 @@
 const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
-const laconiaApi = require("@laconia/api");
+const laconiaApi = require("@laconia/api").body({ headers: true });
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
@@ -7,8 +7,8 @@ const KinesisOrderStream = require("./KinesisOrderStream");
 const UuidIdGenerator = require("./UuidIdGenerator");
 var log = require("pino")("place-order");
 
-const validateApiKey = (req, apiKey) => {
-  if (req.headers.authorization !== apiKey) {
+const validateApiKey = (headers, apiKey) => {
+  if (headers.Authorization !== apiKey) {
     throw new Error("Unauthorized: Wrong API Key");
   }
 };
@@ -32,17 +32,18 @@ const instances = ({ env }) => ({
 });
 
 exports.mainHandler = async (
-  { req },
+  newOrder,
+  headers,
   { orderRepository, orderStream, idGenerator, apiKey, restaurants, enabled }
 ) => {
   validateEnabledFlag(enabled);
-  validateApiKey(req, apiKey);
+  validateApiKey(headers, apiKey);
   const orderId = idGenerator.generate();
   const order = Object.assign(
     {
       orderId
     },
-    req.body.order
+    newOrder.order
   );
 
   validateRestaurantId(restaurants, order.restaurantId);

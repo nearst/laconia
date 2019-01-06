@@ -8,12 +8,25 @@ describe("laconiaApi", () => {
     expect(index).toBeFunction();
   });
 
+  beforeEach(() => {
+    createLaconiaApiHandler.mockReset();
+  });
+
   const eventHandlers = ["params", "body"];
 
   eventHandlers.forEach(eventHandler => {
     describe(`#${eventHandler}`, () => {
       it(`has ${eventHandler} event handler`, () => {
         expect(index[eventHandler]).toBeFunction();
+      });
+
+      it("should create event handler with the specified options", () => {
+        const options = { opt: "value" };
+        index[eventHandler](options);
+        expect(createLaconiaApiHandler).toBeCalledWith(
+          expect.anything(),
+          options
+        );
       });
 
       it(`should be created with a factory that returns an input converter`, () => {

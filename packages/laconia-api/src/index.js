@@ -6,8 +6,8 @@ const createLaconiaApiHandler = require("./createLaconiaApiHandler");
 module.exports = exports = laconiaApi;
 exports.default = laconiaApi;
 
-exports.params = () =>
-  createLaconiaApiHandler(() => new ApiGatewayParamsInputConverter());
+exports.params = options =>
+  createLaconiaApiHandler(() => new ApiGatewayParamsInputConverter(), options);
 
-exports.body = () =>
-  createLaconiaApiHandler(() => new ApiGatewayBodyInputConverter());
+exports.body = options =>
+  createLaconiaApiHandler(() => new ApiGatewayBodyInputConverter(), options);

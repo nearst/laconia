@@ -4,10 +4,6 @@ const createLaconiaApiHandler = require("../src/createLaconiaApiHandler");
 jest.mock("../src/createLaconiaApiHandler");
 
 describe("laconiaApi", () => {
-  it("exports a function", () => {
-    expect(index).toBeFunction();
-  });
-
   beforeEach(() => {
     createLaconiaApiHandler.mockReset();
   });

@@ -1,14 +1,15 @@
 module.exports = class ApiGatewayResponseConverter {
   convert(output) {
-    if (typeof output === "string") {
-      return {
-        body: output,
-        headers: { "Content-Type": "text/plain" }
-      };
-    }
+    const body = typeof output !== "string" ? JSON.stringify(output) : output;
+    const contentType =
+      typeof output === "object"
+        ? "application/json; charset=utf-8"
+        : "text/plain";
+
     return {
-      body: JSON.stringify(output),
-      headers: { "Content-Type": "application/json; charset=utf-8" }
+      body,
+      headers: { "Content-Type": contentType },
+      isBase64Encoded: false
     };
   }
 };

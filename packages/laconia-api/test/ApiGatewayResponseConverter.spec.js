@@ -40,11 +40,12 @@ describe("ApiGatewayResponseConverter", () => {
       );
     });
 
-    it("should set isBase64Encoded to false", async () => {
+    it("should set isBase64Encoded to false and statusCode to 200", async () => {
       const input = await responseConverter.convert(output);
       expect(input).toEqual(
         expect.objectContaining({
-          isBase64Encoded: false
+          isBase64Encoded: false,
+          statusCode: 200
         })
       );
     });
@@ -63,11 +64,12 @@ describe("ApiGatewayResponseConverter", () => {
       expect(input).toContainHeader("Content-Type", "text/plain");
     });
 
-    it("should set isBase64Encoded to false", async () => {
+    it("should set isBase64Encoded to false and statusCode to 200", async () => {
       const input = await responseConverter.convert(output);
       expect(input).toEqual(
         expect.objectContaining({
-          isBase64Encoded: false
+          isBase64Encoded: false,
+          statusCode: 200
         })
       );
     });
@@ -86,11 +88,12 @@ describe("ApiGatewayResponseConverter", () => {
       expect(input).toContainHeader("Content-Type", "text/plain");
     });
 
-    it("should set isBase64Encoded to false", async () => {
+    it("should set isBase64Encoded to false and statusCode to 200", async () => {
       const input = await responseConverter.convert(output);
       expect(input).toEqual(
         expect.objectContaining({
-          isBase64Encoded: false
+          isBase64Encoded: false,
+          statusCode: 200
         })
       );
     });

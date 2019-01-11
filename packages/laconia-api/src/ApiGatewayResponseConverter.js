@@ -9,7 +9,8 @@ module.exports = class ApiGatewayResponseConverter {
     return {
       body,
       headers: { "Content-Type": contentType },
-      isBase64Encoded: false
+      isBase64Encoded: false,
+      statusCode: 200
     };
   }
 };

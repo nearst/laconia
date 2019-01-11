@@ -21,6 +21,7 @@ describe("laconiaApi", () => {
         index[eventHandler](options);
         expect(createLaconiaApiHandler).toBeCalledWith(
           expect.anything(),
+          expect.anything(),
           options
         );
       });
@@ -32,6 +33,15 @@ describe("laconiaApi", () => {
         const inputConverterFactory = createLaconiaApiHandler.mock.calls[0][0];
         const inputConverter = inputConverterFactory({});
         expect(inputConverter).toHaveProperty("convert");
+      });
+
+      it(`should be created with a factory that returns an output converter`, () => {
+        index[eventHandler]();
+
+        expect(createLaconiaApiHandler).toBeCalled();
+        const outputConverterFactory = createLaconiaApiHandler.mock.calls[0][1];
+        const outputConverter = outputConverterFactory({});
+        expect(outputConverter).toHaveProperty("convert");
       });
     });
   });

@@ -2,7 +2,7 @@ const laconia = require("@laconia/core");
 
 module.exports = (
   inputConverterFactory,
-  outputConverterFactory,
+  responseConverterFactory,
   options = {}
 ) => {
   return app => {
@@ -12,7 +12,7 @@ module.exports = (
         ? await app(input.payload, input.headers, laconiaContext)
         : await app(input.payload, laconiaContext);
 
-      return outputConverterFactory(laconiaContext).convert(output);
+      return responseConverterFactory(laconiaContext).convert(output);
     });
   };
 };

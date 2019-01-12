@@ -7,8 +7,8 @@ describe("createLaconiaApiHandler", () => {
   let event;
   let inputConverterFactory;
   let inputConverter;
-  let outputConverter;
-  let outputConverterFactory;
+  let responseConverter;
+  let responseConverterFactory;
   let app;
 
   beforeEach(() => {
@@ -17,21 +17,21 @@ describe("createLaconiaApiHandler", () => {
     handlerArgs = [event, { fiz: "context" }, callback];
     inputConverter = { convert: jest.fn().mockResolvedValue({ payload: "" }) };
     inputConverterFactory = jest.fn().mockReturnValue(inputConverter);
-    outputConverter = {
+    responseConverter = {
       convert: jest.fn().mockResolvedValue({
         body: '{"status":"ok"}',
         headers: { "content-type": "application/json" },
         statusCode: 200
       })
     };
-    outputConverterFactory = jest.fn().mockReturnValue(outputConverter);
+    responseConverterFactory = jest.fn().mockReturnValue(responseConverter);
     app = jest.fn();
   });
 
   it("should be called when the handler is called", async () => {
     await createLaconiaApiHandler(
       inputConverterFactory,
-      outputConverterFactory
+      responseConverterFactory
     )(app)(...handlerArgs);
     expect(inputConverter.convert).toBeCalledWith(event);
   });
@@ -39,24 +39,24 @@ describe("createLaconiaApiHandler", () => {
   it("should call inputConverterFactory with laconiaContext", async () => {
     await createLaconiaApiHandler(
       inputConverterFactory,
-      outputConverterFactory
+      responseConverterFactory
     )(app)(...handlerArgs);
     expect(inputConverterFactory).toBeCalledWith(expect.any(LaconiaContext));
   });
 
-  it("should call outputConverterFactory with laconiaContext", async () => {
+  it("should call responseConverter with laconiaContext", async () => {
     await createLaconiaApiHandler(
       inputConverterFactory,
-      outputConverterFactory
+      responseConverterFactory
     )(app)(...handlerArgs);
-    expect(outputConverterFactory).toBeCalledWith(expect.any(LaconiaContext));
+    expect(responseConverterFactory).toBeCalledWith(expect.any(LaconiaContext));
   });
 
   it("should return the output converter returned result", async () => {
     app.mockResolvedValue({ status: "ok" });
     await createLaconiaApiHandler(
       inputConverterFactory,
-      outputConverterFactory
+      responseConverterFactory
     )(app)(...handlerArgs);
     expect(callback).toBeCalledWith(
       null,
@@ -72,7 +72,7 @@ describe("createLaconiaApiHandler", () => {
     inputConverter.convert.mockResolvedValue({ payload: "converted value" });
     await createLaconiaApiHandler(
       inputConverterFactory,
-      outputConverterFactory
+      responseConverterFactory
     )(app)(...handlerArgs);
     expect(app).toBeCalledWith("converted value", expect.any(LaconiaContext));
   });
@@ -84,7 +84,7 @@ describe("createLaconiaApiHandler", () => {
     });
     await createLaconiaApiHandler(
       inputConverterFactory,
-      outputConverterFactory,
+      responseConverterFactory,
       { headers: true }
     )(app)(...handlerArgs);
     expect(app).toBeCalledWith(

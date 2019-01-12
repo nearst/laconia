@@ -39,9 +39,10 @@ describe("laconiaApi", () => {
         index[eventHandler]();
 
         expect(createLaconiaApiHandler).toBeCalled();
-        const outputConverterFactory = createLaconiaApiHandler.mock.calls[0][1];
-        const outputConverter = outputConverterFactory({});
-        expect(outputConverter).toHaveProperty("convert");
+        const responseConverterFactory =
+          createLaconiaApiHandler.mock.calls[0][1];
+        const responseConverter = responseConverterFactory({});
+        expect(responseConverter).toHaveProperty("convert");
       });
     });
   });

@@ -2,8 +2,8 @@ const ApiGatewayParamsInputConverter = require("../src/ApiGatewayParamsInputConv
 
 const createApiGatewayEvent = ({
   body = {},
-  pathParameters = {},
-  queryStringParameters = {},
+  pathParameters = undefined,
+  queryStringParameters = undefined,
   headers = {}
 }) => ({
   body,

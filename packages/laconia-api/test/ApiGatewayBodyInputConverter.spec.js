@@ -2,8 +2,8 @@ const ApiGatewayBodyInputConverter = require("../src/ApiGatewayBodyInputConverte
 
 const createApiGatewayEvent = ({
   body = {},
-  pathParameters = {},
-  queryStringParameters = {},
+  pathParameters = undefined,
+  queryStringParameters = undefined,
   headers = {}
 }) => ({
   body,

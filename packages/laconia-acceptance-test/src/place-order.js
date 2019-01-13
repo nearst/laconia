@@ -1,5 +1,9 @@
 const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
-const laconiaApi = require("@laconia/api").body({ headers: true });
+const laconia = require("@laconia/core");
+const apigateway = require("@laconia/api").apigateway({
+  inputType: "body",
+  includeInputHeaders: true
+});
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
@@ -58,7 +62,7 @@ exports.mainHandler = async (
   return { orderId };
 };
 
-const app = laconiaApi(exports.mainHandler)
+const app = laconia(apigateway(exports.mainHandler))
   .register([config.envVarInstances(), instances])
   .postProcessor(xray.postProcessor());
 

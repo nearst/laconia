@@ -1,13 +1,14 @@
-const laconiaApi = require("@laconia/api").params();
+const laconia = require("@laconia/core");
+const apigateway = require("@laconia/api").apigateway({ inputType: "params" });
 const KinesisOrderStream = require("./KinesisOrderStream");
 
 const instances = ({ env }) => ({
   orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
 });
 
-const handler = async ({ id }, { orderStream }) => {
+const app = async ({ id }, { orderStream }) => {
   await orderStream.send({ eventType: "accepted", orderId: id });
   return { status: "ok" };
 };
 
-module.exports.handler = laconiaApi(handler).register(instances);
+module.exports.handler = laconia(apigateway(app)).register(instances);

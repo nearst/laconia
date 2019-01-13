@@ -1,4 +1,9 @@
 module.exports = class ApiGatewayResponseConverter {
+  constructor({ statusCode = 200, additionalHeaders = {} } = {}) {
+    this.statusCode = statusCode;
+    this.additionalHeaders = additionalHeaders;
+  }
+
   convert(output) {
     const body = typeof output !== "string" ? JSON.stringify(output) : output;
     const contentType =
@@ -8,9 +13,12 @@ module.exports = class ApiGatewayResponseConverter {
 
     return {
       body,
-      headers: { "Content-Type": contentType },
+      headers: Object.assign(
+        { "Content-Type": contentType },
+        this.additionalHeaders
+      ),
       isBase64Encoded: false,
-      statusCode: 200
+      statusCode: this.statusCode
     };
   }
 };

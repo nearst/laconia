@@ -24,28 +24,59 @@ describe("ApiGatewayResponseConverter", () => {
     responseConverter = new ApiGatewayResponseConverter();
   });
 
+  it("returns status code 200 by default", async () => {
+    const response = await responseConverter.convert("output");
+    expect(response).toEqual(
+      expect.objectContaining({
+        statusCode: 200
+      })
+    );
+  });
+
+  it("returns the status code specified", async () => {
+    const response = await new ApiGatewayResponseConverter({
+      statusCode: 202
+    }).convert("output");
+    expect(response).toEqual(
+      expect.objectContaining({
+        statusCode: 202
+      })
+    );
+  });
+
+  it("adds additional headers as per specified", async () => {
+    const response = await new ApiGatewayResponseConverter({
+      additionalHeaders: {
+        "Access-Control-Allow-Origin": "foo",
+        "Access-Control-Max-Age": "bar"
+      }
+    }).convert("output");
+    expect(response).toContainHeader("Content-Type", expect.any(String));
+    expect(response).toContainHeader("Access-Control-Allow-Origin", "foo");
+    expect(response).toContainHeader("Access-Control-Max-Age", "bar");
+  });
+
   describe("when converting an object", () => {
     const output = { foo: "bar" };
 
     it("should set body to the object's JSON string", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toContainBody('{"foo":"bar"}');
+      const response = await responseConverter.convert(output);
+      expect(response).toContainBody('{"foo":"bar"}');
     });
 
     it("should set Content-Type header to application/json", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toContainHeader(
+      const response = await responseConverter.convert(output);
+      expect(response).toContainHeader(
         "Content-Type",
         "application/json; charset=utf-8"
       );
     });
 
-    it("should set isBase64Encoded to false and statusCode to 200", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toEqual(
+    it("should set isBase64Encoded to false", async () => {
+      const response = await responseConverter.convert(output);
+      expect(response).toEqual(
         expect.objectContaining({
-          isBase64Encoded: false,
-          statusCode: 200
+          isBase64Encoded: false
         })
       );
     });
@@ -55,21 +86,20 @@ describe("ApiGatewayResponseConverter", () => {
     const output = "foo";
 
     it("should set body to the output string", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toContainBody(output);
+      const response = await responseConverter.convert(output);
+      expect(response).toContainBody(output);
     });
 
     it("should set Content-Type header to text/plain", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toContainHeader("Content-Type", "text/plain");
+      const response = await responseConverter.convert(output);
+      expect(response).toContainHeader("Content-Type", "text/plain");
     });
 
-    it("should set isBase64Encoded to false and statusCode to 200", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toEqual(
+    it("should set isBase64Encoded to false", async () => {
+      const response = await responseConverter.convert(output);
+      expect(response).toEqual(
         expect.objectContaining({
-          isBase64Encoded: false,
-          statusCode: 200
+          isBase64Encoded: false
         })
       );
     });
@@ -79,21 +109,20 @@ describe("ApiGatewayResponseConverter", () => {
     const output = 4;
 
     it("should set body to the stringified number", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toContainBody("4");
+      const response = await responseConverter.convert(output);
+      expect(response).toContainBody("4");
     });
 
     it("should set Content-Type header to text/plain", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toContainHeader("Content-Type", "text/plain");
+      const response = await responseConverter.convert(output);
+      expect(response).toContainHeader("Content-Type", "text/plain");
     });
 
-    it("should set isBase64Encoded to false and statusCode to 200", async () => {
-      const input = await responseConverter.convert(output);
-      expect(input).toEqual(
+    it("should set isBase64Encoded to false", async () => {
+      const response = await responseConverter.convert(output);
+      expect(response).toEqual(
         expect.objectContaining({
-          isBase64Encoded: false,
-          statusCode: 200
+          isBase64Encoded: false
         })
       );
     });

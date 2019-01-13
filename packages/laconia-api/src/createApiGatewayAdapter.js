@@ -15,12 +15,17 @@ const createInputConverter = inputType => {
 const createApiAgatewayAdapter = ({
   inputType = "body",
   functional = true,
-  includeInputHeaders = false
+  includeInputHeaders = false,
+  responseStatusCode,
+  responseAdditionalHeaders
 } = {}) => app => {
   const adapter = new ApiGatewayEventAdapter(
     app,
     createInputConverter(inputType),
-    new ApiGatewayResponseConverter(),
+    new ApiGatewayResponseConverter({
+      statusCode: responseStatusCode,
+      additionalHeaders: responseAdditionalHeaders
+    }),
     includeInputHeaders
   );
   return functional ? adapter.toFunction() : adapter;

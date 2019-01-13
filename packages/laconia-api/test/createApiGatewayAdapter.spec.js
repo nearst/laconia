@@ -1,6 +1,7 @@
 const createApiGatewayAdapter = require("../src/createApiGatewayAdapter");
 const ApiGatewayBodyInputConverter = require("../src/ApiGatewayBodyInputConverter");
 const ApiGatewayParamsInputConverter = require("../src/ApiGatewayParamsInputConverter");
+const ApiGatewayResponseConverter = require("../src/ApiGatewayResponseConverter");
 
 describe("createApiGatewayAdapter", () => {
   it("returns an adapter function", () => {
@@ -24,6 +25,24 @@ describe("createApiGatewayAdapter", () => {
     expect(adapter.inputConverter).toBeInstanceOf(
       ApiGatewayParamsInputConverter
     );
+  });
+
+  it("sets responseStatusCode configuration to ApiGatewayResponseConverter", () => {
+    const adapter = createApiGatewayAdapter({
+      functional: false,
+      responseStatusCode: 202
+    })(jest.fn());
+    expect(adapter.outputConverter).toBeInstanceOf(ApiGatewayResponseConverter);
+    expect(adapter.outputConverter.statusCode).toEqual(202);
+  });
+
+  it("sets responseAdditionalHeaders configuration to ApiGatewayResponseConverter", () => {
+    const adapter = createApiGatewayAdapter({
+      functional: false,
+      responseAdditionalHeaders: { foo: "bar" }
+    })(jest.fn());
+    expect(adapter.outputConverter).toBeInstanceOf(ApiGatewayResponseConverter);
+    expect(adapter.outputConverter.additionalHeaders).toEqual({ foo: "bar" });
   });
 
   it("throws an error when inputType is not supported", () => {

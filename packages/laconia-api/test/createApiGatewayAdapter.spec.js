@@ -1,7 +1,7 @@
 const createApiGatewayAdapter = require("../src/createApiGatewayAdapter");
 const ApiGatewayBodyInputConverter = require("../src/ApiGatewayBodyInputConverter");
 const ApiGatewayParamsInputConverter = require("../src/ApiGatewayParamsInputConverter");
-const ApiGatewayResponseConverter = require("../src/ApiGatewayResponseConverter");
+const ApiGatewayOutputConverter = require("../src/ApiGatewayOutputConverter");
 
 describe("createApiGatewayAdapter", () => {
   it("returns an adapter function", () => {
@@ -27,21 +27,21 @@ describe("createApiGatewayAdapter", () => {
     );
   });
 
-  it("sets responseStatusCode configuration to ApiGatewayResponseConverter", () => {
+  it("sets responseStatusCode configuration to ApiGatewayOutputConverter", () => {
     const adapter = createApiGatewayAdapter({
       functional: false,
       responseStatusCode: 202
     })(jest.fn());
-    expect(adapter.outputConverter).toBeInstanceOf(ApiGatewayResponseConverter);
+    expect(adapter.outputConverter).toBeInstanceOf(ApiGatewayOutputConverter);
     expect(adapter.outputConverter.statusCode).toEqual(202);
   });
 
-  it("sets responseAdditionalHeaders configuration to ApiGatewayResponseConverter", () => {
+  it("sets responseAdditionalHeaders configuration to ApiGatewayOutputConverter", () => {
     const adapter = createApiGatewayAdapter({
       functional: false,
       responseAdditionalHeaders: { foo: "bar" }
     })(jest.fn());
-    expect(adapter.outputConverter).toBeInstanceOf(ApiGatewayResponseConverter);
+    expect(adapter.outputConverter).toBeInstanceOf(ApiGatewayOutputConverter);
     expect(adapter.outputConverter.additionalHeaders).toEqual({ foo: "bar" });
   });
 

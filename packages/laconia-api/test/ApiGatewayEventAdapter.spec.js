@@ -4,6 +4,7 @@ describe("ApiGatewayEventAdapter", () => {
   let event;
   let inputConverter;
   let outputConverter;
+  let errorConverter;
   let app;
   let constructorArgs;
   let laconiaContext;
@@ -18,8 +19,21 @@ describe("ApiGatewayEventAdapter", () => {
         statusCode: 200
       })
     };
+    errorConverter = {
+      convert: jest.fn().mockResolvedValue({
+        body: '{"status":"ok"}',
+        headers: { "content-type": "application/json" },
+        statusCode: 500
+      })
+    };
     app = jest.fn();
-    constructorArgs = [app, inputConverter, outputConverter, false];
+    constructorArgs = [
+      app,
+      inputConverter,
+      outputConverter,
+      errorConverter,
+      false
+    ];
     laconiaContext = { laconia: "context" };
   });
 
@@ -48,17 +62,35 @@ describe("ApiGatewayEventAdapter", () => {
       payload: "converted value",
       headers: { header1: "value1" }
     });
-    const adapter = new ApiGatewayEventAdapter(
-      app,
-      inputConverter,
-      outputConverter,
-      true
-    );
+    const adapter = new ApiGatewayEventAdapter(...constructorArgs);
+    adapter.includeInputHeaders = true;
     await adapter.handle(event, laconiaContext);
     expect(app).toBeCalledWith(
       "converted value",
       { header1: "value1" },
       laconiaContext
+    );
+  });
+
+  it("should convert error via error converter when app throws an error", async () => {
+    const error = new Error("boom");
+    app.mockRejectedValue(error);
+    const adapter = new ApiGatewayEventAdapter(...constructorArgs);
+    await adapter.handle(event, laconiaContext);
+    expect(errorConverter.convert).toBeCalledWith(error);
+  });
+
+  it("should return the error converter returned result", async () => {
+    const error = new Error("boom");
+    app.mockRejectedValue(error);
+    const adapter = new ApiGatewayEventAdapter(...constructorArgs);
+    const result = await adapter.handle(event, laconiaContext);
+    expect(result).toEqual(
+      expect.objectContaining({
+        body: '{"status":"ok"}',
+        headers: { "content-type": "application/json" },
+        statusCode: 500
+      })
     );
   });
 

@@ -194,4 +194,22 @@ describe("ApiGatewayErrorConverter", () => {
       expect(response).toHaveStatusCode(300);
     });
   });
+
+  describe("when no mapping matched", () => {
+    it("should fallback to default behaviour", async () => {
+      const error = new Error("boom");
+      error.name = "ValidationError";
+
+      errorConverter = new ApiGatewayErrorConverter({
+        mappings: {
+          SomethingIsRequired: () => ({
+            statusCode: 400
+          })
+        }
+      });
+
+      const response = errorConverter.convert(error);
+      expect(response).toHaveStatusCode(500);
+    });
+  });
 });

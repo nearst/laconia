@@ -5,6 +5,14 @@ expect.extend({
     expect(input).toEqual(expect.objectContaining({ body }));
     return { pass: true };
   },
+  toHaveStatusCode(input, statusCode) {
+    expect(input).toEqual(
+      expect.objectContaining({
+        statusCode
+      })
+    );
+    return { pass: true };
+  },
   toContainHeader(input, headerName, headerValue) {
     expect(input).toEqual(
       expect.objectContaining({
@@ -26,22 +34,14 @@ describe("ApiGatewayErrorConverter", () => {
 
   it("returns status code 500 by default", async () => {
     const response = await errorConverter.convert(new Error("boom"));
-    expect(response).toEqual(
-      expect.objectContaining({
-        statusCode: 500
-      })
-    );
+    expect(response).toHaveStatusCode(500);
   });
 
   it("returns the status code set in the error object", async () => {
     const error = new Error("boom");
     error.statusCode = 400;
     const response = await errorConverter.convert(error);
-    expect(response).toEqual(
-      expect.objectContaining({
-        statusCode: 400
-      })
-    );
+    expect(response).toHaveStatusCode(400);
   });
 
   it("should set isBase64Encoded to false", async () => {
@@ -71,5 +71,32 @@ describe("ApiGatewayErrorConverter", () => {
     }).convert(new Error("boom"));
     expect(response).toContainHeader("Access-Control-Allow-Origin", "foo");
     expect(response).toContainHeader("Access-Control-Max-Age", "bar");
+  });
+
+  describe("when statusCode mapping is set", () => {
+    it("sets status code returned by the mapping", async () => {
+      const error = new Error("boom");
+      error.name = "ValidationError";
+
+      const response = await new ApiGatewayErrorConverter({
+        mappings: new Map([["Validation.*", () => ({ statusCode: 400 })]])
+      }).convert(error);
+
+      expect(response).toHaveStatusCode(400);
+    });
+
+    it("sets body with error message", () => {});
+  });
+
+  describe("when headers mapping is set", () => {
+    it("should take precedence over additionalHeaders configuration if the key is equal", () => {});
+  });
+
+  describe("when body mapping is set", () => {
+    it("should take precedence over additionalHeaders configuration", () => {});
+  });
+
+  describe("when there are multiple mappings", () => {
+    it("should match based on the order set in the mapping", () => {});
   });
 });

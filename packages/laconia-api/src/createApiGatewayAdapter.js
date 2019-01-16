@@ -18,7 +18,8 @@ const createApiAgatewayAdapter = ({
   functional = true,
   includeInputHeaders = false,
   responseStatusCode,
-  responseAdditionalHeaders
+  responseAdditionalHeaders,
+  errorMappings
 } = {}) => app => {
   const adapter = new ApiGatewayEventAdapter(
     app,
@@ -28,7 +29,8 @@ const createApiAgatewayAdapter = ({
       additionalHeaders: responseAdditionalHeaders
     }),
     new ApiGatewayErrorConverter({
-      additionalHeaders: responseAdditionalHeaders
+      additionalHeaders: responseAdditionalHeaders,
+      mappings: errorMappings
     }),
     includeInputHeaders
   );

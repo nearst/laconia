@@ -1,15 +1,19 @@
+const getMappingEntries = mappings =>
+  mappings instanceof Map ? mappings.entries() : Object.entries(mappings);
+
 const getMappingResponse = (mappings, error) => {
   let mappingResponse = {};
-  for (let [errorRegex, response] of mappings.entries()) {
+  for (let [errorRegex, mapping] of getMappingEntries(mappings)) {
     if (error.name.match(errorRegex)) {
-      mappingResponse = response(error);
+      mappingResponse = mapping(error);
+      break;
     }
   }
   return mappingResponse;
 };
 
 module.exports = class ApiGatewayErrorConverter {
-  constructor({ additionalHeaders = {}, mappings = new Map() } = {}) {
+  constructor({ additionalHeaders = {}, mappings = {} } = {}) {
     this.additionalHeaders = additionalHeaders;
     this.mappings = mappings;
   }
@@ -18,8 +22,12 @@ module.exports = class ApiGatewayErrorConverter {
     let mappingResponse = getMappingResponse(this.mappings, error);
 
     return {
-      body: error.message,
-      headers: Object.assign({}, this.additionalHeaders),
+      body: mappingResponse.body || error.message,
+      headers: Object.assign(
+        {},
+        this.additionalHeaders,
+        mappingResponse.headers
+      ),
       statusCode: mappingResponse.statusCode || error.statusCode || 500,
       isBase64Encoded: false
     };

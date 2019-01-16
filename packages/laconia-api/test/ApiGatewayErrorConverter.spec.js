@@ -74,29 +74,124 @@ describe("ApiGatewayErrorConverter", () => {
   });
 
   describe("when statusCode mapping is set", () => {
-    it("sets status code returned by the mapping", async () => {
-      const error = new Error("boom");
+    let error;
+    let errorConverter;
+
+    beforeEach(() => {
+      error = new Error("boom");
       error.name = "ValidationError";
 
-      const response = await new ApiGatewayErrorConverter({
-        mappings: new Map([["Validation.*", () => ({ statusCode: 400 })]])
-      }).convert(error);
+      errorConverter = new ApiGatewayErrorConverter({
+        mappings: {
+          "Validation.*": () => ({ statusCode: 400 })
+        }
+      });
+    });
+
+    it("sets status code returned by the mapping", async () => {
+      const response = await errorConverter.convert(error);
 
       expect(response).toHaveStatusCode(400);
     });
 
-    it("sets body with error message", () => {});
+    it("sets body with error message", async () => {
+      const response = await errorConverter.convert(error);
+
+      expect(response).toEqual(
+        expect.objectContaining({
+          body: "boom"
+        })
+      );
+    });
   });
 
   describe("when headers mapping is set", () => {
-    it("should take precedence over additionalHeaders configuration if the key is equal", () => {});
+    let error;
+    let errorConverter;
+
+    beforeEach(() => {
+      error = new Error("boom");
+      error.name = "ValidationError";
+
+      errorConverter = new ApiGatewayErrorConverter({
+        mappings: {
+          "Validation.*": () => ({
+            headers: { "Access-Control-Max-Age": "overridden" }
+          })
+        },
+        additionalHeaders: {
+          "Access-Control-Max-Age": "original"
+        }
+      });
+    });
+
+    it("should take precedence over additionalHeaders configuration if the key is equal", async () => {
+      const response = errorConverter.convert(error);
+      expect(response).toContainHeader("Access-Control-Max-Age", "overridden");
+    });
+
+    it("should return 500 status code", () => {
+      const response = errorConverter.convert(error);
+      expect(response).toHaveStatusCode(500);
+    });
   });
 
   describe("when body mapping is set", () => {
-    it("should take precedence over additionalHeaders configuration", () => {});
+    let error;
+    let errorConverter;
+
+    beforeEach(() => {
+      error = new Error("boom");
+      error.name = "ValidationError";
+
+      errorConverter = new ApiGatewayErrorConverter({
+        mappings: {
+          "Validation.*": error => ({
+            body: `Modified ${error.message}`
+          })
+        }
+      });
+    });
+
+    it("should return the body set by the mapping", async () => {
+      const response = await errorConverter.convert(error);
+
+      expect(response).toEqual(
+        expect.objectContaining({
+          body: "Modified boom"
+        })
+      );
+    });
   });
 
   describe("when there are multiple mappings", () => {
-    it("should match based on the order set in the mapping", () => {});
+    let error;
+
+    beforeEach(() => {
+      error = new Error("boom");
+      error.name = "ValidationError";
+    });
+
+    it("should match based on the order set in the mapping", () => {
+      errorConverter = new ApiGatewayErrorConverter({
+        mappings: new Map([
+          ["Validation.*", () => ({ statusCode: 200 })],
+          [".*Error", () => ({ statusCode: 300 })]
+        ])
+      });
+      const response = errorConverter.convert(error);
+      expect(response).toHaveStatusCode(200);
+    });
+
+    it("should match based on the order set in the mapping", () => {
+      errorConverter = new ApiGatewayErrorConverter({
+        mappings: new Map([
+          [".*Error", () => ({ statusCode: 300 })],
+          ["Validation.*", () => ({ statusCode: 200 })]
+        ])
+      });
+      const response = errorConverter.convert(error);
+      expect(response).toHaveStatusCode(300);
+    });
   });
 });

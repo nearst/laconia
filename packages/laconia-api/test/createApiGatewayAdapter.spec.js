@@ -55,6 +55,14 @@ describe("createApiGatewayAdapter", () => {
     expect(adapter.errorConverter.additionalHeaders).toEqual({ foo: "bar" });
   });
 
+  it("sets mappings configuration to ApiGatewayErrorConverter", () => {
+    const adapter = createApiGatewayAdapter({
+      functional: false,
+      errorMappings: { foo: "bar" }
+    })(jest.fn());
+    expect(adapter.errorConverter.mappings).toEqual({ foo: "bar" });
+  });
+
   it("throws an error when inputType is not supported", () => {
     expect(() =>
       createApiGatewayAdapter({

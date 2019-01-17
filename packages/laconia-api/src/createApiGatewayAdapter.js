@@ -2,7 +2,7 @@ const ApiGatewayEventAdapter = require("./ApiGatewayEventAdapter");
 const ApiGatewayBodyInputConverter = require("./ApiGatewayBodyInputConverter");
 const ApiGatewayParamsInputConverter = require("./ApiGatewayParamsInputConverter");
 const ApiGatewayOutputConverter = require("./ApiGatewayOutputConverter");
-const ApiGatewayErrorConverter = require("./ApiGatewayErrorConverter");
+const ApiGatewayNameMappingErrorConverter = require("./ApiGatewayNameMappingErrorConverter");
 
 const createInputConverter = inputType => {
   if (!["body", "params"].includes(inputType)) {
@@ -28,7 +28,7 @@ const createApiAgatewayAdapter = ({
       statusCode: responseStatusCode,
       additionalHeaders: responseAdditionalHeaders
     }),
-    new ApiGatewayErrorConverter({
+    new ApiGatewayNameMappingErrorConverter({
       additionalHeaders: responseAdditionalHeaders,
       mappings: errorMappings
     }),

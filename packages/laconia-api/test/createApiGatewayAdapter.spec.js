@@ -2,7 +2,7 @@ const createApiGatewayAdapter = require("../src/createApiGatewayAdapter");
 const ApiGatewayBodyInputConverter = require("../src/ApiGatewayBodyInputConverter");
 const ApiGatewayParamsInputConverter = require("../src/ApiGatewayParamsInputConverter");
 const ApiGatewayOutputConverter = require("../src/ApiGatewayOutputConverter");
-const ApiGatewayErrorConverter = require("../src/ApiGatewayErrorConverter");
+const ApiGatewayNameMappingErrorConverter = require("../src/ApiGatewayNameMappingErrorConverter");
 
 describe("createApiGatewayAdapter", () => {
   it("returns an adapter function", () => {
@@ -51,11 +51,13 @@ describe("createApiGatewayAdapter", () => {
       functional: false,
       responseAdditionalHeaders: { foo: "bar" }
     })(jest.fn());
-    expect(adapter.errorConverter).toBeInstanceOf(ApiGatewayErrorConverter);
+    expect(adapter.errorConverter).toBeInstanceOf(
+      ApiGatewayNameMappingErrorConverter
+    );
     expect(adapter.errorConverter.additionalHeaders).toEqual({ foo: "bar" });
   });
 
-  it("sets mappings configuration to ApiGatewayErrorConverter", () => {
+  it("sets mappings configuration to ApiGatewayNameMappingErrorConverter", () => {
     const adapter = createApiGatewayAdapter({
       functional: false,
       errorMappings: { foo: "bar" }

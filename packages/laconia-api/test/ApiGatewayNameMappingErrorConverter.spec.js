@@ -1,4 +1,4 @@
-const ApiGatewayErrorConverter = require("../src/ApiGatewayErrorConverter");
+const ApiGatewayErrorConverter = require("../src/ApiGatewayNameMappingErrorConverter");
 
 expect.extend({
   toContainBody(input, body) {

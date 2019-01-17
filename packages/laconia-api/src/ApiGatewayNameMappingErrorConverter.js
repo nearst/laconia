@@ -12,7 +12,7 @@ const getMappingResponse = (mappings, error) => {
   return mappingResponse;
 };
 
-module.exports = class ApiGatewayErrorConverter {
+module.exports = class ApiGatewayNameMappingErrorConverter {
   constructor({ additionalHeaders = {}, mappings = {} } = {}) {
     this.additionalHeaders = additionalHeaders;
     this.mappings = mappings;

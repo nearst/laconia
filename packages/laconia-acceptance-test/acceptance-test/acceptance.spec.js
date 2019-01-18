@@ -222,9 +222,9 @@ describe("order flow", () => {
 
   describe("error scenario", () => {
     describe("place-order", () => {
-      xit("should not place order when restaurantId is undefined", async () => {
-        const order = createOrder(undefined, 10);
-        await placeOrder(orderUrl, order);
+      it("should return status 400 when restaurantId is invalid", async () => {
+        const order = createOrder(-1, 10);
+        await frisby.post(orderUrl, { order }).expect("status", 400);
       });
     });
 

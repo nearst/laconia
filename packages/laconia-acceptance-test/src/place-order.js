@@ -2,24 +2,28 @@ const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
 const laconia = require("@laconia/core");
 const apigateway = require("@laconia/api").apigateway({
   inputType: "body",
-  includeInputHeaders: true
+  includeInputHeaders: true,
+  errorMappings: {
+    ValidationError: () => ({ statusCode: 400 })
+  }
 });
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const KinesisOrderStream = require("./KinesisOrderStream");
 const UuidIdGenerator = require("./UuidIdGenerator");
+const ValidationError = require("./ValidationError");
 var log = require("pino")("place-order");
 
 const validateApiKey = (headers, apiKey) => {
   if (headers.Authorization !== apiKey) {
-    throw new Error("Unauthorized: Wrong API Key");
+    throw new ValidationError("Unauthorized: Wrong API Key");
   }
 };
 
 const validateRestaurantId = (restaurants, restaurantId) => {
   if (!restaurants.includes(restaurantId)) {
-    throw new Error(`Invalid restaurant id: ${restaurantId}`);
+    throw new ValidationError(`Invalid restaurant id: ${restaurantId}`);
   }
 };
 

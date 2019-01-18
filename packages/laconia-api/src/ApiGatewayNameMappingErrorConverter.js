@@ -1,3 +1,5 @@
+const getContentType = require("./getContentType");
+
 const getMappingEntries = mappings =>
   mappings instanceof Map ? mappings.entries() : Object.entries(mappings);
 
@@ -19,12 +21,13 @@ module.exports = class ApiGatewayNameMappingErrorConverter {
   }
 
   convert(error) {
-    let mappingResponse = getMappingResponse(this.mappings, error);
+    const mappingResponse = getMappingResponse(this.mappings, error);
+    const body = mappingResponse.body || error.message;
 
     return {
-      body: mappingResponse.body || error.message,
+      body: typeof body !== "string" ? JSON.stringify(body) : body,
       headers: Object.assign(
-        {},
+        { "Content-Type": getContentType(body) },
         this.additionalHeaders,
         mappingResponse.headers
       ),

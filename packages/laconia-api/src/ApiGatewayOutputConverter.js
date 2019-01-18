@@ -1,3 +1,5 @@
+const getContentType = require("./getContentType");
+
 module.exports = class ApiGatewayOutputConverter {
   constructor({ statusCode = 200, additionalHeaders = {} } = {}) {
     this.statusCode = statusCode;
@@ -6,10 +8,7 @@ module.exports = class ApiGatewayOutputConverter {
 
   convert(output) {
     const body = typeof output !== "string" ? JSON.stringify(output) : output;
-    const contentType =
-      typeof output === "object"
-        ? "application/json; charset=utf-8"
-        : "text/plain";
+    const contentType = getContentType(output);
 
     return {
       body,

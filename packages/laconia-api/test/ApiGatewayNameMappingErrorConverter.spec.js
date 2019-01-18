@@ -144,22 +144,41 @@ describe("ApiGatewayErrorConverter", () => {
       error = new Error("boom");
       error.name = "ValidationError";
 
-      errorConverter = new ApiGatewayErrorConverter({
-        mappings: {
-          "Validation.*": error => ({
-            body: `Modified ${error.message}`
-          })
-        }
-      });
+      errorConverter = new ApiGatewayErrorConverter();
     });
 
     it("should return the body set by the mapping", async () => {
+      errorConverter.mappings = {
+        "Validation.*": error => ({
+          body: `Modified ${error.message}`
+        })
+      };
       const response = await errorConverter.convert(error);
 
       expect(response).toEqual(
         expect.objectContaining({
           body: "Modified boom"
         })
+      );
+      expect(response).toContainHeader("Content-Type", "text/plain");
+    });
+
+    it("should return JSON stringify body when an objet is returned", async () => {
+      errorConverter.mappings = {
+        "Validation.*": () => ({
+          body: { foo: "bar" }
+        })
+      };
+      const response = await errorConverter.convert(error);
+
+      expect(response).toEqual(
+        expect.objectContaining({
+          body: '{"foo":"bar"}'
+        })
+      );
+      expect(response).toContainHeader(
+        "Content-Type",
+        "application/json; charset=utf-8"
       );
     });
   });

@@ -1,29 +1,7 @@
 const ApiGatewayErrorConverter = require("../src/ApiGatewayNameMappingErrorConverter");
+const jestResponseMatchers = require("./jestResponseMatchers");
 
-expect.extend({
-  toContainBody(input, body) {
-    expect(input).toEqual(expect.objectContaining({ body }));
-    return { pass: true };
-  },
-  toHaveStatusCode(input, statusCode) {
-    expect(input).toEqual(
-      expect.objectContaining({
-        statusCode
-      })
-    );
-    return { pass: true };
-  },
-  toContainHeader(input, headerName, headerValue) {
-    expect(input).toEqual(
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          [headerName]: headerValue
-        })
-      })
-    );
-    return { pass: true };
-  }
-});
+expect.extend(jestResponseMatchers);
 
 describe("ApiGatewayErrorConverter", () => {
   let errorConverter;
@@ -46,20 +24,12 @@ describe("ApiGatewayErrorConverter", () => {
 
   it("should set isBase64Encoded to false", async () => {
     const response = await errorConverter.convert(new Error("boom"));
-    expect(response).toEqual(
-      expect.objectContaining({
-        isBase64Encoded: false
-      })
-    );
+    expect(response).toBeBase64Encoded(false);
   });
 
   it("set body based on the error message", async () => {
     const response = await errorConverter.convert(new Error("boom"));
-    expect(response).toEqual(
-      expect.objectContaining({
-        body: "boom"
-      })
-    );
+    expect(response).toContainBody("boom");
   });
 
   it("adds additional headers as per specified", async () => {
@@ -97,11 +67,7 @@ describe("ApiGatewayErrorConverter", () => {
     it("sets body with error message", async () => {
       const response = await errorConverter.convert(error);
 
-      expect(response).toEqual(
-        expect.objectContaining({
-          body: "boom"
-        })
-      );
+      expect(response).toContainBody("boom");
     });
   });
 
@@ -155,11 +121,7 @@ describe("ApiGatewayErrorConverter", () => {
       };
       const response = await errorConverter.convert(error);
 
-      expect(response).toEqual(
-        expect.objectContaining({
-          body: "Modified boom"
-        })
-      );
+      expect(response).toContainBody("Modified boom");
       expect(response).toContainHeader("Content-Type", "text/plain");
     });
 
@@ -171,11 +133,7 @@ describe("ApiGatewayErrorConverter", () => {
       };
       const response = await errorConverter.convert(error);
 
-      expect(response).toEqual(
-        expect.objectContaining({
-          body: '{"foo":"bar"}'
-        })
-      );
+      expect(response).toContainBody('{"foo":"bar"}');
       expect(response).toContainHeader(
         "Content-Type",
         "application/json; charset=utf-8"

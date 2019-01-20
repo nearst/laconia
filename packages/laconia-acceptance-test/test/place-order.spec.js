@@ -15,7 +15,7 @@ describe("place-order", () => {
     };
 
     headers = {
-      Authorization: "secret"
+      authorization: "secret"
     };
     newOrder = { order };
     lc = {

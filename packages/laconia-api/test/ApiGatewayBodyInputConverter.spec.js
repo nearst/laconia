@@ -68,4 +68,12 @@ describe("ApiGatewayBodyInputConverter", () => {
       })
     );
   });
+
+  it("should be able to retrieve headers with node.js canonical format", async () => {
+    event.queryStringParameters = { queryParam1: "queryParam" };
+    const input = await inputConverter.convert(event);
+    expect(input.headers["content-type"]).toEqual(
+      "application/json; charset=UTF-8"
+    );
+  });
 });

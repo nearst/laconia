@@ -1,4 +1,5 @@
 const parseRequestBody = require("./parseRequestBody");
+const ApiGatewayInputHeaders = require("./ApiGatewayInputHeaders");
 
 module.exports = class ApiGatewayParamsInputConverter {
   convert(event) {
@@ -8,7 +9,7 @@ module.exports = class ApiGatewayParamsInputConverter {
         event.pathParameters,
         event.queryStringParameters
       ),
-      headers: event.headers
+      headers: new ApiGatewayInputHeaders(event.headers)
     };
   }
 };

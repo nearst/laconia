@@ -16,7 +16,7 @@ const ValidationError = require("./ValidationError");
 var log = require("pino")("place-order");
 
 const validateApiKey = (headers, apiKey) => {
-  if (headers.Authorization !== apiKey) {
+  if (headers.authorization !== apiKey) {
     throw new ValidationError("Unauthorized: Wrong API Key");
   }
 };

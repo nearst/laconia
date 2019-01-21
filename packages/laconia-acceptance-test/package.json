@@ -1,6 +1,6 @@
 {
   "name": "@laconia/acceptance-test",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "",
   "keywords": [
     "aws",
@@ -31,7 +31,7 @@
     "remove:8": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
   },
   "dependencies": {
-    "@laconia/api": "^0.16.0",
+    "@laconia/api": "^0.17.0",
     "@laconia/batch": "^0.16.0",
     "@laconia/config": "^0.16.0",
     "@laconia/core": "^0.16.0",

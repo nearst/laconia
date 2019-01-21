@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0]
+
+### Changed
+
+* `@laconia/api`
+  * **BREAKING** #13 Change @laconia/api API to abstract business logic instead of HTTP. Check out the latest documentation for the latest way to use the module.
+
 ## [0.16.0]
 
 ### Changed
 
 * `@laconia/event`
-  * **BREAKING** #12 Change @laconia/event API. Check out the latest docuemntation for the latest way to use the module.
+  * **BREAKING** #12 Change @laconia/event API. Check out the latest documentation for the latest way to use the module.
 
 ## [0.15.0]
 

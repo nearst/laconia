@@ -46,7 +46,7 @@ There are two ways your application can be called by @laconia/api adapter:
 
 ## Supported input types
 
-Laconia API Gateway adapter supports the following the input types:
+@laconia/api adapter supports the following the input types:
 
 * `body`
 

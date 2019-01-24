@@ -10,4 +10,8 @@ module.exports = class EventAdapter {
     );
     return this.app(input, laconiaContext);
   }
+
+  toFunction() {
+    return this.handle.bind(this);
+  }
 };

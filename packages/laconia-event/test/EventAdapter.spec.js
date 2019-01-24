@@ -40,4 +40,11 @@ describe("EventAdapter", () => {
     await adapter.handle(event, laconiaContext);
     expect(app).toBeCalledWith("converted value", laconiaContext);
   });
+
+  it("should be able to be called as function", async () => {
+    app.mockResolvedValue("result");
+    const adapter = new EventAdapter(app, inputConverterFactory);
+    const result = await adapter.toFunction()(event, laconiaContext);
+    expect(result).toEqual("result");
+  });
 });

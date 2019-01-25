@@ -1,13 +1,11 @@
 module.exports = class EventAdapter {
-  constructor(app, inputConverterFactory) {
+  constructor(app, inputConverter) {
     this.app = app;
-    this.inputConverterFactory = inputConverterFactory;
+    this.inputConverter = inputConverter;
   }
 
   async handle(event, laconiaContext) {
-    const input = await this.inputConverterFactory(laconiaContext).convert(
-      event
-    );
+    const input = await this.inputConverter.convert(event);
     return this.app(input, laconiaContext);
   }
 

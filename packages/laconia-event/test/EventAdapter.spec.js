@@ -2,7 +2,6 @@ const EventAdapter = require("../src/EventAdapter");
 
 describe("EventAdapter", () => {
   let event;
-  let inputConverterFactory;
   let inputConverter;
   let app;
   let laconiaContext;
@@ -10,40 +9,33 @@ describe("EventAdapter", () => {
   beforeEach(() => {
     event = { foo: "event" };
     inputConverter = { convert: jest.fn() };
-    inputConverterFactory = jest.fn().mockReturnValue(inputConverter);
     app = jest.fn();
     laconiaContext = { dependency: "some dependencies " };
   });
 
-  it("should be called when the handler is called", async () => {
-    const adapter = new EventAdapter(app, inputConverterFactory);
+  it("should call inputConverter", async () => {
+    const adapter = new EventAdapter(app, inputConverter);
     await adapter.handle(event, laconiaContext);
     expect(inputConverter.convert).toBeCalledWith(event);
   });
 
-  it("should call inputConverterFactory with laconiaContext", async () => {
-    const adapter = new EventAdapter(app, inputConverterFactory);
-    await adapter.handle(event, laconiaContext);
-    expect(inputConverterFactory).toBeCalledWith(laconiaContext);
-  });
-
   it("should return the app returned result", async () => {
     app.mockResolvedValue("result");
-    const adapter = new EventAdapter(app, inputConverterFactory);
+    const adapter = new EventAdapter(app, inputConverter);
     const result = await adapter.handle(event, laconiaContext);
     expect(result).toEqual("result");
   });
 
   it("should call app with the converted event", async () => {
     inputConverter.convert.mockResolvedValue("converted value");
-    const adapter = new EventAdapter(app, inputConverterFactory);
+    const adapter = new EventAdapter(app, inputConverter);
     await adapter.handle(event, laconiaContext);
     expect(app).toBeCalledWith("converted value", laconiaContext);
   });
 
   it("should be able to be called as function", async () => {
     app.mockResolvedValue("result");
-    const adapter = new EventAdapter(app, inputConverterFactory);
+    const adapter = new EventAdapter(app, inputConverter);
     const result = await adapter.toFunction()(event, laconiaContext);
     expect(result).toEqual("result");
   });

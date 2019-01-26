@@ -4,14 +4,11 @@ const event = require("../src/index");
 jest.mock("../src/createLaconiaEventHandler");
 
 describe("@laconia/event", () => {
-  const eventHandlers = [
-    "s3Event",
-    "s3Stream",
-    "s3Json",
-    "kinesisJson",
-    "snsJson",
-    "sqsJson"
-  ];
+  it("exposes s3 adapter", () => {
+    expect(event.s3).toBeFunction();
+  });
+
+  const eventHandlers = ["kinesisJson", "snsJson", "sqsJson"];
 
   beforeEach(() => {
     createLaconiaEventHandler.mockReset();

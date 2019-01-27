@@ -1,4 +1,5 @@
-const laconiaEvent = require("@laconia/event").kinesisJson();
+const laconia = require("@laconia/core");
+const kinesis = require("@laconia/event").kinesis();
 const SnsRestaurantNotificationTopic = require("./SnsRestaurantNotificationTopic");
 
 const instances = ({ $sns, env }) => ({
@@ -8,7 +9,7 @@ const instances = ({ $sns, env }) => ({
   )
 });
 
-const handler = async (orderEvents, { restaurantNotificationTopic }) => {
+const app = async (orderEvents, { restaurantNotificationTopic }) => {
   return Promise.all(
     orderEvents
       .filter(o => o.eventType === "placed")
@@ -16,4 +17,4 @@ const handler = async (orderEvents, { restaurantNotificationTopic }) => {
   );
 };
 
-module.exports.handler = laconiaEvent(handler).register(instances);
+module.exports.handler = laconia(kinesis(app)).register(instances);

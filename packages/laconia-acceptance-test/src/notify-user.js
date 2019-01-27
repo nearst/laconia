@@ -1,7 +1,8 @@
-const laconiaEvent = require("@laconia/event").kinesisJson();
+const laconia = require("@laconia/core");
+const kinesis = require("@laconia/event").kinesis();
 const AWS = require("aws-sdk");
 
-const handler = async (orderEvents, { env }) => {
+const app = async (orderEvents, { env }) => {
   const acceptedEvents = orderEvents.filter(o => o.eventType === "accepted");
   console.log(acceptedEvents);
   const sqs = new AWS.SQS();
@@ -17,4 +18,4 @@ const handler = async (orderEvents, { env }) => {
   );
 };
 
-module.exports.handler = laconiaEvent(handler);
+module.exports.handler = laconia(kinesis(app));

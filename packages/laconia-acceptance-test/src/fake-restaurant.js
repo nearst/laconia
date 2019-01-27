@@ -1,7 +1,8 @@
-const laconiaEvent = require("@laconia/event").snsJson();
+const laconia = require("@laconia/core");
+const sns = require("@laconia/event").sns();
 const r2 = require("r2");
 
-const handler = async (order, { env }) => {
+const app = async (order, { env }) => {
   console.log("order", order);
   if (order.restaurantId === 1) {
     console.log(`Accepting order: ${JSON.stringify(order)}`);
@@ -10,4 +11,4 @@ const handler = async (order, { env }) => {
   }
 };
 
-module.exports.handler = laconiaEvent(handler);
+module.exports.handler = laconia(sns(app));

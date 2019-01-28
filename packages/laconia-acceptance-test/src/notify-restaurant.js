@@ -1,5 +1,5 @@
 const laconia = require("@laconia/core");
-const kinesis = require("@laconia/event").kinesis();
+const kinesis = require("@laconia/adapter").kinesis();
 const SnsRestaurantNotificationTopic = require("./SnsRestaurantNotificationTopic");
 
 const instances = ({ $sns, env }) => ({

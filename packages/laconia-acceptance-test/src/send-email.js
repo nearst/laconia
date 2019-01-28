@@ -1,5 +1,5 @@
 const laconia = require("@laconia/core");
-const sqs = require("@laconia/event").sqs();
+const sqs = require("@laconia/adapter").sqs();
 const { spy } = require("@laconia/test");
 
 const handler = async orderEvents => {

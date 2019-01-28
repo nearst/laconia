@@ -1,5 +1,5 @@
 const laconia = require("@laconia/core");
-const s3 = require("@laconia/event").s3();
+const s3 = require("@laconia/adapter").s3();
 const S3TotalOrderStorage = require("./S3TotalOrderStorage");
 
 const instances = ({ $s3, env }) => ({

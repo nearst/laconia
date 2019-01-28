@@ -1,15 +1,15 @@
-# @laconia/event
+# @laconia/adapter
 
 [![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 
-> 🛡️ Laconia Event - Converts AWS events into regular objects
+> 🛡️ Laconia Adapter - Converts AWS events into your application input
 
 ## Install
 
 ```
-npm install --save @laconia/event
+npm install --save @laconia/adapter
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ npm install --save @laconia/event
 Use the supported event handlers and you are done!
 
 ```js
-const laconiaEvent = require("@laconia/event").s3Json();
+const laconiaEvent = require("@laconia/adapter").s3Json();
 
 const handler = async (objectRetrievedFromS3, laconiaContext) => {
   // The S3 object that has triggered the event
@@ -48,7 +48,7 @@ has triggered the event from S3, then JSON parses the object.
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/event").s3Json();
+const laconiaEvent = require("@laconia/adapter").s3Json();
 
 const handler = async object => {
   console.log(object); // do operation with the object
@@ -66,7 +66,7 @@ for more details on the stream.
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/event").s3Stream();
+const laconiaEvent = require("@laconia/adapter").s3Stream();
 
 const handler = async inputStream => {
   inputStream.pipe(); // do stream operation with the S3 object stream
@@ -92,7 +92,7 @@ into a `S3Event` object, which has the following property:
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/event").s3Event();
+const laconiaEvent = require("@laconia/adapter").s3Event();
 
 const handler = async s3Event => {
   console.log("Received an event from S3: ", s3Event.bucket, s3Event.key);
@@ -110,7 +110,7 @@ stored in base64 and buried in a nested structure.
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/event").kinesisJson();
+const laconiaEvent = require("@laconia/adapter").kinesisJson();
 
 const handler = async records => {
   console.log(records); // Prints: [{ mykey: 'my value'}]
@@ -137,7 +137,7 @@ Creates an event handler that will parse sns message from JSON format into regul
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/event").snsJson();
+const laconiaEvent = require("@laconia/adapter").snsJson();
 
 const handler = async message => {
   console.log(message); // Prints: { mykey: 'my value'}
@@ -164,7 +164,7 @@ Creates an event handler that will parse SQS message body from JSON into regular
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/event").sqsJson();
+const laconiaEvent = require("@laconia/adapter").sqsJson();
 
 const handler = async messages => {
   console.log(messages); // Prints: [{ mykey: 'my value'}]

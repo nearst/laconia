@@ -1,5 +1,5 @@
 const laconia = require("@laconia/core");
-const kinesis = require("@laconia/event").kinesis();
+const kinesis = require("@laconia/adapter").kinesis();
 const AWS = require("aws-sdk");
 
 const app = async (orderEvents, { env }) => {

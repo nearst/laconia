@@ -1,5 +1,5 @@
 const laconia = require("@laconia/core");
-const sns = require("@laconia/event").sns();
+const sns = require("@laconia/adapter").sns();
 const r2 = require("r2");
 
 const app = async (order, { env }) => {

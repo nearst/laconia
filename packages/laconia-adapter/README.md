@@ -14,76 +14,43 @@ npm install --save @laconia/adapter
 
 ## Usage
 
-Use the supported event handlers and you are done!
-
 ```js
-const laconiaEvent = require("@laconia/adapter").s3Json();
+const laconia = require("@laconia/core");
+const s3 = require("@laconia/adapter").s3();
 
-const handler = async (objectRetrievedFromS3, laconiaContext) => {
+const app = async (objectRetrievedFromS3, laconiaContext) => {
   // The S3 object that has triggered the event
   console.log(objectRetrievedFromS3);
 };
 
-module.exports.handler = laconiaEvent(handler);
+exports.handler = laconia(s3(app));
 ```
 
-## Supported event triggers
+## Supported events
 
-* S3. Available event handlers:
-  * s3Json
-  * s3Stream
-  * s3Event
-* Kinesis. Available event handlers:
-  * kinesisJson
-* SNS. Available event handlers:
-  * snsJson
+* S3
+* Kinesis
+* SNS
+* SQS
 
 ## API
 
-#### `laconiaEvent.s3Json`
+### `s3(options)`
 
-Creates an event handler that will retrieve the object that
-has triggered the event from S3, then JSON parses the object.
+Creates an event adapter that will retrieve the object that
+has triggered the event from S3, then convert the object into your application
+input based on the `inputType` option.
 
-Example:
+* `options`:
+  * `inputType = "object"`
+    * Supported values are: `object`, `stream`, `event`
+    * Determines what should the application receive as an input
 
-```js
-const laconiaEvent = require("@laconia/adapter").s3Json();
-
-const handler = async object => {
-  console.log(object); // do operation with the object
-};
-
-module.exports.handler = laconiaEvent(handler);
-```
-
-#### `laconiaEvent.s3Stream`
-
-Creates an event handler that will stream the object that
-has triggered the event from S3. See [this AWS documentation](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/requests-using-stream-objects.html)
-for more details on the stream.
-
-Example:
-
-```js
-const laconiaEvent = require("@laconia/adapter").s3Stream();
-
-const handler = async inputStream => {
-  inputStream.pipe(); // do stream operation with the S3 object stream
-};
-
-module.exports.handler = laconiaEvent(handler);
-```
-
-#### `laconiaEvent.s3Event`
-
-_To reduce your code dependency to AWS, prefer the use of other s3 event handlers before
-using `s3Event`. This event handler should only be used when
+_To reduce your code dependency to AWS, opt for other `inputType` before
+using `event`. The `event` inputType should only be used when
 you don't actually need to retrieve the object from S3, such as listening to
-s3:ObjectRemoved:Delete events_
-
-Creates an event handler that will extract S3 event information
-into a `S3Event` object, which has the following property:
+s3:ObjectRemoved:Delete events_. The `event` inputType will inject an `S3Event`
+object as an application input, which has the following property:
 
 * `key`: The URL decoded object key
   * The S3 key fired to lambda are URL encoded and hard to be used for AWS SDK S3 operation
@@ -92,34 +59,57 @@ into a `S3Event` object, which has the following property:
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/adapter").s3Event();
+// inputType: object
+const laconia = require("@laconia/core");
+const s3 = require("@laconia/adapter").s3();
 
-const handler = async s3Event => {
+const app = async object => {
+  console.log(object); // do operation with the object
+};
+
+exports.handler = laconia(s3(app));
+
+// inputType: stream
+const laconia = require("@laconia/core");
+const s3 = require("@laconia/adapter").s3({ inputType: "stream" });
+
+const app = async inputStream => {
+  inputStream.pipe(); // do stream operation with the S3 object stream
+};
+
+exports.handler = laconia(s3(app));
+
+// inputType: event
+const laconia = require("@laconia/core");
+const s3 = require("@laconia/adapter").s3({ inputType: "event" });
+
+const app = async s3Event => {
   console.log("Received an event from S3: ", s3Event.bucket, s3Event.key);
 };
 
-module.exports.handler = laconiaEvent(handler);
+exports.handler = laconia(s3(app));
 ```
 
-#### `laconiaEvent.kinesisJson`
+### `kinesis()`
 
-Creates an event handler that will parse kinesis event data from
-JSON format into regular object. This event handler will also handle the Kinesis event data format which are
+Creates an event adapter that will parse kinesis event data from
+JSON format into regular object. This event adapter will also handle the Kinesis event data format which are
 stored in base64 and buried in a nested structure.
 
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/adapter").kinesisJson();
+const laconia = require("@laconia/core");
+const kinesis = require("@laconia/adapter").kinesis();
 
-const handler = async records => {
+const app = async records => {
   console.log(records); // Prints: [{ mykey: 'my value'}]
 };
 
-module.exports.handler = laconiaEvent(handler);
+exports.handler = laconia(kinesis(app));
 
 // Calls handler with an example Kinesis event
-module.exports.handler({
+exports.handler({
   Records: [
     {
       kinesis: {
@@ -130,23 +120,24 @@ module.exports.handler({
 });
 ```
 
-#### `laconiaEvent.snsJson`
+### `sns()`
 
-Creates an event handler that will parse sns message from JSON format into regular object.
+Creates an event adapter that will parse sns message from JSON format into regular object.
 
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/adapter").snsJson();
+const laconia = require("@laconia/core");
+const sns = require("@laconia/adapter").sns();
 
-const handler = async message => {
+const app = async message => {
   console.log(message); // Prints: { mykey: 'my value'}
 };
 
-module.exports.handler = laconiaEvent(handler);
+exports.handler = laconia(sns(app));
 
 // Calls handler with an example SNS event
-module.exports.handler({
+exports.handler({
   Records: [
     {
       Sns: {
@@ -157,23 +148,24 @@ module.exports.handler({
 });
 ```
 
-#### `laconiaEvent.sqsJson`
+### `sqs()`
 
-Creates an event handler that will parse SQS message body from JSON into regular object.
+Creates an event adapter that will parse SQS message body from JSON into regular object.
 
 Example:
 
 ```js
-const laconiaEvent = require("@laconia/adapter").sqsJson();
+const laconia = require("@laconia/core");
+const sqs = require("@laconia/adapter").sqs();
 
-const handler = async messages => {
+const app = async messages => {
   console.log(messages); // Prints: [{ mykey: 'my value'}]
 };
 
-module.exports.handler = laconiaEvent(handler);
+exports.handler = laconia(sqs(app));
 
 // Calls handler with an example SQS event
-module.exports.handler({
+exports.handler({
   Records: [
     {
       body: '{"mykey":"my value"}'

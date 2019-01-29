@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0]
+
+### Changed
+
+* `@laconia/event`
+  * **BREAKING** #14 Rename module from @laconia/event to @laconia/adapter
+  * **BREAKING** #14 Change API usage from event handler to adapter pattern. Check out the latest documentation in @laconia/adapter for the latest way to use the module
+
 ## [0.17.0]
 
 ### Changed

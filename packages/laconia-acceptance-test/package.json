@@ -26,7 +26,7 @@
       "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
   },
   "dependencies": {
-    "@laconia/api": "^0.17.0",
+    "@laconia/adapter-api": "^0.17.0",
     "@laconia/batch": "^0.16.0",
     "@laconia/config": "^0.16.0",
     "@laconia/core": "^0.16.0",

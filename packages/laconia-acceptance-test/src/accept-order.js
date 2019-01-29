@@ -1,5 +1,7 @@
 const laconia = require("@laconia/core");
-const apigateway = require("@laconia/api").apigateway({ inputType: "params" });
+const apigateway = require("@laconia/adapter-api").apigateway({
+  inputType: "params"
+});
 const KinesisOrderStream = require("./KinesisOrderStream");
 
 const instances = ({ env }) => ({

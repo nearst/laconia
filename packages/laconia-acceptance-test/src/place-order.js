@@ -1,6 +1,6 @@
 const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
 const laconia = require("@laconia/core");
-const apigateway = require("@laconia/api").apigateway({
+const apigateway = require("@laconia/adapter-api").apigateway({
   inputType: "body",
   includeInputHeaders: true,
   errorMappings: {

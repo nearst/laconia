@@ -1,27 +1,22 @@
-# @laconia/api
+# @laconia/adapter-api
 
 [![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 
-> 🛡️ Laconia API - Adapts API Gateway events into your application input
-
-Laconia API provides an adapter for API Gateway event which will adapt the event to your application
-input. Laconia API encourages you to have single purpose functions
-to handle API Gateway events hence delegating all of the routing functions to API Gateway and
-keep the Lambda dumb.
+> 🛡️ Laconia Adapter API - Converts API Gateway Proxy events into your application input
 
 ## Install
 
 ```
-npm install --save @laconia/api
+npm install --save @laconia/adapter-api
 ```
 
 ## Usage
 
 ```js
 const laconia = require("@laconia/core");
-const apigateway = require("@laconia/api").apigateway({ inputType: "params" });
+const apigateway = require("@laconia/adapter-api").apigateway({ inputType: "params" });
 
 // id is made available either from pathParameters or queryStringparameters
 const app = async ({ id }, { orderStream }) => {
@@ -34,7 +29,7 @@ exports.handler = laconia(apigateway(app)).register(instances);
 
 ## Application ports
 
-There are two ways your application can be called by @laconia/api adapter:
+There are two ways your application can be called by @laconia/adapter-api adapter:
 
 * `(input, dependencies)` - This is the default
 * `(input, inputHeaders, dependencies)` - Headers parameter will be included when includeInputHeaders is set to true
@@ -46,7 +41,7 @@ There are two ways your application can be called by @laconia/api adapter:
 
 ## Supported input types
 
-@laconia/api adapter supports the following the input types:
+@laconia/adapter-api adapter supports the following the input types:
 
 * `body`
 
@@ -65,7 +60,7 @@ The HTTP request body is parsed according to the Content-Type header. The curren
 * application/x-www-form-urlencoded
 * application/json
 
-When the Content-Type received is not supported, @laconia/api will not attempt to parse the request body.
+When the Content-Type received is not supported, @laconia/adapter-api will not attempt to parse the request body.
 
 ## Supported output types
 
@@ -84,12 +79,12 @@ Your application can return the following output:
 
 ## Error handling
 
-@laconia/api encourages your application not to have any HTTP knowledge. It supports a simple mapping from error name thrown from your application, to the response that it should return.
+@laconia/adapter-api encourages your application not to have any HTTP knowledge. It supports a simple mapping from error name thrown from your application, to the response that it should return.
 
 The following example returns statusCode 400 when ValidationError is returned.
 
 ```js
-const apigateway = require("@laconia/api").apigateway({
+const apigateway = require("@laconia/adapter-api").apigateway({
   errorMappings: {
     "Validation.*": () => ({ statusCode: 400 })
   }

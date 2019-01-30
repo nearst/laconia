@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * `@laconia/event`
-  * **BREAKING** #14 Rename module from @laconia/event to @laconia/adapter
   * **BREAKING** #14 Change API usage from event handler to adapter pattern. Check out the latest documentation in @laconia/adapter for the latest way to use the module
+  * Rename package from @laconia/event to @laconia/adapter
+* `@laconia/api`
+  * Rename package from @laconia/api to @laconia/adapter-api
 
 ## [0.17.0]
 
@@ -137,11 +139,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * `@laconia/ssm`
-  * **BREAKING** Rename package from @laconia/ssm to @laconia/ssm-config
   * **BREAKING** Rename environment prefix from LACONIA_SSM\_ to LACONIA_SSMCONFIG\_
+  * Rename package from @laconia/ssm to @laconia/ssm-config
 * `@laconia/invoke`
-  * **BREAKING** Rename package from @laconia/invoke to @laconia/invoker as `invoke` is not a noun
   * **BREAKING** Rename environment prefix from LACONIA_INVOKE\_ to LACONIA_INVOKER\_
+  * Rename package from @laconia/invoke to @laconia/invoker as `invoke` is not a noun
 
 ## [0.7.0]
 

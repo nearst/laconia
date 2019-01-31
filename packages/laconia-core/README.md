@@ -138,9 +138,9 @@ This feature can be turned off, see API section.
 
 ### API
 
-#### `laconia(fn)`
+#### `laconia(app)`
 
-* `fn(event, laconiaContext)`
+* `app(event, laconiaContext)`
   * This `Function` is called when your Lambda is invoked
   * Will be called with `laconiaContext` object, which can be destructured to retrieve your dependencies
 
@@ -180,15 +180,15 @@ laconia((event, { service }) => service.call()).register(() => ({
 }));
 
 // Register concurrent factories
-const handler = () => {};
-laconia(handler).register([
+const app = () => {};
+laconia(app).register([
   ssmConfig.envVarInstances(),
   s3Config.envVarInstances()
 ]);
 
 // Reduce maxAge
-const handler = () => {};
-laconia(handler).register(
+const app = () => {};
+laconia(app).register(
   async () => ({
     /* heavy operations */
   }),

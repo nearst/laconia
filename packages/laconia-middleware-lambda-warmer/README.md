@@ -18,8 +18,8 @@ npm install --save @laconia/middleware-lambda-warmer
 const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
 const laconia = require("@laconia/core");
 
-const handler = (event, laconiaContext) => {};
-const app = laconia(handler);
+const app = (event, laconiaContext) => {};
+const handler = laconia(app);
 
-exports.handler = lambdaWarmer(app);
+exports.handler = lambdaWarmer(handler);
 ```

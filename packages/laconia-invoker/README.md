@@ -59,11 +59,11 @@ provided by `@laconia/invoker`:
 const invoker = require("@laconia/invoker");
 const laconia = require("@laconia/core");
 
-const handler = async ({ captureCardPaymentLambda }) => {
+const app = async ({ captureCardPaymentLambda }) => {
   await captureCardPaymentLambda.requestResponse();
 };
 
-module.exports.handler = laconia(handler).register(invoker.envVarInstances());
+exports.handler = laconia(app).register(invoker.envVarInstances());
 ```
 
 ### API
@@ -79,11 +79,11 @@ Example:
 const invoker = require("@laconia/invoker");
 const laconia = require("@laconia/core");
 
-const handler = async ({ captureCardPaymentLambda }) => {
+const app = async ({ captureCardPaymentLambda }) => {
   /* logic */
 };
 
-module.exports.handler = laconia(handler).register(invoker.envVarInstances());
+exports.handler = laconia(app).register(invoker.envVarInstances());
 ```
 
 ## Manual instantiation

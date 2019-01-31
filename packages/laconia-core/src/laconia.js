@@ -9,8 +9,8 @@ const checkFunction = (functionName, argument) => {
     );
 };
 
-module.exports = fn => {
-  checkFunction("laconia", fn);
+module.exports = app => {
+  checkFunction("laconia", app);
   const laconiaContext = new CoreLaconiaContext();
 
   const laconia = async (event, context, callback) => {
@@ -18,7 +18,7 @@ module.exports = fn => {
     await laconiaContext.refresh();
 
     try {
-      const result = await fn(event, laconiaContext);
+      const result = await app(event, laconiaContext);
       callback(null, result);
     } catch (err) {
       callback(err);

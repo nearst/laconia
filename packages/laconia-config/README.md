@@ -27,11 +27,11 @@ LACONIA_CONFIG_MY_SECRET: ssm:/path/to/my/secret
 const config = require("@laconia/config");
 const laconia = require("@laconia/core");
 
-const handler = async ({ mySecret }) => {
+const app = async ({ mySecret }) => {
   // use mySecret
 };
 
-module.exports.handler = laconia(handler).register(config.envVarInstances());
+exports.handler = laconia(app).register(config.envVarInstances());
 ```
 
 ## Types of config source
@@ -85,9 +85,9 @@ const config = require("@laconia/config");
 const laconia = require("@laconia/core");
 
 // LACONIA_CONFIG_SOME_SECRET env var will turn into someSecret
-const handler = async ({ someSecret }) => {
+const app = async ({ someSecret }) => {
   /* logic */
 };
 
-module.exports.handler = laconia(handler).register(config.envVarInstances());
+exports.handler = laconia(app).register(config.envVarInstances());
 ```

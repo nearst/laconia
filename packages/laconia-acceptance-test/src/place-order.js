@@ -39,7 +39,7 @@ const instances = ({ env }) => ({
   orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
 });
 
-exports.mainHandler = async (
+exports.app = async (
   newOrder,
   headers,
   { orderRepository, orderStream, idGenerator, apiKey, restaurants, enabled }
@@ -66,8 +66,8 @@ exports.mainHandler = async (
   return { orderId };
 };
 
-const app = laconia(apigateway(exports.mainHandler))
+const handler = laconia(apigateway(exports.app))
   .register([config.envVarInstances(), instances])
   .postProcessor(xray.postProcessor());
 
-exports.handler = lambdaWarmer(app);
+exports.handler = lambdaWarmer(handler);

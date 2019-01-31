@@ -41,7 +41,7 @@ Example of batch processing by scanning a dynamodb table:
 ```js
 const laconiaBatch = require("@laconia/batch");
 
-module.exports.handler = laconiaBatch(
+exports.handler = laconiaBatch(
   _ =>
     laconiaBatch.dynamoDb({
       operation: "SCAN",

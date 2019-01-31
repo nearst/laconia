@@ -23,7 +23,7 @@ Example:
 const laconia = require("@laconia/core");
 const xray = require("@laconia/xray");
 
-module.exports.handler = laconia(handler).postProcessor(xray.postProcessor());
+exports.handler = laconia(app).postProcessor(xray.postProcessor());
 ```
 
 ## API
@@ -38,5 +38,5 @@ Example:
 const laconia = require("@laconia/core");
 const xray = require("@laconia/xray");
 
-module.exports.handler = laconia(handler).postProcessor(xray.postProcessor());
+exports.handler = laconia(app).postProcessor(xray.postProcessor());
 ```

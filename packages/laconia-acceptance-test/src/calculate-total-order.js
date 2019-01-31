@@ -7,7 +7,7 @@ const instances = ({ env, $s3 }) => ({
   totalOrderStorage: new S3TotalOrderStorage($s3, env.TOTAL_ORDER_BUCKET_NAME)
 });
 
-module.exports.handler = laconiaBatch(
+exports.handler = laconiaBatch(
   _ =>
     laconiaBatch.s3({
       path: ".",

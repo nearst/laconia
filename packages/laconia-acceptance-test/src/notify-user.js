@@ -18,4 +18,4 @@ const app = async (orderEvents, { env }) => {
   );
 };
 
-module.exports.handler = laconia(kinesis(app));
+exports.handler = laconia(kinesis(app));

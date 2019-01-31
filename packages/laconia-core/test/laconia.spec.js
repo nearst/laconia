@@ -33,10 +33,10 @@ describe("laconia", () => {
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
-  it("should delegate AWS parameters to handler function", async () => {
-    const handler = jest.fn();
-    await laconia(handler)(...handlerArgs);
-    expect(handler).toBeCalledWith(
+  it("should delegate AWS parameters to app", async () => {
+    const app = jest.fn();
+    await laconia(app)(...handlerArgs);
+    expect(app).toBeCalledWith(
       { foo: "event" },
       expect.objectContaining({
         context: { fiz: "context" }
@@ -47,12 +47,12 @@ describe("laconia", () => {
   describe("#register", () => {
     describe("when registering a single factory", () => {
       it("should be able to add instances by calling 'register'", async () => {
-        const handler = jest.fn();
-        await laconia(handler)
+        const app = jest.fn();
+        await laconia(app)
           .register(lc => ({ foo: "bar" }))
           .register(lc => ({ boo: "baz" }))(...handlerArgs);
 
-        expect(handler).toBeCalledWith(
+        expect(app).toBeCalledWith(
           expect.any(Object),
           expect.objectContaining({
             foo: "bar",
@@ -62,11 +62,11 @@ describe("laconia", () => {
       });
 
       it("should throw an error when the required dependency is not available", async () => {
-        const app = laconia((event, { fooo }) => {}).register(lc => ({
+        const handler = laconia((event, { fooo }) => {}).register(lc => ({
           foo: "bar"
         }));
 
-        await app(...handlerArgs);
+        await handler(...handlerArgs);
         const errorMessage = callback.mock.calls[0][0].message;
         expect(errorMessage).toEqual(
           expect.stringMatching(/The dependency fooo is not available./)
@@ -74,12 +74,12 @@ describe("laconia", () => {
       });
 
       it("should be able to add async instances by calling 'register'", async () => {
-        const handler = jest.fn();
-        await laconia(handler).register(async lc => {
+        const app = jest.fn();
+        await laconia(app).register(async lc => {
           return Promise.resolve({ foo: "bar" });
         })(...handlerArgs);
 
-        expect(handler).toBeCalledWith(
+        expect(app).toBeCalledWith(
           expect.any(Object),
           expect.objectContaining({
             foo: "bar"
@@ -128,10 +128,10 @@ describe("laconia", () => {
       });
 
       it("should return instances created by the array of factoryFns", async () => {
-        const handler = jest.fn();
-        await laconia(handler).register([factory1, factory2])(...handlerArgs);
+        const app = jest.fn();
+        await laconia(app).register([factory1, factory2])(...handlerArgs);
 
-        expect(handler).toBeCalledWith(
+        expect(app).toBeCalledWith(
           expect.any(Object),
           expect.objectContaining({
             foo: "bar",
@@ -177,8 +177,8 @@ describe("laconia", () => {
 
   describe("#postProcessor", () => {
     it("should register post processor function", async () => {
-      const handler = jest.fn();
-      await laconia(handler)
+      const app = jest.fn();
+      await laconia(app)
         .register(() => ({ foo: { value: 1 } }))
         .postProcessor(async ({ foo }) => {
           if (foo) {
@@ -186,7 +186,7 @@ describe("laconia", () => {
           }
         })(...handlerArgs);
 
-      expect(handler).toBeCalledWith(
+      expect(app).toBeCalledWith(
         expect.any(Object),
         expect.objectContaining({
           foo: expect.objectContaining({ value: 2 })

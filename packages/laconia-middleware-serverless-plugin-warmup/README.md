@@ -18,8 +18,8 @@ npm install --save @laconia/middleware-serverless-plugin-warmup
 const warmup = require("@laconia/middleware-serverless-plugin-warmup")();
 const laconia = require("@laconia/core");
 
-const handler = (event, laconiaContext) => {};
-const app = laconia(handler);
+const app = (event, laconiaContext) => {};
+const handler = laconia(app);
 
-exports.handler = warmup(app);
+exports.handler = warmup(handler);
 ```

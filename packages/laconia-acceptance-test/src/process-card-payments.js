@@ -2,7 +2,7 @@ const invoker = require("@laconia/invoker");
 const xray = require("@laconia/xray");
 const laconiaBatch = require("@laconia/batch");
 
-module.exports.handler = laconiaBatch(
+exports.handler = laconiaBatch(
   _ =>
     laconiaBatch.dynamoDb({
       operation: "SCAN",

@@ -53,10 +53,10 @@ const matchers = {
   }
 };
 
-module.exports.yields = yields;
-module.exports.s3Body = s3Body;
-module.exports.collectNexts = collectNexts;
-module.exports.reduceNexts = reduceNexts;
-module.exports.matchers = matchers;
-module.exports.recordTimestamps = recordTimestamps;
-module.exports.tracker = require("./tracker");
+exports.yields = yields;
+exports.s3Body = s3Body;
+exports.collectNexts = collectNexts;
+exports.reduceNexts = reduceNexts;
+exports.matchers = matchers;
+exports.recordTimestamps = recordTimestamps;
+exports.tracker = require("./tracker");

@@ -11,4 +11,4 @@ const app = async (order, { env }) => {
   }
 };
 
-module.exports.handler = laconia(sns(app));
+exports.handler = laconia(sns(app));

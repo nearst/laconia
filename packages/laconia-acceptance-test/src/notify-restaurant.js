@@ -17,4 +17,4 @@ const app = async (orderEvents, { restaurantNotificationTopic }) => {
   );
 };
 
-module.exports.handler = laconia(kinesis(app)).register(instances);
+exports.handler = laconia(kinesis(app)).register(instances);

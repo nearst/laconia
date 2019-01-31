@@ -13,4 +13,4 @@ const app = async ({ id }, { orderStream }) => {
   return { status: "ok" };
 };
 
-module.exports.handler = laconia(apigateway(app)).register(instances);
+exports.handler = laconia(apigateway(app)).register(instances);

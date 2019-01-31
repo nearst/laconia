@@ -96,9 +96,9 @@ Lambda handler code:
 const laconia = require("@laconia/core");
 const { spy } = require("@laconia/test");
 
-const handler = async ({ event }) => {};
+const app = async ({ event }) => {};
 
-module.exports.handler = laconia(spy(handler)).register(spy.instances());
+exports.handler = laconia(spy(app)).register(spy.instances());
 ```
 
 Test code:
@@ -124,19 +124,19 @@ it("should capture all card payments", async () => {
 
 ### API
 
-#### `spy(laconiaHandler)`
+#### `spy(app)`
 
 Enable spying feature in a Lambda.
 
-* `laconiaHandler`
-  * The handler you would pass to `laconia()`
+* `app`
+  * The laconia application you are spying
 
 Example:
 
 ```js
-const handler = async ({ event }) => {};
+const app = async ({ event }) => {};
 
-laconia(spy(handler)).register(spy.instances());
+laconia(spy(app)).register(spy.instances());
 ```
 
 #### `spy.instances`
@@ -146,9 +146,9 @@ To be used to register instances that will used for spy function to work.
 Example:
 
 ```js
-const handler = async ({ event }) => {};
+const app = async ({ event }) => {};
 
-laconia(spy(handler)).register(spy.instances());
+laconia(spy(app)).register(spy.instances());
 ```
 
 #### `laconiaTest(functionName, { spy })`

@@ -1,3 +1,4 @@
+const AWS = require("aws-sdk");
 const CoreLaconiaContext = require("./CoreLaconiaContext");
 
 const checkFunction = (functionName, argument) => {
@@ -9,9 +10,17 @@ const checkFunction = (functionName, argument) => {
     );
 };
 
+const awsInstances = {
+  $lambda: new AWS.Lambda(),
+  $s3: new AWS.S3(),
+  $ssm: new AWS.SSM(),
+  $sns: new AWS.SNS()
+};
+
 module.exports = app => {
   checkFunction("laconia", app);
   const laconiaContext = new CoreLaconiaContext();
+  laconiaContext.registerFactory(() => awsInstances);
 
   const laconia = async (event, context, callback) => {
     laconiaContext.registerInstances({ event, context });

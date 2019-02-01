@@ -1,4 +1,3 @@
-const AWS = require("aws-sdk");
 const LaconiaContext = require("./LaconiaContext");
 const SingleCache = require("./SingleCache");
 
@@ -13,13 +12,6 @@ const cacheResult = (fn, maxAge) => {
   };
 };
 
-const awsInstances = {
-  $lambda: new AWS.Lambda(),
-  $s3: new AWS.S3(),
-  $ssm: new AWS.SSM(),
-  $sns: new AWS.SNS()
-};
-
 module.exports = class CoreLaconiaContext extends LaconiaContext {
   constructor(baseContext) {
     super(baseContext);
@@ -28,7 +20,6 @@ module.exports = class CoreLaconiaContext extends LaconiaContext {
     };
     this.registerInstances(coreInstances);
     this._registerInstancesWithPrefix(coreInstances);
-    this.registerFactory(() => awsInstances);
   }
 
   registerFactory(factory, { enabled = true, maxAge = 300000 } = {}) {

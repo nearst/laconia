@@ -1,4 +1,3 @@
-const AWS = require("aws-sdk");
 const delay = require("delay");
 const CoreLaconiaContext = require("../src/CoreLaconiaContext");
 
@@ -12,32 +11,6 @@ describe("laconiaContext", () => {
     const lc = new CoreLaconiaContext();
     lc.registerInstances({ env: "bar" });
     expect(lc).toHaveProperty("$env", process.env);
-  });
-
-  describe("AWS Services", () => {
-    it("should include Lambda", async () => {
-      const lc = new CoreLaconiaContext();
-      await lc.refresh();
-      expect(lc.$lambda).toBeInstanceOf(AWS.Lambda);
-    });
-
-    it("should include S3", async () => {
-      const lc = new CoreLaconiaContext();
-      await lc.refresh();
-      expect(lc.$s3).toBeInstanceOf(AWS.S3);
-    });
-
-    it("should include SSM", async () => {
-      const lc = new CoreLaconiaContext();
-      await lc.refresh();
-      expect(lc.$ssm).toBeInstanceOf(AWS.SSM);
-    });
-
-    it("should include SNS", async () => {
-      const lc = new CoreLaconiaContext();
-      await lc.refresh();
-      expect(lc.$sns).toBeInstanceOf(AWS.SNS);
-    });
   });
 
   describe("#registerFactory", () => {

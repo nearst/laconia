@@ -53,6 +53,11 @@ module.exports = class LaconiaContext {
     });
   }
 
+  registerBuiltInInstances(instances) {
+    this.registerInstances(instances);
+    this.registerInstances(prefixKeys("$", instances));
+  }
+
   registerFactory(factory, options = {}) {
     this[factoryFns].push(factory);
   }
@@ -74,9 +79,5 @@ module.exports = class LaconiaContext {
         await postProcessorFn(instances);
       }
     }
-  }
-
-  _registerInstancesWithPrefix(instances) {
-    this.registerInstances(prefixKeys("$", instances));
   }
 };

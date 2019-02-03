@@ -73,7 +73,7 @@ describe("laconiaContext", () => {
   });
 
   describe("#registerBuiltInInstances", () => {
-    xit("should be able to access the registered instance via $", () => {
+    it("should be able to access the registered instance via $", () => {
       const lc = new LaconiaContext();
       lc.registerBuiltInInstances({ foo: "bar" });
       expect(lc).toHaveProperty("foo", "bar");

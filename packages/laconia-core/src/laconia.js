@@ -20,7 +20,7 @@ const awsInstances = {
 module.exports = app => {
   checkFunction("laconia", app);
   const laconiaContext = new CoreLaconiaContext();
-  laconiaContext.registerFactory(() => awsInstances);
+  laconiaContext.registerBuiltInInstances(awsInstances);
 
   const laconia = async (event, context, callback) => {
     laconiaContext.registerInstances({ event, context });

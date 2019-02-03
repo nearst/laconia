@@ -18,8 +18,7 @@ module.exports = class CoreLaconiaContext extends LaconiaContext {
     const coreInstances = {
       env: process.env
     };
-    this.registerInstances(coreInstances);
-    this._registerInstancesWithPrefix(coreInstances);
+    this.registerBuiltInInstances(coreInstances);
   }
 
   registerFactory(factory, { enabled = true, maxAge = 300000 } = {}) {

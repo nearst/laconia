@@ -2,9 +2,9 @@ const laconiaBatch = require("@laconia/batch");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const S3TotalOrderStorage = require("./S3TotalOrderStorage");
 
-const instances = ({ env, $s3 }) => ({
+const instances = ({ env, s3 }) => ({
   orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
-  totalOrderStorage: new S3TotalOrderStorage($s3, env.TOTAL_ORDER_BUCKET_NAME)
+  totalOrderStorage: new S3TotalOrderStorage(s3, env.TOTAL_ORDER_BUCKET_NAME)
 });
 
 exports.handler = laconiaBatch(

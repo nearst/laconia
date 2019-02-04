@@ -2,9 +2,9 @@ const laconia = require("@laconia/core");
 const kinesis = require("@laconia/adapter").kinesis();
 const SnsRestaurantNotificationTopic = require("./SnsRestaurantNotificationTopic");
 
-const instances = ({ $sns, env }) => ({
+const instances = ({ sns, env }) => ({
   restaurantNotificationTopic: new SnsRestaurantNotificationTopic(
-    $sns,
+    sns,
     env.RESTAURANT_NOTIFICATION_TOPIC_ARN
   )
 });

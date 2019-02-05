@@ -4,7 +4,7 @@
 
 [![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
-[![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
+[![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE) [![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
 
 > 🛡️ Laconia — Micro AWS Lambda framework
 

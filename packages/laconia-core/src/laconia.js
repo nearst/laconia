@@ -11,10 +11,10 @@ const checkFunction = (functionName, argument) => {
 };
 
 const awsInstances = {
-  $lambda: new AWS.Lambda(),
-  $s3: new AWS.S3(),
-  $ssm: new AWS.SSM(),
-  $sns: new AWS.SNS()
+  lambda: new AWS.Lambda(),
+  s3: new AWS.S3(),
+  ssm: new AWS.SSM(),
+  sns: new AWS.SNS()
 };
 
 module.exports = app => {

@@ -16,7 +16,7 @@
       "npm run test && npm run test:integration && npm run test:acceptance",
     "test:jslint": "eslint ./ --ignore-path .gitignore",
     "test:packagelint":
-      "lerna exec pjl-cli -- -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json",
+      "lerna exec npmPkgJsonLint -- -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json .",
     "deploy-acceptance":
       "lerna exec --scope @laconia/acceptance-test npm run deploy",
     "remove-acceptance":
@@ -55,7 +55,7 @@
     "jest-extended": "^0.7.2",
     "lerna": "^2.5.1",
     "lodash": "^4.17.5",
-    "npm-package-json-lint": "^2.11.2",
+    "npm-package-json-lint": "^3.5.0",
     "prettier": "^1.12.1"
   },
   "jest": {

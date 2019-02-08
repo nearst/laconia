@@ -39,6 +39,6 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "setupFilesAfterEnv": ["../../src/setupTests"]
+    "setupFilesAfterEnv": ["jest-extended"]
   }
 }

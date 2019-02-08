@@ -9,20 +9,14 @@
     "postinstall": "lerna bootstrap",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:integration":
-      "lerna exec --scope @laconia/batch npm run test:integration",
+    "test:integration": "lerna exec --scope @laconia/batch npm run test:integration",
     "test:acceptance": "npm run deploy-acceptance && npm run acceptance-test",
-    "test:all":
-      "npm run test && npm run test:integration && npm run test:acceptance",
+    "test:all": "npm run test && npm run test:integration && npm run test:acceptance",
     "test:jslint": "eslint ./ --ignore-path .gitignore",
-    "test:packagelint":
-      "lerna exec npmPkgJsonLint -- -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json .",
-    "deploy-acceptance":
-      "lerna exec --scope @laconia/acceptance-test npm run deploy",
-    "remove-acceptance":
-      "lerna exec --scope @laconia/acceptance-test npm run remove",
-    "acceptance-test":
-      "lerna exec --scope @laconia/acceptance-test npm run test",
+    "test:packagelint": "lerna exec npmPkgJsonLint -- -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json .",
+    "deploy-acceptance": "lerna exec --scope @laconia/acceptance-test npm run deploy",
+    "remove-acceptance": "lerna exec --scope @laconia/acceptance-test npm run remove",
+    "acceptance-test": "lerna exec --scope @laconia/acceptance-test npm run test",
     "posttest": "npm run test:jslint && npm run test:packagelint",
     "publish:coverage": "cat ./coverage/lcov.info | coveralls"
   },
@@ -43,14 +37,14 @@
     "coveralls": "^3.0.2",
     "delay": "^4.1.0",
     "dynamodb-local": "0.0.24",
-    "eslint": "^4.19.1",
+    "eslint": "^5.13.0",
     "eslint-config-prettier": "^2.9.0",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-node": "^6.0.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-prettier": "^2.6.0",
-    "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.1.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "jest": "^24.0.0",
     "jest-extended": "^0.11.1",
     "lerna": "^3.10.8",
@@ -74,8 +68,13 @@
         "statements": 100
       }
     },
-    "testPathIgnorePatterns": ["/acceptance-test/", "/integration-test/"],
-    "setupFilesAfterEnv": ["jest-extended"]
+    "testPathIgnorePatterns": [
+      "/acceptance-test/",
+      "/integration-test/"
+    ],
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ]
   },
   "private": true
 }

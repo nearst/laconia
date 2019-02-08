@@ -52,11 +52,10 @@ module.exports = class S3TotalOrderStorage {
           .promise()
       )
     ).then(results => {
-      return results.map(
-        result =>
-          type === "json"
-            ? JSON.parse(result.Body.toString())
-            : result.Body.toString()
+      return results.map(result =>
+        type === "json"
+          ? JSON.parse(result.Body.toString())
+          : result.Body.toString()
       );
     });
   }

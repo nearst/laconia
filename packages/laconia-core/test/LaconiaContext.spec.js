@@ -90,21 +90,17 @@ describe("laconiaContext", () => {
       expect(lc).toHaveProperty("bar", "baz");
     });
 
-    it(
-      "should parallelize call to factoryFns which are registered together",
-      async () => {
-        const lc = new LaconiaContext();
-        lc.registerFactories([
-          () => delay(5).then(() => ({})),
-          () => delay(5).then(() => ({})),
-          () => delay(5).then(() => ({})),
-          () => delay(5).then(() => ({})),
-          () => delay(5).then(() => ({}))
-        ]);
-        await lc.refresh();
-      },
-      10
-    );
+    it("should parallelize call to factoryFns which are registered together", async () => {
+      const lc = new LaconiaContext();
+      lc.registerFactories([
+        () => delay(5).then(() => ({})),
+        () => delay(5).then(() => ({})),
+        () => delay(5).then(() => ({})),
+        () => delay(5).then(() => ({})),
+        () => delay(5).then(() => ({}))
+      ]);
+      await lc.refresh();
+    }, 10);
 
     it("should be able to use instance created by prior factory", async () => {
       const lc = new LaconiaContext();

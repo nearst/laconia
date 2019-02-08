@@ -156,22 +156,18 @@ describe("S3Spier", () => {
   describe("#waitForTotalInvocations", () => {
     sharedListObjectsTest(spier => spier.waitForTotalInvocations(0));
 
-    it(
-      "should wait for total invocations",
-      async () => {
-        const spier = new S3Spier("bucket name", "function name", awsS3);
-        await Promise.all([
-          spier.waitForTotalInvocations(2),
-          delay(25).then(_ => {
-            s3.listObjects.mockImplementation(
-              yields({
-                Contents: [{ Key: "key" }, { Key: "key2" }]
-              })
-            );
-          })
-        ]);
-      },
-      200
-    );
+    it("should wait for total invocations", async () => {
+      const spier = new S3Spier("bucket name", "function name", awsS3);
+      await Promise.all([
+        spier.waitForTotalInvocations(2),
+        delay(25).then(_ => {
+          s3.listObjects.mockImplementation(
+            yields({
+              Contents: [{ Key: "key" }, { Key: "key2" }]
+            })
+          );
+        })
+      ]);
+    }, 200);
   });
 });

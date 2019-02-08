@@ -137,66 +137,54 @@ describe("order flow", () => {
       });
     });
 
-    it(
-      "should invoke send email lambda, which is coming from the chain of place-order, notify-restaurant, fake-restaurant, accept-order, and notify-user",
-      async () => {
-        await sendEmail.spy.waitForTotalInvocations(1);
-        const invocations = await sendEmail.spy.getInvocations();
-        expect(JSON.parse(invocations[0].event.Records[0].body)).toEqual(
-          expect.objectContaining({
-            eventType: "accepted",
-            orderId: expect.any(String)
-          })
-        );
-      },
-      20000
-    );
+    it("should invoke send email lambda, which is coming from the chain of place-order, notify-restaurant, fake-restaurant, accept-order, and notify-user", async () => {
+      await sendEmail.spy.waitForTotalInvocations(1);
+      const invocations = await sendEmail.spy.getInvocations();
+      expect(JSON.parse(invocations[0].event.Records[0].body)).toEqual(
+        expect.objectContaining({
+          eventType: "accepted",
+          orderId: expect.any(String)
+        })
+      );
+    }, 20000);
 
-    it(
-      "should capture all card payments",
-      async () => {
-        await laconiaTest(name("process-card-payments")).fireAndForget();
-        await captureCardPayment.spy.waitForTotalInvocations(10);
-        const invocations = await captureCardPayment.spy.getInvocations();
-        const capturedPaymentReferences = invocations
-          .map(t => t.event.paymentReference)
-          .sort();
-        const paymentReferences = Object.values(orderMap)
-          .map(order => order.paymentReference)
-          .sort();
+    it("should capture all card payments", async () => {
+      await laconiaTest(name("process-card-payments")).fireAndForget();
+      await captureCardPayment.spy.waitForTotalInvocations(10);
+      const invocations = await captureCardPayment.spy.getInvocations();
+      const capturedPaymentReferences = invocations
+        .map(t => t.event.paymentReference)
+        .sort();
+      const paymentReferences = Object.values(orderMap)
+        .map(order => order.paymentReference)
+        .sort();
 
-        expect(capturedPaymentReferences).toEqual(paymentReferences);
-      },
-      20000
-    );
+      expect(capturedPaymentReferences).toEqual(paymentReferences);
+    }, 20000);
 
-    it(
-      "should calculate total order for every restaurants",
-      async () => {
-        await laconiaTest(name("calculate-total-order")).fireAndForget();
+    it("should calculate total order for every restaurants", async () => {
+      await laconiaTest(name("calculate-total-order")).fireAndForget();
 
-        const expectedTotalOrder = [
-          { restaurantId: 1, total: 10 },
-          { restaurantId: 2, total: 8 },
-          { restaurantId: 3, total: 0 },
-          { restaurantId: 4, total: 0 },
-          { restaurantId: 5, total: 15 },
-          { restaurantId: 6, total: 31 },
-          { restaurantId: 7, total: 0 },
-          { restaurantId: 8, total: 0 },
-          { restaurantId: 9, total: 110 },
-          { restaurantId: 10, total: 0 }
-        ];
-        await totalOrderStorage.waitUntil("json", 10);
+      const expectedTotalOrder = [
+        { restaurantId: 1, total: 10 },
+        { restaurantId: 2, total: 8 },
+        { restaurantId: 3, total: 0 },
+        { restaurantId: 4, total: 0 },
+        { restaurantId: 5, total: 15 },
+        { restaurantId: 6, total: 31 },
+        { restaurantId: 7, total: 0 },
+        { restaurantId: 8, total: 0 },
+        { restaurantId: 9, total: 110 },
+        { restaurantId: 10, total: 0 }
+      ];
+      await totalOrderStorage.waitUntil("json", 10);
 
-        const totalOrderJsons = await totalOrderStorage.getAll("json");
-        const sortedTotalOrderJsons = totalOrderJsons.sort(
-          (a, b) => a.restaurantId - b.restaurantId
-        );
-        expect(sortedTotalOrderJsons).toEqual(expectedTotalOrder);
-      },
-      20000
-    );
+      const totalOrderJsons = await totalOrderStorage.getAll("json");
+      const sortedTotalOrderJsons = totalOrderJsons.sort(
+        (a, b) => a.restaurantId - b.restaurantId
+      );
+      expect(sortedTotalOrderJsons).toEqual(expectedTotalOrder);
+    }, 20000);
 
     it("should convert total order for every restaurants to xml", async () => {
       const expectedTotalOrderXmls = [

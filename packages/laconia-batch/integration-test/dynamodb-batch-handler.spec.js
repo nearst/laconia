@@ -7,7 +7,6 @@ const dynamoDb = require("../src/dynamoDb");
 const laconiaBatch = require("../src/laconiaBatch");
 
 AWSMock.setSDKInstance(AWS);
-AWS.config.credentials = new AWS.Credentials("fake", "fake", "fake");
 
 describe("dynamodb batch handler", () => {
   const dynamoLocalPort = 8000;

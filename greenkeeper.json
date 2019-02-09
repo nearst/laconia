@@ -1,0 +1,19 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "package.json",
+        "packages/laconia-adapter-api/package.json",
+        "packages/laconia-adapter/package.json",
+        "packages/laconia-batch/package.json",
+        "packages/laconia-config/package.json",
+        "packages/laconia-core/package.json",
+        "packages/laconia-invoker/package.json",
+        "packages/laconia-middleware-lambda-warmer/package.json",
+        "packages/laconia-middleware-serverless-plugin-warmup/package.json",
+        "packages/laconia-test-helper/package.json",
+        "packages/laconia-xray/package.json"
+      ]
+    }
+  }
+}

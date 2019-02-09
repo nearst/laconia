@@ -1,7 +1,9 @@
-const AWSSDK = require("aws-sdk");
+const AWSMock = require("aws-sdk-mock");
+const AWS = require("aws-sdk");
 const { yields } = require("@laconia/test-helper");
 const recurse = require("../src/recurse");
-const AWSMock = require("aws-sdk-mock");
+
+AWSMock.setSDKInstance(AWS);
 
 expect.extend({
   toBeCalledWithPayload(received, expected) {
@@ -22,7 +24,7 @@ describe("recurse", () => {
     laconiaContext = {
       event: {},
       context: { functionName: "foo" },
-      $lambda: new AWSSDK.Lambda()
+      $lambda: new AWS.Lambda()
     };
   });
 

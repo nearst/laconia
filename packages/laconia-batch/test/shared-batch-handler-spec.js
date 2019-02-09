@@ -1,8 +1,10 @@
-const AWSSDK = require("aws-sdk");
 const AWSMock = require("aws-sdk-mock");
+const AWS = require("aws-sdk");
 const { matchers } = require("@laconia/test-helper");
 const { LaconiaContext } = require("@laconia/core");
 expect.extend(matchers);
+
+AWSMock.setSDKInstance(AWS);
 
 exports.sharedBehaviour = batchHandler => {
   describe("shared batch behaviour", () => {
@@ -13,7 +15,7 @@ exports.sharedBehaviour = batchHandler => {
     beforeEach(() => {
       invokeMock = jest.fn();
       AWSMock.mock("Lambda", "invoke", invokeMock);
-      awsLambda = new AWSSDK.Lambda();
+      awsLambda = new AWS.Lambda();
 
       itemListener = jest.fn();
       stopListener = jest.fn();
@@ -154,9 +156,14 @@ exports.sharedBehaviour = batchHandler => {
             }
           });
 
-        invokeMock.mockImplementation(event =>
-          handler(JSON.parse(event.Payload), context, callback)
-        );
+        invokeMock.mockImplementation((event, callback) => {
+          handler(JSON.parse(event.Payload), context, callback);
+          callback(null, {
+            FunctionError: undefined,
+            StatusCode: 202,
+            Payload: '{"value":"response"}'
+          });
+        });
 
         handler(event, context, callback);
       });

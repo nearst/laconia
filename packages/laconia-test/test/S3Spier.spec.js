@@ -1,9 +1,11 @@
 const delay = require("delay");
-const AWSSDK = require("aws-sdk");
+const AWS = require("aws-sdk");
 const AWSMock = require("aws-sdk-mock");
 const S3Spier = require("../src/S3Spier");
 const { yields } = require("@laconia/test-helper");
 const _ = require("lodash");
+
+AWSMock.setSDKInstance(AWS);
 
 describe("S3Spier", () => {
   let lc;
@@ -36,7 +38,7 @@ describe("S3Spier", () => {
     AWSMock.mock("S3", "putObject", s3.putObject);
     AWSMock.mock("S3", "getObject", s3.getObject);
 
-    awsS3 = new AWSSDK.S3();
+    awsS3 = new AWS.S3();
   });
 
   afterEach(() => {

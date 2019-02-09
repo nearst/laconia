@@ -1,14 +1,16 @@
-const AWSSDK = require("aws-sdk");
-const AWS = require("aws-sdk-mock");
+const AWS = require("aws-sdk");
+const AWSMock = require("aws-sdk-mock");
 const { yields, s3Body } = require("@laconia/test-helper");
 const S3ConfigConverter = require("../src/S3ConfigConverter");
+
+AWSMock.setSDKInstance(AWS);
 
 describe("S3ConfigConverter", () => {
   let s3;
   let awsS3;
 
   afterEach(() => {
-    AWS.restore();
+    AWSMock.restore();
   });
 
   beforeEach(() => {
@@ -17,8 +19,8 @@ describe("S3ConfigConverter", () => {
         .fn()
         .mockImplementation(s3Body({ applicationName: "hello" }))
     };
-    AWS.mock("S3", "getObject", s3.getObject);
-    awsS3 = new AWSSDK.S3();
+    AWSMock.mock("S3", "getObject", s3.getObject);
+    awsS3 = new AWS.S3();
   });
 
   describe("when there is no env var set", () => {

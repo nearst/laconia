@@ -3,6 +3,8 @@ const AWS = require("aws-sdk");
 const DynamoDbItemReader = require("../src/DynamoDbItemReader");
 const { yields, collectNexts } = require("@laconia/test-helper");
 
+AWSMock.setSDKInstance(AWS);
+
 describe("DynamoDb Item Reader", () => {
   let documentClient;
   const dynamoDbParams = { TableName: "Music" };

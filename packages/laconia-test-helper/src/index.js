@@ -1,10 +1,10 @@
 const _ = require("lodash");
 
-const yields = arg => (params, callback) => {
-  if (typeof arg !== "function") {
-    callback(null, arg);
+const yields = response => (params, callback) => {
+  if (typeof response !== "function") {
+    callback(null, response);
   } else {
-    callback(null, arg(params));
+    callback(null, response(params));
   }
 };
 

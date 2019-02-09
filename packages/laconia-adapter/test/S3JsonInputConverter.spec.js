@@ -4,6 +4,8 @@ const createEvent = require("aws-event-mocks");
 const { s3Body } = require("@laconia/test-helper");
 const S3JsonInputConverter = require("../src/S3JsonInputConverter");
 
+AWSMock.setSDKInstance(AWS);
+
 const createS3Event = key => {
   return createEvent({
     template: "aws:s3",

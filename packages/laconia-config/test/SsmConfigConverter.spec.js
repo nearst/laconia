@@ -1,22 +1,24 @@
-const AWSSDK = require("aws-sdk");
-const AWS = require("aws-sdk-mock");
+const AWS = require("aws-sdk");
+const AWSMock = require("aws-sdk-mock");
 const { yields } = require("@laconia/test-helper");
 const SsmConfigConverter = require("../src/SsmConfigConverter");
+
+AWSMock.setSDKInstance(AWS);
 
 describe("SsmConfigConverter", () => {
   let ssm;
   let awsSsm;
 
   afterEach(() => {
-    AWS.restore();
+    AWSMock.restore();
   });
 
   beforeEach(() => {
     ssm = {
       getParameters: jest.fn()
     };
-    AWS.mock("SSM", "getParameters", ssm.getParameters);
-    awsSsm = new AWSSDK.SSM();
+    AWSMock.mock("SSM", "getParameters", ssm.getParameters);
+    awsSsm = new AWS.SSM();
   });
 
   describe("when there is no parameter to be retrieved", () => {

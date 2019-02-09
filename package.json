@@ -33,7 +33,7 @@
   "devDependencies": {
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.7.15",
-    "aws-sdk-mock": "^1.7.0",
+    "aws-sdk-mock": "^4.3.0",
     "coveralls": "^3.0.2",
     "delay": "^4.1.0",
     "dynamodb-local": "0.0.24",

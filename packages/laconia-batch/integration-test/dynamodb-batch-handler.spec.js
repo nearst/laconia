@@ -6,6 +6,7 @@ const { sharedBehaviour } = require("../test/shared-batch-handler-spec");
 const dynamoDb = require("../src/dynamoDb");
 const laconiaBatch = require("../src/laconiaBatch");
 
+AWSMock.setSDKInstance(AWS);
 AWS.config.credentials = new AWS.Credentials("fake", "fake", "fake");
 
 describe("dynamodb batch handler", () => {
@@ -162,9 +163,14 @@ describe("dynamodb batch handler", () => {
           done();
         });
 
-      invokeMock.mockImplementation(event =>
-        handler(JSON.parse(event.Payload), context, callback)
-      );
+      invokeMock.mockImplementation((event, callback) => {
+        handler(JSON.parse(event.Payload), context, callback);
+        callback(null, {
+          FunctionError: undefined,
+          StatusCode: 202,
+          Payload: '{"value":"response"}'
+        });
+      });
 
       handler(event, context, callback);
     });

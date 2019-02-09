@@ -9,6 +9,8 @@ const {
   reduceNexts
 } = require("@laconia/test-helper");
 
+AWSMock.setSDKInstance(AWS);
+
 describe("S3 Item Reader", () => {
   let s3;
 

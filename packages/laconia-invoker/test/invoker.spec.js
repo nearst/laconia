@@ -1,9 +1,11 @@
-const AWSSDK = require("aws-sdk");
+const AWS = require("aws-sdk");
 const laconiaInvoker = require("../src/invoker");
 const HandledInvokeLaconiaError = require("../src/HandledInvokeLaconiaError");
 const UnhandledInvokeLaconiaError = require("../src/UnhandledInvokeLaconiaError");
 const AWSMock = require("aws-sdk-mock");
 const { yields } = require("@laconia/test-helper");
+
+AWSMock.setSDKInstance(AWS);
 
 describe("invoke", () => {
   let invokeMock;
@@ -12,7 +14,7 @@ describe("invoke", () => {
   beforeEach(() => {
     invokeMock = jest.fn();
     AWSMock.mock("Lambda", "invoke", invokeMock);
-    awsLambda = new AWSSDK.Lambda();
+    awsLambda = new AWS.Lambda();
   });
 
   afterEach(() => {

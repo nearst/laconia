@@ -1,8 +1,11 @@
 # @laconia/adapter
 
-[![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
+[![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
+[![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
+[![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
 
 > 🛡️ Laconia Adapter - Converts AWS events into your application input
 
@@ -28,10 +31,10 @@ exports.handler = laconia(s3(app));
 
 ## Supported events
 
-* S3
-* Kinesis
-* SNS
-* SQS
+- S3
+- Kinesis
+- SNS
+- SQS
 
 ## API
 
@@ -41,10 +44,10 @@ Creates an event adapter that will retrieve the object that
 has triggered the event from S3, then convert the object into your application
 input based on the `inputType` option.
 
-* `options`:
-  * `inputType = "object"`
-    * Supported values are: `object`, `stream`, `event`
-    * Determines what should the application receive as an input
+- `options`:
+  - `inputType = "object"`
+    - Supported values are: `object`, `stream`, `event`
+    - Determines what should the application receive as an input
 
 _To reduce your code dependency to AWS, opt for other `inputType` before
 using `event`. The `event` inputType should only be used when
@@ -52,9 +55,9 @@ you don't actually need to retrieve the object from S3, such as listening to
 s3:ObjectRemoved:Delete events_. The `event` inputType will inject an `S3Event`
 object as an application input, which has the following property:
 
-* `key`: The URL decoded object key
-  * The S3 key fired to lambda are URL encoded and hard to be used for AWS SDK S3 operation
-* `bucket`: The bucket name
+- `key`: The URL decoded object key
+  - The S3 key fired to lambda are URL encoded and hard to be used for AWS SDK S3 operation
+- `bucket`: The bucket name
 
 Example:
 

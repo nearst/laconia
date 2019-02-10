@@ -1,8 +1,11 @@
 # @laconia/test
 
-[![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
+[![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
+[![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
+[![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
 
 > 🛡️ Laconia Test — Makes Lambda integration testing a breeze
 
@@ -12,10 +15,10 @@ test easy especially when you are testing your system end to end.
 
 ## Features
 
-* Invoke your Lambda under test
-* Augment invocation error stacktrace to include Lambda error stacktrace
-* Console.log your Lambda logs on invocation error
-* Spy on indirect Lambda invocations
+- Invoke your Lambda under test
+- Augment invocation error stacktrace to include Lambda error stacktrace
+- Console.log your Lambda logs on invocation error
+- Spy on indirect Lambda invocations
 
 The example of an automatic Lambda logs and augmented stacktrace print out when
 your Lambda is invoked with @laconia/test:
@@ -83,12 +86,12 @@ await laconiaTest("capture-card-payment").requestResponse({
 
 Lambda configuration:
 
-* Set LACONIA_TEST_SPY_BUCKET environment variable. This is required as the invocation
+- Set LACONIA_TEST_SPY_BUCKET environment variable. This is required as the invocation
   records are stored in an S3 bucket. The bucket must already be created.
 
 IAM permission configuration:
 
-* Permissions must be updated to allow Lambda and your test environment to read and write to the configured S3 bucket.
+- Permissions must be updated to allow Lambda and your test environment to read and write to the configured S3 bucket.
 
 Lambda handler code:
 
@@ -128,8 +131,8 @@ it("should capture all card payments", async () => {
 
 Enable spying feature in a Lambda.
 
-* `app`
-  * The laconia application you are spying
+- `app`
+  - The laconia application you are spying
 
 Example:
 
@@ -153,18 +156,18 @@ laconia(spy(app)).register(spy.instances());
 
 #### `laconiaTest(functionName, { spy })`
 
-* `functionName` specifies the Lambda function name that will be invoked
-* `options`:
-  * `lambda = new AWS.Lambda()`
-    * _Optional_
-    * Set this option if there's a need to customise its instantiation
-    * USed for S3 interaction
-  * `spy`:
-    * `bucketName` specifies the bucket name where the invocation records are stored
-    * `s3 = new AWS.S3()`
-      * _Optional_
-      * Set this option if there's a need to customise its instantiation
-      * USed for S3 interaction
+- `functionName` specifies the Lambda function name that will be invoked
+- `options`:
+  - `lambda = new AWS.Lambda()`
+    - _Optional_
+    - Set this option if there's a need to customise its instantiation
+    - USed for S3 interaction
+  - `spy`:
+    - `bucketName` specifies the bucket name where the invocation records are stored
+    - `s3 = new AWS.S3()`
+      - _Optional_
+      - Set this option if there's a need to customise its instantiation
+      - USed for S3 interaction
 
 Example:
 
@@ -190,8 +193,8 @@ Clear spy invocation records in the S3 bucket configured.
 
 Waits until the lambda under test has been invoked for `totalInvocations` times
 
-* `totalInvocations`
-  * The number of invocation laconiaTest will wait to
+- `totalInvocations`
+  - The number of invocation laconiaTest will wait to
 
 #### `laconiaTest.spy.getInvocations()`
 

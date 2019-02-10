@@ -1,8 +1,11 @@
 # @laconia/core
 
-[![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
+[![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
+[![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
+[![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
 
 > 🛡️ Laconia Core — Micro dependency injection framework.
 
@@ -23,10 +26,10 @@ Check out [FAQ](https://github.com/ceilfors/laconia#faq)
 
 ## Features
 
-* Dependency injection
-* Caching for heavy instance creation
-* Reduce boilerplate code
-* Avoid common Lambda programming error
+- Dependency injection
+- Caching for heavy instance creation
+- Reduce boilerplate code
+- Avoid common Lambda programming error
 
 One of the problem in AWS Lambda is the `UnhandledPromiseRejectionWarning` problem where
 [you can't throw an error out of your handler function](https://stackoverflow.com/questions/49894595/unhandled-promise-rejection-on-aws-lambda-with-async-await).
@@ -140,9 +143,9 @@ This feature can be turned off, see API section.
 
 #### `laconia(app)`
 
-* `app(event, laconiaContext)`
-  * This `Function` is called when your Lambda is invoked
-  * Will be called with `laconiaContext` object, which can be destructured to retrieve your dependencies
+- `app(event, laconiaContext)`
+  - This `Function` is called when your Lambda is invoked
+  - Will be called with `laconiaContext` object, which can be destructured to retrieve your dependencies
 
 Example:
 
@@ -160,16 +163,16 @@ Registers objects created by the factory function into LaconiaContext.
 Objects registered here will be made available in the Lambda function execution.
 You can pass an array for the list of array to be called in parallel.
 
-* `factory(laconiaContext)`
-  * This `Function` is called when your Lambda is invoked
-  * When an `Array` is specified, the list of factories within the array will be called concurrently with Promise.all
-  * An object which contains the instances to be registered must be returned
-* `options`:
-  * `cache`
-    * `enabled = true`
-      * Set to false to turn off caching
-    * `maxAge = 300000`
-      * Your factory will be called when the cache has reached its maximum age specified by this option
+- `factory(laconiaContext)`
+  - This `Function` is called when your Lambda is invoked
+  - When an `Array` is specified, the list of factories within the array will be called concurrently with Promise.all
+  - An object which contains the instances to be registered must be returned
+- `options`:
+  - `cache`
+    - `enabled = true`
+      - Set to false to turn off caching
+    - `maxAge = 300000`
+      - Your factory will be called when the cache has reached its maximum age specified by this option
 
 Example:
 
@@ -205,8 +208,8 @@ laconia(app).register(
 Upon Lambda runtime execution, every postProcessorFn will be called on every factory functions
 individually.
 
-* `postProcessorFn(instances)`
-  * This `Function` is called when your Lambda is invoked
+- `postProcessorFn(instances)`
+  - This `Function` is called when your Lambda is invoked
 
 Example:
 

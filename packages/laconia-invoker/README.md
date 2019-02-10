@@ -1,23 +1,26 @@
 # @laconia/invoker
 
-[![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
+[![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
+[![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
+[![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
 
 > 🛡️ Laconia Invoker — Invokes Lambdas like regular functions
 
 ## Features
 
-* **Convention over configuration**: Set environment variables and you are good to go
-* **Predictable user experience**: Avoid common Lambda invocation programming error
+- **Convention over configuration**: Set environment variables and you are good to go
+- **Predictable user experience**: Avoid common Lambda invocation programming error
 
 Here are the user experience improvements that @laconia/invoker does for you:
 
-* Automatically stringifying JSON request payload and parsing JSON response payload
-* Throwing an error when FunctionError is returned instead of failing silently
-* Augmenting stacktrace in the FunctionError thrown based on the stacktrace returned by Lambda invocation
-* Set the FunctionError object's name and message thrown based on the error returned by Lambda invocation
-* Throwing an error when statusCode returned is not expected
+- Automatically stringifying JSON request payload and parsing JSON response payload
+- Throwing an error when FunctionError is returned instead of failing silently
+- Augmenting stacktrace in the FunctionError thrown based on the stacktrace returned by Lambda invocation
+- Set the FunctionError object's name and message thrown based on the error returned by Lambda invocation
+- Throwing an error when statusCode returned is not expected
 
 ## Install
 
@@ -95,8 +98,8 @@ does not satisfy your need.
 
 #### `invoker(functionName, lambda, options)`
 
-* `functionName` specifies the Lambda function name that will be invoked
-* `lambda` specifies the Lambda instance that will be used to invoke the lambda
+- `functionName` specifies the Lambda function name that will be invoked
+- `lambda` specifies the Lambda instance that will be used to invoke the lambda
 
 Example:
 
@@ -112,8 +115,8 @@ invoker("name", new AWS.Lambda({ apiVersion: "2015-03-31" }));
 
 Synchronous Lambda invocation.
 
-* `payload`
-  * The payload used for the Lambda invocation
+- `payload`
+  - The payload used for the Lambda invocation
 
 Example:
 
@@ -125,8 +128,8 @@ invoker("fn").requestResponse({ foo: "bar" });
 
 Asynchronous Lambda invocation.
 
-* `payload`
-  * The payload used for the Lambda invocation
+- `payload`
+  - The payload used for the Lambda invocation
 
 Example:
 

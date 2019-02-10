@@ -7,6 +7,7 @@
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
 [![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
+[![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
 
 > 🛡️ Laconia — Micro AWS Lambda framework
 
@@ -17,12 +18,12 @@ _Laconia is still in active development, please ⭐ the project to support its d
 Laconia shields you from common AWS Lambda problems so that you can regain focus back
 on developing your application.
 
-* **Non intrusive**: Switch to other technologies without significant application code change
-* **Clean**: Enables and encourages good coding practices, such as by supporting Dependency Injection
-* **Lightweight**: Features are modularised, so you can use just what you need and keep your Lambdas performant
-* **Focused**: Designed specifically for AWS Lambda and Node.js, hence there is no unnecessary layer of abstraction
-* **Versatile**: Compatible and tested to work with Serverless Framework. Can also be used with or without other frameworks.
-* **Quality assured**: Ultra high test coverage
+- **Non intrusive**: Switch to other technologies without significant application code change
+- **Clean**: Enables and encourages good coding practices, such as by supporting Dependency Injection
+- **Lightweight**: Features are modularised, so you can use just what you need and keep your Lambdas performant
+- **Focused**: Designed specifically for AWS Lambda and Node.js, hence there is no unnecessary layer of abstraction
+- **Versatile**: Compatible and tested to work with Serverless Framework. Can also be used with or without other frameworks.
+- **Quality assured**: Ultra high test coverage
 
 ## Documentation
 
@@ -31,16 +32,16 @@ Laconia's documentation is captured in every modules README. To understand more 
 
 ## Modules
 
-* [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework
-* [@laconia/adapter](packages/laconia-adapter/README.md): Converts AWS events into your application input
-* [@laconia/adapter-api](packages/laconia-adapter-api/README.md): Converts API Gateway Proxy events into your application input
-* [@laconia/invoker](packages/laconia-invoker/README.md): Invokes Lambdas like regular functions
-* [@laconia/config](packages/laconia-config/README.md): Externalizes application secret and configuration
-* [@laconia/batch](packages/laconia-batch/README.md): Reads large number of records without time limit
-* [@laconia/xray](packages/laconia-xray/README.md): Enables X-Ray integration to Laconia
-* [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration testing a breeze
-* [@laconia/middleware-lambda-warmer](packages/laconia-middleware-lambda-warmer/README.md): Integrates Lambda with lambda-warmer
-* [@laconia/middleware-serverless-plugin-warmup](packages/laconia-middleware-serverless-plugin-warmup/README.md): Short circuit Lambda run when it's called by serverless-plugin-warmup
+- [@laconia/core](packages/laconia-core/README.md): Micro dependency injection framework
+- [@laconia/adapter](packages/laconia-adapter/README.md): Converts AWS events into your application input
+- [@laconia/adapter-api](packages/laconia-adapter-api/README.md): Converts API Gateway Proxy events into your application input
+- [@laconia/invoker](packages/laconia-invoker/README.md): Invokes Lambdas like regular functions
+- [@laconia/config](packages/laconia-config/README.md): Externalizes application secret and configuration
+- [@laconia/batch](packages/laconia-batch/README.md): Reads large number of records without time limit
+- [@laconia/xray](packages/laconia-xray/README.md): Enables X-Ray integration to Laconia
+- [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration testing a breeze
+- [@laconia/middleware-lambda-warmer](packages/laconia-middleware-lambda-warmer/README.md): Integrates Lambda with lambda-warmer
+- [@laconia/middleware-serverless-plugin-warmup](packages/laconia-middleware-serverless-plugin-warmup/README.md): Short circuit Lambda run when it's called by serverless-plugin-warmup
 
 ## FAQ
 
@@ -55,4 +56,4 @@ Laconia's documentation is captured in every modules README. To understand more 
 
 [Apache License 2.0](LICENSE)
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_large) [![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_large)

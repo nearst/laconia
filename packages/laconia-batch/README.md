@@ -1,8 +1,11 @@
 # @laconia/batch
 
-[![CircleCI](https://circleci.com/gh/ceilfors/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/ceilfors/laconia/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/ceilfors/laconia/badge.svg?branch=master)](https://coveralls.io/github/ceilfors/laconia?branch=master)
+[![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
+[![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
+[![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
 
 > 🛡️ Laconia Batch — Reads large number of records without time limit.
 
@@ -33,8 +36,8 @@ npm install --save @laconia/batch
 
 These are the currently supported input sources:
 
-* DynamoDB
-* S3
+- DynamoDB
+- S3
 
 Example of batch processing by scanning a dynamodb table:
 
@@ -63,31 +66,31 @@ from where it left off in the new invocation.
 Imagine if you are about to process the array [1, 2, 3, 4, 5] and each requests can only
 handle two items, the following will happen:
 
-* request 1: Process 1
-* request 1: Process 2
-* request 1: Not enough time, recursing with current cursor
-* request 2: Process 3
-* request 2: Process 4
-* request 2: Not enough time, recursing with current cursor
-* request 3: Process 5
+- request 1: Process 1
+- request 1: Process 2
+- request 1: Not enough time, recursing with current cursor
+- request 2: Process 3
+- request 2: Process 4
+- request 2: Not enough time, recursing with current cursor
+- request 3: Process 5
 
 ### API
 
 #### `laconiaBatch(readerFn, batchOptions)`
 
-* `readerFn(laconiaContext)`
-  * This `Function` is called when your Lambda is invoked
-  * The function must return a reader object i.e. `dynamoDb()`, `s3()`
-  * Will be called with `laconiaContext` object, which can be destructured to `{event, context}`
-* `batchOptions`
-  * `itemsPerSecond`
-    * _Optional_
-    * Rate limit will not be applied if value is not set
-    * Can be set to decimal, i.e. 0.5 will equate to 1 item per 2 second.
-  * `timeNeededToRecurseInMillis`
-    * _Optional_
-    * The value set here will be used to check if the current execution is to be stopped
-    * If you have a _very slow_ item processing, the batch processor might not have enough time
+- `readerFn(laconiaContext)`
+  - This `Function` is called when your Lambda is invoked
+  - The function must return a reader object i.e. `dynamoDb()`, `s3()`
+  - Will be called with `laconiaContext` object, which can be destructured to `{event, context}`
+- `batchOptions`
+  - `itemsPerSecond`
+    - _Optional_
+    - Rate limit will not be applied if value is not set
+    - Can be set to decimal, i.e. 0.5 will equate to 1 item per 2 second.
+  - `timeNeededToRecurseInMillis`
+    - _Optional_
+    - The value set here will be used to check if the current execution is to be stopped
+    - If you have a _very slow_ item processing, the batch processor might not have enough time
       to recurse and your Lambda execution might be timing out. You can increase this value to
       increase the chance of the the recursion to happen
 
@@ -108,20 +111,20 @@ laconiaBatch(_ => dynamoDb(), {
 
 There are events that you can listen to when `@laconia/batch` is working.
 
-* item: `laconiaContext, item`
-  * Fired on every item read.
-  * `item` is an object found during the read
-  * `laconiaContext` can be destructured to `{event, context}`
-* start: `laconiaContext`
-  * Fired when the batch process is started for the very first time
-  * `laconiaContext` can be destructured to `{event, context}`
-* stop: `laconiaContext, cursor`
-  * Fired when the current execution is timing out and about to be recursed
-  * `cursor` contains the information of how the last item is being read
-  * `laconiaContext` can be destructured to `{event, context}`
-* end: `laconiaContext`
-  * Fired when the batch processor can no longer find any more records
-  * `laconiaContext` can be destructured to `{event, context}`
+- item: `laconiaContext, item`
+  - Fired on every item read.
+  - `item` is an object found during the read
+  - `laconiaContext` can be destructured to `{event, context}`
+- start: `laconiaContext`
+  - Fired when the batch process is started for the very first time
+  - `laconiaContext` can be destructured to `{event, context}`
+- stop: `laconiaContext, cursor`
+  - Fired when the current execution is timing out and about to be recursed
+  - `cursor` contains the information of how the last item is being read
+  - `laconiaContext` can be destructured to `{event, context}`
+- end: `laconiaContext`
+  - Fired when the batch processor can no longer find any more records
+  - `laconiaContext` can be destructured to `{event, context}`
 
 Example:
 
@@ -137,17 +140,17 @@ laconiaBatch({ ... })
 
 Creates a reader for Dynamo DB table.
 
-* `operation`
-  * _Mandatory_
-  * Valid values are: `'SCAN'` and `'QUERY'`
-* `dynamoDbParams`
-  * _Mandatory_
-  * This parameter is used when documentClent's operations are called
-  * `ExclusiveStartKey` param can't be used as it will be overridden in the processing time!
-* `documentClient = new AWS.DynamoDB.DocumentClient()`
-  * _Optional_
-  * Set this option if there's a need to cutomise the AWS.DynamoDB.DocumentClient instantation
-  * Used for DynamoDB operation
+- `operation`
+  - _Mandatory_
+  - Valid values are: `'SCAN'` and `'QUERY'`
+- `dynamoDbParams`
+  - _Mandatory_
+  - This parameter is used when documentClent's operations are called
+  - `ExclusiveStartKey` param can't be used as it will be overridden in the processing time!
+- `documentClient = new AWS.DynamoDB.DocumentClient()`
+  - _Optional_
+  - Set this option if there's a need to cutomise the AWS.DynamoDB.DocumentClient instantation
+  - Used for DynamoDB operation
 
 Example:
 
@@ -176,19 +179,19 @@ dynamoDb({
 
 Creates a reader for an array stored in s3.
 
-* `path`
-  * _Mandatory_
-  * The path to the array to be processed
-  * Set to `'.'` if the object stored in s3 is the array
-  * Set to a path if an object is stored in s3 and the array is a property of the object
-    * `lodash.get` is used to retrieve the array
-* `s3Params`
-  * _Mandatory_
-  * This parameter is used when `s3.getObject` is called to retrieve the array stored in s3
-* `s3 = new AWS.S3()`
-  * _Optional_
-  * Set this option if there's a need to cutomise the AWS.S3 instantation
-  * Used for S3 operation
+- `path`
+  - _Mandatory_
+  - The path to the array to be processed
+  - Set to `'.'` if the object stored in s3 is the array
+  - Set to a path if an object is stored in s3 and the array is a property of the object
+    - `lodash.get` is used to retrieve the array
+- `s3Params`
+  - _Mandatory_
+  - This parameter is used when `s3.getObject` is called to retrieve the array stored in s3
+- `s3 = new AWS.S3()`
+  - _Optional_
+  - Set this option if there's a need to cutomise the AWS.S3 instantation
+  - Used for S3 operation
 
 Example:
 

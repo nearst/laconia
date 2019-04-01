@@ -30,7 +30,7 @@
     "@laconia/test-helper": "^0.9.0"
   },
   "peerDependencies": {
-    "aws-sdk": "^2.7.15"
+    "aws-sdk": "^2.432.0"
   },
   "engines": {
     "node": ">=8.10"

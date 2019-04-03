@@ -15,7 +15,7 @@ const createInputConverter = inputType => {
   }
 };
 
-const createApiAgatewayAdapter = ({
+const createS3Adapter = ({
   inputType = "object",
   functional = true
 } = {}) => app => {
@@ -23,4 +23,4 @@ const createApiAgatewayAdapter = ({
   return functional ? adapter.toFunction() : adapter;
 };
 
-module.exports = createApiAgatewayAdapter;
+module.exports = createS3Adapter;

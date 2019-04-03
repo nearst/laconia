@@ -1,14 +1,12 @@
-const S3EventInputConverter = require("./S3EventInputConverter");
+const S3Event = require("./S3Event");
 
-module.exports = class S3JsonInputConverter extends S3EventInputConverter {
+module.exports = class S3JsonInputConverter {
   constructor(s3) {
-    super(s3);
     this.s3 = s3;
   }
 
   async convert(event) {
-    const s3Event = super.convert(event);
-    const object = await this.s3.getObject(s3Event.toParams()).promise();
-    return JSON.parse(object.Body.toString());
+    const s3Event = S3Event.fromEvent(event);
+    return s3Event.getJson(this.s3);
   }
 };

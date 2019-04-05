@@ -76,8 +76,8 @@ describe("S3Event", () => {
       AWSMock.restore();
     });
 
-    describe("#getObject", () => {
-      it("should convert event to json", async () => {
+    describe("#getJson", () => {
+      it("should parse returned object to json", async () => {
         const s3Event = S3Event.fromEvent(event);
         const json = await s3Event.getJson(new AWS.S3());
         expect(json).toEqual({ foo: "bar" });
@@ -86,6 +86,27 @@ describe("S3Event", () => {
       it("should call AWS sdk with the correct parameter", async () => {
         const s3Event = S3Event.fromEvent(event);
         await s3Event.getJson(new AWS.S3());
+
+        expect(s3.getObject).toBeCalledWith(
+          {
+            Bucket: "my-bucket-name",
+            Key: "object-key"
+          },
+          expect.any(Function)
+        );
+      });
+    });
+
+    describe("#getObject", () => {
+      it("should retrieve object from S3", async () => {
+        const s3Event = S3Event.fromEvent(event);
+        const object = await s3Event.getObject(new AWS.S3());
+        expect(object).toHaveProperty("toString");
+      });
+
+      it("should call AWS sdk with the correct parameter", async () => {
+        const s3Event = S3Event.fromEvent(event);
+        await s3Event.getObject(new AWS.S3());
 
         expect(s3.getObject).toBeCalledWith(
           {

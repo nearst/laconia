@@ -14,9 +14,14 @@ module.exports = class S3Event {
     return stream;
   }
 
-  async getJson(s3) {
+  async getObject(s3) {
     const object = await s3.getObject(this.toParams()).promise();
-    return JSON.parse(object.Body.toString());
+    return object.Body;
+  }
+
+  async getJson(s3) {
+    const object = await this.getObject(s3);
+    return JSON.parse(object.toString());
   }
 
   static fromEvent(event) {

@@ -16,7 +16,7 @@ const createKinesisEvent = records => {
 describe("KinesisEvent", () => {
   describe("#records", () => {
     it("should parse a single record", async () => {
-      const kinesisEvent = KinesisEvent.fromEvent(
+      const kinesisEvent = KinesisEvent.fromRaw(
         createKinesisEvent(["foo bar"])
       );
       expect(kinesisEvent.records).toHaveLength(1);
@@ -24,7 +24,7 @@ describe("KinesisEvent", () => {
     });
 
     it("should parse multiple records ", async () => {
-      const kinesisEvent = KinesisEvent.fromEvent(
+      const kinesisEvent = KinesisEvent.fromRaw(
         createKinesisEvent(["foo bar", { foo: "bar" }])
       );
       expect(kinesisEvent.records).toHaveLength(2);

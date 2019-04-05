@@ -5,7 +5,7 @@ module.exports = class KinesisEvent {
     this.records = records;
   }
 
-  static fromEvent(event) {
+  static fromRaw(event) {
     return new KinesisEvent(event.Records.map(r => KinesisRecord.fromRaw(r)));
   }
 };

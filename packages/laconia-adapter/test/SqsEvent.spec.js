@@ -12,14 +12,14 @@ const createSqsEvent = messages => {
 };
 
 describe("SqsEvent", () => {
-  it("should convert one record event to json", async () => {
+  it("should be able to parse one record", async () => {
     const sqsEvent = SqsEvent.fromRaw(createSqsEvent([{ foo: "bar" }]));
     expect(sqsEvent.records).toHaveLength(1);
     expect(sqsEvent.records[0]).toBeInstanceOf(SqsRecord);
     expect(sqsEvent.records[0].body).toEqual({ foo: "bar" });
   });
 
-  it("should convert multiple records event to json", async () => {
+  it("should be able to parse multiple records", async () => {
     const sqsEvent = SqsEvent.fromRaw(
       createSqsEvent([{ foo: "bar" }, { fiz: "baz" }])
     );

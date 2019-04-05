@@ -24,7 +24,7 @@ describe("SqsRecord", () => {
     expect(sqsRecord).toHaveProperty("body", rawRecord.body);
   });
 
-  it("should be able to parse JSON body", async () => {
+  it("should automatically parse JSON", async () => {
     const sqsRecord = SqsRecord.fromRaw(
       Object.assign({}, rawRecord, { body: JSON.stringify({ foo: "bar" }) })
     );

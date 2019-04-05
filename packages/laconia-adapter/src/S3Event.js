@@ -24,7 +24,7 @@ module.exports = class S3Event {
     return JSON.parse(object.toString());
   }
 
-  static fromEvent(event) {
+  static fromRaw(event) {
     const record = event.Records[0];
     const { key } = record.s3.object;
     const { name } = record.s3.bucket;

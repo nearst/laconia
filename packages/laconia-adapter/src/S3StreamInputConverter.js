@@ -6,7 +6,7 @@ module.exports = class S3StreamInputConverter {
   }
 
   convert(event) {
-    const s3Event = S3Event.fromEvent(event);
+    const s3Event = S3Event.fromRaw(event);
     return s3Event.getStream(this.s3);
   }
 };

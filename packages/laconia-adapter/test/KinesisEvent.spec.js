@@ -1,5 +1,6 @@
 const merge = require("lodash/merge");
 const KinesisEvent = require("../src/KinesisEvent");
+const KinesisRecord = require("../src/KinesisRecord");
 const kinesisTemplate = require("aws-event-mocks/events/aws/kinesis.json");
 
 const createKinesisEvent = records => {
@@ -13,47 +14,22 @@ const createKinesisEvent = records => {
 };
 
 describe("KinesisEvent", () => {
-  describe("#jsonRecords", () => {
-    it("should parse the JSON string", async () => {
+  describe("#records", () => {
+    it("should parse a single record", async () => {
       const kinesisEvent = KinesisEvent.fromEvent(
         createKinesisEvent(["foo bar"])
       );
-      expect(kinesisEvent.jsonRecords).toEqual(["foo bar"]);
+      expect(kinesisEvent.records).toHaveLength(1);
+      expect(kinesisEvent.records[0]).toBeInstanceOf(KinesisRecord);
     });
 
-    it("should return multiple records event to json", async () => {
+    it("should parse multiple records ", async () => {
       const kinesisEvent = KinesisEvent.fromEvent(
         createKinesisEvent(["foo bar", { foo: "bar" }])
       );
-      expect(kinesisEvent.jsonRecords).toEqual(["foo bar", { foo: "bar" }]);
-    });
-  });
-
-  describe("#stringRecords", () => {
-    it("should return the original record published to Kinesis", async () => {
-      const kinesisEvent = KinesisEvent.fromEvent(
-        createKinesisEvent([{ foo: "bar" }])
-      );
-      expect(kinesisEvent.stringRecords).toEqual(['{"foo":"bar"}']);
-    });
-
-    it("should return multiple records event to string", async () => {
-      const kinesisEvent = KinesisEvent.fromEvent(
-        createKinesisEvent([{ foo: "bar" }, { fiz: "baz" }])
-      );
-      expect(kinesisEvent.stringRecords).toEqual([
-        '{"foo":"bar"}',
-        '{"fiz":"baz"}'
-      ]);
-    });
-  });
-
-  describe("#bufferRecords", () => {
-    it("should return the raw record", async () => {
-      const kinesisEvent = KinesisEvent.fromEvent(
-        createKinesisEvent([{ foo: "bar" }])
-      );
-      expect(kinesisEvent.bufferRecords[0]).toBeInstanceOf(Buffer);
+      expect(kinesisEvent.records).toHaveLength(2);
+      expect(kinesisEvent.records[0].textData).toEqual('"foo bar"');
+      expect(kinesisEvent.records[1].jsonData).toEqual({ foo: "bar" });
     });
   });
 });

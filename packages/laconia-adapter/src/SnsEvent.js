@@ -7,11 +7,13 @@ const tryParseJson = object => {
 };
 
 module.exports = class SnsEvent {
-  constructor(message) {
+  constructor(subject, message) {
+    this.subject = subject;
     this.message = message;
   }
 
   static fromRaw(event) {
-    return new SnsEvent(tryParseJson(event.Records[0].Sns.Message));
+    const record = event.Records[0].Sns;
+    return new SnsEvent(record.Subject, tryParseJson(record.Message));
   }
 };

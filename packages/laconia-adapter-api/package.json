@@ -23,7 +23,8 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^0.16.0"
+    "@laconia/core": "^0.16.0",
+    "@laconia/event": "^0.18.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "^0.9.0"

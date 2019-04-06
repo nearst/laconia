@@ -62,16 +62,4 @@ describe("ApiGatewayParamsInputConverter", () => {
       })
     );
   });
-
-  it("should keep original headers", async () => {
-    event.queryStringParameters = { queryParam1: "queryParam" };
-    const input = await inputConverter.convert(event);
-    expect(input).toEqual(
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          "Content-Type": "application/json; charset=UTF-8"
-        })
-      })
-    );
-  });
 });

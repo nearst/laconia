@@ -56,24 +56,4 @@ describe("ApiGatewayBodyInputConverter", () => {
       })
     );
   });
-
-  it("should keep original headers", async () => {
-    event.queryStringParameters = { queryParam1: "queryParam" };
-    const input = await inputConverter.convert(event);
-    expect(input).toEqual(
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          "Content-Type": "application/json; charset=UTF-8"
-        })
-      })
-    );
-  });
-
-  it("should be able to retrieve headers with node.js canonical format", async () => {
-    event.queryStringParameters = { queryParam1: "queryParam" };
-    const input = await inputConverter.convert(event);
-    expect(input.headers["content-type"]).toEqual(
-      "application/json; charset=UTF-8"
-    );
-  });
 });

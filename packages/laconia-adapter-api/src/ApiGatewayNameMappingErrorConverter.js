@@ -1,4 +1,4 @@
-const getContentType = require("./getContentType");
+const { res } = require("@laconia/event").apigateway;
 
 const getMappingEntries = mappings =>
   mappings instanceof Map ? mappings.entries() : Object.entries(mappings);
@@ -23,16 +23,11 @@ module.exports = class ApiGatewayNameMappingErrorConverter {
   convert(error) {
     const mappingResponse = getMappingResponse(this.mappings, error);
     const body = mappingResponse.body || error.message;
-
-    return {
-      body: typeof body !== "string" ? JSON.stringify(body) : body,
-      headers: Object.assign(
-        { "Content-Type": getContentType(body) },
-        this.additionalHeaders,
-        mappingResponse.headers
-      ),
-      statusCode: mappingResponse.statusCode || error.statusCode || 500,
-      isBase64Encoded: false
-    };
+    const statusCode = mappingResponse.statusCode || error.statusCode || 500;
+    const headers = Object.assign(
+      this.additionalHeaders,
+      mappingResponse.headers
+    );
+    return res(body, statusCode, headers);
   }
 };

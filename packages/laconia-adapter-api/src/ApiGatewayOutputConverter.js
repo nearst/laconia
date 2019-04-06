@@ -1,4 +1,4 @@
-const getContentType = require("./getContentType");
+const { res } = require("@laconia/event").apigateway;
 
 module.exports = class ApiGatewayOutputConverter {
   constructor({ statusCode = 200, additionalHeaders = {} } = {}) {
@@ -7,17 +7,6 @@ module.exports = class ApiGatewayOutputConverter {
   }
 
   convert(output) {
-    const body = typeof output !== "string" ? JSON.stringify(output) : output;
-    const contentType = getContentType(output);
-
-    return {
-      body,
-      headers: Object.assign(
-        { "Content-Type": contentType },
-        this.additionalHeaders
-      ),
-      isBase64Encoded: false,
-      statusCode: this.statusCode
-    };
+    return res(output, this.statusCode, this.additionalHeaders);
   }
 };

@@ -1,4 +1,4 @@
-const ApiGatewayInputHeaders = require("../src/ApiGatewayInputHeaders");
+const ApiGatewayInputHeaders = require("../../src/apigateway/ApiGatewayInputHeaders");
 
 describe("ApiGatewayInputHeaders", () => {
   it("should be able to get the original header set", async () => {

@@ -1,5 +1,5 @@
 const ApiGatewayErrorConverter = require("../src/ApiGatewayNameMappingErrorConverter");
-const jestResponseMatchers = require("./jestResponseMatchers");
+const jestResponseMatchers = require("@laconia/event/test/apigateway/jestResponseMatchers");
 
 expect.extend(jestResponseMatchers);
 
@@ -20,11 +20,6 @@ describe("ApiGatewayErrorConverter", () => {
     error.statusCode = 400;
     const response = await errorConverter.convert(error);
     expect(response).toHaveStatusCode(400);
-  });
-
-  it("should set isBase64Encoded to false", async () => {
-    const response = await errorConverter.convert(new Error("boom"));
-    expect(response).toBeBase64Encoded(false);
   });
 
   it("set body based on the error message", async () => {
@@ -125,7 +120,7 @@ describe("ApiGatewayErrorConverter", () => {
       expect(response).toContainHeader("Content-Type", "text/plain");
     });
 
-    it("should return JSON stringify body when an objet is returned", async () => {
+    it("should return JSON stringify body when an object is returned", async () => {
       errorConverter.mappings = {
         "Validation.*": () => ({
           body: { foo: "bar" }

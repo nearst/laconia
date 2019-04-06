@@ -1,4 +1,4 @@
-const getContentType = require("../src/getContentType");
+const getContentType = require("../../src/apigateway/getContentType");
 
 describe("getContentType", () => {
   it("should return application/json when an object is specified", async () => {

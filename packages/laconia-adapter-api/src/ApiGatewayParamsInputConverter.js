@@ -1,15 +1,14 @@
-const parseRequestBody = require("./parseRequestBody");
-const ApiGatewayInputHeaders = require("./ApiGatewayInputHeaders");
+const { req } = require("@laconia/event").apigateway;
 
 module.exports = class ApiGatewayParamsInputConverter {
   convert(event) {
+    const apiGatewayEvent = req(event);
     return {
       payload: Object.assign(
-        { body: parseRequestBody(event) },
-        event.pathParameters,
-        event.queryStringParameters
+        { body: apiGatewayEvent.body },
+        apiGatewayEvent.params
       ),
-      headers: new ApiGatewayInputHeaders(event.headers)
+      headers: apiGatewayEvent.headers
     };
   }
 };

@@ -10,4 +10,11 @@ describe("index", () => {
       });
     });
   });
+
+  describe("#apigateway", () => {
+    it("exposes an object that has req and res", () => {
+      expect(event["apigateway"]).toHaveProperty("req", expect.toBeFunction());
+      expect(event["apigateway"]).toHaveProperty("res", expect.toBeFunction());
+    });
+  });
 });

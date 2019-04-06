@@ -1,4 +1,4 @@
-const parseRequestBody = require("../src/parseRequestBody");
+const parseRequestBody = require("../../src/apigateway/parseRequestBody");
 
 const createApiGatewayEvent = ({
   body = {},

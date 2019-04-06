@@ -1,7 +1,7 @@
-const S3Event = require("./S3Event");
+const { s3 } = require("@laconia/event");
 
 module.exports = class S3EventInputConverter {
   convert(event) {
-    return S3Event.fromRaw(event);
+    return s3(event);
   }
 };

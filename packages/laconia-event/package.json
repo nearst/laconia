@@ -1,7 +1,7 @@
 {
-  "name": "@laconia/adapter",
+  "name": "@laconia/event",
   "version": "0.18.0",
-  "description": "Converts AWS events into your application input",
+  "description": "Parse incoming events easily",
   "keywords": [
     "aws",
     "lambda",
@@ -23,8 +23,7 @@
     "url": "https://github.com/ceilfors/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^0.16.0",
-    "@laconia/event": "^0.18.0"
+    "@laconia/core": "^0.16.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "^0.9.0"

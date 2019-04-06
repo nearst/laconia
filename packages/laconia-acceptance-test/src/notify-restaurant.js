@@ -1,5 +1,5 @@
 const laconia = require("@laconia/core");
-const kinesis = require("@laconia/adapter").kinesis();
+const { kinesis } = require("@laconia/event");
 const SnsRestaurantNotificationTopic = require("./SnsRestaurantNotificationTopic");
 
 const instances = ({ sns, env }) => ({
@@ -9,6 +9,11 @@ const instances = ({ sns, env }) => ({
   )
 });
 
+const adapter = app => (event, dependencies) => {
+  const orderEvents = kinesis(event).records.map(r => r.jsonData);
+  return app(orderEvents, dependencies);
+};
+
 const app = async (orderEvents, { restaurantNotificationTopic }) => {
   return Promise.all(
     orderEvents
@@ -17,4 +22,4 @@ const app = async (orderEvents, { restaurantNotificationTopic }) => {
   );
 };
 
-exports.handler = laconia(kinesis(app)).register(instances);
+exports.handler = laconia(adapter(app)).register(instances);

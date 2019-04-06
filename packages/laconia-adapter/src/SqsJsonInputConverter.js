@@ -1,7 +1,7 @@
-const SqsEvent = require("./SqsEvent");
+const { sqs } = require("@laconia/event");
 
 module.exports = class SnsJsonInputConverter {
   convert(event) {
-    return SqsEvent.fromRaw(event).records.map(r => r.body);
+    return sqs(event).records.map(r => r.body);
   }
 };

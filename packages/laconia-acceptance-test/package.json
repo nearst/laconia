@@ -36,6 +36,7 @@
     "@laconia/batch": "^0.16.0",
     "@laconia/config": "^0.16.0",
     "@laconia/core": "^0.16.0",
+    "@laconia/event": "^0.18.0",
     "@laconia/invoker": "^0.16.0",
     "@laconia/middleware-lambda-warmer": "^0.16.0",
     "@laconia/test": "^0.16.0",

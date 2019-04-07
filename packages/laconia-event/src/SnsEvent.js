@@ -1,10 +1,4 @@
-const tryParseJson = object => {
-  try {
-    return JSON.parse(object);
-  } catch (ignored) {
-    return object;
-  }
-};
+const tryParseJson = require("./tryParseJson");
 
 module.exports = class SnsEvent {
   constructor(subject, message) {

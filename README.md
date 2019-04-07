@@ -8,8 +8,9 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
 [![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
 [![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
+[![Gitter](https://badges.gitter.im/laconiajs/laconia.svg)](https://gitter.im/laconiajs/laconia?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-> 🛡️ Laconia — Micro AWS Lambda framework
+> 🛡️ Laconia — Create well-crafted serverless applications, effortlessly
 
 _If you like Laconia, ⭐ the project to support its development!_
 
@@ -32,42 +33,14 @@ back on developing your application.
 
 ## Documentation
 
-Laconia's documentation is captured in every modules README. To understand more
-about what it does, start from @laconia/core's README.
+Visit Laconia's website at [laconiajs.io](https://laconiajs.io/), for:
 
-## Modules
-
-- [@laconia/core](packages/laconia-core/README.md): Micro dependency injection
-  framework
-- [@laconia/adapter](packages/laconia-adapter/README.md): Converts AWS events
-  into your application input
-- [@laconia/adapter-api](packages/laconia-adapter-api/README.md): Converts API
-  Gateway Proxy events into your application input
-- [@laconia/invoker](packages/laconia-invoker/README.md): Invokes Lambdas like
-  regular functions
-- [@laconia/config](packages/laconia-config/README.md): Externalizes application
-  secret and configuration
-- [@laconia/batch](packages/laconia-batch/README.md): Reads large number of
-  records without time limit
-- [@laconia/xray](packages/laconia-xray/README.md): Enables X-Ray integration to
-  Laconia
-- [@laconia/test](packages/laconia-test/README.md): Makes Lambda integration
-  testing a breeze
-- [@laconia/middleware-lambda-warmer](packages/laconia-middleware-lambda-warmer/README.md):
-  Integrates Lambda with lambda-warmer
-- [@laconia/middleware-serverless-plugin-warmup](packages/laconia-middleware-serverless-plugin-warmup/README.md):
-  Short circuit Lambda run when it's called by serverless-plugin-warmup
-
-## FAQ
-
-1.  I already am using another framework like Serverless Framework or SAM, why
-    should I use laconia?
-
-    Tools like Serverless Framework or SAM are more focused on helping the build
-    and deployment of your application. Laconia however is more focused on how
-    you craft your application. In fact, both tools are designed to be used
-    together and can be seen in action in
-    [laconia's acceptance test](packages/laconia-acceptance-test).
+- Getting started
+- Project background
+- FAQ
+- Guides
+- API references
+- and more!
 
 ## License
 

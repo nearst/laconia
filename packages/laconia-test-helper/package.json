@@ -2,18 +2,25 @@
   "name": "@laconia/test-helper",
   "version": "0.9.0",
   "description": "",
-  "keywords": ["aws", "lambda", "laconia", "serverless"],
-  "homepage": "https://github.com/ceilfors/laconia",
+  "keywords": [
+    "aws",
+    "lambda",
+    "laconia",
+    "serverless"
+  ],
+  "homepage": "https://laconiajs.io/",
   "bugs": {
-    "url": "https://github.com/ceilfors/laconia/issues"
+    "url": "https://github.com/laconiajs/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ceilfors/laconia.git"
+    "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
     "p-wait-for": "^3.1.0"

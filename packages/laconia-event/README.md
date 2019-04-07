@@ -1,9 +1,8 @@
 # @laconia/event
 
-> 🛡️ Laconia Event - Parse and respond to incoming events with ease
+> 🛡️ Laconia Event - Parses and responds to incoming events
 
-See our website [@laconia/event](https://laconiajs.io/docs/api/event) for more
-information.
+See our [website](https://laconiajs.io) for documentation and API references.
 
 ## Install
 

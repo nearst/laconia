@@ -1,16 +1,16 @@
 {
   "name": "@laconia/event",
   "version": "0.18.0",
-  "description": "Parse incoming events easily",
+  "description": "Parses and responds to incoming events",
   "keywords": [
     "aws",
     "lambda",
     "laconia",
     "serverless"
   ],
-  "homepage": "https://github.com/ceilfors/laconia",
+  "homepage": "https://laconiajs.io/",
   "bugs": {
-    "url": "https://github.com/ceilfors/laconia/issues"
+    "url": "https://github.com/laconiajs/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
@@ -20,7 +20,7 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ceilfors/laconia.git"
+    "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
     "@laconia/core": "^0.16.0"

@@ -1,17 +1,13 @@
 # @laconia/test
 
-[![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
-[![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
-[![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
-[![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
-
 > 🛡️ Laconia Test — Makes Lambda integration testing a breeze
 
-Integration test is a very important layer to be tested in the Serverless Architecture,
-due to the nature of its ecosystem dependencies. Laconia Test package aims to make integration
-test easy especially when you are testing your system end to end.
+See our [website](https://laconiajs.io) for documentation and API references.
+
+Integration test is a very important layer to be tested in the Serverless
+Architecture, due to the nature of its ecosystem dependencies. Laconia Test
+package aims to make integration test easy especially when you are testing your
+system end to end.
 
 ## Features
 
@@ -57,10 +53,6 @@ console.log ../laconia-test/src/LaconiaTester.js:14
 ...
 ```
 
-## FAQ
-
-Check out [FAQ](https://github.com/ceilfors/laconia#faq)
-
 ## Install
 
 ```
@@ -69,7 +61,8 @@ npm install --save @laconia/test
 
 ## Invocation
 
-See `@laconia/invoker`'s documentation for more details on usage and API. The arugments are exactly the same.
+See `@laconia/invoker`'s documentation for more details on usage and API. The
+arugments are exactly the same.
 
 ### Usage
 
@@ -86,12 +79,14 @@ await laconiaTest("capture-card-payment").requestResponse({
 
 Lambda configuration:
 
-- Set LACONIA_TEST_SPY_BUCKET environment variable. This is required as the invocation
-  records are stored in an S3 bucket. The bucket must already be created.
+- Set LACONIA_TEST_SPY_BUCKET environment variable. This is required as the
+  invocation records are stored in an S3 bucket. The bucket must already be
+  created.
 
 IAM permission configuration:
 
-- Permissions must be updated to allow Lambda and your test environment to read and write to the configured S3 bucket.
+- Permissions must be updated to allow Lambda and your test environment to read
+  and write to the configured S3 bucket.
 
 Lambda handler code:
 
@@ -163,7 +158,8 @@ laconia(spy(app)).register(spy.instances());
     - Set this option if there's a need to customise its instantiation
     - USed for S3 interaction
   - `spy`:
-    - `bucketName` specifies the bucket name where the invocation records are stored
+    - `bucketName` specifies the bucket name where the invocation records are
+      stored
     - `s3 = new AWS.S3()`
       - _Optional_
       - Set this option if there's a need to customise its instantiation
@@ -182,8 +178,7 @@ laconiaTest("capture-card-payment", {
 
 #### `laconiaTest.spy`
 
-The spy object that can be used to get the list of invocations done
-in a Lambda.
+The spy object that can be used to get the list of invocations done in a Lambda.
 
 #### `laconiaTest.spy.clear()`
 

@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ceilfors/laconia.git"
+    "url": "https://github.com/laconiajs/laconia.git"
   },
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ceilfors/laconia/issues"
+    "url": "https://github.com/laconiajs/laconia/issues"
   },
-  "homepage": "https://github.com/ceilfors/laconia#readme",
+  "homepage": "https://laconiajs.io/",
   "devDependencies": {
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.432.0",

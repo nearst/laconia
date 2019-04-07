@@ -78,14 +78,14 @@ describe("S3Event", () => {
 
     describe("#getJson", () => {
       it("should parse returned object to json", async () => {
-        const s3Event = S3Event.fromRaw(event);
-        const json = await s3Event.getJson(new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const json = await s3Event.getJson();
         expect(json).toEqual({ foo: "bar" });
       });
 
       it("should call AWS sdk with the correct parameter", async () => {
-        const s3Event = S3Event.fromRaw(event);
-        await s3Event.getJson(new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        await s3Event.getJson();
 
         expect(s3.getObject).toBeCalledWith(
           {
@@ -99,14 +99,14 @@ describe("S3Event", () => {
 
     describe("#getObject", () => {
       it("should retrieve object from S3", async () => {
-        const s3Event = S3Event.fromRaw(event);
-        const object = await s3Event.getObject(new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const object = await s3Event.getObject();
         expect(object).toHaveProperty("toString");
       });
 
       it("should call AWS sdk with the correct parameter", async () => {
-        const s3Event = S3Event.fromRaw(event);
-        await s3Event.getObject(new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        await s3Event.getObject();
 
         expect(s3.getObject).toBeCalledWith(
           {
@@ -120,14 +120,14 @@ describe("S3Event", () => {
 
     describe("#getStream", () => {
       it("should convert event to stream", () => {
-        const s3Event = S3Event.fromRaw(event);
-        const stream = s3Event.getStream(new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const stream = s3Event.getStream();
         expect(stream).toBeInstanceOf(Readable);
       });
 
       it("should call AWS sdk with the correct parameter", async () => {
-        const s3Event = S3Event.fromRaw(event);
-        s3Event.getStream(new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        await s3Event.getStream();
 
         expect(s3.getObject).toBeCalledWith(
           {

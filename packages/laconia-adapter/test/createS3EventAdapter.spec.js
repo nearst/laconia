@@ -1,7 +1,6 @@
 const createS3EventAdapter = require("../src/createS3EventAdapter");
 const S3JsonInputConverter = require("../src/S3JsonInputConverter");
 const S3StreamInputConverter = require("../src/S3StreamInputConverter");
-const S3EventInputConverter = require("../src/S3EventInputConverter");
 
 describe("createS3EventAdapter", () => {
   it("returns an adapter function", () => {
@@ -23,14 +22,6 @@ describe("createS3EventAdapter", () => {
       functional: false
     })(jest.fn());
     expect(adapter.inputConverter).toBeInstanceOf(S3StreamInputConverter);
-  });
-
-  it("is created with S3EventInputConverter when inputType is event", () => {
-    const adapter = createS3EventAdapter({
-      inputType: "event",
-      functional: false
-    })(jest.fn());
-    expect(adapter.inputConverter).toBeInstanceOf(S3EventInputConverter);
   });
 
   it("throws an error when inputType is not supported", () => {

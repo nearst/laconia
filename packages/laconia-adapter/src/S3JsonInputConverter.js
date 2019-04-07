@@ -6,7 +6,7 @@ module.exports = class S3JsonInputConverter {
   }
 
   async convert(event) {
-    const s3Event = s3(event);
-    return s3Event.getJson(this.s3);
+    const s3Event = s3(event, this.s3);
+    return s3Event.getJson();
   }
 };

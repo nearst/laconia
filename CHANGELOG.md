@@ -3,16 +3,32 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.19.0]
+
+### Changed
+
+- `@laconia/adapter`
+  - **BREAKING** Remove `event` inputType from s3 adapter. You can now use
+    `@laconia/event` instead to easily retrieve bucket and key info.
+
+### Added
+
+- `@laconia/event`
+  - #26 Expose lower level package for easy creation of custom adapters
 
 ## [0.18.0]
 
 ### Changed
 
 - `@laconia/event`
-  - **BREAKING** #14 Change API usage from event handler to adapter pattern. Check out the latest documentation in @laconia/adapter for the latest way to use the module
+  - **BREAKING** #14 Change API usage from event handler to adapter pattern.
+    Check out the latest documentation in @laconia/adapter for the latest way to
+    use the module
   - Rename package from @laconia/event to @laconia/adapter
 - `@laconia/api`
   - Rename package from @laconia/api to @laconia/adapter-api
@@ -22,24 +38,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `@laconia/api`
-  - **BREAKING** #13 Change @laconia/api API to abstract business logic instead of HTTP. Check out the latest documentation for the latest way to use the module.
+  - **BREAKING** #13 Change @laconia/api API to abstract business logic instead
+    of HTTP. Check out the latest documentation for the latest way to use the
+    module.
 
 ## [0.16.0]
 
 ### Changed
 
 - `@laconia/event`
-  - **BREAKING** #12 Change @laconia/event API. Check out the latest documentation for the latest way to use the module.
+  - **BREAKING** #12 Change @laconia/event API. Check out the latest
+    documentation for the latest way to use the module.
 
 ## [0.15.0]
 
 ### Changed
 
 - `@laconia/core`
-  - **BREAKING** #11 Throw error when unregistered dependencies are referenced from LaconiaContext
+  - **BREAKING** #11 Throw error when unregistered dependencies are referenced
+    from LaconiaContext
   - **BREAKING** Remove #run method from laconia.
     - Export your app function separately for unit testing purposes
-    - Change unit test usage of #run from `handler.run({ event, dependency })` to `app(event, { dependency })`
+    - Change unit test usage of #run from `handler.run({ event, dependency })`
+      to `app(event, { dependency })`
 
 ### Added
 
@@ -86,9 +107,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `@laconia/core`
-  - **BREAKING** Moved `event` out of `LaconiaContext`. `laconia()` will call your handler function with the parameter of `event, LaconiaContext` instead of just `LaconiaContext`
-    - Change your handler function from `({ event, dependency }) => {}` to `(event, { dependency }) => {}`
-    - Change unit test usage of #run from `.run({ event, dependency })` to `.run(event, { dependency })`
+  - **BREAKING** Moved `event` out of `LaconiaContext`. `laconia()` will call
+    your handler function with the parameter of `event, LaconiaContext` instead
+    of just `LaconiaContext`
+    - Change your handler function from `({ event, dependency }) => {}` to
+      `(event, { dependency }) => {}`
+    - Change unit test usage of #run from `.run({ event, dependency })` to
+      `.run(event, { dependency })`
 
 ## [0.12.0]
 
@@ -101,9 +126,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `@laconia/s3-config`
-  - **BREAKING** This package is now merged to `@laconia/config`. Change your environment variable from LACONIA_S3CONFIG_VAR: foo to LACONIA_CONFIG_VAR: s3:foo
+  - **BREAKING** This package is now merged to `@laconia/config`. Change your
+    environment variable from LACONIA_S3CONFIG_VAR: foo to LACONIA_CONFIG_VAR:
+    s3:foo
 - `@laconia/ssm-config`
-  - **BREAKING**This package is now merged to `@laconia/config`. Change your environment variable from LACONIA_SSMCONFIG_VAR: foo to LACONIA_CONFIG_VAR: ssm:foo
+  - **BREAKING**This package is now merged to `@laconia/config`. Change your
+    environment variable from LACONIA_SSMCONFIG_VAR: foo to LACONIA_CONFIG_VAR:
+    ssm:foo
 
 ## [0.11.0]
 
@@ -117,8 +146,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `@laconia/invoker`
-  - **BREAKING** Constructor of `invoker` is changed from `invoker(functionName, options)` to `invoker(functionName, lambda, options)`.
-    The second parameter is an instance of AWS.Lambda. Usage of `invoker.envVarInstances` is recommended.
+  - **BREAKING** Constructor of `invoker` is changed from
+    `invoker(functionName, options)` to
+    `invoker(functionName, lambda, options)`. The second parameter is an
+    instance of AWS.Lambda. Usage of `invoker.envVarInstances` is recommended.
 
 ## [0.10.0]
 
@@ -139,11 +170,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `@laconia/ssm`
-  - **BREAKING** Rename environment prefix from LACONIA_SSM\_ to LACONIA_SSMCONFIG\_
+  - **BREAKING** Rename environment prefix from LACONIA_SSM\_ to
+    LACONIA_SSMCONFIG\_
   - Rename package from @laconia/ssm to @laconia/ssm-config
 - `@laconia/invoke`
-  - **BREAKING** Rename environment prefix from LACONIA_INVOKE\_ to LACONIA_INVOKER\_
-  - Rename package from @laconia/invoke to @laconia/invoker as `invoke` is not a noun
+  - **BREAKING** Rename environment prefix from LACONIA_INVOKE\_ to
+    LACONIA_INVOKER\_
+  - Rename package from @laconia/invoke to @laconia/invoker as `invoke` is not a
+    noun
 
 ## [0.7.0]
 
@@ -157,11 +191,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `@laconia/invoke`
-  - **BREAKING** Change usage from `invoke.envVarInstances` to `invoke.envVarInstances()` for future extensibility
+  - **BREAKING** Change usage from `invoke.envVarInstances` to
+    `invoke.envVarInstances()` for future extensibility
 - `@laconia/ssm`
-  - **BREAKING** Change usage from `ssm.envVarInstances` to `ssm.envVarInstances()` for future extensibility
+  - **BREAKING** Change usage from `ssm.envVarInstances` to
+    `ssm.envVarInstances()` for future extensibility
 - `@laconia/test`
-  - **BREAKING** Change usage from `spy.instances` to `spy.instances()` for future extensibility
+  - **BREAKING** Change usage from `spy.instances` to `spy.instances()` for
+    future extensibility
 
 ## [0.5.0]
 
@@ -186,14 +223,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `laconia-invoke`
-  - Introduce a new package for Lambda invocation which has been extracted out from laconia-core
+  - Introduce a new package for Lambda invocation which has been extracted out
+    from laconia-core
   - Add Convention over configuration support
 
 ### Removed
 
 - `laconia-core`
   - invoke and recurse functions from LaconiaContext
-  - recurse is now not exposed externally (it is internaly used by laconia-batch)
+  - recurse is now not exposed externally (it is internaly used by
+    laconia-batch)
   - invoke can be found in the newly added `laconia-invoke` package
 
 ### Changed
@@ -241,7 +280,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v0.18.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/ceilfors/laconia/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/ceilfors/laconia/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/ceilfors/laconia/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/ceilfors/laconia/compare/v0.15.0...v0.16.0

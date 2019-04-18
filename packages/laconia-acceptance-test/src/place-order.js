@@ -1,12 +1,6 @@
 const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
 const laconia = require("@laconia/core");
-const apigateway = require("@laconia/adapter-api").apigateway({
-  inputType: "body",
-  includeInputHeaders: true,
-  errorMappings: {
-    ValidationError: () => ({ statusCode: 400 })
-  }
-});
+const adapterApi = require("@laconia/adapter-api");
 const config = require("@laconia/config");
 const xray = require("@laconia/xray");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
@@ -37,6 +31,14 @@ const instances = ({ env }) => ({
   orderRepository: new DynamoDbOrderRepository(env.ORDER_TABLE_NAME),
   idGenerator: new UuidIdGenerator(),
   orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
+});
+
+const apigateway = adapterApi.apigateway({
+  inputType: "body",
+  includeInputHeaders: true,
+  errorMappings: {
+    ValidationError: () => ({ statusCode: 400 })
+  }
 });
 
 exports.app = async (

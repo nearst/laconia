@@ -14,33 +14,39 @@
 
 _If you like Laconia, ⭐ the project to support its development!_
 
+Laconia is a microframework for building Node.js serverless function based
+applications.
+
 ## Features
 
-Laconia shields you from common AWS Lambda problems so that you can regain focus
-back on developing your application.
-
-- **Non intrusive**: Switch to other technologies without significant
-  application code change
-- **Clean**: Enables and encourages good coding practices, such as by supporting
-  Dependency Injection
-- **Lightweight**: Features are modularised, so you can use just what you need
-  and keep your Lambdas performant
-- **Focused**: Designed specifically for AWS Lambda and Node.js, hence there is
-  no unnecessary layer of abstraction
-- **Versatile**: Compatible and tested to work with Serverless Framework. Can
-  also be used with or without other frameworks.
-- **Quality assured**: Ultra high test coverage
+- **Hexagonal**: Laconia allows you to write serverless functions in Hexagonal
+  Architecture easily. All of your serverless functions will have more
+  consistent patterns that are testable, maintainable, and loosely coupled.
+- **Non-intrusive**: Never be forced to inherit any Laconia-specific component
+  in your application code. Everything that you write will be plain objects and
+  functions.
+- **Focused**: Laconia is not a generic framework, it is specialised in
+  serverless. This allows Laconia to enable serverless specific best practices
+  and deal with serverless specific issues.
+- **Lightweight**: Using small and simple dependencies is the key to performant
+  serverless functions. Laconia is designed with that principle in mind.
+- **Quality**: Laconia lays strong emphasis on code quality and high test
+  coverage to ensure its seamless use and continued maintenance.
+- **Versatile**: Use Laconia with your favourite serverless deployment tools.
+  Laconia is created to help more on the application side of serverless
+  development.
 
 ## Documentation
 
 Visit Laconia's website at [laconiajs.io](https://laconiajs.io/), for:
 
-- Getting started
-- Project background
-- FAQ
-- Guides
-- API references
-- and more!
+- [Getting started](https://laconiajs.io/docs/introduction/getting-started)
+- [Core concepts](https://laconiajs.io/docs/introduction/core-concepts)
+- [Guides](https://laconiajs.io/docs/guides/injecting-dependencies)
+- [API reference](https://laconiajs.io/docs/api/intro)
+
+You can improve it by sending pull requests to the
+[website repository](https://github.com/laconiajs/website).
 
 ## License
 

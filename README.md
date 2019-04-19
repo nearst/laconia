@@ -6,9 +6,14 @@
 [![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
-[![Known Vulnerabilities](https://snyk.io/test/github/laconiajs/laconia/badge.svg)](https://snyk.io/test/github/laconiajs/laconia)
+![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/laconiajs/laconia.svg)
 [![Greenkeeper badge](https://badges.greenkeeper.io/laconiajs/laconia.svg)](https://greenkeeper.io/)
 [![Gitter](https://badges.gitter.im/laconiajs/laconia.svg)](https://gitter.im/laconiajs/laconia?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![npm](https://img.shields.io/npm/v/@laconia/core.svg)
+![node](https://img.shields.io/node/v/@laconia/core.svg)
+![code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)
+![code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
+![npm](https://img.shields.io/npm/dw/@laconia/core.svg)
 
 > 🛡️ Laconia — Create well-crafted serverless applications, effortlessly
 

@@ -22,7 +22,7 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run: npm test
+      - run: npm run test:circleci
       - run: npm run publish:coverage
       - persist_to_workspace:
           root: .

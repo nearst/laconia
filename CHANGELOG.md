@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.0.0]
+
+- Most API and package names are stabilised and ready to maintain backward
+  compatibility
+- Add `examples` repo at https://github.com/laconiajs/examples
+- Documentation website is now up at https://laconiajs.io/
+
 ## [0.19.0]
 
 ### Changed
@@ -280,7 +287,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v0.19.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/ceilfors/laconia/compare/v0.19.0...v1.0.0
 [0.19.0]: https://github.com/ceilfors/laconia/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/ceilfors/laconia/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/ceilfors/laconia/compare/v0.16.0...v0.17.0

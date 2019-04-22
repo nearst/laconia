@@ -14,6 +14,7 @@
 ![code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)
 ![code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
 ![npm](https://img.shields.io/npm/dw/@laconia/core.svg)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](code-of-conduct.md)
 
 > 🛡️ Laconia — Create well-crafted serverless applications, effortlessly
 

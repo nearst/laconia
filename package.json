@@ -14,11 +14,12 @@
     "test:acceptance": "npm run deploy-acceptance && npm run acceptance-test",
     "test:all": "npm run test && npm run test:integration && npm run test:acceptance",
     "test:jslint": "eslint ./ --ignore-path .gitignore",
+    "test:types": "tsc -p tsconfig.json",
     "test:packagelint": "lerna exec npmPkgJsonLint -- -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json .",
     "deploy-acceptance": "lerna exec --scope @laconia/acceptance-test npm run deploy",
     "remove-acceptance": "lerna exec --scope @laconia/acceptance-test npm run remove",
     "acceptance-test": "lerna exec --scope @laconia/acceptance-test npm run test",
-    "posttest": "npm run test:jslint && npm run test:packagelint",
+    "posttest": "npm run test:types && npm run test:jslint && npm run test:packagelint",
     "publish:coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
@@ -53,7 +54,8 @@
     "lerna": "^3.10.8",
     "lodash": "^4.17.5",
     "npm-package-json-lint": "^3.5.0",
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "typescript": "^3.4.5"
   },
   "jest": {
     "testEnvironment": "node",

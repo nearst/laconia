@@ -23,7 +23,7 @@ describe("parseRequestBody", () => {
     beforeEach(() => {
       event = createApiGatewayEvent({
         body: JSON.stringify({ foo: "bar" }),
-        headers: { "content-type": "application/json; charset=UTF-8" }
+        headers: { "Content-Type": "application/json; charset=UTF-8" }
       });
     });
 

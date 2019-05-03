@@ -13,14 +13,8 @@ const parseJsonBody = body => {
   }
 };
 
-const getPropertyCI = (obj, key) => {
-  let lowerKey = key.toLowerCase();
-  let myKey = Object.keys(obj).find(k => lowerKey === k.toLowerCase());
-  return obj[myKey];
-};
-
 module.exports = event => {
-  const contentType = getPropertyCI(event.headers, "Content-Type") || "";
+  const contentType = event.headers["Content-Type"] || "";
   if (contentType.includes("application/x-www-form-urlencoded")) {
     return querystring.parse(getBody(event));
   } else if (contentType.includes("application/json")) {

@@ -8,16 +8,12 @@ jobs:
   build:
     <<: *defaults
     steps:
-      - run: |
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
       - checkout
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
       - run: npm install
-      - run: fossa init
-      - run: fossa analyze
       - save_cache:
           paths:
             - node_modules
@@ -29,6 +25,19 @@ jobs:
           paths:
             - node_modules
             - packages/*/node_modules
+  license_test:
+    <<: *defaults
+    steps:
+      - run: |
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: npm install
+      - run: fossa init
+      - run: fossa analyze
 
   integration_test:
     <<: *defaults
@@ -52,6 +61,10 @@ workflows:
   pipeline:
     jobs:
       - build
+      - license_test:
+          filters:
+            branches:
+              only: master
       - integration_test:
           requires:
             - build

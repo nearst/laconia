@@ -6,8 +6,11 @@ module.exports = class ApiGatewayInputHeaders {
     });
 
     const handler = {
-      get: function(target, prop) {
-        return target[prop.toLowerCase()];
+      get: (target, prop) => {
+        const isSymbol = typeof prop === "symbol";
+        const isExisting = prop in target;
+        const propertyKey = isSymbol || isExisting ? prop : prop.toLowerCase();
+        return target[propertyKey];
       }
     };
 

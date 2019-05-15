@@ -16,4 +16,17 @@ describe("ApiGatewayInputHeaders", () => {
     expect(inputHeaders["CONTENT-type"]).toEqual("application/json");
     expect(inputHeaders["authorIZATION"]).toEqual("SECRET");
   });
+
+  it("should should allow access to existing properties using normal case", async () => {
+    const inputHeaders = new ApiGatewayInputHeaders({
+      "content-type": "application/json"
+    });
+
+    expect(inputHeaders.hasOwnProperty("content-type")).toBeTrue();
+  });
+
+  it("should should allow access to existing methods using normal case", async () => {
+    const inputHeaders = new ApiGatewayInputHeaders({});
+    expect(inputHeaders.toString()).toEqual("[object Object]");
+  });
 });

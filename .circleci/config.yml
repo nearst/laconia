@@ -19,7 +19,7 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: npm run test:circleci
-      - run: npm run publish:coverage
+      - run: '[ -n "$COVERALLS_REPO_TOKEN" ] && npm run publish:coverage' # COVERALLS_REPO_TOKEN does not run on fork
       - persist_to_workspace:
           root: .
           paths:

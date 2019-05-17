@@ -1,27 +1,26 @@
-export type FactoryCacheOptions = {
+declare type FactoryCacheOptions = {
   enabled?: boolean;
   maxAge?: number;
 };
 
-export type FactoryOptions = { cache?: FactoryCacheOptions };
+declare type FactoryOptions = { cache?: FactoryCacheOptions };
 
-export type LaconiaContext = {
+declare type LaconiaContext = {
   [key: string]: any;
 };
 
-export type LaconiaFactory<Dependencies = any> = (
+declare type LaconiaFactory<Dependencies = any> = (
   laconiaContext: LaconiaContext
 ) => Promise<Dependencies> | Dependencies;
 
-export interface LaconiaHandler {
+declare interface LaconiaHandler {
   register(
     factory: LaconiaFactory | LaconiaFactory[],
     options?: FactoryOptions
   ): LaconiaHandler;
-  postProcessor(postProcessor: any): LaconiaHandler;
   (event: any, context: any, callback: any): any;
 }
 
-export function laconia(app: Function): LaconiaHandler;
+declare function laconia(app: Function): LaconiaHandler;
 
-export default laconia;
+export = laconia;

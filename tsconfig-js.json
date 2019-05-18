@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": false,
+    "allowJs": true,
+    "lib": ["es2015"]
+  },
+  "include": ["packages/laconia-acceptance-test/src"],
+  "exclude": ["node_modules"]
+}

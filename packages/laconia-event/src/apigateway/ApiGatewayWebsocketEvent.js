@@ -1,5 +1,5 @@
 const parseWebsocket = require("./parseWebsocket");
-const ApiGatewayWebsocketRequestContext = require("./ApiGatewayWebsocketRequestContext");
+const ApiGatewayWebsocketContext = require("./ApiGatewayWebsocketContext");
 
 module.exports = class ApiGatewayWebsocketEvent {
   constructor(body) {
@@ -10,7 +10,7 @@ module.exports = class ApiGatewayWebsocketEvent {
     const apiGatewayWebsocketEvent = new ApiGatewayWebsocketEvent(
       parseWebsocket(event)
     );
-    apiGatewayWebsocketEvent.requestContext = new ApiGatewayWebsocketRequestContext(
+    apiGatewayWebsocketEvent.context = new ApiGatewayWebsocketContext(
       event.requestContext
     );
     return apiGatewayWebsocketEvent;

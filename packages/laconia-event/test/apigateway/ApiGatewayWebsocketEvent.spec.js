@@ -24,7 +24,7 @@ describe("ApiGatewayWebsocketEvent", () => {
   it("should have requestContext", async () => {
     const apiEvent = await ApiGatewayWebsocketEvent.fromRaw(event);
 
-    expect(apiEvent.requestContext).toEqual(
+    expect(apiEvent.context).toEqual(
       expect.objectContaining({ routeKey: "$default" })
     );
   });

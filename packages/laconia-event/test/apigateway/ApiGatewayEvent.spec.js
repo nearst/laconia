@@ -48,15 +48,6 @@ describe("ApiGatewayEvent", () => {
     );
   });
 
-  it("should keep original headers", async () => {
-    const apiGatewayEvent = await ApiGatewayEvent.fromRaw(event);
-    expect(apiGatewayEvent.headers).toEqual(
-      expect.objectContaining({
-        "Content-Type": "application/json; charset=UTF-8"
-      })
-    );
-  });
-
   it("should be able to retrieve headers with node.js canonical format", async () => {
     const apiGatewayEvent = await ApiGatewayEvent.fromRaw(event);
     expect(apiGatewayEvent.headers["content-type"]).toEqual(

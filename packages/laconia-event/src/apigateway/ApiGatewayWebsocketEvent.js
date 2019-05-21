@@ -1,18 +1,15 @@
-const parseWebsocket = require("./parseWebsocket");
-const ApiGatewayWebsocketContext = require("./ApiGatewayWebsocketContext");
+const parseWebSocket = require("./parseWebSocket");
 
-module.exports = class ApiGatewayWebsocketEvent {
+module.exports = class ApiGatewayWebSocketEvent {
   constructor(body) {
     this.body = body;
   }
 
   static fromRaw(event) {
-    const apiGatewayWebsocketEvent = new ApiGatewayWebsocketEvent(
-      parseWebsocket(event)
+    const apiGatewayWebSocketEvent = new ApiGatewayWebSocketEvent(
+      parseWebSocket(event)
     );
-    apiGatewayWebsocketEvent.context = new ApiGatewayWebsocketContext(
-      event.requestContext
-    );
-    return apiGatewayWebsocketEvent;
+    apiGatewayWebSocketEvent.context = event.requestContext;
+    return apiGatewayWebSocketEvent;
   }
 };

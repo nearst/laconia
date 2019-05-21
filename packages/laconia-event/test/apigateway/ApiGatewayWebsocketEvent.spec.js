@@ -1,4 +1,4 @@
-const ApiGatewayWebsocketEvent = require("../../src/apigateway/ApiGatewayWebsocketEvent");
+const ApiGatewayWebSocketEvent = require("../../src/apigateway/ApiGatewayWebSocketEvent");
 
 const createApiGatewayEvent = ({ body = {}, requestContext = {} }) => ({
   body,
@@ -6,7 +6,7 @@ const createApiGatewayEvent = ({ body = {}, requestContext = {} }) => ({
   isBase64Encoded: false
 });
 
-describe("ApiGatewayWebsocketEvent", () => {
+describe("ApiGatewayWebSocketEvent", () => {
   let event;
 
   beforeEach(() => {
@@ -17,12 +17,12 @@ describe("ApiGatewayWebsocketEvent", () => {
   });
 
   it("should parse event into body", async () => {
-    const apiEvent = await ApiGatewayWebsocketEvent.fromRaw(event);
+    const apiEvent = await ApiGatewayWebSocketEvent.fromRaw(event);
     expect(apiEvent.body).toEqual({ foo: "bar" });
   });
 
   it("should have requestContext", async () => {
-    const apiEvent = await ApiGatewayWebsocketEvent.fromRaw(event);
+    const apiEvent = await ApiGatewayWebSocketEvent.fromRaw(event);
 
     expect(apiEvent.context).toEqual(
       expect.objectContaining({ routeKey: "$default" })

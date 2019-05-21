@@ -4,7 +4,7 @@ const KinesisEvent = require("./KinesisEvent");
 const SnsEvent = require("./SnsEvent");
 const ApiGatewayEvent = require("./apigateway/ApiGatewayEvent");
 const ApiGatewayResponse = require("./apigateway/ApiGatewayResponse");
-const ApiGatewayWebsocketEvent = require("./apigateway/ApiGatewayWebsocketEvent");
+const ApiGatewayWebSocketEvent = require("./apigateway/ApiGatewayWebSocketEvent");
 
 exports.s3 = S3Event.fromRaw;
 exports.sqs = SqsEvent.fromRaw;
@@ -13,5 +13,5 @@ exports.sns = SnsEvent.fromRaw;
 exports.apigateway = {
   req: ApiGatewayEvent.fromRaw,
   res: ApiGatewayResponse.create,
-  parseWebsocket: ApiGatewayWebsocketEvent.fromRaw
+  parseWebSocket: ApiGatewayWebSocketEvent.fromRaw
 };

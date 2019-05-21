@@ -1,11 +1,11 @@
-const parseWebsocket = require("../../src/apigateway/parseWebsocket");
+const parseWebSocket = require("../../src/apigateway/parseWebSocket");
 
 const createApiGatewayEvent = ({ body = {} }) => ({
   body,
   isBase64Encoded: false
 });
 
-describe("parseWebsocket", () => {
+describe("parseWebSocket", () => {
   describe("when body is a parsable JSON string", () => {
     let event;
 
@@ -16,14 +16,14 @@ describe("parseWebsocket", () => {
     });
 
     it("should convert JSON body into payload", () => {
-      const body = parseWebsocket(event);
+      const body = parseWebSocket(event);
       expect(body).toEqual({ foo: "bar" });
     });
 
     it("should decode base64 payload", () => {
       event.body = "eyJmb28iOiJiYXIifQ==";
       event.isBase64Encoded = true;
-      const body = parseWebsocket(event);
+      const body = parseWebSocket(event);
       expect(body).toEqual({ foo: "bar" });
     });
   });
@@ -38,14 +38,14 @@ describe("parseWebsocket", () => {
     });
 
     it("should return string as is", () => {
-      const body = parseWebsocket(event);
+      const body = parseWebSocket(event);
       expect(body).toEqual("foobar");
     });
 
     it("should decode base64 payload", () => {
       event.body = "Zm9vYmFy";
       event.isBase64Encoded = true;
-      const body = parseWebsocket(event);
+      const body = parseWebSocket(event);
       expect(body).toEqual("foobar");
     });
   });

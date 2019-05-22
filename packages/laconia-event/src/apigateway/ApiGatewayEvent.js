@@ -2,13 +2,10 @@ const parseRequestBody = require("./parseRequestBody");
 const ApiGatewayInputHeaders = require("./ApiGatewayInputHeaders");
 
 module.exports = class ApiGatewayEvent {
-  constructor(body) {
-    this.body = body;
-  }
-
   static fromRaw(event) {
-    const apiGatewayEvent = new ApiGatewayEvent(parseRequestBody(event));
+    const apiGatewayEvent = new ApiGatewayEvent();
     apiGatewayEvent.headers = new ApiGatewayInputHeaders(event.headers);
+    apiGatewayEvent.body = parseRequestBody(event, apiGatewayEvent.headers);
     apiGatewayEvent.params = Object.assign(
       {},
       event.pathParameters,

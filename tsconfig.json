@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "noEmit": true,
-    "strict": true
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["packages/**/*"],
   "exclude": ["node_modules"]

@@ -11,8 +11,8 @@ const parseJsonBody = body => {
   }
 };
 
-module.exports = event => {
-  const contentType = event.headers["Content-Type"] || "";
+module.exports = (event, headers) => {
+  const contentType = headers["Content-Type"] || "";
   if (contentType.includes("application/x-www-form-urlencoded")) {
     return querystring.parse(getBody(event));
   } else if (contentType.includes("application/json")) {

@@ -1,3 +1,4 @@
+// @ts-check
 const laconia = require("@laconia/core");
 const { kinesis } = require("@laconia/event");
 const SnsRestaurantNotificationTopic = require("./SnsRestaurantNotificationTopic");

@@ -60,6 +60,3 @@ typings/
 
 # Serverless directories
 .serverless
-
-# Virtual Studio Code
-.vscode

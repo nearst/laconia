@@ -80,10 +80,5 @@
     "setupFilesAfterEnv": [
       "jest-extended"
     ]
-  },
-  "private": true,
-  "dependencies": {
-    "@laconia/adapter-api": "^1.0.0",
-    "@laconia/core": "^1.0.0"
   }
 }

@@ -80,6 +80,5 @@
     "setupFilesAfterEnv": [
       "jest-extended"
     ]
-  },
-  "private": true
+  }
 }

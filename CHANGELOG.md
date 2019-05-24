@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.2.0]
+
+### Added
+
+- `@laconia/event`
+  - #41 WebSocket support ([@Strernd](https://github.com/Strernd))
+- `@laconia/adapter-api`
+  - #41 WebSocket support ([@Strernd](https://github.com/Strernd))
+
 ## [1.1.0]
 
 ### Added
@@ -304,7 +313,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.1.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/ceilfors/laconia/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ceilfors/laconia/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ceilfors/laconia/compare/v0.19.0...v1.0.0
 [0.19.0]: https://github.com/ceilfors/laconia/compare/v0.18.0...v0.19.0

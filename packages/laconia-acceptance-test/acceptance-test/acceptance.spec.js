@@ -4,6 +4,7 @@ const Joi = frisby.Joi;
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
 const laconiaTest = require("@laconia/test");
+const WebSocket = require("ws");
 
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
 const SERVERLESS_STAGE = process.env.NODE_VERSION;
@@ -70,11 +71,40 @@ const getOrderUrl = async () => {
   }.execute-api.eu-west-1.amazonaws.com/${SERVERLESS_STAGE}/order`;
 };
 
+const getWebSocketUrl = async () => {
+  const apig = new AWS.APIGateway();
+  const restApis = await apig.getRestApis().promise();
+  const restApiName = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}`;
+  const restApi = restApis.items.find(i => i.name === restApiName);
+  if (!restApi) {
+    throw new Error(`${restApiName} could not be found!`);
+  }
+  return `wss://${
+    restApi.id
+  }.execute-api.eu-west-1.amazonaws.com/${SERVERLESS_STAGE}`;
+};
+
+const waitForOrderMessage = url => {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(url);
+
+    ws.on("message", data => {
+      resolve(data);
+    });
+
+    ws.on("error", err => {
+      console.log("websocket error", err);
+      reject(err);
+    });
+  });
+};
+
 describe("order flow", () => {
   let orderRepository;
   let totalOrderStorage;
   let orderMap;
   let orderUrl;
+  let orderMessagePromise;
 
   const captureCardPayment = laconiaTest(name("capture-card-payment"), {
     spy: {
@@ -141,6 +171,18 @@ describe("order flow", () => {
       await sendEmail.spy.waitForTotalInvocations(1);
       const invocations = await sendEmail.spy.getInvocations();
       expect(JSON.parse(invocations[0].event.Records[0].body)).toEqual(
+        expect.objectContaining({
+          eventType: "accepted",
+          orderId: expect.any(String)
+        })
+      );
+    }, 20000);
+
+    it("should receive a reply from order websocket", async () => {
+      orderMessagePromise = waitForOrderMessage(await getWebSocketUrl());
+
+      const message = await orderMessagePromise;
+      expect(JSON.parse(message)).toEqual(
         expect.objectContaining({
           eventType: "accepted",
           orderId: expect.any(String)

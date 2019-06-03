@@ -4,7 +4,6 @@ const DynamoDbWebSocketServer = require("./DynamoDbWebSocketServer");
 
 const app = async (orderEvents, { webSocketServer, event }) => {
   const acceptedEvents = orderEvents.filter(o => o.eventType === "accepted");
-
   if (acceptedEvents.length > 0) {
     return webSocketServer.broadcast({ message: "order accepted" });
   }

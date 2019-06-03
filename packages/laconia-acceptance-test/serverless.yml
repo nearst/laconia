@@ -6,6 +6,10 @@ plugins:
   - serverless-pseudo-parameters
   - serverless-plugin-tracing
 
+package:
+  exclude:
+    - node_modules/**/aws-sdk/**
+
 provider:
   name: aws
   runtime: ${env:NODE_RUNTIME, 'nodejs8.10' }
@@ -183,6 +187,13 @@ functions:
               - Arn
     environment:
       CONNECTION_TABLE_NAME: ${self:custom.connectionDynamoDbTableName}
+      WEBSOCKET_ENDPOINT: ${self:custom.webSocketEndpoint}
+  update-user-receipt:
+    handler: src/update-user-receipt.handler
+    events:
+      - websocket:
+          route: $default
+    environment:
       WEBSOCKET_ENDPOINT: ${self:custom.webSocketEndpoint}
   connect-websocket:
     handler: src/connect-websocket.handler

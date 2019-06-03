@@ -1,7 +1,5 @@
 const AWS = require("aws-sdk");
-const ensureApiGatewayManagementApi = require("aws-apigatewaymanagementapi");
-
-ensureApiGatewayManagementApi(AWS);
+const WebSocketClient = require("./WebSocketClient");
 
 module.exports = class DynamoDbWebSocketServer {
   constructor(connectionTableName, endpoint) {
@@ -30,11 +28,6 @@ module.exports = class DynamoDbWebSocketServer {
   }
 
   async broadcast(message) {
-    const client = new AWS.ApiGatewayManagementApi({
-      apiVersion: "2018-11-29",
-      endpoint: this.endpoint
-    });
-
     const data = await this.documentClient
       .scan({
         TableName: this.connectionTableName
@@ -43,12 +36,7 @@ module.exports = class DynamoDbWebSocketServer {
 
     return Promise.all(
       data.Items.map(item =>
-        client
-          .postToConnection({
-            ConnectionId: item.connectionId,
-            Data: JSON.stringify(message)
-          })
-          .promise()
+        new WebSocketClient(this.endpoint, item.connectionId).send(message)
       )
     );
   }

@@ -82,26 +82,47 @@ const getWebSocketUrl = async () => {
   return `${wsApi.ApiEndpoint}/${SERVERLESS_STAGE}`;
 };
 
-const waitForOrderMessage = url => {
-  return new Promise((resolve, reject) => {
-    const ws = new WebSocket(url);
+class WebSocketOrderMessenger {
+  constructor(webSocketUrl) {
+    this.ws = new WebSocket(webSocketUrl);
+  }
 
-    ws.on("message", data => {
-      resolve(data);
+  _waitForMessage(messageType) {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        this.ws.close();
+        reject(
+          new Error(`Did not get any ${messageType} message from web socket`)
+        );
+      }, 40000);
+
+      this.ws.on("message", data => {
+        clearTimeout(timeout);
+        resolve(data);
+      });
+
+      this.ws.on("error", err => {
+        console.log("websocket error", err);
+        clearTimeout(timeout);
+        this.ws.close();
+        reject(err);
+      });
     });
+  }
 
-    ws.on("error", err => {
-      console.log("websocket error", err);
-      ws.close();
-      reject(err);
-    });
+  waitForOrderAcceptedMessage() {
+    return this._waitForMessage("order accepted");
+  }
 
-    setTimeout(() => {
-      ws.close();
-      reject(new Error("Did not get message from web socket"));
-    }, 20000);
-  });
-};
+  waitForThankYouMessage() {
+    return this._waitForMessage("thank you");
+  }
+
+  orderReceived() {
+    this.ws.send(JSON.stringify({ message: "order received" }));
+    this.ws.close();
+  }
+}
 
 describe("order flow", () => {
   let orderRepository;
@@ -109,6 +130,7 @@ describe("order flow", () => {
   let orderMap;
   let orderUrl;
   let orderMessagePromise;
+  let orderMessenger;
 
   const captureCardPayment = laconiaTest(name("capture-card-payment"), {
     spy: {
@@ -166,7 +188,8 @@ describe("order flow", () => {
       return acc;
     }, {});
 
-    orderMessagePromise = waitForOrderMessage(await getWebSocketUrl());
+    orderMessenger = new WebSocketOrderMessenger(await getWebSocketUrl());
+    orderMessagePromise = orderMessenger.waitForOrderAcceptedMessage();
   });
 
   describe("happy path", () => {
@@ -190,14 +213,17 @@ describe("order flow", () => {
     }, 20000);
 
     it("should receive a reply from order websocket", async () => {
-      const message = await orderMessagePromise;
-      expect(JSON.parse(message)).toEqual(
-        expect.objectContaining({
-          message: "order accepted"
-        })
+      const orderAcceptedMessage = await orderMessagePromise;
+      expect(JSON.parse(orderAcceptedMessage).message).toEqual(
+        "order accepted"
       );
 
-      // TODO: send message back, and probably close?
+      orderMessenger.orderReceived();
+
+      const thankYouMessage = await orderMessenger.waitForThankYouMessage();
+      expect(JSON.parse(thankYouMessage).message).toEqual(
+        "thank you for your order"
+      );
     }, 20000);
 
     it("should capture all card payments", async () => {

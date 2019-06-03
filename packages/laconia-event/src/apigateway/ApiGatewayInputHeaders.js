@@ -1,10 +1,9 @@
 module.exports = class ApiGatewayInputHeaders {
   constructor(eventHeaders) {
-    if (eventHeaders) {
-      Object.entries(eventHeaders).forEach(([headerName, headerValue]) => {
-        this[headerName.toLowerCase()] = headerValue;
-      });
-    }
+    eventHeaders = eventHeaders || {};
+    Object.entries(eventHeaders).forEach(([headerName, headerValue]) => {
+      this[headerName.toLowerCase()] = headerValue;
+    });
 
     const handler = {
       get: (target, prop) => {

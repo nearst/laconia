@@ -41,6 +41,7 @@
     "@laconia/middleware-lambda-warmer": "^1.2.0",
     "@laconia/test": "^1.2.0",
     "@laconia/xray": "^1.2.0",
+    "aws-apigatewaymanagementapi": "^0.1.0",
     "p-wait-for": "^1.0.0",
     "pino": "^4.16.1",
     "r2": "^2.0.1",

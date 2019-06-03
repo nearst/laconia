@@ -23,13 +23,13 @@ frisby.globalSetup({
   }
 });
 
-const deleteAllItems = async tableName => {
+const deleteAllItems = async (tableName, keyName, keyValue) => {
   const params = { TableName: tableName };
   const data = await documentClient.scan(params).promise();
   for (const item of data.Items) {
     const deleteParams = {
       TableName: tableName,
-      Key: { orderId: item.orderId }
+      Key: { [keyName]: keyValue(item) }
     };
     await documentClient.delete(deleteParams).promise();
   }
@@ -72,16 +72,14 @@ const getOrderUrl = async () => {
 };
 
 const getWebSocketUrl = async () => {
-  const apig = new AWS.APIGateway();
-  const restApis = await apig.getRestApis().promise();
-  const restApiName = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}`;
-  const restApi = restApis.items.find(i => i.name === restApiName);
-  if (!restApi) {
-    throw new Error(`${restApiName} could not be found!`);
+  const apig = new AWS.ApiGatewayV2();
+  const wsApis = await apig.getApis().promise();
+  const wsApiName = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}-websockets`;
+  const wsApi = wsApis.Items.find(i => i.Name === wsApiName);
+  if (!wsApi) {
+    throw new Error(`${wsApiName} could not be found!`);
   }
-  return `wss://${
-    restApi.id
-  }.execute-api.eu-west-1.amazonaws.com/${SERVERLESS_STAGE}`;
+  return `${wsApi.ApiEndpoint}/${SERVERLESS_STAGE}`;
 };
 
 const waitForOrderMessage = url => {
@@ -94,8 +92,14 @@ const waitForOrderMessage = url => {
 
     ws.on("error", err => {
       console.log("websocket error", err);
+      ws.close();
       reject(err);
     });
+
+    setTimeout(() => {
+      ws.close();
+      reject(new Error("Did not get message from web socket"));
+    }, 20000);
   });
 };
 
@@ -118,7 +122,12 @@ describe("order flow", () => {
   });
 
   beforeAll(async () => {
-    await deleteAllItems(name("order"));
+    await deleteAllItems(name("order"), "orderId", item => item.orderId);
+    await deleteAllItems(
+      name("connection"),
+      "connectionId",
+      item => item.connectionId
+    );
     orderRepository = new DynamoDbOrderRepository(name("order"));
     totalOrderStorage = new S3TotalOrderStorage(
       new AWS.S3(),
@@ -156,6 +165,8 @@ describe("order flow", () => {
       acc[orderIds[i]] = order;
       return acc;
     }, {});
+
+    orderMessagePromise = waitForOrderMessage(await getWebSocketUrl());
   });
 
   describe("happy path", () => {
@@ -179,15 +190,14 @@ describe("order flow", () => {
     }, 20000);
 
     it("should receive a reply from order websocket", async () => {
-      orderMessagePromise = waitForOrderMessage(await getWebSocketUrl());
-
       const message = await orderMessagePromise;
       expect(JSON.parse(message)).toEqual(
         expect.objectContaining({
-          eventType: "accepted",
-          orderId: expect.any(String)
+          message: "order accepted"
         })
       );
+
+      // TODO: send message back, and probably close?
     }, 20000);
 
     it("should capture all card payments", async () => {

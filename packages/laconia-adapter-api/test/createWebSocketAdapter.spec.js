@@ -28,7 +28,7 @@ describe("createWebSocketAdapter", () => {
       requestConext: { a: "b" }
     };
     const context = {
-      foo: "bar"
+      myDependency: "dependency1"
     };
     await adapted(event, context);
     expect(app.mock.results[0].value).toEqual(context);

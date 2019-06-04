@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.2.1]
+
+### Fixes
+
+- `@laconia/event`
+  - #51 Handle the headers property being null
+- `@laconia/adapter-api`
+  - #50 pass laconiaContext to app in web socket adapter
+
 ## [1.2.0]
 
 ### Added

@@ -14,8 +14,10 @@ and this project adheres to
 
 - `@laconia/event`
   - #51 Handle the headers property being null
+    ([@ljcoomber](https://github.com/ljcoomber))
 - `@laconia/adapter-api`
   - #50 pass laconiaContext to app in web socket adapter
+    ([@Strernd](https://github.com/Strernd))
 
 ## [1.2.0]
 
@@ -322,7 +324,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.2.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/ceilfors/laconia/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/ceilfors/laconia/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ceilfors/laconia/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ceilfors/laconia/compare/v0.19.0...v1.0.0

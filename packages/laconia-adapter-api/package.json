@@ -1,6 +1,6 @@
 {
   "name": "@laconia/adapter-api",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Converts API Gateway Proxy events into your application input",
   "keywords": [
     "aws",
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@laconia/core": "^1.2.0",
-    "@laconia/event": "^1.2.0"
+    "@laconia/event": "^1.2.1"
   },
   "devDependencies": {
     "@laconia/test-helper": "^1.2.0"

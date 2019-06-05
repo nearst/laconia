@@ -3,7 +3,8 @@
     "noEmit": true,
     "strict": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "lib": ["es2015"]
   },
   "include": ["packages/**/*"],
   "exclude": ["node_modules"]

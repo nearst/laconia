@@ -19,6 +19,21 @@ describe("createWebSocketAdapter", () => {
     expect(app.mock.results[0].value).toEqual({ body: { foo: "bar" } });
   });
 
+  it("passes laconia context", async () => {
+    const app = jest.fn((e, ctx) => ctx);
+    const adapter = createWebSocketAdapter();
+    const adapted = adapter(app);
+    const event = {
+      body: JSON.stringify({ foo: "bar" }),
+      requestConext: { a: "b" }
+    };
+    const context = {
+      myDependency: "dependency1"
+    };
+    await adapted(event, context);
+    expect(app.mock.results[0].value).toEqual(context);
+  });
+
   it("handles app error correctly", async () => {
     const app = jest.fn(x => {
       throw new Error("error");

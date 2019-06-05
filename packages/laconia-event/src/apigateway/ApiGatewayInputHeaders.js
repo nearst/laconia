@@ -1,5 +1,6 @@
 module.exports = class ApiGatewayInputHeaders {
   constructor(eventHeaders) {
+    eventHeaders = eventHeaders || {};
     Object.entries(eventHeaders).forEach(([headerName, headerValue]) => {
       this[headerName.toLowerCase()] = headerValue;
     });

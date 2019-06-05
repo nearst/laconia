@@ -29,4 +29,9 @@ describe("ApiGatewayInputHeaders", () => {
     const inputHeaders = new ApiGatewayInputHeaders({});
     expect(inputHeaders.toString()).toEqual("[object Object]");
   });
+
+  it("should should accept test events from API Gateway web UI", async () => {
+    const inputHeaders = new ApiGatewayInputHeaders(null);
+    expect(inputHeaders).toEqual(expect.anything());
+  });
 });

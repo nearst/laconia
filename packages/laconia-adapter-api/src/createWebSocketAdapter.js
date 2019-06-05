@@ -1,8 +1,8 @@
 const { res, parseWebSocket } = require("@laconia/event").apigateway;
 
-const createWebSocketAdapter = () => app => async event => {
+const createWebSocketAdapter = () => app => async (event, laconiaContext) => {
   try {
-    const output = await app(parseWebSocket(event));
+    const output = await app(parseWebSocket(event), laconiaContext);
     return res(output);
   } catch (err) {
     console.error(err);

@@ -90,7 +90,6 @@ class WebSocketOrderMessenger {
   _waitForMessage(messageType) {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        this.ws.close();
         reject(
           new Error(`Did not get any ${messageType} message from web socket`)
         );
@@ -104,7 +103,6 @@ class WebSocketOrderMessenger {
       this.ws.on("error", err => {
         console.log("websocket error", err);
         clearTimeout(timeout);
-        this.ws.close();
         reject(err);
       });
     });
@@ -120,6 +118,9 @@ class WebSocketOrderMessenger {
 
   orderReceived() {
     this.ws.send(JSON.stringify({ message: "order received" }));
+  }
+
+  close() {
     this.ws.close();
   }
 }
@@ -192,6 +193,10 @@ describe("order flow", () => {
     orderMessagePromise = orderMessenger.waitForOrderAcceptedMessage();
   });
 
+  afterAll(() => {
+    orderMessenger.close();
+  });
+
   describe("happy path", () => {
     it("should store all placed orders in Order Table", async () => {
       Object.keys(orderMap).forEach(async orderId => {
@@ -224,7 +229,7 @@ describe("order flow", () => {
       expect(JSON.parse(thankYouMessage).message).toEqual(
         "thank you for your order"
       );
-    }, 20000);
+    }, 10000);
 
     it("should capture all card payments", async () => {
       await laconiaTest(name("process-card-payments")).fireAndForget();

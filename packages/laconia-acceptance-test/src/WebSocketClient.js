@@ -14,7 +14,7 @@ module.exports = class WebSocketClient {
   }
 
   send(message) {
-    console.log("send", message, this.connectionId, message);
+    console.log("Sending to websocket client", this.connectionId, message);
     return this.client
       .postToConnection({
         ConnectionId: this.connectionId,

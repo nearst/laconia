@@ -9,12 +9,14 @@ const instances = ({ event, env }) => ({
   )
 });
 
-const app = async (messageBody, { wsClient }) => {
-  if (messageBody.message === "order accepted") {
+const app = async (message, { wsClient }) => {
+  if (message.body.message === "order received") {
     return wsClient.send({ message: "thank you for your order" });
   }
 };
 
 const webSocket = adapterApi.webSocket();
 
-exports.handler = laconia(webSocket(app)).register(instances);
+exports.handler = laconia(webSocket(app)).register(instances, {
+  cache: { enabled: false }
+});

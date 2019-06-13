@@ -6,6 +6,10 @@ plugins:
   - serverless-pseudo-parameters
   - serverless-plugin-tracing
 
+package:
+  exclude:
+    - node_modules/**/aws-sdk/**
+
 provider:
   name: aws
   runtime: ${env:NODE_RUNTIME, 'nodejs8.10' }
@@ -24,6 +28,7 @@ provider:
         - "dynamodb:Scan"
         - "dynamodb:Query"
         - "dynamodb:PutItem"
+        - "dynamodb:DeleteItem"
         - "xray:PutTraceSegments"
         - "xray:PutTelemetryRecords"
       Resource: "*"
@@ -56,6 +61,7 @@ custom:
   orderEventsStreamName: ${self:custom.fullName}-order-events
   restaurantNotificationTopicName: ${self:custom.fullName}-restaurant-notification
   orderDynamoDbBatchTableName: ${self:custom.fullName}-order
+  connectionDynamoDbTableName: ${self:custom.fullName}-connection
   remover:
     buckets:
       - ${self:custom.trackerBucketName}
@@ -67,6 +73,12 @@ custom:
       - ""
       - - "https://"
         - Ref: "ApiGatewayRestApi"
+        - ".execute-api.#{AWS::Region}.amazonaws.com/${self:provider.stage}"
+  webSocketEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "WebsocketsApi"
         - ".execute-api.#{AWS::Region}.amazonaws.com/${self:provider.stage}"
 
 functions:
@@ -164,6 +176,40 @@ functions:
     environment:
       API_BASE_URL: ${self:custom.apigatewayUrl}
 
+  update-user:
+    handler: src/update-user.handler
+    events:
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt:
+              - OrderEventsStream
+              - Arn
+    environment:
+      CONNECTION_TABLE_NAME: ${self:custom.connectionDynamoDbTableName}
+      WEBSOCKET_ENDPOINT: ${self:custom.webSocketEndpoint}
+  update-user-receipt:
+    handler: src/update-user-receipt.handler
+    events:
+      - websocket:
+          route: $default
+    environment:
+      WEBSOCKET_ENDPOINT: ${self:custom.webSocketEndpoint}
+  connect-websocket:
+    handler: src/connect-websocket.handler
+    events:
+      - websocket:
+          route: $connect
+    environment:
+      CONNECTION_TABLE_NAME: ${self:custom.connectionDynamoDbTableName}
+  disconnect-websocket:
+    handler: src/disconnect-websocket.handler
+    events:
+      - websocket:
+          route: $disconnect
+    environment:
+      CONNECTION_TABLE_NAME: ${self:custom.connectionDynamoDbTableName}
+
 resources:
   Resources:
     S3Tracker:
@@ -201,3 +247,16 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:custom.orderDynamoDbBatchTableName}
+    ConnectionTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "connectionId"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "connectionId"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.connectionDynamoDbTableName}

@@ -5,6 +5,7 @@ const createWebSocketAdapter = () => app => async (event, laconiaContext) => {
     const output = await app(parseWebSocket(event), laconiaContext);
     return res(output);
   } catch (err) {
+    console.error(err);
     return res(err.message, 500);
   }
 };

@@ -4,6 +4,7 @@ const Joi = frisby.Joi;
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
 const laconiaTest = require("@laconia/test");
+const WebSocket = require("ws");
 
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
 const SERVERLESS_STAGE = process.env.NODE_VERSION;
@@ -22,13 +23,13 @@ frisby.globalSetup({
   }
 });
 
-const deleteAllItems = async tableName => {
+const deleteAllItems = async (tableName, keyName, keyValue) => {
   const params = { TableName: tableName };
   const data = await documentClient.scan(params).promise();
   for (const item of data.Items) {
     const deleteParams = {
       TableName: tableName,
-      Key: { orderId: item.orderId }
+      Key: { [keyName]: keyValue(item) }
     };
     await documentClient.delete(deleteParams).promise();
   }
@@ -70,11 +71,67 @@ const getOrderUrl = async () => {
   }.execute-api.eu-west-1.amazonaws.com/${SERVERLESS_STAGE}/order`;
 };
 
+const getWebSocketUrl = async () => {
+  const apig = new AWS.ApiGatewayV2();
+  const wsApis = await apig.getApis().promise();
+  const wsApiName = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}-websockets`;
+  const wsApi = wsApis.Items.find(i => i.Name === wsApiName);
+  if (!wsApi) {
+    throw new Error(`${wsApiName} could not be found!`);
+  }
+  return `${wsApi.ApiEndpoint}/${SERVERLESS_STAGE}`;
+};
+
+class WebSocketOrderMessenger {
+  constructor(webSocketUrl) {
+    this.ws = new WebSocket(webSocketUrl);
+  }
+
+  _waitForMessage(messageType) {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(
+          new Error(`Did not get any ${messageType} message from web socket`)
+        );
+      }, 40000);
+
+      this.ws.on("message", data => {
+        clearTimeout(timeout);
+        resolve(data);
+      });
+
+      this.ws.on("error", err => {
+        console.log("websocket error", err);
+        clearTimeout(timeout);
+        reject(err);
+      });
+    });
+  }
+
+  waitForOrderAcceptedMessage() {
+    return this._waitForMessage("order accepted");
+  }
+
+  waitForThankYouMessage() {
+    return this._waitForMessage("thank you");
+  }
+
+  orderReceived() {
+    this.ws.send(JSON.stringify({ message: "order received" }));
+  }
+
+  close() {
+    this.ws.close();
+  }
+}
+
 describe("order flow", () => {
   let orderRepository;
   let totalOrderStorage;
   let orderMap;
   let orderUrl;
+  let orderMessagePromise;
+  let orderMessenger;
 
   const captureCardPayment = laconiaTest(name("capture-card-payment"), {
     spy: {
@@ -88,7 +145,12 @@ describe("order flow", () => {
   });
 
   beforeAll(async () => {
-    await deleteAllItems(name("order"));
+    await deleteAllItems(name("order"), "orderId", item => item.orderId);
+    await deleteAllItems(
+      name("connection"),
+      "connectionId",
+      item => item.connectionId
+    );
     orderRepository = new DynamoDbOrderRepository(name("order"));
     totalOrderStorage = new S3TotalOrderStorage(
       new AWS.S3(),
@@ -126,6 +188,13 @@ describe("order flow", () => {
       acc[orderIds[i]] = order;
       return acc;
     }, {});
+
+    orderMessenger = new WebSocketOrderMessenger(await getWebSocketUrl());
+    orderMessagePromise = orderMessenger.waitForOrderAcceptedMessage();
+  });
+
+  afterAll(() => {
+    orderMessenger.close();
   });
 
   describe("happy path", () => {
@@ -147,6 +216,20 @@ describe("order flow", () => {
         })
       );
     }, 20000);
+
+    it("should receive a reply from order websocket", async () => {
+      const orderAcceptedMessage = await orderMessagePromise;
+      expect(JSON.parse(orderAcceptedMessage).message).toEqual(
+        "order accepted"
+      );
+
+      orderMessenger.orderReceived();
+
+      const thankYouMessage = await orderMessenger.waitForThankYouMessage();
+      expect(JSON.parse(thankYouMessage).message).toEqual(
+        "thank you for your order"
+      );
+    }, 10000);
 
     it("should capture all card payments", async () => {
       await laconiaTest(name("process-card-payments")).fireAndForget();

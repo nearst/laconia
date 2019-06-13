@@ -9,9 +9,7 @@ const instances = ({ s3, env }) => ({
 const app = async (totalOrder, { totalOrderStorage }) => {
   await totalOrderStorage.put(
     "xml",
-    `<TotalOrder><RestaurantId>${
-      totalOrder.restaurantId
-    }</RestaurantId><Total>${totalOrder.total}</Total></TotalOrder>`
+    `<TotalOrder><RestaurantId>${totalOrder.restaurantId}</RestaurantId><Total>${totalOrder.total}</Total></TotalOrder>`
   );
 };
 

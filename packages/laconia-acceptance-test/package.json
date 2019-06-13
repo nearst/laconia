@@ -50,7 +50,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@laconia/test-helper": "^1.2.0",
+    "@laconia/test-helper": "file:../laconia-test-helper",
     "frisby": "^2.0.16",
     "serverless": "^1.42.3",
     "serverless-s3-remover": "^0.4.1",

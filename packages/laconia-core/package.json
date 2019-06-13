@@ -24,7 +24,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "devDependencies": {
-    "@laconia/test-helper": "^1.2.0"
+    "@laconia/test-helper": "file:../laconia-test-helper"
   },
   "peerDependencies": {
     "aws-sdk": "^2.432.0"

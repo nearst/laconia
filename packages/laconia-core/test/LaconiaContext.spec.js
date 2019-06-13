@@ -1,5 +1,6 @@
 const LaconiaContext = require("../src/LaconiaContext");
 const delay = require("delay");
+const util = require("util");
 
 describe("laconiaContext", () => {
   it("should be able to register new instance", () => {
@@ -30,6 +31,12 @@ describe("laconiaContext", () => {
     lc.registerInstances({ env: "bar" });
     const result = JSON.parse(JSON.stringify(lc));
     expect(result).toHaveProperty("env", "bar");
+  });
+
+  it("should be console.log able", () => {
+    const lc = new LaconiaContext();
+    lc.registerInstances({ env: "bar" });
+    expect(() => util.inspect(lc)).not.toThrowError();
   });
 
   describe("#registerFactory", () => {

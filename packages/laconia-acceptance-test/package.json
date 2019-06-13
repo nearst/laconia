@@ -53,7 +53,7 @@
     "@laconia/test-helper": "file:../laconia-test-helper",
     "frisby": "^2.0.16",
     "serverless": "^1.42.3",
-    "serverless-s3-remover": "^0.4.1",
+    "serverless-s3-remover": "^0.6.0",
     "serverless-s3-sync": "^1.6.1",
     "ws": "^7.0.0"
   },

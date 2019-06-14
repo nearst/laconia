@@ -66,9 +66,7 @@ const getOrderUrl = async () => {
   if (!restApi) {
     throw new Error(`${restApiName} could not be found!`);
   }
-  return `https://${
-    restApi.id
-  }.execute-api.eu-west-1.amazonaws.com/${SERVERLESS_STAGE}/order`;
+  return `https://${restApi.id}.execute-api.eu-west-1.amazonaws.com/${SERVERLESS_STAGE}/order`;
 };
 
 const getWebSocketUrl = async () => {

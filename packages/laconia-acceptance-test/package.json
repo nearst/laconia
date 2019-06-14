@@ -43,7 +43,7 @@
     "@laconia/xray": "^1.2.0",
     "aws-apigatewaymanagementapi": "^0.1.0",
     "p-wait-for": "^1.0.0",
-    "pino": "^4.16.1",
+    "pino": "^5.12.6",
     "r2": "^2.0.1",
     "serverless-plugin-tracing": "^2.0.0",
     "serverless-pseudo-parameters": "^2.2.0",

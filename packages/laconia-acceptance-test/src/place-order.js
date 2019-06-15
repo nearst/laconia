@@ -7,7 +7,7 @@ const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const KinesisOrderStream = require("./KinesisOrderStream");
 const UuidIdGenerator = require("./UuidIdGenerator");
 const ValidationError = require("./ValidationError");
-var log = require("pino")("place-order");
+const log = require("pino")();
 
 const validateApiKey = (headers, apiKey) => {
   if (headers.authorization !== apiKey) {

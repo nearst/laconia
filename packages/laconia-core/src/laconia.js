@@ -14,7 +14,8 @@ const awsInstances = {
   lambda: new AWS.Lambda(),
   s3: new AWS.S3(),
   ssm: new AWS.SSM(),
-  sns: new AWS.SNS()
+  sns: new AWS.SNS(),
+  secretsManager: new AWS.SecretsManager()
 };
 
 module.exports = app => {

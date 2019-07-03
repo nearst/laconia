@@ -3,12 +3,12 @@ module.exports = class SecretsManagerConfigConverter {
     this.secretsManager = secretsManager;
   }
 
-  async _getParameterMap(secretNames) {
+  async _getParameterMap(secretIds) {
     const datas = await Promise.all(
-      secretNames.map(secretName =>
+      secretIds.map(secretId =>
         this.secretsManager
           .getSecretValue({
-            SecretId: secretName
+            SecretId: secretId
           })
           .promise()
           .catch(err => {
@@ -24,10 +24,10 @@ module.exports = class SecretsManagerConfigConverter {
     return datas.map(res => {
       // Decrypts secret using the associated KMS CMK.
       // Depending on whether the secret is a string or binary, one of these fields will be populated.
-      let secret;
       if (!res) {
-        return secret;
+        return undefined;
       }
+      let secret;
       if (res.hasOwnProperty("SecretString")) {
         secret = res.SecretString;
       } else {

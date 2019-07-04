@@ -28,7 +28,9 @@
     "deploy": "npm run deploy:8",
     "deploy:8": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls deploy",
     "remove": "npm run remove:8",
-    "remove:8": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove"
+    "remove:8": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs8.10 NODE_VERSION=node8 sls remove",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "@laconia/adapter": "^1.2.1",
@@ -47,7 +49,8 @@
     "r2": "^2.0.1",
     "serverless-plugin-tracing": "^2.0.0",
     "serverless-pseudo-parameters": "^2.2.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper",
@@ -63,5 +66,6 @@
   "private": true,
   "jest": {
     "testEnvironment": "node"
-  }
+  },
+  "snyk": true
 }

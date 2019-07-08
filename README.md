@@ -6,7 +6,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
-![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/laconiajs/laconia.svg)
 [![Dependabot](https://img.shields.io/badge/Dependabot-enabled-brightgreen.svg?logo=dependabot)](https://app.dependabot.com/accounts/laconiajs/repos/113743358)
 [![Gitter](https://badges.gitter.im/laconiajs/laconia.svg)](https://gitter.im/laconiajs/laconia?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![npm](https://img.shields.io/npm/v/@laconia/core.svg)

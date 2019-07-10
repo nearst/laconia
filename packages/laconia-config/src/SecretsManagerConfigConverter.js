@@ -11,22 +11,12 @@ module.exports = class SecretsManagerConfigConverter {
             SecretId: secretId
           })
           .promise()
-          .catch(err => {
-            if (err.code === "ResourceNotFoundException") {
-              return undefined;
-            }
-
-            throw err;
-          })
       )
     );
 
     return datas.map(res => {
       // Decrypts secret using the associated KMS CMK.
       // Depending on whether the secret is a string or binary, one of these fields will be populated.
-      if (!res) {
-        return undefined;
-      }
       let secret;
       if (res.hasOwnProperty("SecretString")) {
         secret = res.SecretString;

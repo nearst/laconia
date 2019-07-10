@@ -53,18 +53,6 @@ const matchers = {
   }
 };
 
-const asyncAttempt = async func => {
-  let result;
-  let error = null;
-  try {
-    result = await func();
-  } catch (e) {
-    error = e;
-  }
-
-  return [error, result];
-};
-
 exports.yields = yields;
 exports.s3Body = s3Body;
 exports.collectNexts = collectNexts;
@@ -72,4 +60,3 @@ exports.reduceNexts = reduceNexts;
 exports.matchers = matchers;
 exports.recordTimestamps = recordTimestamps;
 exports.tracker = require("./tracker");
-exports.asyncAttempt = asyncAttempt;

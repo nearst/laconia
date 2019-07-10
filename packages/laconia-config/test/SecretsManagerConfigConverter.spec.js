@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 const AWSMock = require("aws-sdk-mock");
-const { asyncAttempt, yields } = require("@laconia/test-helper");
+const { yields } = require("@laconia/test-helper");
 const SecretsManagerConfigConverter = require("../src/SecretsManagerConfigConverter");
 
 AWSMock.setSDKInstance(AWS);
@@ -53,20 +53,10 @@ describe("SecretsManagerConfigConverter", () => {
       secretsStore = {
         myProdApiKey: "secret-api-key",
         myProductionDbPassword: "secret-db-password",
-        myProdBase64EncodedKey: Buffer.from("base64-encoded"),
-        _error_: "_error_"
+        myProdBase64EncodedKey: Buffer.from("base64-encoded")
       };
       secretsManager.getSecretValue.mockImplementation((params, callback) => {
         const secret = secretsStore[params.SecretId];
-        if (!secret) {
-          const notFound = new Error("ResourceNotFoundException");
-          notFound.code = "ResourceNotFoundException";
-          return callback(notFound);
-        }
-
-        if (secret === "_error_") {
-          return callback(new Error("Aws Exception"));
-        }
 
         const res = {};
         if (Buffer.isBuffer(secret)) {
@@ -77,16 +67,6 @@ describe("SecretsManagerConfigConverter", () => {
 
         callback(null, res);
       });
-    });
-
-    it("should throw non ResourceNotFoundException exceptions", async () => {
-      const [err] = await asyncAttempt(() =>
-        configConverter.convertMultiple({
-          errorKey: "_error_"
-        })
-      );
-
-      expect(err.message).toBe("Aws Exception");
     });
 
     it("should retrieve one secret", async () => {
@@ -106,10 +86,16 @@ describe("SecretsManagerConfigConverter", () => {
     it("should retrieve more than one secret", async () => {
       const result = await configConverter.convertMultiple({
         apiKey: "myProdApiKey",
-        dbPass: "myProductionDbPassword"
+        dbPass: "myProductionDbPassword",
+        base64Encoded: "myProdBase64EncodedKey"
       });
 
-      expect(result).toHaveProperty("apiKey", "secret-api-key");
+      expect(result).toEqual({
+        apiKey: "secret-api-key",
+        dbPass: "secret-db-password",
+        base64Encoded: secretsStore.myProdBase64EncodedKey.toString("ascii")
+      });
+
       expect(secretsManager.getSecretValue).toBeCalledWith(
         expect.objectContaining({ SecretId: "myProdApiKey" }),
         expect.any(Function)
@@ -117,31 +103,6 @@ describe("SecretsManagerConfigConverter", () => {
 
       expect(secretsManager.getSecretValue).toBeCalledWith(
         expect.objectContaining({ SecretId: "myProductionDbPassword" }),
-        expect.any(Function)
-      );
-
-      expect(secretsManager.getSecretValue).toHaveBeenCalledTimes(2);
-    });
-
-    it("should handle when SecretId not found", async () => {
-      const result = await configConverter.convertMultiple({
-        apiKey: "myProdApiKey",
-        somethingUndefined: "myProductionNotExists",
-        base64Encoded: "myProdBase64EncodedKey"
-      });
-
-      expect(result).toEqual({
-        apiKey: "secret-api-key",
-        somethingUndefined: undefined,
-        base64Encoded: secretsStore.myProdBase64EncodedKey.toString("ascii")
-      });
-      expect(secretsManager.getSecretValue).toBeCalledWith(
-        expect.objectContaining({ SecretId: "myProdApiKey" }),
-        expect.any(Function)
-      );
-
-      expect(secretsManager.getSecretValue).toBeCalledWith(
-        expect.objectContaining({ SecretId: "myProductionNotExists" }),
         expect.any(Function)
       );
 

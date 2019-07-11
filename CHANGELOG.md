@@ -8,6 +8,24 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.3.0]
+
+### Added
+
+- `@laconia/config`
+  - #105 Retrieve secrets from secret manager
+    ([@geoffdutton](https://github.com/geoffdutton))
+
+### Fixes
+
+- `@laconia/core`
+  - #79 Can't console.log LaconiaContext
+- Various improvements in acceptance test
+
+### Changed
+
+- #153 Removed Snyk integration
+
 ## [1.2.1]
 
 ### Fixes
@@ -324,7 +342,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.2.1...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/ceilfors/laconia/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/ceilfors/laconia/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/ceilfors/laconia/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ceilfors/laconia/compare/v1.0.0...v1.1.0

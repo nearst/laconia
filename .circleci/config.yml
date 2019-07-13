@@ -1,11 +1,9 @@
 defaults: &defaults
-  docker:
-    - image: circleci/node:8.10.0-browsers
-    - image: circleci/node:10.16-browsers
   working_directory: ~/repo
 
-version: 2
-jobs:
+version: 2.1
+
+commands:
   build:
     <<: *defaults
     steps:
@@ -58,10 +56,11 @@ jobs:
             - /tmp/dynamodb-local
           key: ddb-local-{{ checksum "package.json" }}
 
-workflows:
-  version: 2
-  pipeline:
-    jobs:
+jobs:
+  node-8:
+    docker:
+      - image: circleci/node:8.10.0-browsers
+    steps:
       - build
       - license_test:
           filters:
@@ -70,3 +69,17 @@ workflows:
       - integration_test:
           requires:
             - build
+  node-10:
+    docker:
+      - image: circleci/node:10.16-browsers
+    steps:
+      - build
+      - integration_test:
+          requires:
+            - build
+
+workflows:
+  node-multi-build:
+    jobs:
+      - node-8
+      - node-10

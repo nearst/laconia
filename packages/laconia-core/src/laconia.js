@@ -23,16 +23,11 @@ module.exports = app => {
   const laconiaContext = new CoreLaconiaContext();
   laconiaContext.registerBuiltInInstances(awsInstances);
 
-  const laconia = async (event, context, callback) => {
+  const laconia = async (event, context) => {
     laconiaContext.registerInstances({ event, context });
     await laconiaContext.refresh();
 
-    try {
-      const result = await app(event, laconiaContext);
-      callback(null, result);
-    } catch (err) {
-      callback(err);
-    }
+    return app(event, laconiaContext);
   };
 
   return Object.assign(laconia, {

@@ -18,6 +18,8 @@ const JEST_INJECTED_PROPERTY = "asymmetricMatch";
 const CONSOLE_LOG_PROPERTIES = [
   "inspect",
   "Symbol(util.inspect.custom)",
+  // For Node10.x
+  "Symbol(nodejs.util.inspect.custom)",
   "Symbol(Symbol.iterator)",
   "Symbol(Symbol.toStringTag)"
 ];

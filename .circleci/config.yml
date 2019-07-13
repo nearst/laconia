@@ -1,11 +1,8 @@
-defaults: &defaults
-  working_directory: ~/repo
-
 version: 2.1
 
 commands:
   build:
-    <<: *defaults
+    working_directory: ~/repo
     steps:
       - checkout
       - restore_cache:
@@ -26,7 +23,7 @@ commands:
             - node_modules
             - packages/*/node_modules
   license_test:
-    <<: *defaults
+    working_directory: ~/repo
     steps:
       - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
@@ -40,8 +37,7 @@ commands:
       - run: fossa analyze
 
   integration_test:
-    <<: *defaults
-
+    working_directory: ~/repo
     steps:
       - checkout
       - attach_workspace:

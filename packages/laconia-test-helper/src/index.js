@@ -25,7 +25,7 @@ const reduceNexts = async (reader, times, startingCursor, callback) => {
 };
 
 const collectNexts = async (reader, times, startingCursor) => {
-  let nexts = [];
+  const nexts = [];
   await reduceNexts(reader, times, startingCursor, next => nexts.push(next));
   return nexts;
 };

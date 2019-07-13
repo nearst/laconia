@@ -107,7 +107,7 @@ describe("EnvVarConfigFactory", () => {
 
   describe("when there are no matching converter", () => {
     it("should not attempt to convert value", async () => {
-      let ssmConverter = {
+      const ssmConverter = {
         convertMultiple: jest.fn().mockResolvedValue({})
       };
       const env = { LACONIA_CONFIG_FOO: "unknown:/path/to/secret" };

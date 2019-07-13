@@ -28,7 +28,7 @@ describe("S3 Item Reader", () => {
   it("retrieves a directly stored array", async () => {
     s3.getObject.mockImplementation(s3Body(["Foo"]));
     const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
-    let next = await reader.next();
+    const next = await reader.next();
 
     expect(next).toEqual({ item: "Foo", cursor: { index: 0 }, finished: true });
   });
@@ -36,7 +36,7 @@ describe("S3 Item Reader", () => {
   it("retrieves next item when path given is an array of 1 item", async () => {
     s3.getObject.mockImplementation(s3Body(["Foo"]));
     const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
-    let next = await reader.next();
+    const next = await reader.next();
 
     expect(next).toEqual({ item: "Foo", cursor: { index: 0 }, finished: true });
   });
@@ -48,7 +48,7 @@ describe("S3 Item Reader", () => {
       })
     );
     const reader = new S3ItemReader(new AWS.S3(), s3Params, "list");
-    let next = await reader.next();
+    const next = await reader.next();
 
     expect(next).toHaveProperty("item", "Foo");
   });
@@ -72,7 +72,7 @@ describe("S3 Item Reader", () => {
       s3Params,
       'database.music[0]["category"].list'
     );
-    let next = await reader.next();
+    const next = await reader.next();
 
     expect(next).toHaveProperty("item", "Foo");
   });

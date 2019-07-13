@@ -75,7 +75,8 @@ jobs:
             - build
 
 workflows:
-  node-multi-build:
+  version: 2
+  pipeline:
     jobs:
       - node-8
       - node-10

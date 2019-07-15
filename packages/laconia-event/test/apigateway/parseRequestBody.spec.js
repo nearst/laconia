@@ -54,7 +54,7 @@ describe("parseRequestBody", () => {
 
   describe("when content type is x-www-form-urlencoded", () => {
     it("should parse form data into payload", () => {
-      let event = createApiGatewayEvent({
+      const event = createApiGatewayEvent({
         body: "field1=one&field2=two",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"

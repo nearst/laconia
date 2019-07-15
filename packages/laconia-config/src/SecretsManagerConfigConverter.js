@@ -18,10 +18,10 @@ module.exports = class SecretsManagerConfigConverter {
       // Decrypts secret using the associated KMS CMK.
       // Depending on whether the secret is a string or binary, one of these fields will be populated.
       let secret;
-      if (res.hasOwnProperty("SecretString")) {
+      if ({}.hasOwnProperty.call(res, "SecretString")) {
         secret = res.SecretString;
       } else {
-        let buff = Buffer.from(res.SecretBinary, "base64");
+        const buff = Buffer.from(res.SecretBinary, "base64");
         secret = buff.toString("ascii");
       }
 

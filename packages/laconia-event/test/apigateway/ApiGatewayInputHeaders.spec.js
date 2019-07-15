@@ -22,7 +22,7 @@ describe("ApiGatewayInputHeaders", () => {
       "content-type": "application/json"
     });
 
-    expect(inputHeaders.hasOwnProperty("content-type")).toBeTrue();
+    expect(inputHeaders).toHaveProperty("content-type");
   });
 
   it("should should allow access to existing methods using normal case", async () => {

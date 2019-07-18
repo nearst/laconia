@@ -1,3 +1,5 @@
+import { LaconiaContext } from "@laconia/core";
+
 declare type S3AdapterFactoryOptions = {
   inputType?: "object" | "stream";
 };
@@ -7,7 +9,7 @@ declare interface Adaptee<Output> {
 }
 
 declare interface S3Adapter<Output> {
-  (s3Event: any, laconiaContext: any): Output;
+  (s3Event: any, laconiaContext: LaconiaContext): Output;
 }
 
 declare namespace adapter {

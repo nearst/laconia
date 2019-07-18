@@ -1,6 +1,6 @@
 version: 2
 
-commands:
+jobs:
   build:
     working_directory: ~/repo
     steps:
@@ -52,31 +52,25 @@ commands:
             - /tmp/dynamodb-local
           key: ddb-local-{{ checksum "package.json" }}
 
-jobs:
-  node-8:
-    docker:
-      - image: circleci/node:8.10.0-browsers
-    steps:
-      - build
-      - license_test:
-          filters:
-            branches:
-              only: master
-      - integration_test:
-          requires:
-            - build
-  node-10:
-    docker:
-      - image: circleci/node:10.16-browsers
-    steps:
-      - build
-      - integration_test:
-          requires:
-            - build
-
 workflows:
   version: 2
   pipeline:
     jobs:
-      - node-8
-      - node-10
+      - docker:
+          - image: circleci/node:8.10.0-browsers
+        steps:
+          - build
+          - license_test:
+              filters:
+                branches:
+                  only: master
+          - integration_test:
+              requires:
+                - build
+      - docker:
+          - image: circleci/node:10.16-browsers
+        steps:
+          - build
+          - integration_test:
+              requires:
+                - build

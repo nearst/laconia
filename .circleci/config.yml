@@ -1,23 +1,21 @@
-defaults: &defaults
-  docker:
-    - image: circleci/node:8.10.0-browsers
-  working_directory: ~/repo
-
 version: 2
+
 jobs:
-  build:
-    <<: *defaults
+  build_node8:
+    docker:
+      - image: circleci/node:8.10.0-browsers
+    working_directory: ~/repo
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+            - v1-node8-dependencies-{{ checksum "package.json" }}
+            - v1-node8-dependencies-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-node8-dependencies-{{ checksum "package.json" }}
       - run: npm run test:circleci
       - run: 'if [ -n "$COVERALLS_REPO_TOKEN" ]; then npm run publish:coverage;
           fi' # COVERALLS_REPO_TOKEN does not run on fork
@@ -26,8 +24,34 @@ jobs:
           paths:
             - node_modules
             - packages/*/node_modules
+  build_node10:
+    docker:
+      - image: circleci/node:10.16-browsers
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-node10-dependencies-{{ checksum "package.json" }}
+            - v1-node10-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-node10-dependencies-{{ checksum "package.json" }}
+      - run: npm run test:circleci
+      - run: 'if [ -n "$COVERALLS_REPO_TOKEN" ]; then npm run publish:coverage;
+          fi' # COVERALLS_REPO_TOKEN does not run on fork
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - packages/*/node_modules
+
   license_test:
-    <<: *defaults
+    docker:
+      - image: circleci/node:10.16-browsers
+    working_directory: ~/repo
     steps:
       - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
@@ -40,9 +64,10 @@ jobs:
       - run: fossa init
       - run: fossa analyze
 
-  integration_test:
-    <<: *defaults
-
+  integration_test_node8:
+    docker:
+      - image: circleci/node:8.10.0-browsers
+    working_directory: ~/repo
     steps:
       - checkout
       - attach_workspace:
@@ -50,22 +75,44 @@ jobs:
       - run: npm install
       - restore_cache:
           keys:
-            - ddb-local-{{ checksum "package.json" }}
+            - ddb-local-node8-{{ checksum "package.json" }}
       - run: npm run test:integration
       - save_cache:
           paths:
             - /tmp/dynamodb-local
-          key: ddb-local-{{ checksum "package.json" }}
+          key: ddb-local-node8-{{ checksum "package.json" }}
+
+  integration_test_node10:
+    docker:
+      - image: circleci/node:10.16-browsers
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: npm install
+      - restore_cache:
+          keys:
+            - ddb-local-node10-{{ checksum "package.json" }}
+      - run: npm run test:integration
+      - save_cache:
+          paths:
+            - /tmp/dynamodb-local
+          key: ddb-local-node10-{{ checksum "package.json" }}
 
 workflows:
   version: 2
   pipeline:
     jobs:
-      - build
+      - build_node8
+      - build_node10
       - license_test:
           filters:
             branches:
               only: master
-      - integration_test:
+      - integration_test_node8:
           requires:
-            - build
+            - build_node8
+      - integration_test_node10:
+          requires:
+            - build_node10

@@ -4,19 +4,23 @@ declare type S3AdapterFactoryOptions = {
   inputType?: "object" | "stream";
 };
 
-declare interface Adaptee<Output> {
-  (...args: any[]): Output;
+declare interface Adaptee<Input, Output> {
+  (input: Input, laconiaContext: any): Output;
 }
 
-declare interface S3Adapter<Output> {
-  (s3Event: any, laconiaContext: LaconiaContext): Output;
+declare interface Adapter<Output> {
+  (event: any, laconiaContext: LaconiaContext): Output;
+}
+
+declare interface AdapterFactory<Input> {
+  <Output>(app: Adaptee<Input, Output>): Adapter<Output>;
 }
 
 declare namespace adapter {
-  interface S3AdapterFactory {
-    <Output>(app: Adaptee<Output>): S3Adapter<Output>;
-  }
-  function s3(options?: S3AdapterFactoryOptions): S3AdapterFactory;
+  function s3(options?: S3AdapterFactoryOptions): AdapterFactory<any>;
+  function kinesis(): AdapterFactory<any[]>;
+  function sns(): AdapterFactory<any>;
+  function sqs(): AdapterFactory<any[]>;
 }
 
 export = adapter;

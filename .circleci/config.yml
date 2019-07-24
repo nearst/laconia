@@ -1,52 +1,55 @@
 version: 2
 
+commands:
+  build:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - {{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+            - {{ .Environment.CIRCLE_JOB }}-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: {{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+      - run: npm run test:circleci
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - packages/*/node_modules
+  integration_test:
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: npm install
+      - restore_cache:
+          keys:
+            - {{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+            - {{ .Environment.CIRCLE_JOB }}-
+      - run: npm run test:integration
+      - save_cache:
+          paths:
+            - /tmp/dynamodb-local
+          key: {{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+
 jobs:
   build_node8:
     docker:
       - image: circleci/node:8.10.0-browsers
     working_directory: ~/repo
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-node8-dependencies-{{ checksum "package.json" }}
-            - v1-node8-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-node8-dependencies-{{ checksum "package.json" }}
-      - run: npm run test:circleci
-      - run: 'if [ -n "$COVERALLS_REPO_TOKEN" ]; then npm run publish:coverage;
-          fi' # COVERALLS_REPO_TOKEN does not run on fork
-      - persist_to_workspace:
-          root: .
-          paths:
-            - node_modules
-            - packages/*/node_modules
+      - build
   build_node10:
     docker:
       - image: circleci/node:10.16-browsers
     working_directory: ~/repo
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-node10-dependencies-{{ checksum "package.json" }}
-            - v1-node10-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-node10-dependencies-{{ checksum "package.json" }}
-      - run: npm run test:circleci
+      - build
       - run: 'if [ -n "$COVERALLS_REPO_TOKEN" ]; then npm run publish:coverage;
           fi' # COVERALLS_REPO_TOKEN does not run on fork
-      - persist_to_workspace:
-          root: .
-          paths:
-            - node_modules
-            - packages/*/node_modules
 
   license_test:
     docker:
@@ -69,36 +72,14 @@ jobs:
       - image: circleci/node:8.10.0-browsers
     working_directory: ~/repo
     steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run: npm install
-      - restore_cache:
-          keys:
-            - ddb-local-node8-{{ checksum "package.json" }}
-      - run: npm run test:integration
-      - save_cache:
-          paths:
-            - /tmp/dynamodb-local
-          key: ddb-local-node8-{{ checksum "package.json" }}
+      - integration_test
 
   integration_test_node10:
     docker:
       - image: circleci/node:10.16-browsers
     working_directory: ~/repo
     steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run: npm install
-      - restore_cache:
-          keys:
-            - ddb-local-node10-{{ checksum "package.json" }}
-      - run: npm run test:integration
-      - save_cache:
-          paths:
-            - /tmp/dynamodb-local
-          key: ddb-local-node10-{{ checksum "package.json" }}
+      - integration_test
 
 workflows:
   version: 2

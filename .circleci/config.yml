@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 commands:
   build:
@@ -82,7 +82,6 @@ jobs:
       - integration_test
 
 workflows:
-  version: 2
   pipeline:
     jobs:
       - build_node8

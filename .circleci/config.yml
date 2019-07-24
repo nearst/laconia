@@ -6,13 +6,13 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - {{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
-            - {{ .Environment.CIRCLE_JOB }}-
+            - v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+            - v1-{{ .Environment.CIRCLE_JOB }}-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: {{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
       - run: npm run test:circleci
       - persist_to_workspace:
           root: .
@@ -27,13 +27,13 @@ commands:
       - run: npm install
       - restore_cache:
           keys:
-            - {{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
-            - {{ .Environment.CIRCLE_JOB }}-
+            - v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+            - v1-{{ .Environment.CIRCLE_JOB }}-
       - run: npm run test:integration
       - save_cache:
           paths:
             - /tmp/dynamodb-local
-          key: {{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
 
 jobs:
   build_node8:

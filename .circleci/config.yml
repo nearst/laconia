@@ -61,11 +61,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+            - v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
+            - v1-{{ .Environment.CIRCLE_JOB }}-
       - run: npm install
       - run: fossa init
       - run: fossa analyze
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
 
   integration_test_node8:
     docker:

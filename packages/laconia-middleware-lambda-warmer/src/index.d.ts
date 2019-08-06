@@ -1,5 +1,5 @@
-import { LaconiaHandler } from "@laconia/core";
+import { Handler } from "aws-lambda";
 
-declare function middlewareLambdaWarmer(next: LaconiaHandler): LaconiaHandler;
+declare function middlewareLambdaWarmer(next: Handler): Handler;
 
 export = middlewareLambdaWarmer;

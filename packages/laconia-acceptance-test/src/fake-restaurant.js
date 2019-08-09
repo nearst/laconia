@@ -1,3 +1,4 @@
+// @ts-check
 const laconia = require("@laconia/core");
 const sns = require("@laconia/adapter").sns();
 const r2 = require("r2");

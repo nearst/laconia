@@ -10,8 +10,8 @@ declare namespace laconia {
 
   type LaconiaContext = {
     [key: string]: any;
-    event: any;
-    context: Context;
+    event?: any;
+    context?: Context;
   };
 
   type LaconiaFactory<Dependencies = any> = (

@@ -199,7 +199,7 @@ describe("laconia", () => {
     });
   });
 
-  describe("callback behaviour", () => {
+  describe("promise behaviour", () => {
     describe("when synchronous code is returned", () => {
       it("should not call Lambda callback", async () => {
         const callback = jest.fn();
@@ -222,6 +222,22 @@ describe("laconia", () => {
       it("should call resolve value", async () => {
         const res = await laconia(() => Promise.resolve("value"))({}, {});
         expect(res).toBe("value");
+      });
+
+      it("should call resolve value with middleware", async () => {
+        // Define a new middleware
+        const myMiddleware = next => (event, context, cb) => {
+          console.log("Logging all events in my middleware", event);
+          return next(event, context, cb);
+        };
+
+        const app = () => Promise.resolve("value");
+        const handler = myMiddleware(laconia(app));
+
+        const callback = jest.fn();
+        const res = await handler({}, {}, callback);
+        expect(res).toBe("value");
+        expect(callback).not.toHaveBeenCalled();
       });
 
       it("should call Lambda callback with the error thrown", async () => {

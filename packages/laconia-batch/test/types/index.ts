@@ -27,7 +27,11 @@ laconiaBatch(() =>
       Key: "array.json"
     }
   })
-).register(() => ({ someKey: "value" }));
+)
+  .register(() => ({ someKey: "value" }))
+  .on("start", (laconiaContext: any) => {
+    console.log(laconiaContext);
+  });
 
 laconiaBatch.s3({
   path: 'database.music[0]["category"].list',

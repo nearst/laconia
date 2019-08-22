@@ -1,4 +1,9 @@
-import { LaconiaHandler } from "@laconia/core";
+import {
+  LaconiaHandler,
+  LaconiaFactory,
+  FactoryOptions,
+  LaconiaContext
+} from "@laconia/core";
 
 declare type LaconiaBatchOptions = {
   itemsPerSecond?: number;
@@ -22,9 +27,22 @@ declare namespace laconiaBatch {
   function s3(options: S3ReaderOptions): any;
 }
 
+type StartEventListener = (laconiaContext: LaconiaContext) => void;
+
+interface LaconiaBatchHandler extends LaconiaHandler {
+  on(
+    eventName: "start",
+    eventListener: StartEventListener
+  ): LaconiaBatchHandler;
+  register(
+    factory: LaconiaFactory | LaconiaFactory[],
+    options?: FactoryOptions
+  ): LaconiaBatchHandler;
+}
+
 declare function laconiaBatch(
   app: Function,
   options?: LaconiaBatchOptions
-): LaconiaHandler;
+): LaconiaBatchHandler;
 
 export = laconiaBatch;

@@ -12,7 +12,7 @@ exports.handler = laconiaBatch(
     laconiaBatch.s3({
       path: ".",
       s3Params: {
-        Bucket: process.env["RESTAURANT_BUCKET_NAME"],
+        Bucket: process.env.RESTAURANT_BUCKET_NAME,
         Key: "restaurants.json"
       }
     }),

@@ -14,7 +14,7 @@ describe("ApiGatewayInputHeaders", () => {
       AUTHORization: "SECRET"
     });
     expect(inputHeaders["CONTENT-type"]).toEqual("application/json");
-    expect(inputHeaders["authorIZATION"]).toEqual("SECRET");
+    expect(inputHeaders.authorIZATION).toEqual("SECRET");
   });
 
   it("should should allow access to existing properties using normal case", async () => {

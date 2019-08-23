@@ -7,7 +7,7 @@ exports.handler = laconiaBatch(
     laconiaBatch.dynamoDb({
       operation: "SCAN",
       dynamoDbParams: {
-        TableName: process.env["ORDER_TABLE_NAME"]
+        TableName: process.env.ORDER_TABLE_NAME
       }
     }),
   { itemsPerSecond: 2 }

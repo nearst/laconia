@@ -27,13 +27,17 @@ declare namespace laconiaBatch {
   function s3(options: S3ReaderOptions): any;
 }
 
-type StartEventListener = (laconiaContext: LaconiaContext) => void;
+type BatchEventListener = (laconiaContext: LaconiaContext) => void;
+type ItemEventListener = (laconiaContext: LaconiaContext, item: any) => void;
+type StopEventListener = (laconiaContext: LaconiaContext, cursor: any) => void;
 
 interface LaconiaBatchHandler extends LaconiaHandler {
   on(
-    eventName: "start",
-    eventListener: StartEventListener
+    eventName: "start" | "end",
+    eventListener: BatchEventListener
   ): LaconiaBatchHandler;
+  on(eventName: "item", eventListener: ItemEventListener): LaconiaBatchHandler;
+  on(eventName: "stop", eventListener: StopEventListener): LaconiaBatchHandler;
   register(
     factory: LaconiaFactory | LaconiaFactory[],
     options?: FactoryOptions

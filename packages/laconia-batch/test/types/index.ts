@@ -1,5 +1,6 @@
 import laconiaBatch from "../../src/index";
 import AWS from "aws-sdk";
+import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
 
 laconiaBatch(
   () =>
@@ -29,8 +30,17 @@ laconiaBatch(() =>
   })
 )
   .register(() => ({ someKey: "value" }))
-  .on("start", (laconiaContext: any) => {
+  .on("start", laconiaContext => {
     console.log(laconiaContext);
+  })
+  .on("end", laconiaContext => {
+    console.log(laconiaContext);
+  })
+  .on("item", (laconiaContext, item) => {
+    console.log(laconiaContext, item);
+  })
+  .on("stop", (laconiaContext, cursor) => {
+    console.log(laconiaContext, cursor);
   });
 
 laconiaBatch.s3({

@@ -3,7 +3,7 @@ const pWaitFor = require("p-wait-for");
 const s3 = new AWS.S3();
 
 const getBucket = bucketName => {
-  const bucket = bucketName || process.env["TRACKER_BUCKET_NAME"];
+  const bucket = bucketName || process.env.TRACKER_BUCKET_NAME;
   if (bucket === undefined) {
     throw new Error(
       "bucketName must be set either from the constructor or by setting the TRACKER_BUCKET_NAME env variable"

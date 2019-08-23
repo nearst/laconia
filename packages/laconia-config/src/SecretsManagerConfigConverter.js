@@ -20,6 +20,9 @@ module.exports = class SecretsManagerConfigConverter {
       let secret;
       if ({}.hasOwnProperty.call(res, "SecretString")) {
         secret = res.SecretString;
+        try {
+          secret = JSON.parse(secret);
+        } catch (_) {}
       } else {
         const buff = Buffer.from(res.SecretBinary, "base64");
         secret = buff.toString("ascii");

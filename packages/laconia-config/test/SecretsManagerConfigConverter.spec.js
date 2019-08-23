@@ -53,7 +53,8 @@ describe("SecretsManagerConfigConverter", () => {
       secretsStore = {
         myProdApiKey: "secret-api-key",
         myProductionDbPassword: "secret-db-password",
-        myProdBase64EncodedKey: Buffer.from("base64-encoded")
+        myProdBase64EncodedKey: Buffer.from("base64-encoded"),
+        myKeyValueSecrets: `{ "apiKey": "test-api-key", "apiSecret": "some-secret" }`
       };
       secretsManager.getSecretValue.mockImplementation((params, callback) => {
         const secret = secretsStore[params.SecretId];
@@ -87,13 +88,18 @@ describe("SecretsManagerConfigConverter", () => {
       const result = await configConverter.convertMultiple({
         apiKey: "myProdApiKey",
         dbPass: "myProductionDbPassword",
-        base64Encoded: "myProdBase64EncodedKey"
+        base64Encoded: "myProdBase64EncodedKey",
+        keyValPair: "myKeyValueSecrets"
       });
 
       expect(result).toEqual({
         apiKey: "secret-api-key",
         dbPass: "secret-db-password",
-        base64Encoded: secretsStore.myProdBase64EncodedKey.toString("ascii")
+        base64Encoded: secretsStore.myProdBase64EncodedKey.toString("ascii"),
+        keyValPair: {
+          apiKey: "test-api-key",
+          apiSecret: "some-secret"
+        }
       });
 
       expect(secretsManager.getSecretValue).toBeCalledWith(
@@ -111,7 +117,12 @@ describe("SecretsManagerConfigConverter", () => {
         expect.any(Function)
       );
 
-      expect(secretsManager.getSecretValue).toHaveBeenCalledTimes(3);
+      expect(secretsManager.getSecretValue).toBeCalledWith(
+        expect.objectContaining({ SecretId: "myKeyValueSecrets" }),
+        expect.any(Function)
+      );
+
+      expect(secretsManager.getSecretValue).toHaveBeenCalledTimes(4);
     });
   });
 });

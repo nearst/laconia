@@ -31,7 +31,10 @@ module.exports = class EnvVarConfigFactory extends EnvVarInstanceFactory {
     const conversionResults = await Promise.all(
       types.map(type => {
         const values = filterAndRemoveType(type, typedValues);
-        return this.converters[type].convertMultiple(values);
+        return (
+          Object.keys(values).length > 0 &&
+          this.converters[type].convertMultiple(values)
+        );
       })
     );
     return Object.assign({}, ...conversionResults);

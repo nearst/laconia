@@ -60,6 +60,7 @@ describe("EnvVarConfigFactory", () => {
   describe("when there are multiple env vars and converters", () => {
     let ssmConverter;
     let booleanConverter;
+    let secretsManagerConverter;
 
     beforeEach(() => {
       ssmConverter = {
@@ -72,13 +73,20 @@ describe("EnvVarConfigFactory", () => {
           .fn()
           .mockResolvedValue({ enableLogging: false, enableFeature: true })
       };
+      secretsManagerConverter = {
+        convertMultiple: jest.fn().mockResolvedValue({ apikey: "secretApiKey" })
+      };
       const env = {
         LACONIA_CONFIG_SECRET: "ssm:/path/to/secret",
         LACONIA_CONFIG_PASSWORD: "ssm:/path/to/password",
         LACONIA_CONFIG_ENABLE_LOGGING: "boolean:no",
         LACONIA_CONFIG_ENABLE_FEATURE: "boolean:yes"
       };
-      const converters = { ssm: ssmConverter, boolean: booleanConverter };
+      const converters = {
+        ssm: ssmConverter,
+        boolean: booleanConverter,
+        secretsManager: secretsManagerConverter
+      };
       configFactory = new EnvVarConfigFactory(env, converters);
     });
 
@@ -91,6 +99,24 @@ describe("EnvVarConfigFactory", () => {
       expect(booleanConverter.convertMultiple).toHaveBeenCalledWith({
         enableLogging: "no",
         enableFeature: "yes"
+      });
+    });
+
+    it("should not call the configured converters when `values` is empty", async () => {
+      const converters = {
+        ssm: ssmConverter,
+        boolean: booleanConverter,
+        secretsManager: secretsManagerConverter
+      };
+      const env = {
+        LACONIA_CONFIG_API_SECRET: "secretsManager:path/to/api-key"
+      };
+      configFactory = new EnvVarConfigFactory(env, converters);
+      await configFactory.makeInstances();
+      expect(ssmConverter.convertMultiple).not.toHaveBeenCalled();
+      expect(booleanConverter.convertMultiple).not.toHaveBeenCalled();
+      expect(secretsManagerConverter.convertMultiple).toHaveBeenCalledWith({
+        apiSecret: "path/to/api-key"
       });
     });
 

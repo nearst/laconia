@@ -8,6 +8,38 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.4.0]
+
+### Added
+
+- Ensure laconia is running in Node10.x
+  ([@geoffdutton](https://github.com/geoffdutton))
+- `@laconia/adapter`
+  - #155 Add TypeScript declarations
+- `@laconia/invoker`
+  - #158 Add TypeScript declarations
+- `@laconia/config`
+  - #252 Parse JSON which contains a collection of secrets in SecretsManager
+    ([@geoffdutton](https://github.com/geoffdutton))
+  - #172 Add TypeScript declarations
+- `@laconia/laconia-middleware-lambda-warmer`
+  - #174 Add TypeScript declarations
+- `@laconia/laconia-middleware-serverless-plugin-warmup`
+  - #175 Add TypeScript declarations
+
+### Fixes
+
+- `@laconia/core`
+  - #48 Remove usage of Lambda callback
+    ([@geoffdutton](https://github.com/geoffdutton))
+- `@laconia/config`
+  - #252 Only call .convertMultiple if values object is not empty
+    ([@geoffdutton](https://github.com/geoffdutton))
+
+### Changed
+
+- #153 Removed Snyk integration
+
 ## [1.3.0]
 
 ### Added
@@ -342,7 +374,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.3.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/ceilfors/laconia/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/ceilfors/laconia/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/ceilfors/laconia/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/ceilfors/laconia/compare/v1.1.0...v1.2.0

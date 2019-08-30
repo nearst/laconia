@@ -4,7 +4,7 @@ const AWS = require("aws-sdk");
 
 const app = async (orderEvents, { env }) => {
   const acceptedEvents = orderEvents.filter(o => o.eventType === "accepted");
-  console.log(acceptedEvents);
+  console.log("acceptedEvents", acceptedEvents);
   const sqs = new AWS.SQS();
   return Promise.all(
     acceptedEvents.map(e =>

@@ -29,9 +29,6 @@ and this project adheres to
 
 ### Fixes
 
-- `@laconia/core`
-  - #48 Remove usage of Lambda callback
-    ([@geoffdutton](https://github.com/geoffdutton))
 - `@laconia/config`
   - #252 Only call .convertMultiple if values object is not empty
     ([@geoffdutton](https://github.com/geoffdutton))

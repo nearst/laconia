@@ -1,6 +1,5 @@
 import laconiaBatch from "../../src/index";
 import AWS from "aws-sdk";
-import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
 
 laconiaBatch(
   () =>

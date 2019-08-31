@@ -22,9 +22,21 @@ declare type S3ReaderOptions = {
   s3?: any;
 };
 
+declare type BatchItem = {
+  item: any;
+  cursor: any;
+  finished: boolean;
+};
+
+declare interface ItemReader {
+  next(cursor: any): Promise<BatchItem>;
+}
+
+declare type ItemReaderFactory = (laconiaContext: LaconiaContext) => ItemReader;
+
 declare namespace laconiaBatch {
-  function dynamoDb(options: DynamoDbReaderOptions): any;
-  function s3(options: S3ReaderOptions): any;
+  function dynamoDb(options: DynamoDbReaderOptions): ItemReader;
+  function s3(options: S3ReaderOptions): ItemReader;
 }
 
 type BatchEventListener = (laconiaContext: LaconiaContext) => void;
@@ -45,7 +57,7 @@ interface LaconiaBatchHandler extends LaconiaHandler {
 }
 
 declare function laconiaBatch(
-  app: Function,
+  itemReaderFactory: ItemReaderFactory,
   options?: LaconiaBatchOptions
 ): LaconiaBatchHandler;
 

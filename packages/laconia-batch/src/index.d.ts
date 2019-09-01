@@ -22,14 +22,16 @@ declare type S3ReaderOptions = {
   s3?: any;
 };
 
+declare type Cursor = any;
+
 declare type BatchItem = {
   item: any;
-  cursor: any;
+  cursor: Cursor;
   finished: boolean;
 };
 
 declare interface ItemReader {
-  next(cursor: any): Promise<BatchItem>;
+  next(cursor: Cursor): Promise<BatchItem>;
 }
 
 declare type ItemReaderFactory = (laconiaContext: LaconiaContext) => ItemReader;
@@ -41,7 +43,10 @@ declare namespace laconiaBatch {
 
 type BatchEventListener = (laconiaContext: LaconiaContext) => void;
 type ItemEventListener = (laconiaContext: LaconiaContext, item: any) => void;
-type StopEventListener = (laconiaContext: LaconiaContext, cursor: any) => void;
+type StopEventListener = (
+  laconiaContext: LaconiaContext,
+  cursor: Cursor
+) => void;
 
 interface LaconiaBatchHandler extends LaconiaHandler {
   on(

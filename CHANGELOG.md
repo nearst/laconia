@@ -22,6 +22,8 @@ and this project adheres to
   - #252 Parse JSON which contains a collection of secrets in SecretsManager
     ([@geoffdutton](https://github.com/geoffdutton))
   - #172 Add TypeScript declarations
+- `@laconia/batch`
+  - #173 Add TypeScript declarations
 - `@laconia/laconia-middleware-lambda-warmer`
   - #174 Add TypeScript declarations
 - `@laconia/laconia-middleware-serverless-plugin-warmup`
@@ -35,10 +37,6 @@ and this project adheres to
 - `@laconia/config`
   - #252 Only call .convertMultiple if values object is not empty
     ([@geoffdutton](https://github.com/geoffdutton))
-
-### Changed
-
-- #153 Removed Snyk integration
 
 ## [1.3.0]
 

@@ -2,12 +2,14 @@ const laconia = require("../src/laconia");
 const AWS = require("aws-sdk");
 
 describe("laconia", () => {
+  let callback;
   let handlerArgs;
   let event;
 
   beforeEach(() => {
+    callback = jest.fn();
     event = { foo: "event" };
-    handlerArgs = [event, { fiz: "context" }];
+    handlerArgs = [event, { fiz: "context" }, callback];
   });
 
   it("should throw an error when a handler is not specified", async () => {
@@ -26,9 +28,10 @@ describe("laconia", () => {
     );
   });
 
-  it("should return value from app function", async () => {
-    const result = await laconia(() => {})(...handlerArgs);
-    expect(result).toBeUndefined();
+  it("should call Lambda callback with null when there is no value returned", async () => {
+    await laconia(() => {})(...handlerArgs);
+    expect(callback).toBeCalledWith(null, undefined);
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it("should delegate AWS parameters to app", async () => {
@@ -64,8 +67,10 @@ describe("laconia", () => {
           foo: "bar"
         }));
 
-        await expect(handler(...handlerArgs)).rejects.toThrowError(
-          /The dependency fooo is not available./
+        await handler(...handlerArgs);
+        const errorMessage = callback.mock.calls[0][0].message;
+        expect(errorMessage).toEqual(
+          expect.stringMatching(/The dependency fooo is not available./)
         );
       });
 
@@ -199,52 +204,32 @@ describe("laconia", () => {
     });
   });
 
-  describe("promise behaviour", () => {
+  describe("callback behaviour", () => {
     describe("when synchronous code is returned", () => {
-      it("should not call Lambda callback", async () => {
-        const callback = jest.fn();
-        const res = await laconia(() => "value")({}, {}, callback);
-        expect(res).toBe("value");
-        expect(callback).not.toHaveBeenCalled();
-      });
-
-      it("should throw error", async () => {
-        const error = new Error("boom");
-        await expect(
-          laconia(() => {
-            throw error;
-          })({}, {})
-        ).rejects.toThrowError(error);
-      });
-    });
-
-    describe("when promise is returned", () => {
-      it("should call resolve value", async () => {
-        const res = await laconia(() => Promise.resolve("value"))({}, {});
-        expect(res).toBe("value");
-      });
-
-      it("should call resolve value with middleware", async () => {
-        // Define a new middleware
-        const myMiddleware = next => (event, context, cb) => {
-          console.log("Logging all events in my middleware", event);
-          return next(event, context, cb);
-        };
-
-        const app = () => Promise.resolve("value");
-        const handler = myMiddleware(laconia(app));
-
-        const callback = jest.fn();
-        const res = await handler({}, {}, callback);
-        expect(res).toBe("value");
-        expect(callback).not.toHaveBeenCalled();
+      it("should call Lambda callback with the handler return value to Lambda callback", async () => {
+        await laconia(() => "value")({}, {}, callback);
+        expect(callback).toBeCalledWith(null, "value");
       });
 
       it("should call Lambda callback with the error thrown", async () => {
         const error = new Error("boom");
-        await expect(
-          laconia(() => Promise.reject(error))({}, {})
-        ).rejects.toThrowError(error);
+        await laconia(() => {
+          throw error;
+        })({}, {}, callback);
+        expect(callback).toBeCalledWith(error);
+      });
+    });
+
+    describe("when promise is returned", () => {
+      it("should call Lambda callback with the handler return value to Lambda callback", async () => {
+        await laconia(() => Promise.resolve("value"))({}, {}, callback);
+        expect(callback).toBeCalledWith(null, "value");
+      });
+
+      it("should call Lambda callback with the error thrown", async () => {
+        const error = new Error("boom");
+        await laconia(() => Promise.reject(error))({}, {}, callback);
+        expect(callback).toBeCalledWith(error);
       });
     });
   });

@@ -1,6 +1,6 @@
 {
   "name": "@laconia/event",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Parses and responds to incoming events",
   "keywords": [
     "aws",
@@ -23,7 +23,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^1.3.0"
+    "@laconia/core": "^1.4.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"

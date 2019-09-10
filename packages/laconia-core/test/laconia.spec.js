@@ -171,6 +171,69 @@ describe("laconia", () => {
     });
   });
 
+  describe("#set", () => {
+    describe("when registering a factory", () => {
+      it("should be able to add instances by calling 'set'", async () => {
+        const app = jest.fn();
+        await laconia(app)
+          .set("foo", lc => "bar")
+          .set("boo", lc => "baz")(...handlerArgs);
+
+        expect(app).toBeCalledWith(
+          expect.any(Object),
+          expect.objectContaining({
+            foo: "bar",
+            boo: "baz"
+          })
+        );
+      });
+
+      it("should be able to add async instances by calling 'set'", async () => {
+        const app = jest.fn();
+        await laconia(app).set("foo", async lc => {
+          return Promise.resolve("bar");
+        })(...handlerArgs);
+
+        expect(app).toBeCalledWith(
+          expect.any(Object),
+          expect.objectContaining({
+            foo: "bar"
+          })
+        );
+      });
+
+      it("should cache factory by default", async () => {
+        const factory = jest.fn().mockImplementation(() => ({}));
+        const handler = await laconia(jest.fn()).set("foo", factory);
+        await handler(...handlerArgs);
+        await handler(...handlerArgs);
+
+        expect(factory).toHaveBeenCalledTimes(1);
+      });
+
+      it("should be able to turn off caching", async () => {
+        const factory = jest.fn().mockImplementation(() => ({}));
+        const handler = await laconia(jest.fn()).set("foo", factory, {
+          cache: {
+            enabled: false
+          }
+        });
+        await handler(...handlerArgs);
+        await handler(...handlerArgs);
+
+        expect(factory).toHaveBeenCalledTimes(2);
+      });
+
+      it("should throw an error when the factory is not a function", async () => {
+        expect(() => laconia(jest.fn()).set("foo", { foo: "bar" })).toThrow(
+          new TypeError(
+            'register() expects to be passed a function, you passed: {"foo":"bar"}'
+          )
+        );
+      });
+    });
+  });
+
   describe("#postProcessor", () => {
     it("should register post processor function", async () => {
       const app = jest.fn();

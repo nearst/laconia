@@ -41,6 +41,14 @@ module.exports = app => {
       }
       return laconia;
     },
+    set: (name, factory, options = {}) => {
+      checkFunction("register", factory);
+      laconia.register(
+        async laconiaContext => ({ [name]: await factory(laconiaContext) }),
+        options
+      );
+      return laconia;
+    },
     postProcessor: postProcessor => {
       checkFunction("postProcessor", postProcessor);
       laconiaContext.registerPostProcessor(postProcessor);

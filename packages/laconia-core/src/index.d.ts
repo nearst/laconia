@@ -23,6 +23,11 @@ declare namespace laconia {
       factory: LaconiaFactory | LaconiaFactory[],
       options?: FactoryOptions
     ): LaconiaHandler;
+    set(
+      name: string,
+      factory: LaconiaFactory,
+      options?: FactoryOptions
+    ): LaconiaHandler;
   }
 }
 

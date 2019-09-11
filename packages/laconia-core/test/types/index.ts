@@ -32,6 +32,8 @@ laconia(app)
       enabled: false,
       maxAge: 1000
     }
-  });
+  })
+  .set("someKey", () => "value")
+  .set("someKey", () => "value", {});
 
 laconia(adapter(app)).register(() => ({ someKey: "value" }));

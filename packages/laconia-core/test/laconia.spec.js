@@ -62,7 +62,7 @@ describe("laconia", () => {
         );
       });
 
-      it("should be able to add instances by calling 'register' with a string", async () => {
+      it("should be able to add a single instance by calling 'register'", async () => {
         const app = jest.fn();
         await laconia(app)
           .register("foo", lc => "bar")
@@ -103,7 +103,7 @@ describe("laconia", () => {
         );
       });
 
-      it("should be able to add async instances by calling 'register' with a string", async () => {
+      it("should be able to add a single async instance by calling 'register'", async () => {
         const app = jest.fn();
         await laconia(app).register("foo", async lc => "bar")(...handlerArgs);
 
@@ -124,7 +124,7 @@ describe("laconia", () => {
         expect(factory).toHaveBeenCalledTimes(1);
       });
 
-      it("should cache factory by default with a string", async () => {
+      it("should cache a single factory by default", async () => {
         const factory = jest.fn().mockImplementation(() => ({}));
         const handler = await laconia(jest.fn()).register(
           "someFactory",
@@ -149,7 +149,7 @@ describe("laconia", () => {
         expect(factory).toHaveBeenCalledTimes(2);
       });
 
-      it("should be able to turn off caching with a string", async () => {
+      it("should be able to turn off caching for a single factory", async () => {
         const factory = jest.fn().mockImplementation(() => ({}));
         const handler = await laconia(jest.fn()).register(
           "someFactory",
@@ -174,7 +174,7 @@ describe("laconia", () => {
         );
       });
 
-      it("should throw an error when the factory is not a function with a string", async () => {
+      it("should throw an error when a single factory is not a function", async () => {
         expect(() => laconia(jest.fn()).register("foo", "bar")).toThrow(
           new TypeError(
             'register() expects to be passed a function, you passed: "bar"'

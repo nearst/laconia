@@ -36,11 +36,21 @@ module.exports = app => {
   };
 
   return Object.assign(laconia, {
-    register: (factory, options = {}) => {
+    register: (factory, optionsOrFactory, options = {}) => {
+      if (typeof optionsOrFactory !== "function") {
+        options = optionsOrFactory || {};
+      }
       if (Array.isArray(factory)) {
         factory.forEach(f => checkFunction("register", f));
         laconiaContext.registerFactories(factory, options.cache);
       } else {
+        if (typeof factory === "string") {
+          checkFunction("register", optionsOrFactory);
+          const factoryKey = factory;
+          factory = async laconiaContext => ({
+            [factoryKey]: await optionsOrFactory(laconiaContext)
+          });
+        }
         checkFunction("register", factory);
         laconiaContext.registerFactory(factory, options.cache);
       }

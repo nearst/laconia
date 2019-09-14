@@ -20,8 +20,12 @@ declare namespace laconia {
 
   interface LaconiaHandler extends Handler {
     register(
-      factory: string | LaconiaFactory | LaconiaFactory[],
-      optionsOrFactory?: LaconiaFactory | FactoryOptions,
+      factory: LaconiaFactory | LaconiaFactory[],
+      options?: FactoryOptions
+    ): LaconiaHandler;
+    register(
+      name: string,
+      factory: LaconiaFactory,
       options?: FactoryOptions
     ): LaconiaHandler;
   }

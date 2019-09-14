@@ -9,7 +9,7 @@ declare namespace event {
     getJson: () => any;
     getStream: () => Readable;
   };
-  function s3(awsS3Event: S3Event): LaconiaS3Event;
+  function s3(awsS3Event: S3Event, s3?: any): LaconiaS3Event;
 }
 
 export = event;

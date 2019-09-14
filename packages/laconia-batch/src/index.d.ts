@@ -59,6 +59,11 @@ interface LaconiaBatchHandler extends LaconiaHandler {
     factory: LaconiaFactory | LaconiaFactory[],
     options?: FactoryOptions
   ): LaconiaBatchHandler;
+  register(
+    name: string,
+    factory: LaconiaFactory,
+    options?: FactoryOptions
+  ): LaconiaBatchHandler;
 }
 
 declare function laconiaBatch(

@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.5.0]
+
+### Added
+
+- `@laconia/core`
+  - #120 Register single dependency
+    ([@hugosenari](https://github.com/hugosenari)
+    [@geoffdutton](https://github.com/geoffdutton))
+
 ## [1.4.0]
 
 ### Added
@@ -369,7 +378,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.4.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/ceilfors/laconia/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/ceilfors/laconia/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/ceilfors/laconia/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/ceilfors/laconia/compare/v1.2.0...v1.2.1

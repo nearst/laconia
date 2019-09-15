@@ -1,6 +1,6 @@
 {
   "name": "@laconia/invoker",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Invokes Lambdas like regular functions",
   "keywords": [
     "aws",
@@ -24,7 +24,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^1.4.0"
+    "@laconia/core": "^1.5.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"

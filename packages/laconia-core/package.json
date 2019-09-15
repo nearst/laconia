@@ -1,6 +1,6 @@
 {
   "name": "@laconia/core",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Micro dependency injection framework",
   "keywords": [
     "aws",

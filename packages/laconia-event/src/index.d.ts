@@ -1,24 +1,33 @@
-import { S3Event, SNSEvent } from "aws-lambda";
+import {
+  S3Event as AWSS3Event,
+  SNSEvent as AWSSNSEvent,
+  SQSEvent as AWSSQSEvent
+} from "aws-lambda";
 import { Readable } from "stream";
 
 declare namespace event {
-  type LaconiaS3Event = {
+  interface S3Event {
     bucket: string;
     key: string;
     getObject: () => any;
     getJson: () => any;
     getStream: () => Readable;
-  };
-  function s3(awsS3Event: S3Event, s3?: any): LaconiaS3Event;
+  }
+  function s3(awsS3Event: AWSS3Event, s3?: any): S3Event;
 
-  type LaconiaSNSEvent = {
-    /**
-     * @returns Returns the body of the SNS message. The message will automatically be JSON parsed.
-     */
-    message: string | object;
+  interface SnsEvent {
+    message: any;
     subject: string;
-  };
-  function sns(awsSNSevent: SNSEvent): LaconiaSNSEvent;
+  }
+  function sns(awsSNSevent: AWSSNSEvent): SnsEvent;
+
+  interface SqsRecord {
+    body: any;
+  }
+  interface SqsEvent {
+    records: SqsRecord[];
+  }
+  function sqs(awsSQSEvent: AWSSQSEvent): SqsEvent;
 }
 
 export = event;

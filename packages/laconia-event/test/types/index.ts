@@ -4,9 +4,11 @@ import {
   SNSHandler,
   SNSEvent,
   SQSHandler,
-  SQSEvent
+  SQSEvent,
+  KinesisStreamHandler,
+  KinesisStreamEvent
 } from "aws-lambda";
-import { s3, sns, sqs, SqsEvent } from "../../src/index";
+import { s3, sns, sqs, kinesis } from "../../src/index";
 import AWS from "aws-sdk";
 
 const s3Handler: S3Handler = (event: S3Event) => {
@@ -29,4 +31,13 @@ const snsHandler: SNSHandler = (event: SNSEvent) => {
 const sqsHandler: SQSHandler = (event: SQSEvent) => {
   const sqsEvent = sqs(event);
   console.log(sqsEvent.records.map(r => r.body));
+};
+
+const kinesisHandler: KinesisStreamHandler = (event: KinesisStreamEvent) => {
+  const kinesisEvent = kinesis(event);
+  kinesisEvent.records.forEach(r => {
+    console.log(r.jsonData);
+    console.log(r.textData);
+    console.log(r.data);
+  });
 };

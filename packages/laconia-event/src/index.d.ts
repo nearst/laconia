@@ -1,7 +1,8 @@
 import {
   S3Event as AWSS3Event,
   SNSEvent as AWSSNSEvent,
-  SQSEvent as AWSSQSEvent
+  SQSEvent as AWSSQSEvent,
+  KinesisStreamEvent as AWSKinesisStreamEvent
 } from "aws-lambda";
 import { Readable } from "stream";
 
@@ -28,6 +29,16 @@ declare namespace event {
     records: SqsRecord[];
   }
   function sqs(awsSQSEvent: AWSSQSEvent): SqsEvent;
+
+  interface KinesisRecord {
+    jsonData: any;
+    textData: string;
+    data: any;
+  }
+  interface KinesisEvent {
+    records: KinesisRecord[];
+  }
+  function kinesis(AWSKinesisStreamEvent: AWSKinesisStreamEvent): KinesisEvent;
 }
 
 export = event;

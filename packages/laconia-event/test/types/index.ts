@@ -6,10 +6,15 @@ import {
   SQSHandler,
   SQSEvent,
   KinesisStreamHandler,
-  KinesisStreamEvent
+  KinesisStreamEvent,
+  APIGatewayProxyHandler,
+  APIGatewayEvent
 } from "aws-lambda";
-import { s3, sns, sqs, kinesis } from "../../src/index";
+import { s3, sns, sqs, kinesis, apigateway } from "../../src/index";
+const { req, res } = apigateway;
+
 import AWS from "aws-sdk";
+import { integer } from "aws-sdk/clients/lightsail";
 
 const s3Handler: S3Handler = (event: S3Event) => {
   const s3Event = s3(event);
@@ -40,4 +45,18 @@ const kinesisHandler: KinesisStreamHandler = (event: KinesisStreamEvent) => {
     console.log(r.textData);
     console.log(r.data);
   });
+};
+
+const apiGatewayHandler: APIGatewayProxyHandler = (event: APIGatewayEvent) => {
+  const r = req(event);
+  console.log(r.body);
+  console.log(r.headers.TEST);
+  console.log(r.params.id);
+
+  res("Not found", 404);
+  res({ hello: "world" });
+  res({ error: "not found" }, 404, {
+    "Access-Allow-Control-Origin": "*"
+  });
+  return Promise.resolve(res("Success"));
 };

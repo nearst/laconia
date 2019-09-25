@@ -62,6 +62,21 @@ describe("laconia", () => {
         );
       });
 
+      it("should be able to add a single instance by calling 'register'", async () => {
+        const app = jest.fn();
+        await laconia(app)
+          .register("foo", lc => "bar")
+          .register("boo", lc => "baz")(...handlerArgs);
+
+        expect(app).toBeCalledWith(
+          expect.any(Object),
+          expect.objectContaining({
+            foo: "bar",
+            boo: "baz"
+          })
+        );
+      });
+
       it("should throw an error when the required dependency is not available", async () => {
         const handler = laconia((event, { fooo }) => {}).register(lc => ({
           foo: "bar"
@@ -88,9 +103,33 @@ describe("laconia", () => {
         );
       });
 
+      it("should be able to add a single async instance by calling 'register'", async () => {
+        const app = jest.fn();
+        await laconia(app).register("foo", async lc => "bar")(...handlerArgs);
+
+        expect(app).toBeCalledWith(
+          expect.any(Object),
+          expect.objectContaining({
+            foo: "bar"
+          })
+        );
+      });
+
       it("should cache factory by default", async () => {
         const factory = jest.fn().mockImplementation(() => ({}));
         const handler = await laconia(jest.fn()).register(factory);
+        await handler(...handlerArgs);
+        await handler(...handlerArgs);
+
+        expect(factory).toHaveBeenCalledTimes(1);
+      });
+
+      it("should cache a single factory by default", async () => {
+        const factory = jest.fn().mockImplementation(() => ({}));
+        const handler = await laconia(jest.fn()).register(
+          "someFactory",
+          factory
+        );
         await handler(...handlerArgs);
         await handler(...handlerArgs);
 
@@ -110,10 +149,35 @@ describe("laconia", () => {
         expect(factory).toHaveBeenCalledTimes(2);
       });
 
+      it("should be able to turn off caching for a single factory", async () => {
+        const factory = jest.fn().mockImplementation(() => ({}));
+        const handler = await laconia(jest.fn()).register(
+          "someFactory",
+          factory,
+          {
+            cache: {
+              enabled: false
+            }
+          }
+        );
+        await handler(...handlerArgs);
+        await handler(...handlerArgs);
+
+        expect(factory).toHaveBeenCalledTimes(2);
+      });
+
       it("should throw an error when the factory is not a function", async () => {
         expect(() => laconia(jest.fn()).register({ foo: "bar" })).toThrow(
           new TypeError(
             'register() expects to be passed a function, you passed: {"foo":"bar"}'
+          )
+        );
+      });
+
+      it("should throw an error when a single factory is not a function", async () => {
+        expect(() => laconia(jest.fn()).register("foo", "bar")).toThrow(
+          new TypeError(
+            'register() expects to be passed a function, you passed: "bar"'
           )
         );
       });

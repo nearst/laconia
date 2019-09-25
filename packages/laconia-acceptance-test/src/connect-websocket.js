@@ -11,8 +11,7 @@ const adapter = app => async (event, laconiaContext) => {
   return res("success", 200);
 };
 
-exports.handler = laconia(adapter(app)).register(() => ({
-  webSocketServer: new DynamoDbWebSocketServer(
-    process.env.CONNECTION_TABLE_NAME
-  )
-}));
+exports.handler = laconia(adapter(app)).register(
+  "webSocketServer",
+  () => new DynamoDbWebSocketServer(process.env.CONNECTION_TABLE_NAME)
+);

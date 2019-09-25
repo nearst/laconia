@@ -2,10 +2,6 @@ const laconia = require("@laconia/core");
 const s3 = require("@laconia/adapter").s3();
 const S3TotalOrderStorage = require("./S3TotalOrderStorage");
 
-const instances = ({ s3, env }) => ({
-  totalOrderStorage: new S3TotalOrderStorage(s3, env.TOTAL_ORDER_BUCKET_NAME)
-});
-
 const app = async (totalOrder, { totalOrderStorage }) => {
   await totalOrderStorage.put(
     "xml",
@@ -13,4 +9,7 @@ const app = async (totalOrder, { totalOrderStorage }) => {
   );
 };
 
-exports.handler = laconia(s3(app)).register(instances);
+exports.handler = laconia(s3(app)).register(
+  "totalOrderStorage",
+  ({ s3, env }) => new S3TotalOrderStorage(s3, env.TOTAL_ORDER_BUCKET_NAME)
+);

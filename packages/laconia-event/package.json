@@ -18,12 +18,14 @@
     "src"
   ],
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^1.5.0"
+    "@laconia/core": "^1.5.0",
+    "@types/aws-lambda": "~8.10.31"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"

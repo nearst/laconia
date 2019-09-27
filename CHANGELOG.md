@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.6.0]
+
+- `@laconia/event`
+  - #157 Add TypeScript declarations
+
 ## [1.5.0]
 
 ### Added
@@ -378,7 +383,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.5.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/ceilfors/laconia/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/ceilfors/laconia/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/ceilfors/laconia/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/ceilfors/laconia/compare/v1.2.1...v1.3.0

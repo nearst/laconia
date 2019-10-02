@@ -16,3 +16,14 @@ const app: Application = async (input: number, { someKey }: Dependencies) => {
 };
 
 laconia(api(app));
+
+apigateway({
+  responseStatusCode: 202,
+  errorMappings: {
+    "Validation.*": error => ({
+      body: { foo: error.message },
+      headers: { "Access-Control-Max-Age": 123 },
+      statusCode: 400
+    })
+  }
+});

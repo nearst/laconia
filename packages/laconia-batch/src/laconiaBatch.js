@@ -9,6 +9,10 @@ const forwardEvents = (from, eventNames, to, laconiaContext) => {
   );
 };
 
+const isBatchProcessingNotStarted = cursor => {
+  return cursor === undefined;
+};
+
 module.exports = (
   reader,
   { timeNeededToRecurseInMillis = 5000, itemsPerSecond } = {}
@@ -31,7 +35,9 @@ module.exports = (
       laconiaContext
     );
 
-    handler.emit("start", laconiaContext);
+    if (isBatchProcessingNotStarted(event.cursor)) {
+      handler.emit("start", laconiaContext);
+    }
     return batchProcessor.start(event.cursor);
   });
   return Object.assign(handler, EventEmitter.prototype);

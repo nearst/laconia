@@ -24,6 +24,19 @@ apigateway({
       body: { foo: error.message },
       headers: { "Access-Control-Max-Age": 123 },
       statusCode: 400
-    })
+    }),
+    ".*Error": () => ({ statusCode: 500 })
   }
+});
+
+const errorMappings = new Map();
+errorMappings.set("Validation.*", () => ({ statusCode: 400 }));
+errorMappings.set(".*Error", () => ({ "Access-Control-Max-Age": 123 }));
+
+apigateway({ errorMappings });
+apigateway({
+  errorMappings: new Map([
+    ["Validation.*", () => ({ statusCode: 400 })],
+    [".*Error", () => ({ statusCode: 500 })]
+  ])
 });

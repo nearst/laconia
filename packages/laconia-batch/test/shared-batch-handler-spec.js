@@ -133,10 +133,12 @@ exports.sharedBehaviour = batchHandler => {
         context.getRemainingTimeInMillis = () => 5000;
         const handler = batchHandler()
           .register(() => ({ $lambda: awsLambda }))
+          .on("start", startListener)
           .on("item", itemListener)
           .on("end", () => {
             try {
               expect(invokeMock).toHaveBeenCalledTimes(2);
+              expect(startListener).toHaveBeenCalledTimes(1);
               expect(itemListener).toHaveBeenCalledTimes(3);
               expect(itemListener).toHaveBeenCalledWith(
                 expect.any(LaconiaContext),

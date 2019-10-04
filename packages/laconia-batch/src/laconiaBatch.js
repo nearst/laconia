@@ -9,9 +9,7 @@ const forwardEvents = (from, eventNames, to, laconiaContext) => {
   );
 };
 
-const isBatchProcessingNotStarted = cursor => {
-  return cursor === undefined;
-};
+const isBatchProcessingNotStarted = cursor => !cursor;
 
 module.exports = (
   reader,

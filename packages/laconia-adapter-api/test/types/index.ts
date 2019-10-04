@@ -40,3 +40,10 @@ apigateway({
     [".*Error", () => ({ statusCode: 500 })]
   ])
 });
+
+apigateway({
+  inputType: "body",
+  responseAdditionalHeaders: {
+    "Access-Control-Allow-Origin": "foo"
+  }
+});

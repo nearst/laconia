@@ -32,9 +32,10 @@ declare interface ErrorMappingsMap extends Map<string, ErrorResponse> {}
 
 declare namespace apigateway {
   interface AdapterFactoryOptions {
-    inputType?: "params";
+    inputType?: "params" | "body";
     responseStatusCode?: number;
     errorMappings?: ErrorMappings | Map<string, ErrorMapping>;
+    responseAdditionalHeaders?: eventApiGateway.ApiGatewayOutputHeaders;
   }
 
   function apigateway(options?: AdapterFactoryOptions): AdapterFactory<any>;

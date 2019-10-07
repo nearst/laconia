@@ -1,18 +1,5 @@
-import { LaconiaContext } from "@laconia/core";
+import { AdapterFactory } from "@laconia/core";
 import { apigateway as eventApiGateway } from "@laconia/event";
-
-// TODO: This is copy pasted by @laconia/adapter, move to @laconia/core?
-declare interface Adaptee<Input, Output> {
-  (input: Input, laconiaContext: any): Output;
-}
-
-declare interface Adapter<Output> {
-  (event: any, laconiaContext: LaconiaContext): Output;
-}
-
-declare interface AdapterFactory<Input> {
-  <Output>(app: Adaptee<Input, Output>): Adapter<Output>;
-}
 
 declare interface ErrorResponse {
   body?: any;

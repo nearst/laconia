@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.7.0]
+
+- `@laconia/adapter-api`
+  - #156 Add TypeScript declarations
+- `@laconia/batch`
+  - #130 Start event is now only fired once when batch is starting
+    ([@sakthivel-tw](https://github.com/sakthivel-tw))
+
 ## [1.6.0]
 
 - `@laconia/event`
@@ -383,7 +391,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.6.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/ceilfors/laconia/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/ceilfors/laconia/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/ceilfors/laconia/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/ceilfors/laconia/compare/v1.3.0...v1.4.0

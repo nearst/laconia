@@ -48,7 +48,7 @@ declare namespace event {
     }
 
     interface ApiGatewayOutputHeaders {
-      [key: string]: string;
+      [key: string]: string | number;
     }
 
     interface ApiGatewayInputParams {

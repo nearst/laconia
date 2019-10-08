@@ -1,22 +1,24 @@
 import { Handler, Context } from "aws-lambda";
 
 declare namespace laconia {
-  type FactoryCacheOptions = {
+  interface FactoryCacheOptions {
     enabled?: boolean;
     maxAge?: number;
-  };
+  }
 
-  type FactoryOptions = { cache?: FactoryCacheOptions };
+  interface FactoryOptions {
+    cache?: FactoryCacheOptions;
+  }
 
-  type LaconiaContext = {
+  interface LaconiaContext {
     [key: string]: any;
     event?: any;
     context?: Context;
-  };
+  }
 
-  type LaconiaFactory<Dependencies = any> = (
-    laconiaContext: LaconiaContext
-  ) => Promise<Dependencies> | Dependencies;
+  interface LaconiaFactory<Dependencies = any> {
+    (laconiaContext: LaconiaContext): Promise<Dependencies> | Dependencies;
+  }
 
   interface LaconiaHandler extends Handler {
     register(
@@ -28,6 +30,18 @@ declare namespace laconia {
       factory: LaconiaFactory,
       options?: FactoryOptions
     ): LaconiaHandler;
+  }
+
+  interface Adaptee<Input, Output> {
+    (input: Input, laconiaContext: any): Output;
+  }
+
+  interface Adapter<Output> {
+    (event: any, laconiaContext: laconia.LaconiaContext): Output;
+  }
+
+  interface AdapterFactory<Input> {
+    <Output>(app: Adaptee<Input, Output>): Adapter<Output>;
   }
 }
 

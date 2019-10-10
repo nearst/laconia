@@ -1,3 +1,4 @@
+// @ts-check
 const laconia = require("@laconia/core");
 const kinesis = require("@laconia/adapter").kinesis();
 const AWS = require("aws-sdk");

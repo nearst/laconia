@@ -1,3 +1,4 @@
+// @ts-check
 const laconia = require("@laconia/core");
 const s3 = require("@laconia/adapter").s3();
 const S3TotalOrderStorage = require("./S3TotalOrderStorage");

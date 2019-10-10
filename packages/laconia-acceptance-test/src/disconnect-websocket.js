@@ -1,3 +1,4 @@
+// @ts-check
 const laconia = require("@laconia/core");
 const { res } = require("@laconia/event").apigateway;
 const DynamoDbWebSocketServer = require("./DynamoDbWebSocketServer");

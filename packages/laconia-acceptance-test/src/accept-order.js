@@ -1,3 +1,4 @@
+// @ts-check
 const laconia = require("@laconia/core");
 const { req, res } = require("@laconia/event").apigateway;
 const KinesisOrderStream = require("./KinesisOrderStream");

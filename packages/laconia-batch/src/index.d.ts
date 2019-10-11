@@ -55,15 +55,6 @@ interface LaconiaBatchHandler extends LaconiaHandler {
   ): LaconiaBatchHandler;
   on(eventName: "item", eventListener: ItemEventListener): LaconiaBatchHandler;
   on(eventName: "stop", eventListener: StopEventListener): LaconiaBatchHandler;
-  register(
-    factory: LaconiaFactory | LaconiaFactory[],
-    options?: FactoryOptions
-  ): LaconiaBatchHandler;
-  register(
-    name: string,
-    factory: LaconiaFactory,
-    options?: FactoryOptions
-  ): LaconiaBatchHandler;
 }
 
 declare function laconiaBatch(

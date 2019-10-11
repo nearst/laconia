@@ -20,16 +20,21 @@ declare namespace laconia {
     (laconiaContext: LaconiaContext): Promise<Dependencies> | Dependencies;
   }
 
+  interface PostProcessor {
+    (laconiaContext: LaconiaContext): void;
+  }
+
   interface LaconiaHandler extends Handler {
     register(
       factory: LaconiaFactory | LaconiaFactory[],
       options?: FactoryOptions
-    ): LaconiaHandler;
+    ): this;
     register(
       name: string,
       factory: LaconiaFactory,
       options?: FactoryOptions
-    ): LaconiaHandler;
+    ): this;
+    postProcessor(postProcessor: PostProcessor): this;
   }
 
   interface Adaptee<Input, Output> {

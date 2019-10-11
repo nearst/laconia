@@ -1,3 +1,4 @@
+// @ts-check
 const invoker = require("@laconia/invoker");
 const xray = require("@laconia/xray");
 const laconiaBatch = require("@laconia/batch");

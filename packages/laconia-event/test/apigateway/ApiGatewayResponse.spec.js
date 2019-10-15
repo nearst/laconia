@@ -1,3 +1,4 @@
+const { Readable } = require("stream");
 const ApiGatewayResponse = require("../../src/apigateway/ApiGatewayResponse");
 const jestResponseMatchers = require("./jestResponseMatchers");
 
@@ -81,6 +82,76 @@ describe("ApiGatewayResponse", () => {
     it("should set isBase64Encoded to false", async () => {
       const response = await ApiGatewayResponse.create(output);
       expect(response).toBeBase64Encoded(false);
+    });
+  });
+
+  describe("when converting an array", () => {
+    const output = ["foo", "bar"];
+
+    it("should set body to the object's JSON string", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainBody('["foo","bar"]');
+    });
+
+    it("should set Content-Type header to application/json", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainHeader(
+        "Content-Type",
+        "application/json; charset=utf-8"
+      );
+    });
+
+    it("should set isBase64Encoded to false", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toBeBase64Encoded(false);
+    });
+  });
+
+  describe("when convertin a Buffer", () => {
+    const output = Buffer.from("foo Bar");
+
+    it("should set body to the object's Base64 string", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainBody("Zm9vIEJhcg==");
+    });
+
+    it("should set Content-Type header to application/octet-stream", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainHeader(
+        "Content-Type",
+        "application/octet-stream"
+      );
+    });
+
+    it("should set isBase64Encoded to true", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toBeBase64Encoded(true);
+    });
+  });
+
+  describe("when convertin a Stream", () => {
+    const buffer = Buffer.from("foo Bar");
+    const output = new Readable();
+    // output._read = () => {};
+    output.push(buffer);
+    output.push(null);
+
+    it("should set body to the object's Base64 string", async () => {
+      const { body } = await ApiGatewayResponse.create(output);
+      expect({ body: await body }).toContainBody("Zm9vIEJhcg==");
+    });
+
+    it("should set Content-Type header to application/octet-stream", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainHeader(
+        "Content-Type",
+        "application/octet-stream"
+      );
+    });
+
+    it("should set isBase64Encoded to true", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toBeBase64Encoded(true);
     });
   });
 });

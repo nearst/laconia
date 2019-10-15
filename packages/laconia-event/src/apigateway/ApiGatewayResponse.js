@@ -1,15 +1,13 @@
-const getContentType = require("./getContentType");
+const getResponseProps = require("./getResponseProps");
 
 module.exports = class ApiGatewayResponse {
   static create(output, statusCode = 200, headers = {}) {
-    const body = typeof output !== "string" ? JSON.stringify(output) : output;
-    const contentType = getContentType(output);
-
-    const response = new ApiGatewayResponse();
-    response.body = body;
-    response.statusCode = statusCode;
-    response.headers = Object.assign({ "Content-Type": contentType }, headers);
-    response.isBase64Encoded = false;
-    return response;
+    const response = getResponseProps(output);
+    return Object.assign(new ApiGatewayResponse(), {
+      statusCode,
+      body: response.getBody(),
+      isBase64Encoded: response.isBase64Encoded,
+      headers: Object.assign({ "Content-Type": response.contentType }, headers)
+    });
   }
 };

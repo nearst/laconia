@@ -1,5 +1,9 @@
 import { Handler } from "aws-lambda";
 
-declare function middlewareServerlessPluginWarmup(next: Handler): Handler;
+declare interface middlewareServerlessPluginWarmup {
+  (next: Handler): Handler;
+}
 
-export = middlewareServerlessPluginWarmup;
+declare function createLambdaWarmerMiddleware(): middlewareServerlessPluginWarmup;
+
+export = createLambdaWarmerMiddleware;

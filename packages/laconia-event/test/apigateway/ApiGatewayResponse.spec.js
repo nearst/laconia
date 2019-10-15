@@ -1,4 +1,3 @@
-const { Readable } = require("stream");
 const ApiGatewayResponse = require("../../src/apigateway/ApiGatewayResponse");
 const jestResponseMatchers = require("./jestResponseMatchers");
 

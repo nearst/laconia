@@ -1,4 +1,4 @@
-import { apigateway } from "../../src/index";
+import { apigateway, webSocket } from "../../src/index";
 import laconia from "@laconia/core";
 
 interface Dependencies {
@@ -43,7 +43,11 @@ apigateway({
 
 apigateway({
   inputType: "body",
+  includeInputHeaders: true,
   responseAdditionalHeaders: {
     "Access-Control-Allow-Origin": "foo"
   }
 });
+
+const ws = webSocket();
+laconia(ws(app));

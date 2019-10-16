@@ -1,3 +1,4 @@
+// @ts-check
 const lambdaWarmer = require("@laconia/middleware-lambda-warmer")();
 const laconia = require("@laconia/core");
 const adapterApi = require("@laconia/adapter-api");

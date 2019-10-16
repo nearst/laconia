@@ -1,3 +1,4 @@
+// @ts-check
 const laconia = require("@laconia/core");
 const adapterApi = require("@laconia/adapter-api");
 const WebSocketClient = require("./WebSocketClient");

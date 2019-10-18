@@ -3,5 +3,6 @@ import lambdaWarmer from "../../src/index";
 
 const app = () => {};
 const handler = laconia(app);
+const warmer = lambdaWarmer();
 
-exports.handler = lambdaWarmer(lambdaWarmer(handler));
+exports.handler = warmer(warmer(handler));

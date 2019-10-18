@@ -21,11 +21,13 @@ declare namespace apigateway {
   interface AdapterFactoryOptions {
     inputType?: "params" | "body";
     responseStatusCode?: number;
+    includeInputHeaders?: boolean;
     errorMappings?: ErrorMappings | Map<string, ErrorMapping>;
     responseAdditionalHeaders?: eventApiGateway.ApiGatewayOutputHeaders;
   }
 
   function apigateway(options?: AdapterFactoryOptions): AdapterFactory<any>;
+  function webSocket(): AdapterFactory<any>;
 }
 
 export = apigateway;

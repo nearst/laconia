@@ -1,3 +1,4 @@
+// @ts-check
 const laconiaBatch = require("@laconia/batch");
 const DynamoDbOrderRepository = require("./DynamoDbOrderRepository");
 const S3TotalOrderStorage = require("./S3TotalOrderStorage");

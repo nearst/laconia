@@ -49,21 +49,9 @@ type StopEventListener = (
 ) => void;
 
 interface LaconiaBatchHandler extends LaconiaHandler {
-  on(
-    eventName: "start" | "end",
-    eventListener: BatchEventListener
-  ): LaconiaBatchHandler;
-  on(eventName: "item", eventListener: ItemEventListener): LaconiaBatchHandler;
-  on(eventName: "stop", eventListener: StopEventListener): LaconiaBatchHandler;
-  register(
-    factory: LaconiaFactory | LaconiaFactory[],
-    options?: FactoryOptions
-  ): LaconiaBatchHandler;
-  register(
-    name: string,
-    factory: LaconiaFactory,
-    options?: FactoryOptions
-  ): LaconiaBatchHandler;
+  on(eventName: "start" | "end", eventListener: BatchEventListener): this;
+  on(eventName: "item", eventListener: ItemEventListener): this;
+  on(eventName: "stop", eventListener: StopEventListener): this;
 }
 
 declare function laconiaBatch(

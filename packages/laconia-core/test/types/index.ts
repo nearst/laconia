@@ -42,4 +42,7 @@ laconia(app)
     }
   });
 
-laconia(adapter(app)).register(() => ({ someKey: "value" }));
+laconia(adapter(app))
+  .register(() => ({ someKey: "value" }))
+  .postProcessor(instances => Object.values(instances).forEach(console.log))
+  .register(() => ({ someKey: "value" }));

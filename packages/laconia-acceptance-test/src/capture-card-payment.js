@@ -1,3 +1,4 @@
+// @ts-check
 const laconia = require("@laconia/core");
 const { spy } = require("@laconia/test");
 

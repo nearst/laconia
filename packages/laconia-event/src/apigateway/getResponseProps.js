@@ -10,24 +10,6 @@ const types = [
     })
   ],
   [
-    Stream,
-    body => ({
-      isBase64Encoded: true,
-      contentType: "application/octet-stream",
-      getBody: () =>
-        new Promise((resolve, reject) => {
-          const buffers = [];
-          body.on("error", reject);
-          body.on("data", data => buffers.push(Buffer.from(data)));
-          body.on("end", () =>
-            resolve(
-              Buffer.concat(buffers).toString(body.readableEncoding || "base64")
-            )
-          );
-        })
-    })
-  ],
-  [
     Number,
     body => ({
       isBase64Encoded: false,

@@ -209,6 +209,12 @@ functions:
           route: $disconnect
     environment:
       CONNECTION_TABLE_NAME: ${self:custom.connectionDynamoDbTableName}
+  download-image:
+    handler: src/download-image.handler
+    events:
+      - http:
+          path: image
+          method: get
 
 resources:
   Resources:

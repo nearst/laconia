@@ -34,6 +34,6 @@ const types = [
 ];
 
 module.exports = body => {
-  const [adapter] = types.find(([type]) => Object(body) instanceof type);
+  const [, adapter] = types.find(([type]) => Object(body) instanceof type);
   return adapter(body);
 };

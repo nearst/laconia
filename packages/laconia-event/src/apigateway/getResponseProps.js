@@ -1,5 +1,3 @@
-const { Stream } = require("stream");
-
 const types = [
   [
     Buffer,
@@ -36,7 +34,6 @@ const types = [
 ];
 
 module.exports = body => {
-  const typeAndResolver = types.find(([type]) => Object(body) instanceof type);
-  const mapper = typeAndResolver[1];
-  return mapper(body);
+  const [adapter] = types.find(([type]) => Object(body) instanceof type);
+  return adapter(body);
 };

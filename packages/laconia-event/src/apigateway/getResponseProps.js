@@ -10,7 +10,6 @@ const types = [
   [
     Number,
     body => ({
-      isBase64Encoded: false,
       contentType: "text/plain",
       getBody: () => JSON.stringify(body)
     })
@@ -18,7 +17,6 @@ const types = [
   [
     String,
     body => ({
-      isBase64Encoded: false,
       contentType: "text/plain",
       getBody: () => body
     })
@@ -26,7 +24,6 @@ const types = [
   [
     Object,
     body => ({
-      isBase64Encoded: false,
       contentType: "application/json; charset=utf-8",
       getBody: () => JSON.stringify(body)
     })
@@ -34,6 +31,7 @@ const types = [
 ];
 
 module.exports = body => {
-  const [, adapter] = types.find(([type]) => Object(body) instanceof type);
+  const bodyAsObject = Object(body);
+  const [, adapter] = types.find(([type]) => bodyAsObject instanceof type);
   return adapter(body);
 };

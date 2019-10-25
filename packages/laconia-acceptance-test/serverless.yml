@@ -16,6 +16,9 @@ provider:
   stage: ${env:NODE_VERSION, 'node8' }
   region: ${env:AWS_REGION, 'eu-west-1'}
   tracing: true
+  apiGateway:
+    binaryMediaTypes:
+      - "*/*"
   iamRoleStatements:
     - Effect: "Allow"
       Action:

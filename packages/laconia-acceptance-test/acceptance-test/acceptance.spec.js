@@ -8,6 +8,7 @@ const WebSocket = require("ws");
 
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
 const SERVERLESS_STAGE = process.env.NODE_VERSION;
+const AWS_REGION = process.env.AWS_REGION || "eu-west-1";
 const prefix = `${SERVERLESS_SERVICE_NAME}-${SERVERLESS_STAGE}`;
 const name = name => `${prefix}-${name}`;
 const AWS = require("aws-sdk");
@@ -66,7 +67,7 @@ const getOrderUrl = async () => {
   if (!restApi) {
     throw new Error(`${restApiName} could not be found!`);
   }
-  return `https://${restApi.id}.execute-api.eu-west-1.amazonaws.com/${SERVERLESS_STAGE}/order`;
+  return `https://${restApi.id}.execute-api.${AWS_REGION}.amazonaws.com/${SERVERLESS_STAGE}/order`;
 };
 
 const getWebSocketUrl = async () => {

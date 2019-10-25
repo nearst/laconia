@@ -6,7 +6,7 @@ module.exports = class ApiGatewayResponse {
     return Object.assign(new ApiGatewayResponse(), {
       statusCode,
       body: getBody(),
-      isBase64Encoded,
+      isBase64Encoded: Boolean(isBase64Encoded),
       headers: Object.assign({ "Content-Type": contentType }, headers)
     });
   }

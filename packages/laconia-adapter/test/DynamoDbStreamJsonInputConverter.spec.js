@@ -1,5 +1,5 @@
 const merge = require("lodash/merge");
-const DynamoDbStreamJsonInputConvertor = require("../src/DynamoDbStreamJsonInputConvertor");
+const DynamoDbStreamJsonInputConverter = require("../src/DynamoDbStreamJsonInputConverter");
 
 const dynamodbTemplate = {
   eventID: "1",
@@ -38,9 +38,9 @@ const createDynamoDbStreamEvent = records => {
   });
 };
 
-describe("DynamoDbStreamJsonInputConvertor", () => {
+describe("DynamoDbStreamJsonInputConverter", () => {
   it("Should convert one stream record event", async () => {
-    const inputConverter = new DynamoDbStreamJsonInputConvertor();
+    const inputConverter = new DynamoDbStreamJsonInputConverter();
     const newImage = {
       Number: { N: "123" },
       Null: { NULL: true },
@@ -60,7 +60,7 @@ describe("DynamoDbStreamJsonInputConvertor", () => {
   });
 
   it("Should convert multiple stream record event", async () => {
-    const inputConverter = new DynamoDbStreamJsonInputConvertor();
+    const inputConverter = new DynamoDbStreamJsonInputConverter();
     const images = [
       {
         Number: { N: "123" },

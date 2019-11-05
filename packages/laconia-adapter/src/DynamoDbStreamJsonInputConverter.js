@@ -1,6 +1,6 @@
 const { dynamodb } = require("@laconia/event");
 
-module.exports = class DynamoDbStreamJsonInputConvertor {
+module.exports = class DynamoDbStreamJsonInputConverter {
   convert(event) {
     return dynamodb(event).records.map(r => r.jsonNewImage);
   }

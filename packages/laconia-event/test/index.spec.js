@@ -1,7 +1,7 @@
 const event = require("../src/index");
 
 describe("index", () => {
-  const eventParsers = ["s3", "kinesis", "sns", "sqs"];
+  const eventParsers = ["s3", "kinesis", "sns", "sqs", "dynamodb"];
 
   eventParsers.forEach(eventParser => {
     describe(`#${eventParser}`, () => {

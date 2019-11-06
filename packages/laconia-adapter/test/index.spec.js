@@ -1,7 +1,7 @@
 const event = require("../src/index");
 
 describe("@laconia/adapter", () => {
-  const eventAdapters = ["s3", "kinesis", "sns", "sqs"];
+  const eventAdapters = ["s3", "kinesis", "sns", "sqs", "dynamodb"];
 
   eventAdapters.forEach(eventAdapter => {
     describe(`#${eventAdapter}`, () => {

@@ -6,13 +6,15 @@ const { sharedBehaviour } = require("../test/shared-batch-handler-spec");
 const dynamoDb = require("../src/dynamoDb");
 const laconiaBatch = require("../src/laconiaBatch");
 
+const AWS_REGION = process.env.AWS_REGION || "eu-west-1";
+
 AWSMock.setSDKInstance(AWS);
 AWS.config.credentials = new AWS.Credentials("fake", "fake", "fake");
 
 describe("dynamodb batch handler", () => {
   const dynamoLocalPort = 8000;
   const dynamoDbOptions = {
-    region: "eu-west-1",
+    region: AWS_REGION,
     endpoint: new AWS.Endpoint(`http://localhost:${dynamoLocalPort}`)
   };
   let itemListener, event, context, callback, documentClient;

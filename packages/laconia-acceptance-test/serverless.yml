@@ -16,6 +16,9 @@ provider:
   stage: ${env:NODE_VERSION, 'node8' }
   region: ${env:AWS_REGION, 'eu-west-1'}
   tracing: true
+  apiGateway:
+    binaryMediaTypes:
+      - "*/*"
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -209,6 +212,12 @@ functions:
           route: $disconnect
     environment:
       CONNECTION_TABLE_NAME: ${self:custom.connectionDynamoDbTableName}
+  download-image:
+    handler: src/download-image.handler
+    events:
+      - http:
+          path: image
+          method: get
 
 resources:
   Resources:

@@ -83,4 +83,48 @@ describe("ApiGatewayResponse", () => {
       expect(response).toBeBase64Encoded(false);
     });
   });
+
+  describe("when converting an array", () => {
+    const output = ["foo", "bar"];
+
+    it("should set body to the object's JSON string", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainBody('["foo","bar"]');
+    });
+
+    it("should set Content-Type header to application/json", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainHeader(
+        "Content-Type",
+        "application/json; charset=utf-8"
+      );
+    });
+
+    it("should set isBase64Encoded to false", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toBeBase64Encoded(false);
+    });
+  });
+
+  describe("when converting a Buffer", () => {
+    const output = Buffer.from("foo Bar");
+
+    it("should set body to the object's Base64 string", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainBody("Zm9vIEJhcg==");
+    });
+
+    it("should set Content-Type header to application/octet-stream", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toContainHeader(
+        "Content-Type",
+        "application/octet-stream"
+      );
+    });
+
+    it("should set isBase64Encoded to true", async () => {
+      const response = await ApiGatewayResponse.create(output);
+      expect(response).toBeBase64Encoded(true);
+    });
+  });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@laconia/xray",
-  "version": "1.6.0",
+  "version": "1.8.0",
   "description": "Enables X-Ray integration to Laconia",
   "keywords": [
     "aws",

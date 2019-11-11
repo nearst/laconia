@@ -8,7 +8,24 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.8.0]
+
+### Added
+
+- `@laconia/adapter-api`
+  - #141 Support binary response type
+    ([@hugosenari](https://github.com/hugosenari)
+- `@laconia/adapter`
+  - #152 Create an adapter for DynamoDB event trigger
+    ([@sakthivel-tw](https://github.com/sakthivel-tw))
+
+### Fixed
+
+- #269 Various fixes to multiple TypeScript declaration files
+
 ## [1.7.0]
+
+### Added
 
 - `@laconia/adapter-api`
   - #156 Add TypeScript declarations
@@ -17,6 +34,8 @@ and this project adheres to
     ([@sakthivel-tw](https://github.com/sakthivel-tw))
 
 ## [1.6.0]
+
+### Added
 
 - `@laconia/event`
   - #157 Add TypeScript declarations
@@ -391,7 +410,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.7.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/ceilfors/laconia/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/ceilfors/laconia/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/ceilfors/laconia/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/ceilfors/laconia/compare/v1.4.0...v1.5.0

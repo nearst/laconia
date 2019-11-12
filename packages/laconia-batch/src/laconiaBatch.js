@@ -24,7 +24,7 @@ module.exports = (
         context.getRemainingTimeInMillis() <= timeNeededToRecurseInMillis,
       { itemsPerSecond }
     ).on("stop", cursor => {
-      recurse(laconiaContext)({ cursor });
+      return recurse(laconiaContext)({ cursor });
     });
     forwardEvents(
       batchProcessor,

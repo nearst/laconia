@@ -15,13 +15,6 @@ module.exports = class BatchProcessor extends EventEmitter {
     this.readItem =
       itemsPerSecond === 0 ? readItem : rateLimit(readItem, itemsPerSecond);
     this.shouldStop = shouldStop;
-    this.running = Promise.resolve(false);
-  }
-
-  on(event, handler) {
-    super.on(event, async (...args) => {
-      this.running = Promise.all([this.running, handler(...args)]);
-    });
   }
 
   async start(cursor) {
@@ -36,13 +29,11 @@ module.exports = class BatchProcessor extends EventEmitter {
 
       if (finished) {
         this.emit("end");
-        await this.running;
         return;
       }
 
       if (this.shouldStop(cursor)) {
         this.emit("stop", cursor);
-        await this.running;
         return;
       }
 

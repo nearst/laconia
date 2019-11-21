@@ -41,7 +41,7 @@
     "aws-sdk-mock": "^4.3.0",
     "coveralls": "^3.0.2",
     "delay": "^4.1.0",
-    "dynamodb-local": "0.0.30",
+    "dynamodb-local": "0.0.31",
     "eslint": "^6.0.1",
     "eslint-config-prettier": "^6.0.0",
     "eslint-config-standard": "^14.0.1",

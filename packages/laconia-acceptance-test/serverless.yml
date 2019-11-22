@@ -221,6 +221,14 @@ functions:
 
 resources:
   Resources:
+    ApiKeySSM:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Description: place-order api key
+        Name: /${self:custom.fullName}/apikey
+        Tier: Standard
+        Type: String
+        Value: supersecretkey
     S3Tracker:
       Type: AWS::S3::Bucket
       Properties:

@@ -144,7 +144,10 @@ describe("S3Spier", () => {
 
   describe("#clear", () => {
     sharedListObjectsTest(spier => spier.clear());
-    sharedMultiOperationTest(spier => spier.clear(), () => s3.deleteObject);
+    sharedMultiOperationTest(
+      spier => spier.clear(),
+      () => s3.deleteObject
+    );
   });
 
   describe("#getInvocations", () => {

@@ -66,7 +66,10 @@ describe("laconia", () => {
         const app = jest.fn();
         await laconia(app)
           .register("foo", lc => "bar")
-          .register("boo", lc => "baz")(...handlerArgs);
+          .register(
+            "boo",
+            lc => "baz"
+          )(...handlerArgs);
 
         expect(app).toBeCalledWith(
           expect.any(Object),

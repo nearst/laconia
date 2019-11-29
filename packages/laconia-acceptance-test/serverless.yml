@@ -68,6 +68,7 @@ custom:
   remover:
     buckets:
       - ${self:custom.trackerBucketName}
+      - ${self:custom.totalOrderBucketName}
   s3Sync:
     - bucketName: ${self:custom.restaurantBucketName}
       localDir: src/resources

@@ -36,6 +36,17 @@ const deleteAllItems = async (tableName, keyName, keyValue) => {
   }
 };
 
+const storeApiKey = () => {
+  return new AWS.SSM()
+    .putParameter({
+      Name: `/${prefix}/apikey`,
+      Type: "SecureString",
+      Value: "supersecretkey",
+      Overwrite: true
+    })
+    .promise();
+};
+
 const createOrder = (restaurantId, total) => ({
   restaurantId,
   customer: {
@@ -157,6 +168,7 @@ describe("order flow", () => {
     );
   });
 
+  beforeAll(() => storeApiKey());
   beforeAll(async () => {
     orderUrl = await getOrderUrl();
   });

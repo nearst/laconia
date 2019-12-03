@@ -12,8 +12,8 @@ package:
 
 provider:
   name: aws
-  runtime: ${env:NODE_RUNTIME, 'nodejs8.10' }
-  stage: ${env:NODE_VERSION, 'node8' }
+  runtime: ${env:NODE_RUNTIME, 'nodejs10.x' }
+  stage: ${env:NODE_VERSION, 'node10' }
   region: ${env:AWS_REGION, 'eu-west-1'}
   tracing: true
   apiGateway:

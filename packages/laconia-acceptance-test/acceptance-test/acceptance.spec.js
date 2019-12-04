@@ -3,14 +3,16 @@ const uuidv4 = require("uuid/v4");
 const Joi = frisby.Joi;
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
+const { getAccountId } = require("../src/sts");
 const laconiaTest = require("@laconia/test");
 const WebSocket = require("ws");
 
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
-const SERVERLESS_STAGE = process.env.NODE_VERSION;
+const SERVERLESS_STAGE = process.env.NODE_VERSION || "node10";
 const AWS_REGION = process.env.AWS_REGION || "eu-west-1";
 const prefix = `${SERVERLESS_SERVICE_NAME}-${SERVERLESS_STAGE}`;
 const name = name => `${prefix}-${name}`;
+const bucketName = (name, accountId) => `${prefix}-${accountId}-${name}`;
 const AWS = require("aws-sdk");
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -142,18 +144,26 @@ describe("order flow", () => {
   let orderUrl;
   let orderMessagePromise;
   let orderMessenger;
+  let accountId;
+  let captureCardPayment;
+  let sendEmail;
 
-  const captureCardPayment = laconiaTest(name("capture-card-payment"), {
-    spy: {
-      bucketName: name("tracker")
-    }
+  beforeAll(storeApiKey);
+  beforeAll(async () => {
+    accountId = await getAccountId();
+    captureCardPayment = laconiaTest(name("capture-card-payment"), {
+      spy: {
+        bucketName: bucketName("tracker", accountId)
+      }
+    });
+    captureCardPayment.spy.clear();
+    sendEmail = laconiaTest(name("send-email"), {
+      spy: {
+        bucketName: bucketName("tracker", accountId)
+      }
+    });
+    sendEmail.spy.clear();
   });
-  const sendEmail = laconiaTest(name("send-email"), {
-    spy: {
-      bucketName: name("tracker")
-    }
-  });
-
   beforeAll(async () => {
     await deleteAllItems(name("order"), "orderId", item => item.orderId);
     await deleteAllItems(
@@ -164,16 +174,12 @@ describe("order flow", () => {
     orderRepository = new DynamoDbOrderRepository(name("order"));
     totalOrderStorage = new S3TotalOrderStorage(
       new AWS.S3(),
-      name("total-order")
+      bucketName("total-order", accountId)
     );
   });
-
-  beforeAll(() => storeApiKey());
   beforeAll(async () => {
     orderUrl = await getOrderUrl();
   });
-  beforeAll(() => captureCardPayment.spy.clear());
-  beforeAll(() => sendEmail.spy.clear());
   beforeAll(() => totalOrderStorage.clearAll());
 
   beforeAll(async () => {

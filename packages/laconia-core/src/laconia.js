@@ -26,7 +26,7 @@ module.exports = app => {
   const laconia = async (event, context, callback) => {
     laconiaContext.registerInstances({ event, context });
     await laconiaContext.refresh();
-    if (!callback) {
+    if (!callback || process.env.LACONIA_NO_CALLBACK === "true") {
       return app(event, laconiaContext);
     }
     try {

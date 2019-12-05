@@ -7,7 +7,7 @@ const laconiaTest = require("@laconia/test");
 const WebSocket = require("ws");
 
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
-const SERVERLESS_STAGE = process.env.NODE_VERSION;
+const SERVERLESS_STAGE = `node${process.env.NODE_VERSION}`;
 const AWS_REGION = process.env.AWS_REGION || "eu-west-1";
 const prefix = `${SERVERLESS_SERVICE_NAME}-${SERVERLESS_STAGE}`;
 const name = name => `${prefix}-${name}`;

@@ -24,11 +24,11 @@
   },
   "scripts": {
     "test": "npm run test:10",
-    "test:10": "AWS_REGION=eu-west-1 NODE_VERSION=node10 jest /acceptance-test",
+    "test:10": "AWS_REGION=eu-west-1 NODE_VERSION=10 jest /acceptance-test",
     "deploy": "npm run deploy:10",
-    "deploy:10": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs10.x NODE_VERSION=node10 sls deploy",
+    "deploy:10": "AWS_REGION=eu-west-1 NODE_VERSION=10 sls deploy",
     "remove": "npm run remove:10",
-    "remove:10": "AWS_REGION=eu-west-1 NODE_RUNTIME=nodejs10.x NODE_VERSION=node10 sls remove"
+    "remove:10": "AWS_REGION=eu-west-1 NODE_VERSION=10 sls remove"
   },
   "dependencies": {
     "@laconia/adapter": "^1.8.0",

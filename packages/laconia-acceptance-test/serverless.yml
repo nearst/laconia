@@ -56,11 +56,12 @@ provider:
     LACONIA_TEST_SPY_BUCKET: ${self:custom.trackerBucketName}
 
 custom:
+  accountId: ${file(./src/sts.js):getAccountId}
   fullName: ${self:service}-${self:provider.stage}
-  trackerBucketName: ${self:custom.fullName}-tracker
-  totalOrderBucketName: ${self:custom.fullName}-total-order
+  trackerBucketName: ${self:custom.fullName}-${self:custom.accountId}-tracker
+  totalOrderBucketName: ${self:custom.fullName}-${self:custom.accountId}-total-order
   userEmailQueueName: ${self:custom.fullName}-user-email-queue
-  restaurantBucketName: ${self:custom.fullName}-restaurant
+  restaurantBucketName: ${self:custom.fullName}-${self:custom.accountId}-restaurant
   orderEventsStreamName: ${self:custom.fullName}-order-events
   restaurantNotificationTopicName: ${self:custom.fullName}-restaurant-notification
   orderDynamoDbBatchTableName: ${self:custom.fullName}-order

@@ -35,7 +35,7 @@
   "devDependencies": {
     "@laconia/test-helper": "file:packages/laconia-test-helper",
     "@types/jest": "^24.0.11",
-    "@types/node": "~12.12.0",
+    "@types/node": "~13.1.0",
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.432.0",
     "aws-sdk-mock": "^4.3.0",

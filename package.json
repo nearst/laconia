@@ -38,7 +38,7 @@
     "@types/node": "~13.1.0",
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.432.0",
-    "aws-sdk-mock": "^4.3.0",
+    "aws-sdk-mock": "^5.0.0",
     "coveralls": "^3.0.2",
     "delay": "^4.1.0",
     "dynamodb-local": "0.0.31",

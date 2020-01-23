@@ -23,12 +23,9 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "scripts": {
-    "test": "npm run test:10",
-    "test:10": "AWS_REGION=eu-west-1 NODE_VERSION=10 jest /acceptance-test",
-    "deploy": "npm run deploy:10",
-    "deploy:10": "AWS_REGION=eu-west-1 NODE_VERSION=10 sls deploy",
-    "remove": "npm run remove:10",
-    "remove:10": "AWS_REGION=eu-west-1 NODE_VERSION=10 sls remove"
+    "test": "jest /acceptance-test",
+    "deploy": "sls deploy",
+    "remove": "sls remove"
   },
   "dependencies": {
     "@laconia/adapter": "^1.8.0",

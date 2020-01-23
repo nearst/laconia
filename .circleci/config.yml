@@ -52,7 +52,7 @@ jobs:
           fi' # COVERALLS_REPO_TOKEN does not run on fork
   build_node12:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:12-browsers
     working_directory: ~/repo
     steps:
       - build
@@ -95,7 +95,7 @@ jobs:
 
   integration_test_node12:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:12-browsers
     working_directory: ~/repo
     steps:
       - integration_test

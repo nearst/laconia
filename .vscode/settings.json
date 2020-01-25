@@ -2,7 +2,9 @@
   "files.autoSave": "onFocusChange",
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
-  "eslint.autoFixOnSave": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "prettier.proseWrap": "always"
+  "prettier.proseWrap": "always",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

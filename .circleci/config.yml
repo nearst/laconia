@@ -36,12 +36,6 @@ commands:
           key: v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
 
 jobs:
-  build_node8:
-    docker:
-      - image: circleci/node:8.10.0-browsers
-    working_directory: ~/repo
-    steps:
-      - build
   build_node10:
     docker:
       - image: circleci/node:10.16-browsers
@@ -71,13 +65,6 @@ jobs:
             - node_modules
           key: v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package.json" }}
 
-  integration_test_node8:
-    docker:
-      - image: circleci/node:8.10.0-browsers
-    working_directory: ~/repo
-    steps:
-      - integration_test
-
   integration_test_node10:
     docker:
       - image: circleci/node:10.16-browsers
@@ -88,15 +75,11 @@ jobs:
 workflows:
   pipeline:
     jobs:
-      - build_node8
       - build_node10
       - license_test:
           filters:
             branches:
               only: master
-      - integration_test_node8:
-          requires:
-            - build_node8
       - integration_test_node10:
           requires:
             - build_node10

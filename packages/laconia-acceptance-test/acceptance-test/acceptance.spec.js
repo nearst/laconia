@@ -1,22 +1,27 @@
+const AWS = require("aws-sdk");
+const WebSocket = require("ws");
 const frisby = require("frisby");
 const uuidv4 = require("uuid/v4");
-const Joi = frisby.Joi;
-const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
-const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
-const { getAccountId } = require("../src/sts");
 const laconiaTest = require("@laconia/test");
-const WebSocket = require("ws");
 
+const { getAccountId } = require("../src/sts");
+const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
+const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
+
+process.env.AWS_REGION = process.env.AWS_REGION || "eu-west-1";
+const { AWS_REGION, NODE_VERSION = "10" } = process.env;
+const SERVERLESS_STAGE = `node${NODE_VERSION}`;
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
-const SERVERLESS_STAGE = `node${process.env.NODE_VERSION}` || "node10";
-const AWS_REGION = process.env.AWS_REGION || "eu-west-1";
-const prefix = `${SERVERLESS_SERVICE_NAME}-${SERVERLESS_STAGE}`;
-const name = name => `${prefix}-${name}`;
-const bucketName = (name, accountId) => `${prefix}-${accountId}-${name}`;
-const AWS = require("aws-sdk");
+const PREFIX = `${SERVERLESS_SERVICE_NAME}-${SERVERLESS_STAGE}`;
+
+const name = name => `${PREFIX}-${name}`;
+const log = v => console.log(v) || v;
+const bucketName = (name, accountId) => log(`${PREFIX}-${accountId}-${name}`);
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 jest.setTimeout(10000);
+
+const Joi = frisby.Joi;
 
 frisby.globalSetup({
   request: {
@@ -41,7 +46,7 @@ const deleteAllItems = async (tableName, keyName, keyValue) => {
 const storeApiKey = () => {
   return new AWS.SSM()
     .putParameter({
-      Name: `/${prefix}/apikey`,
+      Name: `/${PREFIX}/apikey`,
       Type: "SecureString",
       Value: "supersecretkey",
       Overwrite: true
@@ -72,24 +77,24 @@ const placeOrder = async (url, order) => {
   return response.json;
 };
 
+const REST_API_NAME = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}`;
 const getOrderUrl = async () => {
   const apig = new AWS.APIGateway();
   const restApis = await apig.getRestApis().promise();
-  const restApiName = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}`;
-  const restApi = restApis.items.find(i => i.name === restApiName);
+  const restApi = restApis.items.find(i => i.name === REST_API_NAME);
   if (!restApi) {
-    throw new Error(`${restApiName} could not be found!`);
+    throw new Error(`${REST_API_NAME} could not be found!`);
   }
   return `https://${restApi.id}.execute-api.${AWS_REGION}.amazonaws.com/${SERVERLESS_STAGE}/order`;
 };
 
+const WS_API_NAME = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}-websockets`;
 const getWebSocketUrl = async () => {
   const apig = new AWS.ApiGatewayV2();
   const wsApis = await apig.getApis().promise();
-  const wsApiName = `${SERVERLESS_STAGE}-${SERVERLESS_SERVICE_NAME}-websockets`;
-  const wsApi = wsApis.Items.find(i => i.Name === wsApiName);
+  const wsApi = wsApis.Items.find(i => i.Name === WS_API_NAME);
   if (!wsApi) {
-    throw new Error(`${wsApiName} could not be found!`);
+    throw new Error(`${WS_API_NAME} could not be found!`);
   }
   return `${wsApi.ApiEndpoint}/${SERVERLESS_STAGE}`;
 };

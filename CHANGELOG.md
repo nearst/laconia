@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.9.0]
+
+### Fixed
+
+- `@laconia/core`
+  - #48 Add the configuration to suppress callback usage
+    ([@hugosenari](https://github.com/hugosenari)
+
 ## [1.8.0]
 
 ### Added
@@ -410,7 +418,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.8.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/ceilfors/laconia/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/ceilfors/laconia/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/ceilfors/laconia/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/ceilfors/laconia/compare/v1.5.0...v1.6.0

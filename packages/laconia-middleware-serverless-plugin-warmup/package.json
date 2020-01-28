@@ -1,6 +1,6 @@
 {
   "name": "@laconia/middleware-serverless-plugin-warmup",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Short circuit Lambda run when it's called by serverless-plugin-warmup",
   "keywords": [
     "aws",
@@ -27,7 +27,7 @@
     "@types/aws-lambda": "8.10.40"
   },
   "devDependencies": {
-    "@laconia/core": "^1.8.0"
+    "@laconia/core": "^1.9.0"
   },
   "engines": {
     "node": ">=8.10"

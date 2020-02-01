@@ -38,7 +38,7 @@
     "@commitlint/config-conventional": "^8.3.4",
     "@laconia/test-helper": "file:packages/laconia-test-helper",
     "@types/jest": "^25.1.0",
-    "@types/node": "~13.5.0",
+    "@types/node": "~13.7.0",
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.432.0",
     "aws-sdk-mock": "^5.0.0",

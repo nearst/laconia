@@ -48,5 +48,10 @@ describe("parseWebSocket", () => {
       const body = parseWebSocket(event);
       expect(body).toEqual("foobar");
     });
+
+    it("should return null as is", () => {
+      const body = parseWebSocket({});
+      expect(body).toEqual(undefined);
+    });
   });
 });

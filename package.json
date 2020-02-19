@@ -15,7 +15,7 @@
     "test:all": "npm run test && npm run test:integration && npm run test:acceptance",
     "test:jslint": "eslint ./ --ignore-path .gitignore",
     "test:types": "tsc -p tsconfig.json && tsc -p tsconfig-js.json",
-    "test:packagelint": "lerna exec npmPkgJsonLint -- --quiet -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json -i \\$LERNA_ROOT_PATH/.npmpackagejsonlintignore .",
+    "test:packagelint": "lerna exec npmPkgJsonLint -- --quiet -c \\$LERNA_ROOT_PATH/.npmpackagejsonlintrc.json .",
     "deploy-acceptance": "lerna exec --scope @laconia/acceptance-test npm run deploy",
     "remove-acceptance": "lerna exec --scope @laconia/acceptance-test npm run remove",
     "acceptance-test": "lerna exec --scope @laconia/acceptance-test npm run test",
@@ -60,7 +60,7 @@
     "jest-extended": "^0.11.1",
     "lerna": "^3.10.8",
     "lodash": "^4.17.5",
-    "npm-package-json-lint": "^4.0.2",
+    "npm-package-json-lint": "^4.6.0",
     "prettier": "^1.16.4",
     "typescript": "^3.4.5"
   },

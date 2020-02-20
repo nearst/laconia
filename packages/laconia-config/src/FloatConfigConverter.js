@@ -1,8 +1,6 @@
 const validateAndParseFloat = (key, val) => {
   if (val.trim() === "") {
-    throw new Error(
-      `Passed config:float "${key}" is empty.`
-    );
+    throw new Error(`Passed config:float "${key}" is empty.`);
   }
   const parsedVal = parseFloat(val);
   if (isNaN(val)) {

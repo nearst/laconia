@@ -22,6 +22,15 @@ describe("IntegerConfigConverter", () => {
         `Passed config:integer "port" = "someString" is not a valid integer.`
       );
     });
+
+    it("throws an error when value is empty", async () => {
+      configConverter = new IntegerConfigConverter();
+      await expect(() =>
+        configConverter.convertMultiple({
+          port: ""
+        })
+      ).toThrow(`Passed config:integer "port" = "" is not a valid integer.`);
+    });
   });
 
   describe("when there is multiple env vars set", () => {

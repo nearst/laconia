@@ -1,6 +1,6 @@
 const validateAndParseInt = (key, val) => {
   const parsedVal = parseInt(val, 10);
-  if (isNaN(val)) {
+  if (isNaN(parsedVal)) {
     throw new Error(
       `Passed config:integer "${key}" = "${val}" is not a valid integer.`
     );

@@ -21,14 +21,13 @@ describe("FloatConfigConverter", () => {
       ).toThrow(`Passed config:float "tax" = "foo" is not a valid float.`);
     });
 
-    // Thoughts on this?
     it("throws an error when value is an empty string", async () => {
       configConverter = new FloatConfigConverter();
       await expect(() =>
         configConverter.convertMultiple({
           tax: ""
         })
-      ).toThrow(`Passed config:float "tax" is empty.`);
+      ).toThrow(`Passed config:float "tax" = "" is not a valid float.`);
     });
   });
 

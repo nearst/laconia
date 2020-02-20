@@ -12,12 +12,23 @@ describe("FloatConfigConverter", () => {
       expect(instances).toHaveProperty("tax", 80.8);
     });
 
-    it("returns NaN when not a float", async () => {
+    it("throws an error when value is not a float", async () => {
       configConverter = new FloatConfigConverter();
-      const instances = await configConverter.convertMultiple({
-        tax: "someString"
-      });
-      expect(instances).toHaveProperty("tax", NaN);
+      await expect(() =>
+        configConverter.convertMultiple({
+          tax: "foo"
+        })
+      ).toThrow(`Passed config:float "tax" = "foo" is not a valid float.`);
+    });
+
+    // Thoughts on this?
+    it("throws an error when value is an empty string", async () => {
+      configConverter = new FloatConfigConverter();
+      await expect(() =>
+        configConverter.convertMultiple({
+          tax: ""
+        })
+      ).toThrow(`Passed config:float "tax" is empty.`);
     });
   });
 
@@ -26,12 +37,24 @@ describe("FloatConfigConverter", () => {
       const configConverter = new FloatConfigConverter();
       const floats = await configConverter.convertMultiple({
         taxRate: "80.80",
-        splitTest: "0.56",
-        nonFloat: "not a float"
+        splitTest: "0.56"
       });
       expect(floats).toHaveProperty("taxRate", 80.8);
       expect(floats).toHaveProperty("splitTest", 0.56);
-      expect(floats).toHaveProperty("nonFloat", NaN);
+    });
+
+    it("throws an error when one value is not a float", async () => {
+      const configConverter = new FloatConfigConverter();
+      await expect(() =>
+        configConverter.convertMultiple({
+          taxRate: "80.80",
+          splitTest: "0.56",
+          nonFloat: "not a float",
+          anotherInvalid: "also not a float"
+        })
+      ).toThrow(
+        `Passed config:float "nonFloat" = "not a float" is not a valid float.`
+      );
     });
   });
 });

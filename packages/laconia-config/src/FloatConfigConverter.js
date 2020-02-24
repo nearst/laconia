@@ -1,6 +1,8 @@
+const floatRegex = /[^0-9.]/g;
+
 const validateAndParseFloat = (key, val) => {
   const parsedVal = parseFloat(val);
-  if (isNaN(parsedVal)) {
+  if (isNaN(parsedVal) || val !== val.replace(floatRegex, "")) {
     throw new Error(
       `Passed config:float "${key}" = "${val}" is not a valid float.`
     );

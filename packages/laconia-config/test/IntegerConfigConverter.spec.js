@@ -31,6 +31,17 @@ describe("IntegerConfigConverter", () => {
         })
       ).toThrow(`Passed config:integer "port" = "" is not a valid integer.`);
     });
+
+    it("throws an error when value has invalid characters", async () => {
+      configConverter = new IntegerConfigConverter();
+      await expect(() =>
+        configConverter.convertMultiple({
+          retryAttempts: "3a"
+        })
+      ).toThrow(
+        `Passed config:integer "retryAttempts" = "3a" is not a valid integer.`
+      );
+    });
   });
 
   describe("when there is multiple env vars set", () => {

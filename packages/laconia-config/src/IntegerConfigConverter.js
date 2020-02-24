@@ -1,6 +1,8 @@
+const integerRegex = /\D/g;
+
 const validateAndParseInt = (key, val) => {
   const parsedVal = parseInt(val, 10);
-  if (isNaN(parsedVal)) {
+  if (isNaN(parsedVal) || val !== val.replace(integerRegex, "")) {
     throw new Error(
       `Passed config:integer "${key}" = "${val}" is not a valid integer.`
     );

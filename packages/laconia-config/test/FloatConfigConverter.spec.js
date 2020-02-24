@@ -29,6 +29,17 @@ describe("FloatConfigConverter", () => {
         })
       ).toThrow(`Passed config:float "tax" = "" is not a valid float.`);
     });
+
+    it("throws an error when value has invalid characters", async () => {
+      configConverter = new FloatConfigConverter();
+      await expect(() =>
+        configConverter.convertMultiple({
+          retryRate: "0.43b"
+        })
+      ).toThrow(
+        `Passed config:float "retryRate" = "0.43b" is not a valid float.`
+      );
+    });
   });
 
   describe("when there is multiple env vars set", () => {

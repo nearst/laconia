@@ -49,10 +49,10 @@ describe("IntegerConfigConverter", () => {
       const configConverter = new IntegerConfigConverter();
       const integers = await configConverter.convertMultiple({
         port: "9999",
-        retryCount: "7"
+        retryCount: "-7"
       });
       expect(integers).toHaveProperty("port", 9999);
-      expect(integers).toHaveProperty("retryCount", 7);
+      expect(integers).toHaveProperty("retryCount", -7);
     });
 
     it("throws an error when one value is not an integer", async () => {

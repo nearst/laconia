@@ -47,10 +47,10 @@ describe("FloatConfigConverter", () => {
       const configConverter = new FloatConfigConverter();
       const floats = await configConverter.convertMultiple({
         taxRate: "80.80",
-        splitTest: "0.56"
+        splitTest: "-0.56"
       });
       expect(floats).toHaveProperty("taxRate", 80.8);
-      expect(floats).toHaveProperty("splitTest", 0.56);
+      expect(floats).toHaveProperty("splitTest", -0.56);
     });
 
     it("throws an error when one value is not a float", async () => {

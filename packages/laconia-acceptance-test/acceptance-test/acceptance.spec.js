@@ -221,11 +221,12 @@ describe("order flow", () => {
 
   describe("happy path", () => {
     it("should store all placed orders in Order Table", async () => {
-      Object.keys(orderMap).forEach(async orderId => {
+      // Use for...of to properly await promises
+      for (const orderId of Object.keys(orderMap)) {
         const savedOrder = await orderRepository.find(orderId);
         expect(savedOrder).toEqual(expect.objectContaining(orderMap[orderId]));
         expect(savedOrder.orderId).toEqual(orderId);
-      });
+      }
     });
 
     it("should invoke send email lambda, which is coming from the chain of place-order, notify-restaurant, fake-restaurant, accept-order, and notify-user", async () => {

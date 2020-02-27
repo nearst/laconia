@@ -61,6 +61,8 @@ describe("EnvVarConfigFactory", () => {
     let ssmConverter;
     let booleanConverter;
     let secretsManagerConverter;
+    let integerConverter;
+    let floatConverter;
 
     beforeEach(() => {
       ssmConverter = {
@@ -76,16 +78,27 @@ describe("EnvVarConfigFactory", () => {
       secretsManagerConverter = {
         convertMultiple: jest.fn().mockResolvedValue({ apikey: "secretApiKey" })
       };
+      integerConverter = {
+        convertMultiple: jest.fn().mockResolvedValue({ port: 8080 })
+      };
+      floatConverter = {
+        convertMultiple: jest.fn().mockResolvedValue({ taxRate: 1.093 })
+      };
+
       const env = {
         LACONIA_CONFIG_SECRET: "ssm:/path/to/secret",
         LACONIA_CONFIG_PASSWORD: "ssm:/path/to/password",
         LACONIA_CONFIG_ENABLE_LOGGING: "boolean:no",
-        LACONIA_CONFIG_ENABLE_FEATURE: "boolean:yes"
+        LACONIA_CONFIG_ENABLE_FEATURE: "boolean:yes",
+        LACONIA_CONFIG_PORT: "integer:8080",
+        LACONIA_CONFIG_TAX_RATE: "float:1.093"
       };
       const converters = {
         ssm: ssmConverter,
         boolean: booleanConverter,
-        secretsManager: secretsManagerConverter
+        secretsManager: secretsManagerConverter,
+        integer: integerConverter,
+        float: floatConverter
       };
       configFactory = new EnvVarConfigFactory(env, converters);
     });
@@ -99,6 +112,12 @@ describe("EnvVarConfigFactory", () => {
       expect(booleanConverter.convertMultiple).toHaveBeenCalledWith({
         enableLogging: "no",
         enableFeature: "yes"
+      });
+      expect(integerConverter.convertMultiple).toHaveBeenCalledWith({
+        port: "8080"
+      });
+      expect(floatConverter.convertMultiple).toHaveBeenCalledWith({
+        taxRate: "1.093"
       });
     });
 
@@ -126,7 +145,9 @@ describe("EnvVarConfigFactory", () => {
         secret: "mysecret",
         password: "password",
         enableLogging: false,
-        enableFeature: true
+        enableFeature: true,
+        port: 8080,
+        taxRate: 1.093
       });
     });
   });

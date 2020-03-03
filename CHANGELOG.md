@@ -8,13 +8,28 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.10.0]
+
+### Fixed
+
+- `@laconia/adapter-api`
+  - #49 Read websocket body if it's not falsy
+    ([@hugosenari](https://github.com/hugosenari))
+
+### Added
+
+- `@laconia/event`
+  - #542 Number 'protocol' for laconia-config
+    ([@hugosenari](https://github.com/hugosenari)
+    [@geoffdutton](https://github.com/geoffdutton))
+
 ## [1.9.0]
 
 ### Fixed
 
 - `@laconia/core`
   - #48 Add the configuration to suppress callback usage
-    ([@hugosenari](https://github.com/hugosenari)
+    ([@hugosenari](https://github.com/hugosenari))
 
 ## [1.8.0]
 
@@ -22,7 +37,7 @@ and this project adheres to
 
 - `@laconia/adapter-api`
   - #141 Support binary response type
-    ([@hugosenari](https://github.com/hugosenari)
+    ([@hugosenari](https://github.com/hugosenari))
 - `@laconia/adapter`
   - #152 Create an adapter for DynamoDB event trigger
     ([@sakthivel-tw](https://github.com/sakthivel-tw))
@@ -418,7 +433,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.9.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/ceilfors/laconia/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/ceilfors/laconia/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/ceilfors/laconia/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/ceilfors/laconia/compare/v1.6.0...v1.7.0

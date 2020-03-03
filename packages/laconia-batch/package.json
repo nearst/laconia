@@ -1,6 +1,6 @@
 {
   "name": "@laconia/batch",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Reads large number of records without Lambda time limit",
   "keywords": [
     "aws",
@@ -27,8 +27,8 @@
     "test:integration": "jest /integration-test"
   },
   "dependencies": {
-    "@laconia/core": "^1.9.0",
-    "@laconia/invoker": "^1.9.0",
+    "@laconia/core": "^1.10.0",
+    "@laconia/invoker": "^1.10.0",
     "bottleneck": "^2.1.0",
     "lodash.get": "^4.4.2",
     "lodash.isplainobject": "^4.0.6"

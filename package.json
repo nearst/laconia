@@ -61,7 +61,7 @@
     "lerna": "^3.10.8",
     "lodash": "^4.17.5",
     "npm-package-json-lint": "^5.1.0",
-    "prettier": "^1.16.4",
+    "prettier": "^2.0.5",
     "typescript": "^3.4.5"
   },
   "jest": {

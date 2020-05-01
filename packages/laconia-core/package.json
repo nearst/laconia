@@ -24,7 +24,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "@types/aws-lambda": "8.10.46"
+    "@types/aws-lambda": "8.10.51"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"

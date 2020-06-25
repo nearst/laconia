@@ -32,6 +32,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Rob",
+      "name": "Rob Gabaree",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/503?v=4",
+      "profile": "https://github.com/rob",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,

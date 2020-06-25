@@ -50,6 +50,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Strernd",
+      "name": "Bernd Strehl",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2428581?v=4",
+      "profile": "http://strehl.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

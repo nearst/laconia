@@ -26,6 +26,7 @@ declare namespace event {
 
   interface SqsRecord {
     body: any;
+    receiptHandle: string;
   }
   interface SqsEvent {
     records: SqsRecord[];

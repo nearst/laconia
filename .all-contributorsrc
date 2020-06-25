@@ -41,6 +41,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "ljcoomber",
+      "name": "Lee Coomber",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/348068?v=4",
+      "profile": "https://www.fundingcircle.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

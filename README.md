@@ -3,7 +3,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
@@ -75,6 +75,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/hugosenari"><img src="https://avatars2.githubusercontent.com/u/863299?v=4" width="100px;" alt=""/><br /><sub><b>Hugo Sena Ribeiro</b></sub></a><br /><a href="#design-hugosenari" title="Design">🎨</a> <a href="#maintenance-hugosenari" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/geoffdutton"><img src="https://avatars3.githubusercontent.com/u/1251360?v=4" width="100px;" alt=""/><br /><sub><b>Geoff Dutton</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=geoffdutton" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Rob-H"><img src="https://avatars3.githubusercontent.com/u/1402228?v=4" width="100px;" alt=""/><br /><sub><b>Rob Haley</b></sub></a><br /><a href="#ideas-Rob-H" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://www.fundingcircle.com/"><img src="https://avatars1.githubusercontent.com/u/348068?v=4" width="100px;" alt=""/><br /><sub><b>Lee Coomber</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=ljcoomber" title="Code">💻</a></td>
   </tr>
 </table>
 

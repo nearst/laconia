@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "moltar",
+      "name": "Roman",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/491247?v=4",
+      "profile": "https://www.ScaleLeap.com",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "laconia",
+  "projectOwner": "laconiajs",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

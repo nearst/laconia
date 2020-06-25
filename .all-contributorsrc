@@ -13,6 +13,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "hugosenari",
+      "name": "Hugo Sena Ribeiro",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/863299?v=4",
+      "profile": "https://github.com/hugosenari",
+      "contributions": [
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,

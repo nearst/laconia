@@ -3,7 +3,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
@@ -72,8 +72,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://www.ScaleLeap.com"><img src="https://avatars3.githubusercontent.com/u/491247?v=4" width="100px;" alt=""/><br /><sub><b>Roman</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=moltar" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/hugosenari"><img src="https://avatars2.githubusercontent.com/u/863299?v=4" width="100px;" alt=""/><br /><sub><b>Hugo Sena Ribeiro</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=hugosenari" title="Code">💻</a> <a href="#maintenance-hugosenari" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/hugosenari"><img src="https://avatars2.githubusercontent.com/u/863299?v=4" width="100px;" alt=""/><br /><sub><b>Hugo Sena Ribeiro</b></sub></a><br /><a href="#design-hugosenari" title="Design">🎨</a> <a href="#maintenance-hugosenari" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/geoffdutton"><img src="https://avatars3.githubusercontent.com/u/1251360?v=4" width="100px;" alt=""/><br /><sub><b>Geoff Dutton</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=geoffdutton" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/rob"><img src="https://avatars3.githubusercontent.com/u/503?v=4" width="100px;" alt=""/><br /><sub><b>Rob Gabaree</b></sub></a><br /><a href="#ideas-Rob" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

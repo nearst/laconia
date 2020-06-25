@@ -74,6 +74,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.ScaleLeap.com"><img src="https://avatars3.githubusercontent.com/u/491247?v=4" width="100px;" alt=""/><br /><sub><b>Roman</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=moltar" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/hugosenari"><img src="https://avatars2.githubusercontent.com/u/863299?v=4" width="100px;" alt=""/><br /><sub><b>Hugo Sena Ribeiro</b></sub></a><br /><a href="#design-hugosenari" title="Design">🎨</a></td>
     <td align="center"><a href="https://github.com/geoffdutton"><img src="https://avatars3.githubusercontent.com/u/1251360?v=4" width="100px;" alt=""/><br /><sub><b>Geoff Dutton</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=geoffdutton" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/hugosenari"><img src="https://avatars2.githubusercontent.com/u/863299?v=4" width="100px;" alt=""/><br /><sub><b>Hugo Sena Ribeiro</b></sub></a><br /><a href="#design-hugosenari" title="Design">🎨</a> <a href="#maintenance-hugosenari" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 

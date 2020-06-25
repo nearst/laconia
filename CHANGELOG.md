@@ -8,6 +8,22 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.10.1]
+
+### Fixed
+
+- `@laconia/event`
+  - #597 SqsEvent type is missing receiptHandle prop
+    ([@moltar](https://github.com/moltar))
+
+## [1.10.0]
+
+### Fixed
+
+- `@laconia/adapter-api`
+  - #49 Read websocket body if it's not falsy
+    ([@hugosenari](https://github.com/hugosenari))
+
 ## [1.10.0]
 
 ### Fixed
@@ -433,7 +449,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.10.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.10.1...HEAD
+[1.10.1]: https://github.com/ceilfors/laconia/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/ceilfors/laconia/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/ceilfors/laconia/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/ceilfors/laconia/compare/v1.7.0...v1.8.0

@@ -3,7 +3,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
@@ -78,6 +78,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.fundingcircle.com/"><img src="https://avatars1.githubusercontent.com/u/348068?v=4" width="100px;" alt=""/><br /><sub><b>Lee Coomber</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=ljcoomber" title="Code">💻</a></td>
     <td align="center"><a href="http://strehl.dev"><img src="https://avatars1.githubusercontent.com/u/2428581?v=4" width="100px;" alt=""/><br /><sub><b>Bernd Strehl</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=Strernd" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/sakthivel-tw"><img src="https://avatars2.githubusercontent.com/u/44604719?v=4" width="100px;" alt=""/><br /><sub><b>Sakthivel Viswanathan</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=sakthivel-tw" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://ankcorn.dev"><img src="https://avatars2.githubusercontent.com/u/7361428?v=4" width="100px;" alt=""/><br /><sub><b>Thomas Ankcorn</b></sub></a><br /><a href="#blog-Ankcorn" title="Blogposts">📝</a> <a href="https://github.com/laconiajs/laconia/commits?author=Ankcorn" title="Documentation">📖</a></td>
   </tr>
 </table>
 

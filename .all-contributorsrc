@@ -68,6 +68,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Ankcorn",
+      "name": "Thomas Ankcorn",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7361428?v=4",
+      "profile": "http://ankcorn.dev",
+      "contributions": [
+        "blog",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

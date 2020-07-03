@@ -80,7 +80,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/sakthivel-tw"><img src="https://avatars2.githubusercontent.com/u/44604719?v=4" width="100px;" alt=""/><br /><sub><b>Sakthivel Viswanathan</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=sakthivel-tw" title="Code">💻</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="http://ankcorn.dev"><img src="https://avatars2.githubusercontent.com/u/7361428?v=4" width="100px;" alt=""/><br /><sub><b>Thomas Ankcorn</b></sub></a><br /><a href="#blog-Ankcorn" title="Blogposts">📝</a> <a href="https://github.com/laconiajs/laconia/commits?author=Ankcorn" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://ankcorn.dev"><img src="https://avatars2.githubusercontent.com/u/7361428?v=4" width="100px;" alt=""/><br /><sub><b>Thomas Ankcorn</b></sub></a><br /><a href="#blog-Ankcorn" title="Blogposts">📝</a> <a href="https://github.com/laconiajs/laconia/commits?author=Ankcorn" title="Documentation">📖</a> <a href="#ideas-Ankcorn" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

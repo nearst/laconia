@@ -1,3 +1,4 @@
+require('aws-sdk/clients/dynamodb');
 const converter = require('aws-sdk/lib/dynamodb/converter')
 
 module.exports = class DynamoDbStreamRecord {

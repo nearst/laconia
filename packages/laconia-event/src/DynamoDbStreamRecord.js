@@ -1,5 +1,5 @@
-require('aws-sdk/clients/dynamodb');
-const converter = require('aws-sdk/lib/dynamodb/converter')
+require("aws-sdk/clients/dynamodb");
+const converter = require("aws-sdk/lib/dynamodb/converter");
 
 module.exports = class DynamoDbStreamRecord {
   constructor(data) {
@@ -18,10 +18,17 @@ module.exports = class DynamoDbStreamRecord {
     return {
       eventName: this.eventName,
       StreamViewType: this.data.StreamViewType,
-      Keys: this.data && this.data.Keys ? converter.unmarshall(this.data.Keys) : {},
-      NewImage: this.data && this.data.NewImage ? converter.unmarshall(this.data.NewImage) : {},
-      OldImage: this.data && this.data.OldImage ? converter.unmarshall(this.data.OldImage) : {}
-    }
+      Keys:
+        this.data && this.data.Keys ? converter.unmarshall(this.data.Keys) : {},
+      NewImage:
+        this.data && this.data.NewImage
+          ? converter.unmarshall(this.data.NewImage)
+          : {},
+      OldImage:
+        this.data && this.data.OldImage
+          ? converter.unmarshall(this.data.OldImage)
+          : {}
+    };
   }
 
   static fromRaw(record) {

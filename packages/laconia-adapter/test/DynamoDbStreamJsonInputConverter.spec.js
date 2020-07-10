@@ -50,17 +50,18 @@ describe("DynamoDbStreamJsonInputConverter", () => {
       createDynamoDbStreamEvent([newImage])
     );
 
-    expect(input).toEqual([{
-      NewImage: {
-        Number: 123,
-        Null: null,
-        Boolean: true
-      },
-      OldImage: {},
-      Keys: {},
-      StreamViewType: undefined,
-      eventName: undefined,
-    }
+    expect(input).toEqual([
+      {
+        NewImage: {
+          Number: 123,
+          Null: null,
+          Boolean: true
+        },
+        OldImage: {},
+        Keys: {},
+        StreamViewType: undefined,
+        eventName: undefined
+      }
     ]);
   });
 
@@ -91,7 +92,8 @@ describe("DynamoDbStreamJsonInputConverter", () => {
         Keys: {},
         NewImage: { Number: 123, Null: null, Boolean: true },
         OldImage: {}
-      }, {
+      },
+      {
         Keys: {},
         NewImage: {
           Message: "Stream sample record!",
@@ -99,6 +101,7 @@ describe("DynamoDbStreamJsonInputConverter", () => {
           List: ["fizz", "buzz", "pop"]
         },
         OldImage: {}
-      }]);
+      }
+    ]);
   });
 });

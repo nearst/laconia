@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+const converter = require('aws-sdk/lib/dynamodb/converter')
 
 module.exports = class DynamoDbStreamRecord {
   constructor(data) {
@@ -6,7 +6,7 @@ module.exports = class DynamoDbStreamRecord {
   }
 
   get jsonNewImage() {
-    return AWS.DynamoDB.Converter.unmarshall(this.newImage);
+    return converter.unmarshall(this.newImage);
   }
 
   get newImage() {

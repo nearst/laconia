@@ -184,4 +184,39 @@ describe("ApiGatewayErrorConverter", () => {
       expect(response).toHaveStatusCode(500);
     });
   });
+
+  describe("when mapping happens by the error message", () => {
+    const errorConverter = new ApiGatewayErrorConverter({
+      mappings: {
+        "Validation.*": () => ({ statusCode: 400 }),
+        "Other.*": () => ({ statusCode: 500 })
+      }
+    });
+
+    it("should match based on the error name", async () => {
+      const error = new Error("boom");
+      error.name = "ValidationError";
+
+      const response = await errorConverter.convert(error);
+      expect(response).toContainBody("boom");
+      expect(response).toHaveStatusCode(400);
+    });
+
+    it("should match based on the error message", async () => {
+      const error = new Error("Other validation error");
+
+      const response = await errorConverter.convert(error);
+      expect(response).toContainBody("Other validation error");
+      expect(response).toHaveStatusCode(500);
+    });
+
+    it("error name should take precedence", async () => {
+      const error = new Error("Other validation error");
+      error.name = "ValidationError";
+
+      const response = await errorConverter.convert(error);
+      expect(response).toContainBody("Other validation error");
+      expect(response).toHaveStatusCode(400);
+    });
+  });
 });

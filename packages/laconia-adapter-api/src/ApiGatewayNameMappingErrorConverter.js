@@ -6,7 +6,7 @@ const getMappingEntries = mappings =>
 const getMappingResponse = (mappings, error) => {
   let mappingResponse = {};
   for (const [errorRegex, mapping] of getMappingEntries(mappings)) {
-    if (error.name.match(errorRegex)) {
+    if (error.name.match(errorRegex) || error.message.match(errorRegex)) {
       mappingResponse = mapping(error);
       break;
     }

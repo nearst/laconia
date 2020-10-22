@@ -8,6 +8,20 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.11.0]
+
+### Added
+
+- `@laconia/adapter-api`
+  - #660 Check error message in API gateway error handler
+    ([@mpxr](https://github.com/mpxr))
+
+### Fixed
+
+- `@laconia/config`
+  - #638 register integer and float converters to EnvVarConfigFactory
+    ([@reestolonio](https://github.com/reestolonio))
+
 ## [1.10.1]
 
 ### Fixed
@@ -449,7 +463,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.10.1...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/ceilfors/laconia/compare/v1.10.0...v1.11.0
 [1.10.1]: https://github.com/ceilfors/laconia/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/ceilfors/laconia/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/ceilfors/laconia/compare/v1.8.0...v1.9.0

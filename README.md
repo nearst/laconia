@@ -3,7 +3,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
@@ -82,6 +82,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="http://ankcorn.dev"><img src="https://avatars2.githubusercontent.com/u/7361428?v=4" width="100px;" alt=""/><br /><sub><b>Thomas Ankcorn</b></sub></a><br /><a href="#blog-Ankcorn" title="Blogposts">📝</a> <a href="https://github.com/laconiajs/laconia/commits?author=Ankcorn" title="Documentation">📖</a> <a href="#ideas-Ankcorn" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/reestolonio"><img src="https://avatars2.githubusercontent.com/u/15612238?v=4" width="100px;" alt=""/><br /><sub><b>reestolonio</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=reestolonio" title="Code">💻</a> <a href="https://github.com/laconiajs/laconia/issues?q=author%3Areestolonio" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/mpxr"><img src="https://avatars2.githubusercontent.com/u/6689695?v=4" width="100px;" alt=""/><br /><sub><b>Márton Vető</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=mpxr" title="Code">💻</a></td>
   </tr>
 </table>
 

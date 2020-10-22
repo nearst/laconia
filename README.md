@@ -81,7 +81,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://ankcorn.dev"><img src="https://avatars2.githubusercontent.com/u/7361428?v=4" width="100px;" alt=""/><br /><sub><b>Thomas Ankcorn</b></sub></a><br /><a href="#blog-Ankcorn" title="Blogposts">📝</a> <a href="https://github.com/laconiajs/laconia/commits?author=Ankcorn" title="Documentation">📖</a> <a href="#ideas-Ankcorn" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/reestolonio"><img src="https://avatars2.githubusercontent.com/u/15612238?v=4" width="100px;" alt=""/><br /><sub><b>reestolonio</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=reestolonio" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/reestolonio"><img src="https://avatars2.githubusercontent.com/u/15612238?v=4" width="100px;" alt=""/><br /><sub><b>reestolonio</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=reestolonio" title="Code">💻</a> <a href="https://github.com/laconiajs/laconia/issues?q=author%3Areestolonio" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

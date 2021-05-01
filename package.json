@@ -49,7 +49,7 @@
     "dynamodb-local": "0.0.31",
     "eslint": "^7.8.0",
     "eslint-config-prettier": "^8.1.0",
-    "eslint-config-standard": "^14.0.1",
+    "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.0.1",

@@ -98,6 +98,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "VanOvermeire",
+      "name": "Sam Van Overmeire",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10529492?v=4",
+      "profile": "https://github.com/VanOvermeire",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -1,4 +1,4 @@
-import { AdapterFactory } from "@laconia/core";
+import {Adapter, AdapterFactory} from "@laconia/core";
 import { apigateway as eventApiGateway } from "@laconia/event";
 
 declare interface ErrorResponse {
@@ -25,9 +25,13 @@ declare namespace apigateway {
     errorMappings?: ErrorMappings | Map<string, ErrorMapping>;
     responseAdditionalHeaders?: eventApiGateway.ApiGatewayOutputHeaders;
   }
+  interface RouteOptions {
+      mappings: Record<string, Adapter<any>>
+  }
 
   function apigateway(options?: AdapterFactoryOptions): AdapterFactory<any>;
   function webSocket(): AdapterFactory<any>;
+  function route(options: RouteOptions): Adapter<any>;
 }
 
 export = apigateway;

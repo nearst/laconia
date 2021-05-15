@@ -13,6 +13,7 @@ const createInputConverter = inputType => {
     : new ApiGatewayParamsInputConverter();
 };
 
+// TODO typo!
 const createApiAgatewayAdapter = ({
   inputType = "body",
   functional = true,

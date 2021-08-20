@@ -80,6 +80,34 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "reestolonio",
+      "name": "reestolonio",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15612238?v=4",
+      "profile": "https://github.com/reestolonio",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "mpxr",
+      "name": "Márton Vető",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6689695?v=4",
+      "profile": "https://github.com/mpxr",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "VanOvermeire",
+      "name": "Sam Van Overmeire",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10529492?v=4",
+      "profile": "https://github.com/VanOvermeire",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -138,5 +138,25 @@ describe("S3Event", () => {
         );
       });
     });
+    describe("#getText", () => {
+      it("should convert event to Text", async () => {
+        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const text = await s3Event.getText();
+        expect(text).toBe('{"foo":"bar"}');
+      });
+
+      it("should call AWS sdk with the correct parameter", async () => {
+        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        await s3Event.getText();
+
+        expect(s3.getObject).toBeCalledWith(
+          {
+            Bucket: "my-bucket-name",
+            Key: "object-key"
+          },
+          expect.any(Function)
+        );
+      });
+    });
   });
 });

@@ -29,6 +29,11 @@ module.exports = class S3Event {
     return JSON.parse(object.toString());
   }
 
+  async getText() {
+    const object = await this.getObject(this.s3);
+    return object.toString();
+  }
+
   static fromRaw(event, s3 = new AWS.S3()) {
     const record = event.Records[0];
     const { key } = record.s3.object;

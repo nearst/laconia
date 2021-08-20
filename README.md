@@ -3,7 +3,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
@@ -71,21 +71,25 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://www.ScaleLeap.com"><img src="https://avatars3.githubusercontent.com/u/491247?v=4" width="100px;" alt=""/><br /><sub><b>Roman</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=moltar" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/hugosenari"><img src="https://avatars2.githubusercontent.com/u/863299?v=4" width="100px;" alt=""/><br /><sub><b>Hugo Sena Ribeiro</b></sub></a><br /><a href="#design-hugosenari" title="Design">🎨</a> <a href="#maintenance-hugosenari" title="Maintenance">🚧</a></td>
-    <td align="center"><a href="https://github.com/geoffdutton"><img src="https://avatars3.githubusercontent.com/u/1251360?v=4" width="100px;" alt=""/><br /><sub><b>Geoff Dutton</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=geoffdutton" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/Rob-H"><img src="https://avatars3.githubusercontent.com/u/1402228?v=4" width="100px;" alt=""/><br /><sub><b>Rob Haley</b></sub></a><br /><a href="#ideas-Rob-H" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://www.fundingcircle.com/"><img src="https://avatars1.githubusercontent.com/u/348068?v=4" width="100px;" alt=""/><br /><sub><b>Lee Coomber</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=ljcoomber" title="Code">💻</a></td>
-    <td align="center"><a href="http://strehl.dev"><img src="https://avatars1.githubusercontent.com/u/2428581?v=4" width="100px;" alt=""/><br /><sub><b>Bernd Strehl</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=Strernd" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/sakthivel-tw"><img src="https://avatars2.githubusercontent.com/u/44604719?v=4" width="100px;" alt=""/><br /><sub><b>Sakthivel Viswanathan</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=sakthivel-tw" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.ScaleLeap.com"><img src="https://avatars3.githubusercontent.com/u/491247?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roman</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=moltar" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/hugosenari"><img src="https://avatars2.githubusercontent.com/u/863299?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hugo Sena Ribeiro</b></sub></a><br /><a href="#design-hugosenari" title="Design">🎨</a> <a href="#maintenance-hugosenari" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/geoffdutton"><img src="https://avatars3.githubusercontent.com/u/1251360?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Geoff Dutton</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=geoffdutton" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Rob-H"><img src="https://avatars3.githubusercontent.com/u/1402228?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Rob Haley</b></sub></a><br /><a href="#ideas-Rob-H" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://www.fundingcircle.com/"><img src="https://avatars1.githubusercontent.com/u/348068?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Lee Coomber</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=ljcoomber" title="Code">💻</a></td>
+    <td align="center"><a href="http://strehl.dev"><img src="https://avatars1.githubusercontent.com/u/2428581?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bernd Strehl</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=Strernd" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/sakthivel-tw"><img src="https://avatars2.githubusercontent.com/u/44604719?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sakthivel Viswanathan</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=sakthivel-tw" title="Code">💻</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="http://ankcorn.dev"><img src="https://avatars2.githubusercontent.com/u/7361428?v=4" width="100px;" alt=""/><br /><sub><b>Thomas Ankcorn</b></sub></a><br /><a href="#blog-Ankcorn" title="Blogposts">📝</a> <a href="https://github.com/laconiajs/laconia/commits?author=Ankcorn" title="Documentation">📖</a> <a href="#ideas-Ankcorn" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="http://ankcorn.dev"><img src="https://avatars2.githubusercontent.com/u/7361428?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Thomas Ankcorn</b></sub></a><br /><a href="#blog-Ankcorn" title="Blogposts">📝</a> <a href="https://github.com/laconiajs/laconia/commits?author=Ankcorn" title="Documentation">📖</a> <a href="#ideas-Ankcorn" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/reestolonio"><img src="https://avatars2.githubusercontent.com/u/15612238?v=4?s=100" width="100px;" alt=""/><br /><sub><b>reestolonio</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=reestolonio" title="Code">💻</a> <a href="https://github.com/laconiajs/laconia/issues?q=author%3Areestolonio" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/mpxr"><img src="https://avatars2.githubusercontent.com/u/6689695?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Márton Vető</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=mpxr" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/VanOvermeire"><img src="https://avatars.githubusercontent.com/u/10529492?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sam Van Overmeire</b></sub></a><br /><a href="#ideas-VanOvermeire" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

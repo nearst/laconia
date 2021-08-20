@@ -1,6 +1,6 @@
 const { s3 } = require("@laconia/event");
 
-module.exports = class S3JsonInputConverter {
+module.exports = class S3TextInputConverter {
 	constructor(s3) {
 		this.s3 = s3;
 	}

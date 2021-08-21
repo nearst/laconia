@@ -25,7 +25,7 @@ describe("createS3EventAdapter", () => {
     expect(adapter.inputConverter).toBeInstanceOf(S3StreamInputConverter);
   });
 
-  it("is created with S3StreamInputConverter when inputType is stream", () => {
+  it("is created with S3TextInputConverter when inputType is text", () => {
     const adapter = createS3EventAdapter({
       inputType: "text",
       functional: false

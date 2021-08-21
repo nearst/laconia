@@ -1,7 +1,7 @@
 import { AdapterFactory } from "@laconia/core";
 
 declare type S3AdapterFactoryOptions = {
-  inputType?: "object" | "stream";
+  inputType?: "object" | "text" | "stream";
 };
 
 declare namespace adapter {

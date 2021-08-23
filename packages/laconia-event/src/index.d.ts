@@ -15,6 +15,7 @@ declare namespace event {
     getObject: () => any;
     getJson: () => any;
     getStream: () => Readable;
+    getText: () => Promise<string>
   }
   function s3(awsS3Event: AWSS3Event, s3?: any): S3Event;
 

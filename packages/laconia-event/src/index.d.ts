@@ -13,7 +13,7 @@ declare namespace event {
     bucket: string;
     key: string;
     getObject(): Promise<Buffer | Uint8Array>,
-    getJson<T>(): Promise<T>;
+    getJson<T>(): Promise<T | any>;
     getStream(): Readable;
     getText(): Promise<string>
   }

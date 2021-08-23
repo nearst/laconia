@@ -42,7 +42,7 @@ describe("S3TextInputConverter", () => {
     AWSMock.restore();
   });
 
-  it("should convert event to json", async () => {
+  it("should convert event to text", async () => {
     const inputConverter = new S3TextInputConverter(new AWS.S3());
     const input = await inputConverter.convert(event);
 

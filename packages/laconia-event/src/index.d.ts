@@ -12,10 +12,10 @@ declare namespace event {
   interface S3Event {
     bucket: string;
     key: string;
-    getObject: () => any;
-    getJson: () => any;
-    getStream: () => Readable;
-    getText: () => Promise<string>
+    getObject(): Promise<Buffer | Uint8Array>,
+    getJson<T>(): Promise<T>;
+    getStream(): Readable;
+    getText(): Promise<string>
   }
   function s3(awsS3Event: AWSS3Event, s3?: any): S3Event;
 

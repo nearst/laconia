@@ -1,6 +1,6 @@
 {
   "name": "@laconia/acceptance-test",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "",
   "keywords": [
     "aws",
@@ -28,12 +28,12 @@
     "remove": "sls remove"
   },
   "dependencies": {
-    "@laconia/adapter": "^1.12.0",
-    "@laconia/adapter-api": "^1.12.0",
+    "@laconia/adapter": "^1.13.0",
+    "@laconia/adapter-api": "^1.13.0",
     "@laconia/batch": "^1.12.0",
     "@laconia/config": "^1.12.0",
     "@laconia/core": "^1.12.0",
-    "@laconia/event": "^1.12.0",
+    "@laconia/event": "^1.13.0",
     "@laconia/invoker": "^1.12.0",
     "@laconia/middleware-lambda-warmer": "^1.12.0",
     "@laconia/test": "^1.12.0",

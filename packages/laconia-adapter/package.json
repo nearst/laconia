@@ -1,6 +1,6 @@
 {
   "name": "@laconia/adapter",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "Converts AWS events into your application input",
   "keywords": [
     "aws",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@laconia/core": "^1.12.0",
-    "@laconia/event": "^1.12.0"
+    "@laconia/event": "^1.13.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"

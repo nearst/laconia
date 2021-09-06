@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.13.0]
+
+### Added
+
+- `@laconia/event`
+  - #801 Update TypeScript file definition
+    ([@Ankcorn](https://github.com/Ankcorn))
+
 ## [1.12.0]
 
 ### Added

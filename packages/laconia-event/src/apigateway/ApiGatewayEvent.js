@@ -12,7 +12,8 @@ module.exports = class ApiGatewayEvent {
     apiGatewayEvent.params = Object.assign(
       {},
       event.pathParameters,
-      event.queryStringParameters
+      event.queryStringParameters,
+      event.multiValueQueryStringParameters
     );
     return apiGatewayEvent;
   }

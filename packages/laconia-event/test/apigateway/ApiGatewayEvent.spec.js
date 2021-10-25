@@ -54,6 +54,14 @@ describe("ApiGatewayEvent", () => {
     );
   });
 
+  it("should convert multiValueQueryStringParameters into params", async () => {
+    event.multiValueQueryStringParameters = { queryParam1: ["1", "2"] };
+    const apiGatewayEvent = await ApiGatewayEvent.fromRaw(event);
+    expect(apiGatewayEvent.params).toEqual(
+      expect.objectContaining({ queryParam1: ["1", "2"] })
+    );
+  });
+
   it("should be able to retrieve headers with node.js canonical format", async () => {
     const apiGatewayEvent = await ApiGatewayEvent.fromRaw(event);
     expect(apiGatewayEvent.headers["content-type"]).toEqual(

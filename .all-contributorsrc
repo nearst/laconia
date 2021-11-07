@@ -108,6 +108,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "kirbyjs",
+      "name": "Kirby Simmons",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13893942?v=4",
+      "profile": "http://kirbyjs.com",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,

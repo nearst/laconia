@@ -1,4 +1,4 @@
-import { LaconiaFactory } from "@laconia/core";
+import { LaconiaContext, LaconiaFactory } from '@laconia/core';
 
 declare namespace invoker {
   type RequestPayload = object | string | Buffer;
@@ -7,8 +7,8 @@ declare namespace invoker {
     requestResponse(payload?: RequestPayload): Promise<ResponsePayload>;
     fireAndForget(payload?: RequestPayload): Promise<void>;
   }
-  type Invokers = { [key: string]: Invoker };
-  function envVarInstances(): LaconiaFactory<Invokers>;
+  type Invokers = Record<string, Invoker>;
+  function envVarInstances(): LaconiaFactory<LaconiaContext, Invokers>;
 }
 
 export = invoker;

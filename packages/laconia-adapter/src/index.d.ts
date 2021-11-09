@@ -5,11 +5,11 @@ declare type S3AdapterFactoryOptions = {
 };
 
 declare namespace adapter {
-  function s3(options?: S3AdapterFactoryOptions): AdapterFactory<any>;
-  function kinesis(): AdapterFactory<any[]>;
-  function dynamodb(): AdapterFactory<any[]>;
-  function sns(): AdapterFactory<any>;
-  function sqs(): AdapterFactory<any[]>;
+  function s3(options?: S3AdapterFactoryOptions): AdapterFactory;
+  function kinesis(): AdapterFactory;
+  function dynamodb(): AdapterFactory;
+  function sns(): AdapterFactory;
+  function sqs(): AdapterFactory;
 }
 
 export = adapter;

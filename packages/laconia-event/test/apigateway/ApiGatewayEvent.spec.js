@@ -37,6 +37,12 @@ describe("ApiGatewayEvent", () => {
     expect(apiGatewayEvent.body).toEqual(null);
   });
 
+  it("should not attempt to parse body when its undefined", async () => {
+    event.body = undefined;
+    const apiGatewayEvent = await ApiGatewayEvent.fromRaw(event);
+    expect(apiGatewayEvent.body).toEqual(null);
+  });
+
   it("should convert pathParameters into params", async () => {
     event.pathParameters = { pathParam1: "pathParam" };
     const apiGatewayEvent = await ApiGatewayEvent.fromRaw(event);

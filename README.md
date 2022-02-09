@@ -85,7 +85,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/mpxr"><img src="https://avatars2.githubusercontent.com/u/6689695?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Márton Vető</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=mpxr" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/VanOvermeire"><img src="https://avatars.githubusercontent.com/u/10529492?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sam Van Overmeire</b></sub></a><br /><a href="#ideas-VanOvermeire" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://kirbyjs.com"><img src="https://avatars.githubusercontent.com/u/13893942?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kirby Simmons</b></sub></a><br /><a href="#ideas-kirbyjs" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/laconiajs/laconia/commits?author=kirbyjs" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/joeleg"><img src="https://avatars.githubusercontent.com/u/97117351?v=4?s=100" width="100px;" alt=""/><br /><sub><b>joeleg</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=joeleg" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/joeleg"><img src="https://avatars.githubusercontent.com/u/97117351?v=4?s=100" width="100px;" alt=""/><br /><sub><b>joeleg</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=joeleg" title="Code">💻</a> <a href="https://github.com/laconiajs/laconia/issues?q=author%3Ajoeleg" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

@@ -3,7 +3,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![CircleCI](https://circleci.com/gh/laconiajs/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/laconiajs/laconia/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
@@ -85,6 +85,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/mpxr"><img src="https://avatars2.githubusercontent.com/u/6689695?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Márton Vető</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=mpxr" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/VanOvermeire"><img src="https://avatars.githubusercontent.com/u/10529492?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sam Van Overmeire</b></sub></a><br /><a href="#ideas-VanOvermeire" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://kirbyjs.com"><img src="https://avatars.githubusercontent.com/u/13893942?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kirby Simmons</b></sub></a><br /><a href="#ideas-kirbyjs" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/laconiajs/laconia/commits?author=kirbyjs" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/joeleg"><img src="https://avatars.githubusercontent.com/u/97117351?v=4?s=100" width="100px;" alt=""/><br /><sub><b>joeleg</b></sub></a><br /><a href="https://github.com/laconiajs/laconia/commits?author=joeleg" title="Code">💻</a></td>
   </tr>
 </table>
 

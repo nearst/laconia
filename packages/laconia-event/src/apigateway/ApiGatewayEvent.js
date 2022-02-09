@@ -6,7 +6,7 @@ module.exports = class ApiGatewayEvent {
     const apiGatewayEvent = new ApiGatewayEvent();
     apiGatewayEvent.headers = new ApiGatewayInputHeaders(event.headers);
     apiGatewayEvent.body =
-      event.body === null
+      event.body === null || event.body === undefined
         ? null
         : parseRequestBody(event, apiGatewayEvent.headers);
     apiGatewayEvent.params = Object.assign(

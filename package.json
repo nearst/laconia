@@ -21,7 +21,8 @@
     "acceptance-test": "lerna exec --scope @laconia/acceptance-test npm run test",
     "posttest": "npm run test:types && npm run test:jslint && npm run test:packagelint",
     "publish:coverage": "cat ./coverage/lcov.info | coveralls",
-    "commit": "npx git-cz"
+    "commit": "npx git-cz",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -59,6 +60,7 @@
     "jest": "^26.0.1",
     "jest-extended": "^0.11.1",
     "lerna": "^4.0.0",
+    "lint-staged": "^12.3.3",
     "lodash": "^4.17.5",
     "npm-package-json-lint": "^5.1.0",
     "prettier": "^1.16.4",
@@ -88,14 +90,12 @@
       "jest-extended"
     ]
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
   }
 }

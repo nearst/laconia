@@ -22,8 +22,7 @@
     "posttest": "npm run test:types && npm run test:jslint && npm run test:packagelint",
     "publish:coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "npx git-cz",
-    "prepare": "husky install",
-    "pre-commit": "lint-staged"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",

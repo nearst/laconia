@@ -29,6 +29,7 @@
   "dependencies": {
     "@laconia/core": "^1.12.0",
     "@laconia/invoker": "^1.12.0",
+    "await-event-emitter": "^2.0.2",
     "bottleneck": "^2.1.0",
     "lodash.get": "^4.4.2",
     "lodash.isplainobject": "^4.0.6"

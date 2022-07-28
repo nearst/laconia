@@ -17,7 +17,7 @@ module.exports = (
 ) => {
   const eventEmitter = new EventEmitter();
 
-  const handler = laconia((event, laconiaContext) => {
+  const handler = laconia(async (event, laconiaContext) => {
     const { context } = laconiaContext;
     const itemReader = reader(laconiaContext);
     const batchProcessor = new BatchProcessor(
@@ -36,7 +36,7 @@ module.exports = (
     );
 
     if (isBatchProcessingNotStarted(event.cursor)) {
-      eventEmitter.emit("start", laconiaContext);
+      await eventEmitter.emit("start", laconiaContext);
     }
     return batchProcessor.start(event.cursor);
   });

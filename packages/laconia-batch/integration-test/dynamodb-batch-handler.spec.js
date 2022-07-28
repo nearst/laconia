@@ -5,6 +5,9 @@ const DynamoDbMusicRepository = require("./DynamoDbMusicRepository");
 const { sharedBehaviour } = require("../test/shared-batch-handler-spec");
 const dynamoDb = require("../src/dynamoDb");
 const laconiaBatch = require("../src/laconiaBatch");
+const delay = require("delay");
+const { matchers, recordTimestamps } = require("@laconia/test-helper");
+expect.extend(matchers);
 
 const AWS_REGION = process.env.AWS_REGION || "eu-west-1";
 
@@ -173,6 +176,40 @@ describe("dynamodb batch handler", () => {
           Payload: '{"value":"response"}'
         });
       });
+
+      handler(event, context, callback);
+    });
+
+    it("waits for slow async operation before processing the next item", async done => {
+      itemListener = jest.fn().mockImplementation(() => {
+        recordTimestamps(itemListener)();
+        return delay(100);
+      });
+      context.getRemainingTimeInMillis = () => 10000;
+
+      const handler = laconiaBatch(
+        _ =>
+          dynamoDb({
+            operation: "SCAN",
+            dynamoDbParams: {
+              TableName: "Music"
+            },
+            documentClient
+          }),
+        {}
+      )
+        .register(() => ({ $lambda: new AWS.Lambda() }))
+        .on("item", itemListener)
+        .on("end", () => {
+          try {
+            expect(itemListener).toBeCalledWithGapBetween(50, 150);
+            expect(itemListener).toHaveBeenCalledTimes(3);
+            expect(invokeMock).toBeCalledTimes(0);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
 
       handler(event, context, callback);
     });

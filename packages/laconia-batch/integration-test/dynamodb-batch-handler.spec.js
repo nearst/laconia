@@ -160,12 +160,16 @@ describe("dynamodb batch handler", () => {
         .register(() => ({ $lambda: new AWS.Lambda() }))
         .on("item", itemListener)
         .on("end", () => {
-          expect(invokeMock).toHaveBeenCalledTimes(3);
-          expect(itemListener).toHaveBeenCalledTimes(1);
-          expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
-            Artist: "Bar"
-          });
-          done();
+          try {
+            expect(invokeMock).toHaveBeenCalledTimes(3);
+            expect(itemListener).toHaveBeenCalledTimes(1);
+            expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
+              Artist: "Bar"
+            });
+            done();
+          } catch (e) {
+            done(e);
+          }
         });
 
       invokeMock.mockImplementation((event, callback) => {

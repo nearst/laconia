@@ -45,6 +45,10 @@ module.exports = (
     on: (eventName, listener) => {
       eventEmitter.on(eventName, listener);
       return handler;
+    },
+    emit: async (eventName, laconiaContext, args) => {
+      await eventEmitter.emit(eventName, laconiaContext, args);
+      return handler;
     }
   });
 };

@@ -30,7 +30,7 @@
     "@laconia/core": "^1.12.0"
   },
   "engines": {
-    "node": ">=8.10"
+    "node": ">=12.22"
   },
   "publishConfig": {
     "access": "public"

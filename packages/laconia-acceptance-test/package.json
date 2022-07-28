@@ -55,7 +55,7 @@
     "ws": "^7.0.0"
   },
   "engines": {
-    "node": ">=8.10"
+    "node": ">=12.22"
   },
   "private": true,
   "jest": {

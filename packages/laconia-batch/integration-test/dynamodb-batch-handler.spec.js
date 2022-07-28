@@ -184,7 +184,7 @@ describe("dynamodb batch handler", () => {
       handler(event, context, callback);
     });
 
-    it("waits for slow async operation before processing the next item", async done => {
+    it("waits for slow async operation before processing the next item", async () => {
       itemListener = jest.fn().mockImplementation(() => {
         recordTimestamps(itemListener)();
         return delay(100);
@@ -203,19 +203,13 @@ describe("dynamodb batch handler", () => {
         {}
       )
         .register(() => ({ $lambda: new AWS.Lambda() }))
-        .on("item", itemListener)
-        .on("end", () => {
-          try {
-            expect(itemListener).toBeCalledWithGapBetween(50, 150);
-            expect(itemListener).toHaveBeenCalledTimes(3);
-            expect(invokeMock).toBeCalledTimes(0);
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
+        .on("item", itemListener);
 
-      handler(event, context, callback);
+      await handler(event, context, callback);
+
+      expect(itemListener).toBeCalledWithGapBetween(50, 150);
+      expect(itemListener).toHaveBeenCalledTimes(3);
+      expect(invokeMock).toBeCalledTimes(0);
     });
   });
 });

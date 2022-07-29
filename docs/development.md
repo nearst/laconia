@@ -6,6 +6,10 @@
 2.  Run `npm i`  
     This will also run `lerna bootstrap` for you.
 
+## Integration Test
+
+1. Install JRE version that's recommended in [this doc](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html#DynamoDBLocal.DownloadingAndRunning.title), this is required for dynamodb local to run
+
 ## Acceptance Test
 
 1.  Generate your AWS Access Key  

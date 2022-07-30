@@ -21,6 +21,7 @@ and this project adheres to
 ### Added
 
 - `@laconia/adapter`
+
   - #801 Add type text to the s3 input converter
     ([@Ankcorn](https://github.com/Ankcorn))
 
@@ -483,7 +484,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.12.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/ceilfors/laconia/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/ceilfors/laconia/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/ceilfors/laconia/compare/v1.10.0...v1.11.0
 [1.10.1]: https://github.com/ceilfors/laconia/compare/v1.10.0...v1.10.1

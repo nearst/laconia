@@ -18,6 +18,10 @@
 3.  Run `npm run test:acceptance`  
     This command will deploy the acceptance stack via `serverless framework`,
     then run the acceptance test.
+4.  You'll incur some cost by deploying this stack to AWS because of Kinesis.
+    To workaround it:
+    1. Once you're done with your work, delete the Kinesis stream in AWS console
+    2. To resume with your work, change the variable `orderEventsStreamName` to recreate a new Kinesis stream
 
 # Release
 

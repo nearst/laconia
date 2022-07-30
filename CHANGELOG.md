@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.14.0]
+
+- `@laconia/batch`
+  - #838 Support async listeners
+
+### Added
+
 ## [1.13.0]
 
 ### Added
@@ -484,7 +491,8 @@ and this project adheres to
 
 - Initial release of laconia-core and laconia-batch
 
-[unreleased]: https://github.com/ceilfors/laconia/compare/v1.13.0...HEAD
+[unreleased]: https://github.com/ceilfors/laconia/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/ceilfors/laconia/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/ceilfors/laconia/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/ceilfors/laconia/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/ceilfors/laconia/compare/v1.10.0...v1.11.0

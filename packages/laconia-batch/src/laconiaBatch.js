@@ -1,7 +1,7 @@
 const laconia = require("@laconia/core");
 const BatchProcessor = require("./BatchProcessor");
 const recurse = require("./recurse");
-const EventEmitter = require("./ChainableAwaitEventEmitter");
+const EventEmitter = require("await-event-emitter").default;
 
 const forwardEvents = (from, eventNames, to, laconiaContext) => {
   eventNames.forEach(eventName =>

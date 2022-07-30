@@ -1,4 +1,4 @@
-const EventEmitter = require("./ChainableAwaitEventEmitter");
+const EventEmitter = require("await-event-emitter").default;
 const Bottleneck = require("bottleneck");
 
 const rateLimit = (fn, itemPerSecond) => {

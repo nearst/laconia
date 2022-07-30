@@ -9,7 +9,7 @@ const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 
 process.env.AWS_REGION = process.env.AWS_REGION || "eu-west-1";
-const { AWS_REGION, NODE_VERSION = "10" } = process.env;
+const { AWS_REGION, NODE_VERSION = "12" } = process.env;
 const SERVERLESS_STAGE = `node${NODE_VERSION}`;
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
 const PREFIX = `${SERVERLESS_SERVICE_NAME}-${SERVERLESS_STAGE}`;

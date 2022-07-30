@@ -1,4 +1,4 @@
-const EventEmitter = require("events");
+const EventEmitter = require("./ChainableAwaitEventEmitter");
 const Bottleneck = require("bottleneck");
 
 const rateLimit = (fn, itemPerSecond) => {
@@ -24,16 +24,16 @@ module.exports = class BatchProcessor extends EventEmitter {
       const { item, cursor, finished } = await this.readItem(prevCursor);
 
       if (item) {
-        this.emit("item", item);
+        await this.emit("item", item);
       }
 
       if (finished) {
-        this.emit("end");
+        await this.emit("end");
         return;
       }
 
       if (this.shouldStop(cursor)) {
-        this.emit("stop", cursor);
+        await this.emit("stop", cursor);
         return;
       }
 

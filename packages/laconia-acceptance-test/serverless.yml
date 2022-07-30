@@ -12,8 +12,8 @@ package:
 
 provider:
   name: aws
-  runtime: nodejs${env:NODE_VERSION, '10' }.x
-  stage: node${env:NODE_VERSION, '10' }
+  runtime: nodejs${env:NODE_VERSION, '12' }.x
+  stage: node${env:NODE_VERSION, '12' }
   region: ${env:AWS_REGION, 'eu-west-1'}
   tracing: true
   apiGateway:
@@ -147,10 +147,7 @@ functions:
     events:
       - stream:
           type: kinesis
-          arn:
-            Fn::GetAtt:
-              - OrderEventsStream
-              - Arn
+          arn: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
   notify-user:
     handler: src/notify-user.handler
     environment:
@@ -159,10 +156,7 @@ functions:
     events:
       - stream:
           type: kinesis
-          arn:
-            Fn::GetAtt:
-              - OrderEventsStream
-              - Arn
+          arn: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
   send-email:
     handler: src/send-email.handler
     events:
@@ -186,10 +180,7 @@ functions:
     events:
       - stream:
           type: kinesis
-          arn:
-            Fn::GetAtt:
-              - OrderEventsStream
-              - Arn
+          arn: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
     environment:
       CONNECTION_TABLE_NAME: ${self:custom.connectionDynamoDbTableName}
       WEBSOCKET_ENDPOINT: ${self:custom.webSocketEndpoint}

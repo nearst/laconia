@@ -24,11 +24,13 @@
 Ensure everything is running when they're clean first by running:
 `npm run clean && npm install && npm run test:all`.
 
-Run `npx lerna publish`. This command will do everything for you:
+1. Run `npx lerna publish`. This command will do everything for you:
 
-1.  Version update to all packages' package.json
-2.  Inter dependency update
-3.  Git commit
-4.  Git tag creation
-5.  NPM package publish to npmjs
-6.  Git tag push
+   1. Version update to all packages' package.json
+   2. Inter dependency update
+   3. Git commit
+   4. Git tag creation
+   5. NPM package publish to npmjs
+   6. Git tag push
+
+2. Update CHANGELOG.md (also the links at the bottom of the file)

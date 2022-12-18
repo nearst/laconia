@@ -129,6 +129,15 @@
         "code",
         "bug"
       ]
+    },
+    {
+      "login": "eilgin",
+      "name": "thomas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1125661?v=4",
+      "profile": "https://thomas-jouannic.fr",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -136,5 +145,6 @@
   "projectOwner": "laconiajs",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }

@@ -44,7 +44,7 @@
     "pino": "^6.0.0",
     "serverless-plugin-tracing": "^2.0.0",
     "serverless-pseudo-parameters": "^2.2.0",
-    "uuid": "^8.0.0"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper",

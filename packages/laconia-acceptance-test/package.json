@@ -52,7 +52,7 @@
     "serverless": "^2.4.0",
     "serverless-s3-remover": "^0.6.0",
     "serverless-s3-sync": "^1.6.1",
-    "ws": "^7.0.0"
+    "ws": "^7.4.6"
   },
   "engines": {
     "node": ">=12.22"

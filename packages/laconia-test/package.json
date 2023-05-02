@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@laconia/invoker": "^1.14.0",
-    "p-wait-for": "^3.1.0"
+    "p-wait-for": "^5.0.2"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"

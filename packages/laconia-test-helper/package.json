@@ -23,7 +23,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "p-wait-for": "^3.1.0"
+    "p-wait-for": "^5.0.2"
   },
   "engines": {
     "node": ">=12.22"

@@ -45,7 +45,7 @@
     "commitizen": "^4.0.3",
     "coveralls": "^3.0.2",
     "cz-conventional-changelog": "^3.0.2",
-    "delay": "^5.0.0",
+    "delay": "^6.0.0",
     "dynamodb-local": "0.0.31",
     "eslint": "^7.8.0",
     "eslint-config-prettier": "^8.1.0",

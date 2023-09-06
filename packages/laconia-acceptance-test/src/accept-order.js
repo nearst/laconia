@@ -3,9 +3,10 @@ const laconia = require("@laconia/core");
 const { req, res } = require("@laconia/event").apigateway;
 const KinesisOrderStream = require("./KinesisOrderStream");
 
-const instances = ({ env }) => ({
-  orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
-});
+const app = async (id, { orderStream }) => {
+  await orderStream.send({ eventType: "accepted", orderId: id });
+  return { status: "ok" };
+};
 
 const withCors = next => async (...args) => {
   const response = await next(...args);
@@ -24,9 +25,8 @@ const adapter = app =>
     }
   });
 
-const app = async (id, { orderStream }) => {
-  await orderStream.send({ eventType: "accepted", orderId: id });
-  return { status: "ok" };
-};
+const instances = ({ env }) => ({
+  orderStream: new KinesisOrderStream(env.ORDER_STREAM_NAME)
+});
 
 exports.handler = laconia(adapter(app)).register(instances);

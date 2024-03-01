@@ -50,7 +50,6 @@
     "@laconia/test-helper": "file:../laconia-test-helper",
     "frisby": "^2.1.3",
     "serverless": "^3.38.0",
-    "serverless-pseudo-parameters": "^2.6.1",
     "serverless-s3-remover": "^0.6.0",
     "serverless-s3-sync": "^2.0.0",
     "ws": "^7.4.6"

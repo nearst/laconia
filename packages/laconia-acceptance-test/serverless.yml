@@ -3,7 +3,6 @@ service: laconia-acceptance
 plugins:
   - serverless-s3-remover
   - serverless-s3-sync
-  - serverless-pseudo-parameters
   - serverless-plugin-tracing
 
 provider:
@@ -34,19 +33,19 @@ provider:
     - Effect: Allow
       Action: sns:Publish
       Resource:
-        - arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:${self:custom.restaurantNotificationTopicName}
+        - arn:aws:sns:${aws:region}:${aws:accountId}:${self:custom.restaurantNotificationTopicName}
     - Effect: "Allow"
       Action:
         - "ssm:GetParameters"
-      Resource: "arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:custom.fullName}/*"
+      Resource: "arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/${self:custom.fullName}/*"
     - Effect: "Allow"
       Action:
         - kinesis:PutRecord
-      Resource: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
+      Resource: arn:aws:kinesis:${aws:region}:${aws:accountId}:stream/${self:custom.orderEventsStreamName}
     - Effect: Allow
       Action:
         - sqs:*
-      Resource: arn:aws:sqs:#{AWS::Region}:#{AWS::AccountId}:${self:custom.userEmailQueueName}
+      Resource: arn:aws:sqs:${aws:region}:${aws:accountId}:${self:custom.userEmailQueueName}
   environment:
     TRACKER_BUCKET_NAME: ${self:custom.trackerBucketName}
     LACONIA_TEST_SPY_BUCKET: ${self:custom.trackerBucketName}
@@ -74,13 +73,13 @@ custom:
       - ""
       - - "https://"
         - Ref: "ApiGatewayRestApi"
-        - ".execute-api.#{AWS::Region}.amazonaws.com/${self:provider.stage}"
+        - ".execute-api.${aws:region}.amazonaws.com/${self:provider.stage}"
   webSocketEndpoint:
     Fn::Join:
       - ""
       - - "https://"
         - Ref: "WebsocketsApi"
-        - ".execute-api.#{AWS::Region}.amazonaws.com/${self:provider.stage}"
+        - ".execute-api.${aws:region}.amazonaws.com/${self:provider.stage}"
 
 functions:
   place-order:
@@ -139,11 +138,11 @@ functions:
     handler: src/notify-restaurant.handler
     environment:
       TOTAL_ORDER_BUCKET_NAME: ${self:custom.totalOrderBucketName}
-      RESTAURANT_NOTIFICATION_TOPIC_ARN: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:${self:custom.restaurantNotificationTopicName}
+      RESTAURANT_NOTIFICATION_TOPIC_ARN: arn:aws:sns:${aws:region}:${aws:accountId}:${self:custom.restaurantNotificationTopicName}
     events:
       - stream:
           type: kinesis
-          arn: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
+          arn: arn:aws:kinesis:${aws:region}:${aws:accountId}:stream/${self:custom.orderEventsStreamName}
   notify-user:
     handler: src/notify-user.handler
     environment:
@@ -152,7 +151,7 @@ functions:
     events:
       - stream:
           type: kinesis
-          arn: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
+          arn: arn:aws:kinesis:${aws:region}:${aws:accountId}:stream/${self:custom.orderEventsStreamName}
   send-email:
     handler: src/send-email.handler
     events:
@@ -176,7 +175,7 @@ functions:
     events:
       - stream:
           type: kinesis
-          arn: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:custom.orderEventsStreamName}
+          arn: arn:aws:kinesis:${aws:region}:${aws:accountId}:stream/${self:custom.orderEventsStreamName}
     environment:
       CONNECTION_TABLE_NAME: ${self:custom.connectionDynamoDbTableName}
       WEBSOCKET_ENDPOINT: ${self:custom.webSocketEndpoint}

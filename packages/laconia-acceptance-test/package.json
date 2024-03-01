@@ -39,17 +39,18 @@
     "@laconia/test": "^1.14.0",
     "@laconia/xray": "^1.14.0",
     "aws-apigatewaymanagementapi": "^0.1.0",
+    "aws-sdk": "^2.1569.0",
     "axios": "^1.6.4",
     "p-wait-for": "^3.1.0",
     "pino": "^6.0.0",
     "serverless-plugin-tracing": "^2.0.0",
-    "serverless-pseudo-parameters": "^2.6.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper",
-    "frisby": "^2.0.16",
-    "serverless": "^2.4.0",
+    "frisby": "^2.1.3",
+    "serverless": "^3.38.0",
+    "serverless-pseudo-parameters": "^2.6.1",
     "serverless-s3-remover": "^0.6.0",
     "serverless-s3-sync": "^2.0.0",
     "ws": "^7.4.6"

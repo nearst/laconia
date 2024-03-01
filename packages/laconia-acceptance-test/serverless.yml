@@ -6,14 +6,10 @@ plugins:
   - serverless-pseudo-parameters
   - serverless-plugin-tracing
 
-package:
-  exclude:
-    - node_modules/**/aws-sdk/**
-
 provider:
   name: aws
-  runtime: nodejs${env:NODE_VERSION, '12' }.x
-  stage: node${env:NODE_VERSION, '12' }
+  runtime: nodejs${env:NODE_VERSION, '20' }.x
+  stage: node${env:NODE_VERSION, '20' }
   region: ${env:AWS_REGION, 'eu-west-1'}
   tracing: true
   apiGateway:

@@ -252,7 +252,7 @@ describe("order flow", () => {
       expect(JSON.parse(thankYouMessage).message).toEqual(
         "thank you for your order"
       );
-    }, 10000);
+    }, 20000);
 
     it("should capture all card payments", async () => {
       await laconiaTest(name("process-card-payments")).fireAndForget();

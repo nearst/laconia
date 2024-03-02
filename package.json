@@ -8,7 +8,7 @@
     "postclean": "rm -rf node_modules",
     "postinstall": "lerna bootstrap",
     "test": "jest --coverage",
-    "test:circleci": "npm test -- -w 1",
+    "test:ci": "npm test -- -w 1",
     "test:watch": "jest --watch",
     "test:integration": "lerna exec --scope @laconia/batch npm run test:integration",
     "test:acceptance": "npm run deploy-acceptance && npm run acceptance-test",

@@ -3,8 +3,10 @@
 </p>
 
 <p align="center">
-  🛡️ Laconia — Create well-crafted serverless applications, effortlessly.
+  <strong>🛡️ Laconia — Create well-crafted serverless applications, effortlessly.</strong>
 </p>
+
+---
 
 [![Build Status](https://github.com/nearst/laconia/actions/workflows/test.yml/badge.svg)](https://github.com/nearst/laconia/actions)
 [![Coverage Status](https://coveralls.io/repos/github/nearst/laconia/badge.svg?branch=master)](https://coveralls.io/github/nearst/laconia?branch=master)

@@ -1,29 +1,25 @@
 <p align="center">
-  <img alt="Laconia" src="docs/logo/2/png/2_vertical@0.5x.png">
+  <img alt="Laconia" src="docs/logo/2/png/2_vertical@0.5x.png" width="120">
 </p>
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-[![CircleCI](https://circleci.com/gh/nearst/laconia/tree/master.svg?style=shield)](https://circleci.com/gh/nearst/laconia/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/laconiajs/laconia/badge.svg?branch=master)](https://coveralls.io/github/laconiajs/laconia?branch=master)
+<p align="center">
+  🛡️ Laconia — Create well-crafted serverless applications, effortlessly.
+</p>
+
+[![Build Status](https://github.com/nearst/laconia/actions/workflows/test.yml/badge.svg)](https://circleci.com/gh/nearst/laconia/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/nearst/laconia/badge.svg?branch=master)](https://coveralls.io/github/nearst/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_shield)
-[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-brightgreen.svg?logo=dependabot)](https://app.dependabot.com/accounts/laconiajs/repos/113743358)
-[![Gitter](https://badges.gitter.im/laconiajs/laconia.svg)](https://gitter.im/laconiajs/laconia?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![npm](https://img.shields.io/npm/v/@laconia/core.svg)
-![node](https://img.shields.io/node/v/@laconia/core.svg)
-![code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)
-![code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
 ![npm](https://img.shields.io/npm/dm/@laconia/core.svg)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](code-of-conduct.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](code-of-conduct.md)<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=shield)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-> 🛡️ Laconia — Create well-crafted serverless applications, effortlessly
-
-_If you like Laconia, ⭐ the project to support its development!_
 
 Laconia is a microframework for building Node.js serverless function based
 applications.
+
+> _Laconia is maintained by 🛍️ [NearSt](https://www.near.st/?utm_source=laconia)._ \
+> _If you like Laconia, ⭐ the project to support its development!_
 
 ## Features
 

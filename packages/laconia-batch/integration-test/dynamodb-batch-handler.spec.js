@@ -14,6 +14,8 @@ const AWS_REGION = process.env.AWS_REGION || "eu-west-1";
 AWSMock.setSDKInstance(AWS);
 AWS.config.credentials = new AWS.Credentials("fake", "fake", "fake");
 
+jest.setTimeout(30000);
+
 describe("dynamodb batch handler", () => {
   const dynamoLocalPort = 8000;
   const dynamoDbOptions = {

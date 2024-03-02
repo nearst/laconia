@@ -246,9 +246,7 @@ resources:
         KeySchema:
           - AttributeName: "orderId"
             KeyType: "HASH"
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.orderDynamoDbBatchTableName}
     ConnectionTable:
       Type: "AWS::DynamoDB::Table"
@@ -259,7 +257,5 @@ resources:
         KeySchema:
           - AttributeName: "connectionId"
             KeyType: "HASH"
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.connectionDynamoDbTableName}

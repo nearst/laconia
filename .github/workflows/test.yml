@@ -40,3 +40,7 @@ jobs:
 
       - name: Run tests
         run: npm run test:ci && npm run test:integration
+
+      - name: Upload coverage
+        if: matrix.node-version == 20
+        uses: coverallsapp/github-action@v2

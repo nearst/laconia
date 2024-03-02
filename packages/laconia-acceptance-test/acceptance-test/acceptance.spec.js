@@ -19,7 +19,7 @@ const log = v => console.log(v) || v;
 const bucketName = (name, accountId) => log(`${PREFIX}-${accountId}-${name}`);
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-jest.setTimeout(10000);
+jest.setTimeout(30000);
 
 const Joi = frisby.Joi;
 

@@ -1,10 +1,7 @@
 name: Tests
 
 on:
-  pull_request:
-    types: [opened, synchronize]
   push:
-    branches: [master]
   merge_group:
   workflow_dispatch:
 

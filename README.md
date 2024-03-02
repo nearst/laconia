@@ -56,7 +56,7 @@ You can improve it by sending pull requests to the
 
 [Apache License 2.0](LICENSE)
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Flaconiajs%2Flaconia?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnearst%2Flaconia.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnearst%2Flaconia?ref=badge_large)
 
 ## Contributors ✨
 

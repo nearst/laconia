@@ -1,14 +1,14 @@
 const AWS = require("aws-sdk");
 const WebSocket = require("ws");
 const frisby = require("frisby");
-const uuidv4 = require("uuid/v4");
+const { v4: uuidv4 } = require("uuid");
 const laconiaTest = require("@laconia/test");
 
 const { getAccountId } = require("../src/sts");
 const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 
-process.env.AWS_REGION = process.env.AWS_REGION || "eu-west-1";
+process.env.AWS_REGION = process.env.AWS_REGION || "us-east-1";
 const { AWS_REGION, NODE_VERSION = "20" } = process.env;
 const SERVERLESS_STAGE = `node${NODE_VERSION}`;
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";

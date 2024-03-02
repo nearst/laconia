@@ -1,15 +1,19 @@
 service: laconia-acceptance
 
 plugins:
+  - serverless-esbuild
   - serverless-s3-remover
   - serverless-s3-sync
   - serverless-plugin-tracing
+
+package:
+  individually: true
 
 provider:
   name: aws
   runtime: nodejs${env:NODE_VERSION, '20' }.x
   stage: node${env:NODE_VERSION, '20' }
-  region: ${env:AWS_REGION, 'eu-west-1'}
+  region: ${env:AWS_REGION, 'us-east-1'}
   tracing: true
   apiGateway:
     binaryMediaTypes:
@@ -68,6 +72,8 @@ custom:
   s3Sync:
     - bucketName: ${self:custom.restaurantBucketName}
       localDir: src/resources
+  esbuild:
+    exclude: []
   apigatewayUrl:
     Fn::Join:
       - ""

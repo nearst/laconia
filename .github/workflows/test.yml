@@ -1,4 +1,4 @@
-name: Test
+name: Tests
 
 on:
   pull_request:
@@ -19,10 +19,6 @@ jobs:
     strategy:
       matrix:
         node-version: [16, 18, 20]
-    permissions:
-      id-token: write
-      contents: read
-      actions: write
     env:
       NODE_VERSION: ${{ matrix.node-version }}
       AWS_REGION: us-east-1
@@ -35,21 +31,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-      
-      - name: Use Java 17
+
+      - name: Setup java 17
         uses: actions/setup-java@v4
         with:
-          distribution: "zulu"
-          java-version: "17"
+          distribution: zulu
+          java-version: 17
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
-        with:
-          role-to-assume: arn:aws:iam::211125641521:role/github-e2e-test
-          aws-region: us-east-1
-
       - name: Run tests
-        run: npm run test:all
+        run: npm run test && npm run test:integration

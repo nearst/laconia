@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@types/aws-lambda": "8.10.134",
-    "lambda-warmer": "^1.1.0"
+    "lambda-warmer": "^2.0.1"
   },
   "devDependencies": {
     "@laconia/core": "^1.14.0"

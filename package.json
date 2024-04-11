@@ -58,7 +58,7 @@
     "husky": "^8.0.3",
     "jest": "^26.0.1",
     "jest-extended": "^0.11.1",
-    "lerna": "^4.0.0",
+    "lerna": "^8.1.2",
     "lodash": "^4.17.5",
     "npm-package-json-lint": "^5.1.0",
     "prettier": "^1.16.4",

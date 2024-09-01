@@ -35,7 +35,7 @@
   "homepage": "https://laconiajs.io/",
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",
-    "@commitlint/config-conventional": "^17.6.0",
+    "@commitlint/config-conventional": "^19.4.1",
     "@laconia/test-helper": "file:packages/laconia-test-helper",
     "@types/jest": "^26.0.3",
     "@types/node": "~20.11.24",

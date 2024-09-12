@@ -7,27 +7,27 @@ declare interface ErrorResponse {
   statusCode?: number;
 }
 
-declare interface ErrorMapping {
-  (error: Error): ErrorResponse;
+declare interface ErrorMapping<Err> {
+  (error: Err): ErrorResponse;
 }
 
-declare interface ErrorMappings {
-  [errorNameRegex: string]: ErrorMapping;
+declare interface ErrorMappings<Err> {
+  [errorNameRegex: string]: ErrorMapping<Err>;
 }
 
 declare interface ErrorMappingsMap extends Map<string, ErrorResponse> {}
 
 declare namespace apigateway {
-  interface AdapterFactoryOptions {
+  interface AdapterFactoryOptions<Err> {
     inputType?: "params" | "body";
     responseStatusCode?: number;
     includeInputHeaders?: boolean;
-    errorMappings?: ErrorMappings | Map<string, ErrorMapping>;
+    errorMappings?: ErrorMappings<Err> | Map<string, ErrorMapping<Err>>;
     responseAdditionalHeaders?: eventApiGateway.ApiGatewayOutputHeaders;
   }
 
-  function apigateway(options?: AdapterFactoryOptions): AdapterFactory<any>;
-  function webSocket(): AdapterFactory<any>;
+  function apigateway<Err extends Error>(options?: AdapterFactoryOptions<Err>): AdapterFactory;
+  function webSocket(): AdapterFactory;
 }
 
 export = apigateway;

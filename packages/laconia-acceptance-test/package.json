@@ -53,7 +53,7 @@
     "serverless": "^3.38.0",
     "serverless-esbuild": "^1.51.0",
     "serverless-s3-remover": "^0.6.0",
-    "serverless-s3-sync": "^2.0.0",
+    "serverless-s3-sync": "^3.4.0",
     "uuid": "^9.0.1",
     "ws": "^7.4.6"
   },

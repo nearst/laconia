@@ -48,7 +48,7 @@
     "delay": "^5.0.0",
     "dynamodb-local": "0.0.34",
     "eslint": "^7.8.0",
-    "eslint-config-prettier": "^8.1.0",
+    "eslint-config-prettier": "^10.0.1",
     "eslint-config-standard": "^14.0.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^11.0.0",

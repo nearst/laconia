@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16, 18, 20]
+        node-version: [16, 18, 20, 22]
     env:
       NODE_VERSION: ${{ matrix.node-version }}
       AWS_REGION: us-east-1

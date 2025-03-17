@@ -2,7 +2,7 @@ name: Acceptance test
 
 on:
   push:
-    branches: [master]
+    branches: [master, v2]
   merge_group:
   workflow_dispatch:
 

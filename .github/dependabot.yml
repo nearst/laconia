@@ -3,15 +3,12 @@ updates:
 - package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: monthly
-  open-pull-requests-limit: 10
+    interval: weekly
+  open-pull-requests-limit: 3
   ignore:
   - dependency-name: prettier
     versions:
     - ">= 2.a, < 3"
   - dependency-name: aws-sdk
     versions:
-    - 2.834.0
-  - dependency-name: husky
-    versions:
-    - 4.3.8
+    - ">= 2, < 3"

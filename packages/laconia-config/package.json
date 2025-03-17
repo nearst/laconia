@@ -1,6 +1,6 @@
 {
   "name": "@laconia/config",
-  "version": "1.12.0",
+  "version": "1.14.0",
   "description": "Externalizes application secret and configuration",
   "keywords": [
     "aws",
@@ -24,7 +24,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "@laconia/core": "^1.12.0"
+    "@laconia/core": "^1.14.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"
@@ -33,7 +33,7 @@
     "aws-sdk": "^2.432.0"
   },
   "engines": {
-    "node": ">=8.10"
+    "node": ">=12.22"
   },
   "publishConfig": {
     "access": "public"

@@ -88,7 +88,8 @@
       "profile": "https://github.com/reestolonio",
       "contributions": [
         "code",
-        "bug"
+        "bug",
+        "ideas"
       ]
     },
     {
@@ -108,12 +109,42 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "kirbyjs",
+      "name": "Kirby Simmons",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13893942?v=4",
+      "profile": "http://kirbyjs.com",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
+    },
+    {
+      "login": "joeleg",
+      "name": "joeleg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/97117351?v=4",
+      "profile": "https://github.com/joeleg",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "eilgin",
+      "name": "thomas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1125661?v=4",
+      "profile": "https://thomas-jouannic.fr",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "laconia",
-  "projectOwner": "laconiajs",
+  "projectOwner": "nearst",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }

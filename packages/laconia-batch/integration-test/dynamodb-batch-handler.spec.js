@@ -5,11 +5,16 @@ const DynamoDbMusicRepository = require("./DynamoDbMusicRepository");
 const { sharedBehaviour } = require("../test/shared-batch-handler-spec");
 const dynamoDb = require("../src/dynamoDb");
 const laconiaBatch = require("../src/laconiaBatch");
+const delay = require("delay");
+const { matchers, recordTimestamps } = require("@laconia/test-helper");
+expect.extend(matchers);
 
 const AWS_REGION = process.env.AWS_REGION || "eu-west-1";
 
 AWSMock.setSDKInstance(AWS);
 AWS.config.credentials = new AWS.Credentials("fake", "fake", "fake");
+
+jest.setTimeout(30000);
 
 describe("dynamodb batch handler", () => {
   const dynamoLocalPort = 8000;
@@ -157,12 +162,16 @@ describe("dynamodb batch handler", () => {
         .register(() => ({ $lambda: new AWS.Lambda() }))
         .on("item", itemListener)
         .on("end", () => {
-          expect(invokeMock).toHaveBeenCalledTimes(3);
-          expect(itemListener).toHaveBeenCalledTimes(1);
-          expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
-            Artist: "Bar"
-          });
-          done();
+          try {
+            expect(invokeMock).toHaveBeenCalledTimes(3);
+            expect(itemListener).toHaveBeenCalledTimes(1);
+            expect(itemListener).toHaveBeenCalledWith(expect.anything(), {
+              Artist: "Bar"
+            });
+            done();
+          } catch (e) {
+            done(e);
+          }
         });
 
       invokeMock.mockImplementation((event, callback) => {
@@ -175,6 +184,34 @@ describe("dynamodb batch handler", () => {
       });
 
       handler(event, context, callback);
+    });
+
+    it("waits for slow async operation before processing the next item", async () => {
+      itemListener = jest.fn().mockImplementation(() => {
+        recordTimestamps(itemListener)();
+        return delay(100);
+      });
+      context.getRemainingTimeInMillis = () => 10000;
+
+      const handler = laconiaBatch(
+        _ =>
+          dynamoDb({
+            operation: "SCAN",
+            dynamoDbParams: {
+              TableName: "Music"
+            },
+            documentClient
+          }),
+        {}
+      )
+        .register(() => ({ $lambda: new AWS.Lambda() }))
+        .on("item", itemListener);
+
+      await handler(event, context, callback);
+
+      expect(itemListener).toBeCalledWithGapBetween(50, 150);
+      expect(itemListener).toHaveBeenCalledTimes(3);
+      expect(invokeMock).toBeCalledTimes(0);
     });
   });
 });

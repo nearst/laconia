@@ -1,6 +1,6 @@
 {
   "name": "@laconia/middleware-lambda-warmer",
-  "version": "1.12.0",
+  "version": "1.14.0",
   "description": "Integrates Lambda with lambda-warmer",
   "keywords": [
     "aws",
@@ -24,14 +24,14 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "@types/aws-lambda": "8.10.76",
+    "@types/aws-lambda": "8.10.138",
     "lambda-warmer": "^1.1.0"
   },
   "devDependencies": {
-    "@laconia/core": "^1.12.0"
+    "@laconia/core": "^1.14.0"
   },
   "engines": {
-    "node": ">=8.10"
+    "node": ">=12.22"
   },
   "publishConfig": {
     "access": "public"

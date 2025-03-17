@@ -1,6 +1,6 @@
 {
   "name": "@laconia/core",
-  "version": "1.12.0",
+  "version": "1.14.0",
   "description": "Micro dependency injection framework",
   "keywords": [
     "aws",
@@ -24,7 +24,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "@types/aws-lambda": "8.10.76"
+    "@types/aws-lambda": "8.10.138"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"
@@ -33,7 +33,7 @@
     "aws-sdk": "^2.432.0"
   },
   "engines": {
-    "node": ">=8.10"
+    "node": ">=12.22"
   },
   "publishConfig": {
     "access": "public"

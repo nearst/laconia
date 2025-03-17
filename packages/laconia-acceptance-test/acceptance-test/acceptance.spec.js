@@ -1,15 +1,15 @@
 const AWS = require("aws-sdk");
 const WebSocket = require("ws");
 const frisby = require("frisby");
-const uuidv4 = require("uuid/v4");
+const { v4: uuidv4 } = require("uuid");
 const laconiaTest = require("@laconia/test");
 
 const { getAccountId } = require("../src/sts");
 const S3TotalOrderStorage = require("../src/S3TotalOrderStorage");
 const DynamoDbOrderRepository = require("../src/DynamoDbOrderRepository");
 
-process.env.AWS_REGION = process.env.AWS_REGION || "eu-west-1";
-const { AWS_REGION, NODE_VERSION = "10" } = process.env;
+process.env.AWS_REGION = process.env.AWS_REGION || "us-east-1";
+const { AWS_REGION, NODE_VERSION = "20" } = process.env;
 const SERVERLESS_STAGE = `node${NODE_VERSION}`;
 const SERVERLESS_SERVICE_NAME = "laconia-acceptance";
 const PREFIX = `${SERVERLESS_SERVICE_NAME}-${SERVERLESS_STAGE}`;
@@ -19,7 +19,7 @@ const log = v => console.log(v) || v;
 const bucketName = (name, accountId) => log(`${PREFIX}-${accountId}-${name}`);
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-jest.setTimeout(10000);
+jest.setTimeout(30000);
 
 const Joi = frisby.Joi;
 
@@ -252,7 +252,7 @@ describe("order flow", () => {
       expect(JSON.parse(thankYouMessage).message).toEqual(
         "thank you for your order"
       );
-    }, 10000);
+    }, 20000);
 
     it("should capture all card payments", async () => {
       await laconiaTest(name("process-card-payments")).fireAndForget();

@@ -1,5 +1,6 @@
 const BatchProcessor = require("../src/BatchProcessor");
 const { matchers, recordTimestamps } = require("@laconia/test-helper");
+const delay = require("delay");
 expect.extend(matchers);
 
 const arrayReader = array =>
@@ -75,6 +76,38 @@ describe("BatchProcessor", () => {
       await batchProcessor.start();
 
       expect(itemListener).toBeCalledWithGapBetween(3, 75);
+    });
+
+    describe("and the item listener is as slow as the rate limit", () => {
+      beforeEach(() => {
+        itemListener.mockImplementation(() => {
+          recordTimestamps(itemListener)();
+          return delay(50);
+        });
+      });
+
+      it("processes the items with the configured delay", async () => {
+        const batchProcessor = createBatchProcessor(50);
+        await batchProcessor.start();
+
+        expect(itemListener).toBeCalledWithGapBetween(3, 75);
+      });
+    });
+
+    describe("and the item listener is as slower than the rate limit", () => {
+      beforeEach(() => {
+        itemListener.mockImplementation(() => {
+          recordTimestamps(itemListener)();
+          return delay(100);
+        });
+      });
+
+      it("processes the items by the speed of the listener", async () => {
+        const batchProcessor = createBatchProcessor(50);
+        await batchProcessor.start();
+
+        expect(itemListener).toBeCalledWithGapBetween(90, 150);
+      });
     });
   });
 });

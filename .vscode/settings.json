@@ -5,6 +5,6 @@
   "javascript.updateImportsOnFileMove.enabled": "always",
   "prettier.proseWrap": "always",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   }
 }

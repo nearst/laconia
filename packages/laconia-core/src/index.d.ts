@@ -16,40 +16,36 @@ declare namespace laconia {
     context?: Context;
   }
 
-  interface LaconiaFactory<Dependencies = any> {
-    (laconiaContext: LaconiaContext): Promise<Dependencies> | Dependencies;
+  interface LaconiaFactory<Context, Dependencies> {
+    (laconiaContext: Context): Promise<Dependencies> | Dependencies;
   }
 
-  interface PostProcessor {
-    (laconiaContext: LaconiaContext): void;
+  interface PostProcessor<Context> {
+    (laconiaContext: Context): void;
   }
 
   interface LaconiaHandler extends Handler {
-    register(
-      factory: LaconiaFactory | LaconiaFactory[],
+    register<Context extends LaconiaContext, Dependencies>(
+      factory: LaconiaFactory<Context, Dependencies> | LaconiaFactory<Context, Dependencies>[],
       options?: FactoryOptions
     ): this;
-    register(
+    register<Context extends LaconiaContext, Dependencies>(
       name: string,
-      factory: LaconiaFactory,
+      factory: LaconiaFactory<Context, Dependencies>,
       options?: FactoryOptions
     ): this;
-    postProcessor(postProcessor: PostProcessor): this;
+    postProcessor<Context extends LaconiaContext>(postProcessor: PostProcessor<Context>): this;
   }
 
-  interface Adaptee<Input, Output> {
-    (input: Input, laconiaContext: any): Output;
+  interface App<Input, Context, Output> {
+    (event: Input, laconiaContext: Context): Output;
   }
 
-  interface Adapter<Output> {
-    (event: any, laconiaContext: laconia.LaconiaContext): Output;
-  }
-
-  interface AdapterFactory<Input> {
-    <Output>(app: Adaptee<Input, Output>): Adapter<Output>;
+  interface AdapterFactory {
+    <Input, Context extends LaconiaContext, Output>(app: App<Input, Context, Output>): App<Input, Context, Output>;
   }
 }
 
-declare function laconia(app: Function): laconia.LaconiaHandler;
+declare function laconia<Input, Context extends laconia.LaconiaContext, Output>(app: laconia.App<Input, Context, Output>): laconia.LaconiaHandler;
 
 export = laconia;

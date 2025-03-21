@@ -41,7 +41,7 @@
     "@types/node": "~22.13.7",
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.432.0",
-    "aws-sdk-mock": "^5.0.0",
+    "aws-sdk-mock": "^6.2.1",
     "commitizen": "^4.0.3",
     "coveralls": "^3.0.2",
     "cz-conventional-changelog": "^3.0.2",

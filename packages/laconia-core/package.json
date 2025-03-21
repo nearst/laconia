@@ -29,9 +29,6 @@
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"
   },
-  "peerDependencies": {
-    "aws-sdk": "^2.432.0"
-  },
   "engines": {
     "node": ">=12.22"
   },

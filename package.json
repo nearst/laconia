@@ -21,30 +21,29 @@
     "acceptance-test": "lerna exec --scope @laconia/acceptance-test npm run test",
     "posttest": "npm run test:types && npm run test:jslint && npm run test:packagelint",
     "publish:coverage": "cat ./coverage/lcov.info | coveralls",
-    "commit": "npx git-cz"
+    "prepare": "husky || true",
+    "commitlint": "commitlint --edit"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/laconiajs/laconia.git"
   },
-  "author": "Wisen Tanasa <wisen@ceilfors.com>",
+  "author": "NearSt <dev@near.st>, Wisen Tanasa <wisen@ceilfors.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/laconiajs/laconia/issues"
   },
   "homepage": "https://laconiajs.io/",
   "devDependencies": {
-    "@commitlint/cli": "^13.1.0",
-    "@commitlint/config-conventional": "^19.4.1",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
     "@laconia/test-helper": "file:packages/laconia-test-helper",
     "@types/jest": "^26.0.3",
     "@types/node": "~22.13.7",
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.432.0",
     "aws-sdk-mock": "^5.0.0",
-    "commitizen": "^4.0.3",
     "coveralls": "^3.0.2",
-    "cz-conventional-changelog": "^3.0.2",
     "delay": "^5.0.0",
     "dynamodb-local": "0.0.34",
     "eslint": "^7.8.0",
@@ -55,7 +54,7 @@
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-standard": "^5.0.0",
-    "husky": "^8.0.3",
+    "husky": "^9.1.7",
     "jest": "^26.0.1",
     "jest-extended": "^0.11.1",
     "lerna": "^4.0.0",
@@ -87,15 +86,5 @@
     "setupFilesAfterEnv": [
       "jest-extended"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }

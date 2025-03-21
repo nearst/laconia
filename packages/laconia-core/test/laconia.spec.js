@@ -169,10 +169,25 @@ describe("laconia", () => {
         expect(factory).toHaveBeenCalledTimes(2);
       });
 
-      it("should throw an error when the factory is not a function", async () => {
-        expect(() => laconia(jest.fn()).register({ foo: "bar" })).toThrow(
+      it("should be able to add an dependencies object by calling 'register'", async () => {
+        const app = jest.fn();
+        await laconia(app)
+          .register({ foo: "bar" })
+          .register({ boo: "baz" })(...handlerArgs);
+
+        expect(app).toBeCalledWith(
+          expect.any(Object),
+          expect.objectContaining({
+            foo: "bar",
+            boo: "baz"
+          })
+        );
+      });
+
+      it("should throw an error when the factory is not a function or object", async () => {
+        expect(() => laconia(jest.fn()).register(23)).toThrow(
           new TypeError(
-            'register() expects to be passed a function, you passed: {"foo":"bar"}'
+            "register() expects to be passed a function or object, you passed: 23"
           )
         );
       });
@@ -208,6 +223,21 @@ describe("laconia", () => {
         );
       });
 
+      it("should return instances created by the array of objects", async () => {
+        const app = jest.fn();
+        await laconia(app).register([{ foo: "bar", boo: "baz" }])(
+          ...handlerArgs
+        );
+
+        expect(app).toBeCalledWith(
+          expect.any(Object),
+          expect.objectContaining({
+            foo: "bar",
+            boo: "baz"
+          })
+        );
+      });
+
       it("should cache all by default", async () => {
         const handler = await laconia(jest.fn()).register([factory1, factory2]);
         await handler(...handlerArgs);
@@ -233,10 +263,10 @@ describe("laconia", () => {
         expect(factory2).toHaveBeenCalledTimes(2);
       });
 
-      it("should throw an error when the factory is not a function", async () => {
-        expect(() => laconia(jest.fn()).register([{ foo: "bar" }])).toThrow(
+      it("should throw an error when the factory is not a function or object", async () => {
+        expect(() => laconia(jest.fn()).register([23])).toThrow(
           new TypeError(
-            'register() expects to be passed a function, you passed: {"foo":"bar"}'
+            "register() expects to be passed a function or object, you passed: 23"
           )
         );
       });
@@ -479,10 +509,10 @@ describe("laconia/async", () => {
         expect(factory).toHaveBeenCalledTimes(2);
       });
 
-      it("should throw an error when the factory is not a function", async () => {
-        expect(() => laconia(jest.fn()).register({ foo: "bar" })).toThrow(
+      it("should throw an error when the factory is not a function or object", async () => {
+        expect(() => laconia(jest.fn()).register(23)).toThrow(
           new TypeError(
-            'register() expects to be passed a function, you passed: {"foo":"bar"}'
+            "register() expects to be passed a function or object, you passed: 23"
           )
         );
       });
@@ -543,10 +573,10 @@ describe("laconia/async", () => {
         expect(factory2).toHaveBeenCalledTimes(2);
       });
 
-      it("should throw an error when the factory is not a function", async () => {
-        expect(() => laconia(jest.fn()).register([{ foo: "bar" }])).toThrow(
+      it("should throw an error when the factory is not a function or object", async () => {
+        expect(() => laconia(jest.fn()).register([23])).toThrow(
           new TypeError(
-            'register() expects to be passed a function, you passed: {"foo":"bar"}'
+            "register() expects to be passed a function or object, you passed: 23"
           )
         );
       });

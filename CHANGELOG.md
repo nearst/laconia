@@ -12,6 +12,11 @@ and this project adheres to
   - Upgraded to AWS SDK v3. As part of this, there are breaking changes: `s3.getStream` now
     returns a Promise, and needs to be awaited, and `s3.getObject` has been renamed 
     to `s3.getBuffer`.
+- `@laconia/core`
+  - **BREAKING** #539 Remove default AWS SDK instances: `s3`, `lambda`, `ssm`, `sns` 
+    and `secretsManager` do no longer exist as default dependencies in `LaconiaContext`.
+    If your app relies on these, update your code to manually call
+    `.register(() => ({s3: new S3() }))` or similar.
 
 ## [1.14.0]
 

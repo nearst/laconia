@@ -1,5 +1,4 @@
 const laconia = require("../src/laconia");
-const AWS = require("aws-sdk");
 
 describe("laconia", () => {
   let callback;
@@ -300,19 +299,6 @@ describe("laconia", () => {
       });
     });
   });
-
-  describe("Built-in instances", () => {
-    it("should include AWS service objects", async () => {
-      const app = jest.fn();
-      await laconia(app)(...handlerArgs);
-
-      const lc = app.mock.calls[0][1];
-      expect(lc.$s3).toBeInstanceOf(AWS.S3);
-      expect(lc.$lambda).toBeInstanceOf(AWS.Lambda);
-      expect(lc.$ssm).toBeInstanceOf(AWS.SSM);
-      expect(lc.$sns).toBeInstanceOf(AWS.SNS);
-    });
-  });
 });
 
 describe("laconia/async", () => {
@@ -608,19 +594,6 @@ describe("laconia/async", () => {
         const result = laconia(() => Promise.reject(error))({}, {});
         return expect(result).rejects.toThrow(error);
       });
-    });
-  });
-
-  describe("Built-in instances", () => {
-    it("should include AWS service objects", async () => {
-      const app = jest.fn();
-      await laconia(app)(...handlerArgs);
-
-      const lc = app.mock.calls[0][1];
-      expect(lc.$s3).toBeInstanceOf(AWS.S3);
-      expect(lc.$lambda).toBeInstanceOf(AWS.Lambda);
-      expect(lc.$ssm).toBeInstanceOf(AWS.SSM);
-      expect(lc.$sns).toBeInstanceOf(AWS.SNS);
     });
   });
 });

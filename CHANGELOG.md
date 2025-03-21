@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+- `@laconia/core`
+  - **BREAKING** #539 Remove default AWS SDK instances: `s3`, `lambda`, `ssm`, `sns` 
+    and `secretsManager` do no longer exist as default dependencies in `LaconiaContext`.
+    If your app relies on these, update your code to manually call
+    `.register(() => ({s3: new S3() }))` or similar.
+
 ## [1.14.0]
 
 - `@laconia/batch`

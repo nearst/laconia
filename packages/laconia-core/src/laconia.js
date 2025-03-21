@@ -1,14 +1,6 @@
 const AWS = require("aws-sdk");
 const CoreLaconiaContext = require("./CoreLaconiaContext");
-
-const checkFunction = (functionName, argument) => {
-  if (typeof argument !== "function")
-    throw new TypeError(
-      `${functionName}() expects to be passed a function, you passed: ${JSON.stringify(
-        argument
-      )}`
-    );
-};
+const { checkFunction, checkFunctionOrObject } = require("./typeChecking");
 
 const awsInstances = {
   lambda: new AWS.Lambda(),

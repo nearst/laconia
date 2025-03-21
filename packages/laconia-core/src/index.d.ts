@@ -24,9 +24,11 @@ declare namespace laconia {
     (laconiaContext: Context): void;
   }
 
+  type LaconiaDependency<Context, Dependencies> = LaconiaFactory<Context, Dependencies> | Partial<LaconiaContext>
+
   interface LaconiaHandler extends Handler {
     register<Context extends LaconiaContext, Dependencies>(
-      factory: LaconiaFactory<Context, Dependencies> | LaconiaFactory<Context, Dependencies>[],
+      factory: LaconiaDependency<Context, Dependencies> | LaconiaDependency<Context, Dependencies>[],
       options?: FactoryOptions
     ): this;
     register<Context extends LaconiaContext, Dependencies>(

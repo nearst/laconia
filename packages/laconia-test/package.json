@@ -26,11 +26,9 @@
     "@laconia/invoker": "^1.14.0",
     "p-wait-for": "^3.1.0"
   },
-  "devDependencies": {
-    "@laconia/test-helper": "file:../laconia-test-helper"
-  },
   "peerDependencies": {
-    "aws-sdk": "^2.432.0"
+    "@aws-sdk/client-lambda": "^3.787.0",
+    "@aws-sdk/client-s3": "^3.787.0"
   },
   "engines": {
     "node": ">=12.22"

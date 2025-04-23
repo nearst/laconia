@@ -82,7 +82,7 @@ describe("S3Spier", () => {
 
       expect(s3Mock).toHaveReceivedCommandWith(PutObjectCommand, {
         Bucket: "bucket name",
-        Key: expect.stringMatching(/function name\/\d+\.json/),
+        Key: expect.stringMatching(/function name\/\d+-\w+\.json/),
         Body: JSON.stringify({ event: { foo: "bar" } }),
         ContentType: "application/json"
       });

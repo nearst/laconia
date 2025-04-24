@@ -1,11 +1,19 @@
-const AWS = require("aws-sdk");
-const AWSMock = require("aws-sdk-mock");
+// const AWSMock = require("aws-sdk-mock");
 const createEvent = require("aws-event-mocks");
+const { mockClient } = require("aws-sdk-client-mock");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { Readable } = require("stream");
-const { s3Body } = require("@laconia/test-helper");
+const { sdkStreamMixin } = require("@smithy/util-stream");
 const S3Event = require("../src/S3Event");
 
-AWSMock.setSDKInstance(AWS);
+const mockS3Client = mockClient(S3Client);
+
+const s3Body = value => {
+  const stream = new Readable();
+  stream.push(value);
+  stream.push(null); // end of stream
+  return sdkStreamMixin(stream);
+};
 
 const createS3Event = key => {
   return createEvent({
@@ -32,21 +40,21 @@ describe("S3Event", () => {
   describe("#fromRaw", () => {
     it("should retrieve key", () => {
       const event = createS3Event("object-key");
-      const s3Event = S3Event.fromRaw(event);
+      const s3Event = S3Event.fromRaw(event, mockS3Client);
 
       expect(s3Event).toHaveProperty("key", "object-key");
     });
 
     it("should url decode key", () => {
       const event = createS3Event("file+with+spaces.txt");
-      const s3Event = S3Event.fromRaw(event);
+      const s3Event = S3Event.fromRaw(event, mockS3Client);
 
       expect(s3Event).toHaveProperty("key", "file with spaces.txt");
     });
 
     it("should url decode unicode key", () => {
       const event = createS3Event("%E2%9C%93");
-      const s3Event = S3Event.fromRaw(event);
+      const s3Event = S3Event.fromRaw(event, mockS3Client);
 
       expect(s3Event).toHaveProperty("key", "\u2713");
     });
@@ -64,27 +72,23 @@ describe("S3Event", () => {
     let event;
 
     beforeEach(() => {
-      s3 = {
-        getObject: jest.fn().mockImplementation(s3Body({ foo: "bar" }))
-      };
-      AWSMock.mock("S3", "getObject", s3.getObject);
-
+      mockS3Client.on(GetObjectCommand).resolves({
+        Body: s3Body('{"foo":"bar"}')
+      });
       event = createS3Event("object-key");
     });
 
-    afterEach(() => {
-      AWSMock.restore();
-    });
+    afterEach(() => mockS3Client.resolves({}));
 
     describe("#getJson", () => {
       it("should parse returned object to json", async () => {
-        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, mockS3Client);
         const json = await s3Event.getJson();
         expect(json).toEqual({ foo: "bar" });
       });
 
       it("should call AWS sdk with the correct parameter", async () => {
-        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, mockS3Client);
         await s3Event.getJson();
 
         expect(s3.getObject).toBeCalledWith(
@@ -99,13 +103,13 @@ describe("S3Event", () => {
 
     describe("#getObject", () => {
       it("should retrieve object from S3", async () => {
-        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, mockS3Client);
         const object = await s3Event.getObject();
         expect(object).toHaveProperty("toString");
       });
 
       it("should call AWS sdk with the correct parameter", async () => {
-        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, mockS3Client);
         await s3Event.getObject();
 
         expect(s3.getObject).toBeCalledWith(
@@ -120,13 +124,13 @@ describe("S3Event", () => {
 
     describe("#getStream", () => {
       it("should convert event to stream", () => {
-        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, mockS3Client);
         const stream = s3Event.getStream();
         expect(stream).toBeInstanceOf(Readable);
       });
 
       it("should call AWS sdk with the correct parameter", async () => {
-        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, mockS3Client);
         await s3Event.getStream();
 
         expect(s3.getObject).toBeCalledWith(
@@ -140,13 +144,13 @@ describe("S3Event", () => {
     });
     describe("#getText", () => {
       it("should convert event to Text", async () => {
-        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, mockS3Client);
         const text = await s3Event.getText();
         expect(text).toBe('{"foo":"bar"}');
       });
 
       it("should call AWS sdk with the correct parameter", async () => {
-        const s3Event = S3Event.fromRaw(event, new AWS.S3());
+        const s3Event = S3Event.fromRaw(event, mockS3Client);
         await s3Event.getText();
 
         expect(s3.getObject).toBeCalledWith(

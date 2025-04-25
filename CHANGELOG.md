@@ -9,9 +9,9 @@ and this project adheres to
 ## [Unreleased]
 
 - `@laconia/event`
-  - Upgraded to AWS SDK v3. As part of this, there are breaking changes: `s3.getStream` now
-    returns a Promise, and needs to be awaited, and `s3.getObject` has been renamed 
-    to `s3.getBuffer`.
+  - **BREAKING** Upgraded to AWS SDK v3. As part of this, there are breaking 
+    changes: `s3.getStream` now returns a Promise, and needs to be awaited, 
+    and `s3.getObject` has been renamed to `s3.getBuffer`.
 - `@laconia/core`
   - **BREAKING** #539 Remove default AWS SDK instances: `s3`, `lambda`, `ssm`, `sns` 
     and `secretsManager` no longer exist as default dependencies in `LaconiaContext`.

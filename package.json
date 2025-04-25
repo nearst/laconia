@@ -37,11 +37,12 @@
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^19.4.1",
     "@laconia/test-helper": "file:packages/laconia-test-helper",
-    "@types/jest": "^26.0.3",
+    "@types/jest": "^29.5.14",
     "@types/node": "~22.13.7",
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.432.0",
     "aws-sdk-client-mock": "^4.1.0",
+    "aws-sdk-client-mock-jest": "^4.1.0",
     "aws-sdk-mock": "^5.0.0",
     "commitizen": "^4.0.3",
     "coveralls": "^3.0.2",
@@ -86,7 +87,8 @@
       "/integration-test/"
     ],
     "setupFilesAfterEnv": [
-      "jest-extended"
+      "jest-extended",
+      "aws-sdk-client-mock-jest"
     ]
   },
   "husky": {

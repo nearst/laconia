@@ -22,7 +22,8 @@ module.exports = class S3Event {
 
   async getBuffer() {
     const stream = await this.getStream();
-    return stream.transformToBuffer();
+    const array = await stream.transformToByteArray();
+    return Buffer.from(array);
   }
 
   async getJson() {

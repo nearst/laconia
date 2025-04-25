@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
 const toParams = Symbol("toParams");
 
@@ -13,28 +13,30 @@ module.exports = class S3Event {
     return { Bucket: this.bucket, Key: this.key };
   }
 
-  getStream() {
-    const stream = this.s3.getObject(this[toParams]()).createReadStream();
-    stream.setEncoding("utf8");
-    return stream;
+  async getStream() {
+    const command = new GetObjectCommand(this[toParams]());
+    const { Body } = await this.s3.send(command);
+
+    return Body;
   }
 
-  async getObject() {
-    const object = await this.s3.getObject(this[toParams]()).promise();
-    return object.Body;
+  async getBuffer() {
+    const stream = await this.getStream();
+    const array = await stream.transformToByteArray();
+    return Buffer.from(array);
   }
 
   async getJson() {
-    const object = await this.getObject(this.s3);
-    return JSON.parse(object.toString());
+    const stream = await this.getStream();
+    return JSON.parse(await stream.transformToString());
   }
 
   async getText() {
-    const object = await this.getObject(this.s3);
-    return object.toString();
+    const stream = await this.getStream();
+    return stream.transformToString();
   }
 
-  static fromRaw(event, s3 = new AWS.S3()) {
+  static fromRaw(event, s3 = new S3Client({})) {
     const record = event.Records[0];
     const { key } = record.s3.object;
     const { name } = record.s3.bucket;

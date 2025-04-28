@@ -1,176 +1,131 @@
 const delay = require("delay");
-const AWS = require("aws-sdk");
-const AWSMock = require("aws-sdk-mock");
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsCommand
+} = require("@aws-sdk/client-s3");
+const { mockClient } = require("aws-sdk-client-mock");
 const S3Spier = require("../src/S3Spier");
-const { yields } = require("@laconia/test-helper");
 const _ = require("lodash");
 
-AWSMock.setSDKInstance(AWS);
-
 describe("S3Spier", () => {
+  const s3 = new S3Client();
+  const s3Mock = mockClient(s3);
   let lc;
-  let s3;
-  let awsS3;
 
   beforeEach(() => {
+    s3Mock.reset();
+
     lc = {
       event: { foo: "bar" },
       context: { functionName: "function name" }
     };
 
-    s3 = {
-      putObject: jest.fn().mockImplementation(yields()),
-      getObject: jest.fn().mockImplementation(
-        yields({
-          Body: JSON.stringify({})
-        })
-      ),
-      deleteObject: jest.fn().mockImplementation(yields()),
-      listObjects: jest.fn().mockImplementation(
-        yields({
-          Contents: []
-        })
-      )
-    };
-
-    AWSMock.mock("S3", "deleteObject", s3.deleteObject);
-    AWSMock.mock("S3", "listObjects", s3.listObjects);
-    AWSMock.mock("S3", "putObject", s3.putObject);
-    AWSMock.mock("S3", "getObject", s3.getObject);
-
-    awsS3 = new AWS.S3();
-  });
-
-  afterEach(() => {
-    AWSMock.restore();
+    s3Mock.on(PutObjectCommand).resolves({});
+    s3Mock.on(GetObjectCommand).resolves({
+      Body: {
+        transformToString: () => Promise.resolve(JSON.stringify({}))
+      }
+    });
+    s3Mock.on(DeleteObjectCommand).resolves({});
+    s3Mock.on(ListObjectsCommand).resolves({
+      Contents: []
+    });
   });
 
   const sharedListObjectsTest = operation => {
     it("should only retrieve objects related to the function name", async () => {
-      const spier = new S3Spier("bucket name", "function name", awsS3);
+      const spier = new S3Spier("bucket name", "function name", s3);
       await operation(spier);
-      expect(s3.listObjects).toBeCalledWith(
-        expect.objectContaining({
-          Bucket: "bucket name",
-          Prefix: "function name"
-        }),
-        expect.any(Function)
-      );
+
+      expect(s3Mock).toHaveReceivedCommandWith(ListObjectsCommand, {
+        Bucket: "bucket name",
+        Prefix: "function name"
+      });
     });
   };
 
-  const sharedMultiOperationTest = (operation, s3method) => {
+  const sharedMultiOperationTest = (operation, s3Command) => {
     it("should only retrieve objects related to the function name", async () => {
-      const spier = new S3Spier("bucket name", "function name", awsS3);
+      const spier = new S3Spier("bucket name", "function name", s3);
       await operation(spier);
-      expect(s3.listObjects).toBeCalledWith(
-        expect.objectContaining({
-          Bucket: "bucket name",
-          Prefix: "function name"
-        }),
-        expect.any(Function)
-      );
+
+      expect(s3Mock).toHaveReceivedCommandWith(ListObjectsCommand, {
+        Bucket: "bucket name",
+        Prefix: "function name"
+      });
     });
 
     it("should operate on all objects returned", async () => {
       const keys = ["1", "2"];
-      s3.listObjects.mockImplementation(
-        yields({
-          Contents: keys.map(k => ({ Key: k }))
-        })
-      );
-      const spier = new S3Spier("bucket name", "function name", awsS3);
+      s3Mock.on(ListObjectsCommand).resolves({
+        Contents: keys.map(k => ({ Key: k }))
+      });
+      const spier = new S3Spier("bucket name", "function name", s3);
       await operation(spier);
-      expect(s3method()).toHaveBeenCalledTimes(keys.length);
+      expect(s3Mock).toHaveReceivedCommandTimes(s3Command, keys.length);
       keys.forEach(k => {
-        expect(s3method()).toBeCalledWith(
-          expect.objectContaining({
-            Bucket: "bucket name",
-            Key: k
-          }),
-          expect.any(Function)
-        );
+        expect(s3Mock).toHaveReceivedCommandWith(s3Command, {
+          Bucket: "bucket name",
+          Key: k
+        });
       });
     });
   };
 
   describe("#track", () => {
-    it("should call s3 with the configured bucket name", async () => {
-      const spier = new S3Spier("bucket name", "function name", awsS3);
+    it("should call s3 with the correct bucket and event config", async () => {
+      const spier = new S3Spier("bucket name", "function name", s3);
       await spier.track(lc);
-      expect(s3.putObject).toBeCalledWith(
-        expect.objectContaining({ Bucket: "bucket name" }),
-        expect.any(Function)
-      );
+
+      expect(s3Mock).toHaveReceivedCommandWith(PutObjectCommand, {
+        Bucket: "bucket name",
+        Key: expect.stringMatching(/function name\/\d+-\w+\.json/),
+        Body: JSON.stringify({ event: { foo: "bar" } }),
+        ContentType: "application/json"
+      });
     });
 
     it("should generate unique bucket item name", async () => {
-      const spier = new S3Spier("bucket name", "function name", awsS3);
+      const spier = new S3Spier("bucket name", "function name", s3);
       await spier.track(_.merge(lc, { context: { awsRequestId: "123" } }));
       await spier.track(_.merge(lc, { context: { awsRequestId: "456" } }));
 
-      const keys = s3.putObject.mock.calls.map(c => c[0].Key);
+      const keys = s3Mock
+        .commandCalls(PutObjectCommand)
+        .map(call => call.args[0].input.Key);
+
       expect(keys).toHaveLength(2);
       keys.forEach(k => {
         expect(k).toStartWith("function name/");
       });
       expect(keys[0]).not.toEqual(keys[1]);
     });
-
-    it("should track event object", async () => {
-      const spier = new S3Spier("bucket name", "function name", awsS3);
-      await spier.track(lc);
-      expect(s3.putObject).toBeCalledWith(
-        expect.objectContaining({ Body: expect.any(String) }),
-        expect.any(Function)
-      );
-
-      const body = JSON.parse(s3.putObject.mock.calls[0][0].Body);
-      expect(body).toEqual({ event: { foo: "bar" } });
-    });
-
-    it("should make sure the object stored in S3 openable easily in a browser and an edito", async () => {
-      const spier = new S3Spier("bucket name", "function name", awsS3);
-      await spier.track(lc);
-      expect(s3.putObject).toBeCalledWith(
-        expect.objectContaining({
-          Key: expect.stringMatching(/.json$/),
-          ContentType: "application/json"
-        }),
-        expect.any(Function)
-      );
-    });
   });
 
   describe("#clear", () => {
     sharedListObjectsTest(spier => spier.clear());
-    sharedMultiOperationTest(
-      spier => spier.clear(),
-      () => s3.deleteObject
-    );
+    sharedMultiOperationTest(spier => spier.clear(), DeleteObjectCommand);
   });
 
   describe("#getInvocations", () => {
     sharedListObjectsTest(spier => spier.getInvocations());
-    sharedMultiOperationTest(
-      spier => spier.getInvocations(),
-      () => s3.getObject
-    );
+    sharedMultiOperationTest(spier => spier.getInvocations(), GetObjectCommand);
   });
 
   describe("#waitForTotalInvocations", () => {
     sharedListObjectsTest(spier => spier.waitForTotalInvocations(0));
 
     it("should wait for total invocations", async () => {
-      const spier = new S3Spier("bucket name", "function name", awsS3);
+      const spier = new S3Spier("bucket name", "function name", s3);
       await Promise.all([
         spier.waitForTotalInvocations(2),
         delay(25).then(_ => {
-          s3.listObjects.mockImplementation(
-            yields({
-              Contents: [{ Key: "key" }, { Key: "key2" }]
-            })
-          );
+          s3Mock.on(ListObjectsCommand).resolves({
+            Contents: [{ Key: "key" }, { Key: "key2" }]
+          });
         })
       ]);
     }, 200);

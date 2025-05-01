@@ -24,13 +24,11 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
+    "@aws-sdk/client-lambda": "^3.799.0",
     "@laconia/core": "^1.14.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"
-  },
-  "peerDependencies": {
-    "aws-sdk": "^2.432.0"
   },
   "engines": {
     "node": ">=12.22"

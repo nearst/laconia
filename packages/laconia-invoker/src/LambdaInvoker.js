@@ -57,10 +57,10 @@ module.exports = class LambdaInvoker {
 
     if (payload === undefined) {
       params.Payload = undefined;
+    } else {
+      params.Payload = JSON.stringify(payload);
     }
-    params.Payload = JSON.stringify(payload);
 
-    // Pass an instance of InvokeCommand to send
     const command = new InvokeCommand(params);
     const data = await this.lambda.send(command);
 
@@ -75,8 +75,10 @@ module.exports = class LambdaInvoker {
       } else {
         throw new UnhandledInvokeLaconiaError(this.functionName, errorPayload);
       }
+    } else {
+      validateStatusCode(data?.StatusCode, validStatusCode);
     }
-    validateStatusCode(data?.StatusCode, validStatusCode);
+
     return data;
   }
 };

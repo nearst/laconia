@@ -28,8 +28,7 @@
     "@laconia/core": "^1.14.0"
   },
   "devDependencies": {
-    "@laconia/test-helper": "file:../laconia-test-helper",
-     "aws-sdk-client-mock": "^4.1.0"
+    "@laconia/test-helper": "file:../laconia-test-helper"
   },
   "engines": {
     "node": ">=12.22"

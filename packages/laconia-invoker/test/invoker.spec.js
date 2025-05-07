@@ -1,8 +1,10 @@
-const laconiaInvoker = require("../src/invoker");
-const HandledInvokeLaconiaError = require("../src/HandledInvokeLaconiaError");
-const UnhandledInvokeLaconiaError = require("../src/UnhandledInvokeLaconiaError");
 const { LambdaClient, InvokeCommand } = require("@aws-sdk/client-lambda");
 const { mockClient } = require("aws-sdk-client-mock");
+
+const laconiaInvoker = require("../src/invoker");
+
+const HandledInvokeLaconiaError = require("../src/HandledInvokeLaconiaError");
+const UnhandledInvokeLaconiaError = require("../src/UnhandledInvokeLaconiaError");
 
 describe("invoke", () => {
   const awsLambda = mockClient(LambdaClient);

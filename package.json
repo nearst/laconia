@@ -86,7 +86,7 @@
       "/integration-test/"
     ],
     "setupFilesAfterEnv": [
-      "jest-extended",
+      "jest-extended/all",
       "aws-sdk-client-mock-jest"
     ]
   }

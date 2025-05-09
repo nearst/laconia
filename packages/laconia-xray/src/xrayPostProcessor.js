@@ -22,13 +22,19 @@ const getPrototypeNames = obj => {
  *
  * See: https://github.com/aws/aws-xray-sdk-node/pull/55
  */
-const isAwsService = obj => {
+const isAwsV2Service = obj => {
   return obj.serviceIdentifier && getPrototypeNames(obj).includes("Service");
+};
+
+const isAwsV3Service = obj => {
+  return obj.config?.serviceId && getPrototypeNames(obj).includes("Client");
 };
 
 module.exports = instances => {
   Object.values(instances).forEach(instance => {
-    if (isAwsService(instance)) {
+    if (isAwsV3Service(instance)) {
+      AWSXRay.captureAWSv3Client(instance);
+    } else if (isAwsV2Service(instance)) {
       AWSXRay.captureAWSClient(instance);
     }
   });

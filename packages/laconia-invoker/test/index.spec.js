@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+const { LambdaClient } = require("@aws-sdk/client-lambda");
 const laconiaInvoker = require("../src/index");
 
 describe("laconia-invoker", () => {
@@ -13,7 +13,7 @@ describe("laconia-invoker", () => {
     });
 
     it("should be able to set lambda instance", async () => {
-      const lambda = new AWS.Lambda();
+      const lambda = new LambdaClient();
       const instances = await laconiaInvoker.envVarInstances()({
         env: { LACONIA_INVOKER_MY_FUNC: "func" },
         $lambda: lambda

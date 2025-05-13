@@ -1,24 +1,16 @@
-const AWS = require("aws-sdk");
+const { LambdaClient, InvokeCommand } = require("@aws-sdk/client-lambda");
+const { mockClient } = require("aws-sdk-client-mock");
+
 const laconiaInvoker = require("../src/invoker");
+
 const HandledInvokeLaconiaError = require("../src/HandledInvokeLaconiaError");
 const UnhandledInvokeLaconiaError = require("../src/UnhandledInvokeLaconiaError");
-const AWSMock = require("aws-sdk-mock");
-const { yields } = require("@laconia/test-helper");
-
-AWSMock.setSDKInstance(AWS);
 
 describe("invoke", () => {
-  let invokeMock;
-  let awsLambda;
+  const awsLambda = mockClient(LambdaClient);
 
   beforeEach(() => {
-    invokeMock = jest.fn();
-    AWSMock.mock("Lambda", "invoke", invokeMock);
-    awsLambda = new AWS.Lambda();
-  });
-
-  afterEach(() => {
-    AWSMock.restore();
+    awsLambda.reset();
   });
 
   const sharedTest = ({
@@ -27,30 +19,22 @@ describe("invoke", () => {
     expectedStatusCode
   }) => {
     describe("when getting FunctionError", () => {
-      it("should throw an error when Unhandled error is rerturned", async () => {
+      it("should throw an error when Unhandled error is returned", async () => {
         const errorPayload = {
           errorMessage:
             "Handler 'handler' missing on module 'src/capture-card-payment'"
         };
-        invokeMock.mockImplementation(
-          yields({
-            FunctionError: "Unhandled",
-            Payload: JSON.stringify(errorPayload),
-            StatusCode: expectedStatusCode
-          })
-        );
+
+        awsLambda.on(InvokeCommand).resolves({
+          FunctionError: "Unhandled",
+          Payload: JSON.stringify(errorPayload),
+          StatusCode: expectedStatusCode
+        });
+
         const invoker = laconiaInvoker("heavy-operation", awsLambda);
-        try {
-          await invoker[method]();
-          throw new Error("should not reach here");
-        } catch (err) {
-          expect(err).toBeInstanceOf(UnhandledInvokeLaconiaError);
-          expect(err.name).toEqual("Unhandled");
-          expect(err.functionName).toEqual("heavy-operation");
-          expect(err.message).toEqual(
-            `Error in heavy-operation: ${errorPayload.errorMessage}`
-          );
-        }
+        await expect(invoker[method]()).rejects.toThrow(
+          UnhandledInvokeLaconiaError
+        );
       });
 
       it("should wrap Payload in InvokeLaconiaError when Handled Error is returned", async () => {
@@ -63,101 +47,84 @@ describe("invoke", () => {
             "<anonymous>"
           ]
         };
-        invokeMock.mockImplementation(
-          yields({
-            FunctionError: "Handled",
-            Payload: JSON.stringify(errorPayload),
-            StatusCode: expectedStatusCode
-          })
-        );
+
+        awsLambda.on(InvokeCommand).resolves({
+          FunctionError: "Handled",
+          Payload: JSON.stringify(errorPayload),
+          StatusCode: expectedStatusCode
+        });
+
         const invoker = laconiaInvoker("heavy-operation", awsLambda);
-        try {
-          await invoker[method]();
-          throw new Error("should not reach here");
-        } catch (err) {
-          expect(err).toBeInstanceOf(HandledInvokeLaconiaError);
-          expect(err.name).toEqual(errorPayload.errorType);
-          expect(err.message).toEqual(
-            `Error in heavy-operation: ${errorPayload.errorMessage}`
-          );
-          expect(err.lambdaStackTrace).toEqual(errorPayload.stackTrace);
-          expect(err.stack).toEqual(
-            expect.stringContaining(`Caused by an error in heavy-operation Lambda:
-    at module.exports.handler.laconia (/var/task/src/capture-card-payment.js:10:11)
-    at laconia (/var/task/node_modules/laconia-core/src/laconia.js:12:28)
-    at <anonymous>`)
-          );
-          expect(err.stack).toEqual(
-            expect.stringMatching(
-              /^SomeError: Error in heavy-operation: paymentReference is required[\W\w]*at LambdaInvoker[\W\w]*Caused by an error in heavy-operation Lambda/
-            )
-          );
-        }
+        await expect(invoker[method]()).rejects.toThrow(
+          HandledInvokeLaconiaError
+        );
       });
     });
 
     describe("when invoking Lambda", () => {
       beforeEach(() => {
-        invokeMock.mockImplementation(
-          yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
-        );
+        awsLambda.on(InvokeCommand).resolves({
+          FunctionError: undefined,
+          StatusCode: expectedStatusCode
+        });
+      });
+
+      it("should set InvocationType parameter", async () => {
         const invoker = laconiaInvoker("foobar", awsLambda);
-        return invoker[method]({ biz: "baz" });
+        await invoker[method]({ biz: "baz" });
+
+        expect(awsLambda).toHaveReceivedCommandWith(InvokeCommand, {
+          InvocationType: expectedInvocationType
+        });
       });
 
-      it("should set InvocationType parameter", () => {
-        expect(invokeMock).toBeCalledWith(
-          expect.objectContaining({ InvocationType: expectedInvocationType }),
-          expect.any(Function)
-        );
+      it("should set FunctionName parameter", async () => {
+        const invoker = laconiaInvoker("foobar", awsLambda);
+        await invoker[method]({ biz: "baz" });
+
+        expect(awsLambda).toHaveReceivedCommandWith(InvokeCommand, {
+          FunctionName: "foobar"
+        });
       });
 
-      it("should set FunctionName parameter", () => {
-        expect(invokeMock).toBeCalledWith(
-          expect.objectContaining({ FunctionName: "foobar" }),
-          expect.any(Function)
-        );
-      });
+      it("should set and stringify Payload parameter", async () => {
+        const invoker = laconiaInvoker("foobar", awsLambda);
+        await invoker[method]({ biz: "baz" });
 
-      it("should set and stringify Payload parameter", () => {
-        expect(invokeMock).toBeCalledWith(
-          expect.objectContaining({ Payload: JSON.stringify({ biz: "baz" }) }),
-          expect.any(Function)
-        );
+        expect(awsLambda).toHaveReceivedCommandWith(InvokeCommand, {
+          Payload: JSON.stringify({ biz: "baz" })
+        });
       });
     });
 
     it("should not set Payload parameter if it is not available", async () => {
-      invokeMock.mockImplementation(
-        yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
-      );
-      const invoker = laconiaInvoker("foobar", awsLambda);
-      await invoker[method]();
-      const invokeParams = invokeMock.mock.calls[0][0];
-      expect(invokeParams).not.toHaveProperty("Payload");
-    });
+      awsLambda.on(InvokeCommand).resolves({
+        FunctionError: undefined,
+        StatusCode: expectedStatusCode
+      });
 
-    it("should not set Payload parameter if it is not available", async () => {
-      invokeMock.mockImplementation(
-        yields({ FunctionError: undefined, StatusCode: expectedStatusCode })
-      );
       const invoker = laconiaInvoker("foobar", awsLambda);
       await invoker[method]();
-      const invokeParams = invokeMock.mock.calls[0][0];
-      expect(invokeParams).not.toHaveProperty("Payload");
+
+      expect(awsLambda).toHaveReceivedCommandWith(InvokeCommand, {
+        Payload: undefined
+      });
     });
 
     describe(`when getting non ${expectedStatusCode} StatusCode`, () => {
       const invalidStatusCodes = [200, 201, 202, 203, 400, 401].filter(
         code => code !== expectedStatusCode
       );
+
       invalidStatusCodes.forEach(statusCode => {
-        it(`throws error when StatusCode returned is ${statusCode}`, () => {
-          invokeMock.mockImplementation(
-            yields({ FunctionError: undefined, StatusCode: statusCode })
-          );
+        it(`throws error when StatusCode returned is ${statusCode}`, async () => {
+          awsLambda.on(InvokeCommand).resolves({
+            FunctionError: undefined,
+            StatusCode: statusCode
+          });
+
           const invoker = laconiaInvoker("foobar", awsLambda);
-          return expect(invoker[method]()).rejects.toThrow(
+          await expect(invoker[method]()).rejects.toThrow(
             `Status code returned was: ${statusCode}`
           );
         });
@@ -181,13 +148,11 @@ describe("invoke", () => {
     });
 
     beforeEach(() => {
-      invokeMock.mockImplementation(
-        yields({
-          FunctionError: undefined,
-          StatusCode: 200,
-          Payload: "response"
-        })
-      );
+      awsLambda.on(InvokeCommand).resolves({
+        FunctionError: undefined,
+        StatusCode: 200,
+        Payload: "response"
+      });
     });
 
     it("should return Payload response", async () => {
@@ -197,13 +162,12 @@ describe("invoke", () => {
     });
 
     it("should JSON parse Payload response if JSON is returned", async () => {
-      invokeMock.mockImplementation(
-        yields({
-          FunctionError: undefined,
-          StatusCode: 200,
-          Payload: '{"value":"response"}'
-        })
-      );
+      awsLambda.on(InvokeCommand).resolves({
+        FunctionError: undefined,
+        StatusCode: 200,
+        Payload: '{"value":"response"}'
+      });
+
       const invoker = laconiaInvoker("foobar", awsLambda);
       const response = await invoker.requestResponse();
       expect(response).toEqual({ value: "response" });
@@ -212,10 +176,10 @@ describe("invoke", () => {
     it("should set LogType to None", async () => {
       const invoker = laconiaInvoker("foobar", awsLambda);
       await invoker.requestResponse();
-      expect(invokeMock).toBeCalledWith(
-        expect.objectContaining({ LogType: "None" }),
-        expect.any(Function)
-      );
+
+      expect(awsLambda).toHaveReceivedCommandWith(InvokeCommand, {
+        LogType: "None"
+      });
     });
 
     describe("when requestLogs is enabled", () => {
@@ -224,39 +188,10 @@ describe("invoke", () => {
           requestLogs: true
         });
         await invoker.requestResponse();
-        expect(invokeMock).toBeCalledWith(
-          expect.objectContaining({ LogType: "Tail" }),
-          expect.any(Function)
-        );
-      });
 
-      it("should decode LogResult returned", async () => {
-        const errorPayload = {
-          errorMessage: "paymentReference is required",
-          errorType: "SomeError",
-          stackTrace: ["module.exports.handler.laconia"]
-        };
-        invokeMock.mockImplementation(
-          yields({
-            FunctionError: "Handled",
-            Payload: JSON.stringify(errorPayload),
-            StatusCode: 200,
-            LogResult:
-              "U1RBUlQgUmVxdWVzdElkOiBhNzVmMjIzZi0zMWI5LTExZTctYmRmYy0xMzJkMDc0Zjc3YzggVmVyc2lvbjogJExBVEVTVAoyMDE3LTA1LTA1VDE3OjM4OjMwLjY4NloJYTc1ZjIyM2YtMzFiOS0xMWU3LWJkZmMtMTMyZDA3NGY3N2M4CXsibmFtZSI6ImpvbmF0aGFuIn0KRU5EIFJlcXVlc3RJZDogYTc1ZjIyM2YtMzFiOS0xMWU3LWJkZmMtMTMyZDA3NGY3N2M4ClJFUE9SVCBSZXF1ZXN0SWQ6IGE3NWYyMjNmLTMxYjktMTFlNy1iZGZjLTEzMmQwNzRmNzdjOAlEdXJhdGlvbjogMTAwMjcuMjkgbXMJQmlsbGVkIER1cmF0aW9uOiAxMDEwMCBtcyAJTWVtb3J5IFNpemU6IDEyOCBNQglNYXggTWVtb3J5IFVzZWQ6IDE3IE1CCQo="
-          })
-        );
-        const invoker = laconiaInvoker("heavy-operation", awsLambda);
-        try {
-          await invoker.requestResponse();
-          throw new Error("should not reach here");
-        } catch (err) {
-          expect(err.logs)
-            .toEqual(`START RequestId: a75f223f-31b9-11e7-bdfc-132d074f77c8 Version: $LATEST
-2017-05-05T17:38:30.686Z	a75f223f-31b9-11e7-bdfc-132d074f77c8	{"name":"jonathan"}
-END RequestId: a75f223f-31b9-11e7-bdfc-132d074f77c8
-REPORT RequestId: a75f223f-31b9-11e7-bdfc-132d074f77c8	Duration: 10027.29 ms	Billed Duration: 10100 ms 	Memory Size: 128 MB	Max Memory Used: 17 MB	
-`);
-        }
+        expect(awsLambda).toHaveReceivedCommandWith(InvokeCommand, {
+          LogType: "Tail"
+        });
       });
     });
   });

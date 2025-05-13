@@ -1,3 +1,5 @@
+const { InvokeCommand } = require("@aws-sdk/client-lambda");
+
 const HandledInvokeLaconiaError = require("./HandledInvokeLaconiaError");
 const UnhandledInvokeLaconiaError = require("./UnhandledInvokeLaconiaError");
 
@@ -19,7 +21,7 @@ module.exports = class LambdaInvoker {
   }
 
   fireAndForget(payload) {
-    return this._invoke(
+    return this._send(
       {
         InvocationType: "Event"
       },
@@ -29,7 +31,7 @@ module.exports = class LambdaInvoker {
   }
 
   async requestResponse(payload) {
-    const data = await this._invoke(
+    const data = await this._send(
       {
         InvocationType: "RequestResponse",
         LogType: this.requestLogs ? "Tail" : "None"
@@ -45,7 +47,7 @@ module.exports = class LambdaInvoker {
     }
   }
 
-  async _invoke(baseParams, payload, validStatusCode) {
+  async _send(baseParams, payload, validStatusCode) {
     const params = Object.assign(
       {
         FunctionName: this.functionName
@@ -53,13 +55,17 @@ module.exports = class LambdaInvoker {
       baseParams
     );
 
-    if (payload !== undefined) {
+    if (payload === undefined) {
+      params.Payload = undefined;
+    } else {
       params.Payload = JSON.stringify(payload);
     }
 
-    const data = await this.lambda.invoke(params).promise();
-    if (data.FunctionError) {
-      const errorPayload = JSON.parse(data.Payload);
+    const command = new InvokeCommand(params);
+    const data = await this.lambda.send(command);
+
+    if (data && data.FunctionError) {
+      const errorPayload = JSON.parse(data.Payload || "{}");
       if (data.FunctionError === "Handled") {
         throw new HandledInvokeLaconiaError(
           this.functionName,
@@ -69,8 +75,10 @@ module.exports = class LambdaInvoker {
       } else {
         throw new UnhandledInvokeLaconiaError(this.functionName, errorPayload);
       }
+    } else {
+      validateStatusCode(data?.StatusCode, validStatusCode);
     }
-    validateStatusCode(data.StatusCode, validStatusCode);
+
     return data;
   }
 };

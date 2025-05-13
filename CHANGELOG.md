@@ -17,6 +17,8 @@ and this project adheres to
   - **BREAKING** Upgraded to AWS SDK v3. As part of this, there are breaking changes: 
     `s3.getStream` now returns a Promise, and needs to be awaited, and `s3.getObject` 
     has been renamed to `s3.getBuffer`.
+- `@laconia/xray`
+  - Now supports capturing instances of AWS SDK v3 clients
 
 ## [1.14.0]
 

@@ -1,7 +1,9 @@
 const { InvokeCommand } = require("@aws-sdk/client-lambda");
+const isplainobject = require("lodash.isplainobject");
+const _ = { isPlainObject: isplainobject };
 
-module.exports = laconiaContext => async payload => {
-  if (payload && typeof payload !== "object") {
+module.exports = laconiaContext => async (payload = {}) => {
+  if (!_.isPlainObject(payload)) {
     throw new Error("Payload must be an object");
   }
 

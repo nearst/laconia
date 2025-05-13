@@ -1,63 +1,57 @@
-const AWSMock = require("aws-sdk-mock");
-const AWS = require("aws-sdk");
-const { yields } = require("@laconia/test-helper");
+const { mockClient } = require("aws-sdk-client-mock");
+const { LambdaClient, InvokeCommand } = require("@aws-sdk/client-lambda");
 const recurse = require("../src/recurse");
-
-AWSMock.setSDKInstance(AWS);
 
 expect.extend({
   toBeCalledWithPayload(received, expected) {
-    expect(received).toHaveBeenCalledTimes(1);
-    const payload = JSON.parse(received.mock.calls[0][0].Payload);
+    const calls = received.calls();
+    expect(calls.length).toBe(1);
+    const payload = JSON.parse(calls[0].args[0].input.Payload);
     expect(payload).toEqual(expected);
     return { pass: true };
   }
 });
 
 describe("recurse", () => {
-  let invokeMock, laconiaContext;
+  let lambdaMock, laconiaContext;
 
   beforeEach(() => {
-    invokeMock = jest.fn().mockImplementation(yields({ StatusCode: 202 }));
-    AWSMock.mock("Lambda", "invoke", invokeMock);
+    lambdaMock = mockClient(LambdaClient);
+    lambdaMock.on(InvokeCommand).resolves({ StatusCode: 202 });
 
     laconiaContext = {
       event: {},
       context: { functionName: "foo" },
-      $lambda: new AWS.Lambda()
+      $lambda: new LambdaClient()
     };
   });
 
   afterEach(() => {
-    AWSMock.restore();
+    lambdaMock.reset();
   });
 
   it("recurses when the recurse callback is called", async () => {
     await recurse(laconiaContext)();
 
-    expect(invokeMock).toBeCalledWith(
+    const calls = lambdaMock.calls();
+    expect(calls.length).toBe(1);
+    expect(calls[0].args[0].input).toEqual(
       expect.objectContaining({
         FunctionName: "foo",
         InvocationType: "Event"
-      }),
-      expect.any(Function)
+      })
     );
   });
 
   it("throws error when lambda recursion failed", async () => {
     const error = new Error("boom");
-    invokeMock.mockImplementation(() => {
-      throw error;
-    });
+    lambdaMock.on(InvokeCommand).rejects(error);
     await expect(recurse(laconiaContext)()).rejects.toThrow(error);
   });
 
   it("throws error when payload given is not an object", async () => {
-    await expect(() => recurse(laconiaContext)("non object")).toThrow(
-      expect.objectContaining({
-        message: expect.stringContaining("Payload must be an object")
-      })
-    );
+    const error = new Error("Payload must be an object");
+    await expect(recurse(laconiaContext)("non object")).rejects.toThrow(error);
   });
 
   it("should merge recurse payload and event object", async () => {
@@ -66,7 +60,7 @@ describe("recurse", () => {
       cursor: { index: 0, lastEvaluatedKey: "bar" }
     });
 
-    expect(invokeMock).toBeCalledWithPayload({
+    expect(lambdaMock).toBeCalledWithPayload({
       key1: "1",
       key2: "2",
       cursor: { index: 0, lastEvaluatedKey: "bar" }

@@ -1,5 +1,7 @@
 import laconiaBatch from "../../src/index";
-import AWS from "aws-sdk";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+const { S3Client } = require("@aws-sdk/client-s3");
 
 laconiaBatch(
   () =>
@@ -16,7 +18,7 @@ laconiaBatch(
 laconiaBatch.dynamoDb({
   operation: "QUERY",
   dynamoDbParams: { TableName: "Music" },
-  documentClient: new AWS.DynamoDB.DocumentClient()
+  documentClient: DynamoDBDocumentClient.from(new DynamoDBClient({}))
 });
 
 laconiaBatch(() =>
@@ -48,5 +50,5 @@ laconiaBatch.s3({
     Bucket: "MyBucket",
     Key: "object.json"
   },
-  s3: new AWS.S3()
+  s3: new S3Client()
 });

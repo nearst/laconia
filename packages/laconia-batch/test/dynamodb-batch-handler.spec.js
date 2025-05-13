@@ -1,25 +1,25 @@
-const AWSMock = require("aws-sdk-mock");
+const { mockClient } = require("aws-sdk-client-mock");
+const {
+  DynamoDBDocumentClient,
+  ScanCommand
+} = require("@aws-sdk/lib-dynamodb");
 const laconiaBatch = require("../src/laconiaBatch");
 const dynamoDb = require("../src/dynamoDb");
 const { sharedBehaviour } = require("./shared-batch-handler-spec");
-const { yields } = require("@laconia/test-helper");
 
 describe("dynamodb batch handler", () => {
-  let documentClient;
+  let ddbMock;
 
   beforeEach(() => {
-    documentClient = {
-      scan: jest.fn().mockImplementation(
-        yields({
-          Items: [{ Artist: "Foo" }, { Artist: "Bar" }, { Artist: "Fiz" }]
-        })
-      )
-    };
-    AWSMock.mock("DynamoDB.DocumentClient", "scan", documentClient.scan);
+    ddbMock = mockClient(DynamoDBDocumentClient);
+
+    ddbMock.on(ScanCommand).resolves({
+      Items: [{ Artist: "Foo" }, { Artist: "Bar" }, { Artist: "Fiz" }]
+    });
   });
 
   afterEach(() => {
-    AWSMock.restore();
+    ddbMock.reset();
   });
 
   sharedBehaviour(batchOptions => {

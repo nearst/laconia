@@ -1,12 +1,16 @@
-const invoker = require("@laconia/invoker");
-const isplainobject = require("lodash.isplainobject");
-const _ = { isPlainObject: isplainobject };
+const { InvokeCommand } = require("@aws-sdk/client-lambda");
 
-module.exports = ({ event, context, $lambda }) => (payload = {}) => {
-  if (!_.isPlainObject(payload)) {
+module.exports = laconiaContext => async payload => {
+  if (payload && typeof payload !== "object") {
     throw new Error("Payload must be an object");
   }
-  return invoker(context.functionName, $lambda).fireAndForget(
-    Object.assign({}, event, payload)
+
+  const { context, event, $lambda } = laconiaContext;
+  await $lambda.send(
+    new InvokeCommand({
+      FunctionName: context.functionName,
+      InvocationType: "Event",
+      Payload: JSON.stringify(Object.assign({}, event, payload))
+    })
   );
 };

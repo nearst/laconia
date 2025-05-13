@@ -1,23 +1,38 @@
-const AWSMock = require("aws-sdk-mock");
+const { mockClient } = require("aws-sdk-client-mock");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { Readable } = require("stream");
 const laconiaBatch = require("../src/laconiaBatch");
 const s3 = require("../src/s3");
 const { sharedBehaviour } = require("./shared-batch-handler-spec");
-const { s3Body } = require("@laconia/test-helper");
+
+const createMockS3Response = object => {
+  const jsonString = JSON.stringify(object);
+  const stream = new Readable();
+  stream.push(jsonString);
+  stream.push(null); // End the stream
+
+  return {
+    Body: {
+      transformToString: () => Promise.resolve(jsonString)
+    }
+  };
+};
 
 describe("s3 batch handler", () => {
+  let s3Mock;
+
   beforeEach(() => {
-    const awsS3 = {
-      getObject: jest.fn().mockImplementation(
-        s3Body({
-          music: [{ Artist: "Foo" }, { Artist: "Bar" }, { Artist: "Fiz" }]
-        })
-      )
-    };
-    AWSMock.mock("S3", "getObject", awsS3.getObject);
+    s3Mock = mockClient(S3Client);
+
+    s3Mock.on(GetObjectCommand).resolves(
+      createMockS3Response({
+        music: [{ Artist: "Foo" }, { Artist: "Bar" }, { Artist: "Fiz" }]
+      })
+    );
   });
 
   afterEach(() => {
-    AWSMock.restore();
+    s3Mock.reset();
   });
 
   sharedBehaviour(batchOptions => {

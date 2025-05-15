@@ -3,8 +3,8 @@ const { GetObjectCommand } = require("@aws-sdk/client-s3");
 const _ = { get };
 
 const extractS3JsonBody = async data => {
+  const jsonString = await data.Body.transformToString();
   try {
-    const jsonString = await data.Body.transformToString();
     return JSON.parse(jsonString);
   } catch (e) {
     throw new Error(`Data stored in S3 is not a JSON!: ${e.message}`);

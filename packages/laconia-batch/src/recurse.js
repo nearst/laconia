@@ -1,4 +1,4 @@
-const { InvokeCommand } = require("@aws-sdk/client-lambda");
+const { InvokeCommand, LambdaClient } = require("@aws-sdk/client-lambda");
 const isplainobject = require("lodash.isplainobject");
 const _ = { isPlainObject: isplainobject };
 
@@ -8,7 +8,10 @@ module.exports = laconiaContext => async (payload = {}) => {
   }
 
   const { context, event, $lambda } = laconiaContext;
-  await $lambda.send(
+
+  const lambda = $lambda || new LambdaClient();
+
+  await lambda.send(
     new InvokeCommand({
       FunctionName: context.functionName,
       InvocationType: "Event",

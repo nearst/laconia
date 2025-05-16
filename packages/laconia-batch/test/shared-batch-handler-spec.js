@@ -1,21 +1,20 @@
-const AWSMock = require("aws-sdk-mock");
-const AWS = require("aws-sdk");
+const { mockClient } = require("aws-sdk-client-mock");
+const { LambdaClient, InvokeCommand } = require("@aws-sdk/client-lambda");
 const { matchers } = require("@laconia/test-helper");
 const { LaconiaContext } = require("@laconia/core");
 expect.extend(matchers);
 
-AWSMock.setSDKInstance(AWS);
-
 exports.sharedBehaviour = batchHandler => {
   describe("shared batch behaviour", () => {
-    let awsLambda;
-    let invokeMock, event, context, callback;
+    let lambdaMock, event, context, callback;
     let itemListener, stopListener, endListener, startListener;
 
     beforeEach(() => {
-      invokeMock = jest.fn();
-      AWSMock.mock("Lambda", "invoke", invokeMock);
-      awsLambda = new AWS.Lambda();
+      lambdaMock = mockClient(LambdaClient);
+      lambdaMock.on(InvokeCommand).resolves({
+        StatusCode: 202,
+        Payload: Buffer.from(JSON.stringify({ value: "response" }))
+      });
 
       itemListener = jest.fn();
       stopListener = jest.fn();
@@ -30,13 +29,13 @@ exports.sharedBehaviour = batchHandler => {
     });
 
     afterEach(() => {
-      AWSMock.restore();
+      lambdaMock.reset();
     });
 
     describe("when finish processing in a single lambda execution", () => {
       beforeEach(async () => {
         await batchHandler()
-          .register(() => ({ $lambda: awsLambda }))
+          .register(() => ({ $lambda: new LambdaClient() }))
           .on("start", startListener)
           .on("item", itemListener)
           .on("stop", stopListener)
@@ -68,7 +67,7 @@ exports.sharedBehaviour = batchHandler => {
       });
 
       it("should not recurse", () => {
-        expect(invokeMock).not.toHaveBeenCalled();
+        expect(lambdaMock.calls().length).toBe(0);
       });
     });
 
@@ -76,7 +75,7 @@ exports.sharedBehaviour = batchHandler => {
       beforeEach(async () => {
         context.getRemainingTimeInMillis = () => 5000;
         await batchHandler()
-          .register(() => ({ $lambda: awsLambda }))
+          .register(() => ({ $lambda: new LambdaClient() }))
           .on("start", startListener)
           .on("item", itemListener)
           .on("stop", stopListener)
@@ -97,14 +96,19 @@ exports.sharedBehaviour = batchHandler => {
       });
 
       it("should recurse when time is up", async () => {
-        expect(invokeMock).toBeCalledWith(
+        const calls = lambdaMock.calls();
+        expect(calls.length).toBe(1);
+        const invokeCall = calls[0];
+
+        expect(invokeCall.args[0].input).toEqual(
           expect.objectContaining({
             FunctionName: context.functionName,
-            InvocationType: "Event",
-            Payload: JSON.stringify({ cursor: { index: 0 } })
-          }),
-          expect.any(Function)
+            InvocationType: "Event"
+          })
         );
+
+        const payload = JSON.parse(invokeCall.args[0].input.Payload);
+        expect(payload).toEqual({ cursor: { index: 0 } });
       });
     });
 
@@ -112,7 +116,7 @@ exports.sharedBehaviour = batchHandler => {
       it("stops if time is not enough to process items", async () => {
         context.getRemainingTimeInMillis = () => 10000;
         await batchHandler({ timeNeededToRecurseInMillis: 10000 })
-          .register(() => ({ $lambda: awsLambda }))
+          .register(() => ({ $lambda: new LambdaClient() }))
           .on("stop", stopListener)(event, context, callback);
 
         expect(stopListener).toHaveBeenCalled();
@@ -121,7 +125,7 @@ exports.sharedBehaviour = batchHandler => {
       it("does not stop if time is enough to process items", async () => {
         context.getRemainingTimeInMillis = () => 10001;
         await batchHandler({ timeNeededToRecurseInMillis: 10000 })
-          .register(() => ({ $lambda: awsLambda }))
+          .register(() => ({ $lambda: new LambdaClient() }))
           .on("stop", stopListener)(event, context, callback);
 
         expect(stopListener).not.toHaveBeenCalled();
@@ -129,45 +133,43 @@ exports.sharedBehaviour = batchHandler => {
     });
 
     describe("when completing recursion", () => {
-      it("should process all items", async done => {
+      it("should process all items", async () => {
         context.getRemainingTimeInMillis = () => 5000;
-        const handler = batchHandler()
-          .register(() => ({ $lambda: awsLambda }))
-          .on("start", startListener)
-          .on("item", itemListener)
-          .on("end", () => {
-            try {
-              expect(invokeMock).toHaveBeenCalledTimes(2);
-              expect(startListener).toHaveBeenCalledTimes(1);
-              expect(itemListener).toHaveBeenCalledTimes(3);
-              expect(itemListener).toHaveBeenCalledWith(
-                expect.any(LaconiaContext),
-                { Artist: "Foo" }
-              );
-              expect(itemListener).toHaveBeenCalledWith(
-                expect.any(LaconiaContext),
-                { Artist: "Bar" }
-              );
-              expect(itemListener).toHaveBeenCalledWith(
-                expect.any(LaconiaContext),
-                { Artist: "Fiz" }
-              );
-              done();
-            } catch (ex) {
-              done.fail(ex);
-            }
+        const endPromise = new Promise(resolve => {
+          const handler = batchHandler()
+            .register(() => ({ $lambda: new LambdaClient() }))
+            .on("start", startListener)
+            .on("item", itemListener)
+            .on("end", () => {
+              resolve();
+            });
+
+          lambdaMock.on(InvokeCommand).callsFake(params => {
+            handler(JSON.parse(params.Payload), context, callback);
+            return {
+              FunctionError: undefined,
+              StatusCode: 202,
+              Payload: Buffer.from(JSON.stringify({ value: "response" }))
+            };
           });
 
-        invokeMock.mockImplementation((event, callback) => {
-          handler(JSON.parse(event.Payload), context, callback);
-          callback(null, {
-            FunctionError: undefined,
-            StatusCode: 202,
-            Payload: '{"value":"response"}'
-          });
+          handler(event, context, callback);
         });
 
-        handler(event, context, callback);
+        await endPromise;
+
+        expect(lambdaMock.calls().length).toBe(2);
+        expect(startListener).toHaveBeenCalledTimes(1);
+        expect(itemListener).toHaveBeenCalledTimes(3);
+        expect(itemListener).toHaveBeenCalledWith(expect.any(LaconiaContext), {
+          Artist: "Foo"
+        });
+        expect(itemListener).toHaveBeenCalledWith(expect.any(LaconiaContext), {
+          Artist: "Bar"
+        });
+        expect(itemListener).toHaveBeenCalledWith(expect.any(LaconiaContext), {
+          Artist: "Fiz"
+        });
       });
     });
   });

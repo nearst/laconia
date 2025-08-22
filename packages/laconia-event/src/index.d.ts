@@ -1,3 +1,4 @@
+import { S3Client } from "@aws-sdk/client-s3";
 import {
   S3Event as AWSS3Event,
   SNSEvent as AWSSNSEvent,
@@ -12,12 +13,12 @@ declare namespace event {
   interface S3Event {
     bucket: string;
     key: string;
-    getObject(): Promise<Buffer | Uint8Array>,
+    getObject(): Promise<Buffer | Uint8Array>;
     getJson<T>(): Promise<T | any>;
-    getStream(): Readable;
-    getText(): Promise<string>
+    getStream(): Promise<Readable>;
+    getText(): Promise<string>;
   }
-  function s3(awsS3Event: AWSS3Event, s3?: any): S3Event;
+  function s3(awsS3Event: AWSS3Event, s3?: S3Client): S3Event;
 
   interface SnsEvent {
     message: any;

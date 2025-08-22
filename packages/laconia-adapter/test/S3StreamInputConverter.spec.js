@@ -25,7 +25,6 @@ const createS3Event = key => {
     }
   });
 };
-exports.createS3Event = createS3Event;
 
 describe("S3StreamInputConverter", () => {
   let s3, s3Mock;

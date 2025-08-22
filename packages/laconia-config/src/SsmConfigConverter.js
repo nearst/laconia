@@ -1,3 +1,5 @@
+const { SSMClient, GetParametersCommand } = require("@aws-sdk/client-ssm");
+
 const validateSsmData = data => {
   if (data.InvalidParameters.length > 0) {
     throw new Error(`Invalid parameters: ${data.InvalidParameters.join(", ")}`);
@@ -6,16 +8,16 @@ const validateSsmData = data => {
 
 module.exports = class SsmConfigConverter {
   constructor(ssm) {
-    this.ssm = ssm;
+    this.ssm = ssm || new SSMClient({});
   }
 
   async _getParameterMap(parameterNames) {
-    const data = await this.ssm
-      .getParameters({
+    const data = await this.ssm.send(
+      new GetParametersCommand({
         Names: parameterNames,
         WithDecryption: true
       })
-      .promise();
+    );
     validateSsmData(data);
     return data.Parameters.reduce((acc, p) => {
       acc[p.Name] = p.Value;

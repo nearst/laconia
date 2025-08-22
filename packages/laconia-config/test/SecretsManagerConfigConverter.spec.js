@@ -1,44 +1,20 @@
-const AWS = require("aws-sdk");
-const AWSMock = require("aws-sdk-mock");
-const { yields } = require("@laconia/test-helper");
+const {
+  SecretsManagerClient,
+  GetSecretValueCommand
+} = require("@aws-sdk/client-secrets-manager");
+const { mockClient } = require("aws-sdk-client-mock");
 const SecretsManagerConfigConverter = require("../src/SecretsManagerConfigConverter");
 
-AWSMock.setSDKInstance(AWS);
-
 describe("SecretsManagerConfigConverter", () => {
-  let secretsManager;
-  let awsSecretsManager;
+  const mock = mockClient(SecretsManagerClient);
 
   afterEach(() => {
-    AWSMock.restore();
-  });
-
-  beforeEach(() => {
-    secretsManager = {
-      getSecretValue: jest.fn()
-    };
-    AWSMock.mock(
-      "SecretsManager",
-      "getSecretValue",
-      secretsManager.getSecretValue
-    );
-    awsSecretsManager = new AWS.SecretsManager();
+    mock.reset();
   });
 
   describe("when there is no parameter to be retrieved", () => {
-    beforeEach(() => {
-      secretsManager.getSecretValue.mockImplementation(
-        yields({
-          Parameters: [],
-          InvalidParameters: []
-        })
-      );
-    });
-
     it("return empty instances", async () => {
-      const configConverter = new SecretsManagerConfigConverter(
-        awsSecretsManager
-      );
+      const configConverter = new SecretsManagerConfigConverter();
       const instances = await configConverter.convertMultiple({});
       expect(instances).toEqual({});
     });
@@ -49,15 +25,15 @@ describe("SecretsManagerConfigConverter", () => {
     let configConverter;
 
     beforeEach(() => {
-      configConverter = new SecretsManagerConfigConverter(awsSecretsManager);
+      configConverter = new SecretsManagerConfigConverter();
       secretsStore = {
         myProdApiKey: "secret-api-key",
         myProductionDbPassword: "secret-db-password",
         myProdBase64EncodedKey: Buffer.from("base64-encoded"),
         myKeyValueSecrets: `{ "apiKey": "test-api-key", "apiSecret": "some-secret" }`
       };
-      secretsManager.getSecretValue.mockImplementation((params, callback) => {
-        const secret = secretsStore[params.SecretId];
+      mock.on(GetSecretValueCommand).callsFake(input => {
+        const secret = secretsStore[input.SecretId];
 
         const res = {};
         if (Buffer.isBuffer(secret)) {
@@ -66,7 +42,7 @@ describe("SecretsManagerConfigConverter", () => {
           res.SecretString = secret;
         }
 
-        callback(null, res);
+        return res;
       });
     });
 
@@ -76,12 +52,10 @@ describe("SecretsManagerConfigConverter", () => {
       });
 
       expect(result).toHaveProperty("apiKey", "secret-api-key");
-      expect(secretsManager.getSecretValue).toBeCalledWith(
-        expect.objectContaining({ SecretId: "myProdApiKey" }),
-        expect.any(Function)
-      );
-
-      expect(secretsManager.getSecretValue).toHaveBeenCalledTimes(1);
+      expect(mock).toHaveReceivedCommandWith(GetSecretValueCommand, {
+        SecretId: "myProdApiKey"
+      });
+      expect(mock).toHaveReceivedCommandTimes(GetSecretValueCommand, 1);
     });
 
     it("should retrieve more than one secret", async () => {
@@ -102,27 +76,23 @@ describe("SecretsManagerConfigConverter", () => {
         }
       });
 
-      expect(secretsManager.getSecretValue).toBeCalledWith(
-        expect.objectContaining({ SecretId: "myProdApiKey" }),
-        expect.any(Function)
-      );
+      expect(mock).toHaveReceivedCommandWith(GetSecretValueCommand, {
+        SecretId: "myProdApiKey"
+      });
 
-      expect(secretsManager.getSecretValue).toBeCalledWith(
-        expect.objectContaining({ SecretId: "myProductionDbPassword" }),
-        expect.any(Function)
-      );
+      expect(mock).toHaveReceivedCommandWith(GetSecretValueCommand, {
+        SecretId: "myProductionDbPassword"
+      });
 
-      expect(secretsManager.getSecretValue).toBeCalledWith(
-        expect.objectContaining({ SecretId: "myProdBase64EncodedKey" }),
-        expect.any(Function)
-      );
+      expect(mock).toHaveReceivedCommandWith(GetSecretValueCommand, {
+        SecretId: "myProdBase64EncodedKey"
+      });
 
-      expect(secretsManager.getSecretValue).toBeCalledWith(
-        expect.objectContaining({ SecretId: "myKeyValueSecrets" }),
-        expect.any(Function)
-      );
+      expect(mock).toHaveReceivedCommandWith(GetSecretValueCommand, {
+        SecretId: "myKeyValueSecrets"
+      });
 
-      expect(secretsManager.getSecretValue).toHaveBeenCalledTimes(4);
+      expect(mock).toHaveReceivedCommandTimes(GetSecretValueCommand, 4);
     });
   });
 });

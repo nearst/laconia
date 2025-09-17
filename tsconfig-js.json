@@ -3,6 +3,7 @@
     "noEmit": true,
     "strict": false,
     "allowJs": true,
+    "skipLibCheck": true,
     "lib": ["es2015"]
   },
   "include": ["packages/laconia-acceptance-test/src"],

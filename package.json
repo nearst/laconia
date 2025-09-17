@@ -42,9 +42,9 @@
     "@types/node": "~22.13.7",
     "aws-event-mocks": "^0.0.0",
     "aws-sdk": "^2.432.0",
-    "aws-sdk-mock": "^5.0.0",
     "aws-sdk-client-mock": "^4.1.0",
     "aws-sdk-client-mock-jest": "^4.1.0",
+    "aws-sdk-mock": "^5.0.0",
     "coveralls": "^3.0.2",
     "delay": "^5.0.0",
     "dynamodb-local": "0.0.34",
@@ -63,6 +63,7 @@
     "lodash": "^4.17.5",
     "npm-package-json-lint": "^5.1.0",
     "prettier": "^1.16.4",
+    "traverse": "^0.6.11",
     "typescript": "^5.0.4"
   },
   "jest": {

@@ -24,7 +24,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.787.0",
+    "@aws-sdk/client-s3": "^3.873.0",
     "@aws-sdk/util-dynamodb": "^3.788.0",
     "@laconia/core": "^1.14.0",
     "@smithy/util-stream": "^4.2.0",

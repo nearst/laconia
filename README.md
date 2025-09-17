@@ -9,7 +9,6 @@
 ---
 
 [![Build Status](https://github.com/nearst/laconia/actions/workflows/test.yml/badge.svg)](https://github.com/nearst/laconia/actions)
-[![Coverage Status](https://coveralls.io/repos/github/nearst/laconia/badge.svg?branch=master)](https://coveralls.io/github/nearst/laconia?branch=master)
 [![Apache License](https://img.shields.io/badge/license-Apache-blue.svg)](LICENSE)
 ![npm](https://img.shields.io/npm/v/@laconia/core.svg)
 ![npm](https://img.shields.io/npm/dm/@laconia/core.svg)

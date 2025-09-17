@@ -20,7 +20,6 @@
     "remove-acceptance": "lerna exec --scope @laconia/acceptance-test npm run remove",
     "acceptance-test": "lerna exec --scope @laconia/acceptance-test npm run test",
     "posttest": "npm run test:types && npm run test:jslint && npm run test:packagelint",
-    "publish:coverage": "cat ./coverage/lcov.info | coveralls",
     "prepare": "husky || true",
     "commitlint": "commitlint --edit"
   },
@@ -45,7 +44,6 @@
     "aws-sdk-client-mock": "^4.1.0",
     "aws-sdk-client-mock-jest": "^4.1.0",
     "aws-sdk-mock": "^5.0.0",
-    "coveralls": "^3.0.2",
     "delay": "^5.0.0",
     "dynamodb-local": "0.0.34",
     "eslint": "^7.8.0",

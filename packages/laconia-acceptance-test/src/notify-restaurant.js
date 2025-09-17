@@ -18,9 +18,6 @@ const app = async (orderEvents, { restaurantNotificationTopic }) => {
 
 exports.handler = laconia(adapter(app)).register(
   "restaurantNotificationTopic",
-  ({ sns, env }) =>
-    new SnsRestaurantNotificationTopic(
-      sns,
-      env.RESTAURANT_NOTIFICATION_TOPIC_ARN
-    )
+  ({ env }) =>
+    new SnsRestaurantNotificationTopic(env.RESTAURANT_NOTIFICATION_TOPIC_ARN)
 );

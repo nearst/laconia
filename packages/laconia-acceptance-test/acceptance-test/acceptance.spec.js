@@ -96,7 +96,10 @@ const getWebSocketUrl = async () => {
   if (!wsApi) {
     throw new Error(`${WS_API_NAME} could not be found!`);
   }
-  return `${wsApi.ApiEndpoint}/${SERVERLESS_STAGE}`;
+
+  console.log("Websocket URL: ", `${wsApi.ApiEndpoint}/${SERVERLESS_STAGE}/`);
+
+  return `${wsApi.ApiEndpoint}/${SERVERLESS_STAGE}/`;
 };
 
 class WebSocketOrderMessenger {
@@ -134,11 +137,15 @@ class WebSocketOrderMessenger {
   }
 
   orderReceived() {
-    this.ws.send(JSON.stringify({ message: "order received" }));
+    this.ws.on("open", () => {
+      this.ws.send(JSON.stringify({ message: "order received" }));
+    });
   }
 
   close() {
-    this.ws.close();
+    try {
+      this.ws.close();
+    } catch (e) {}
   }
 }
 
@@ -178,7 +185,6 @@ describe("order flow", () => {
     );
     orderRepository = new DynamoDbOrderRepository(name("order"));
     totalOrderStorage = new S3TotalOrderStorage(
-      new AWS.S3(),
       bucketName("total-order", accountId)
     );
   });
@@ -216,7 +222,7 @@ describe("order flow", () => {
   });
 
   afterAll(() => {
-    orderMessenger.close();
+    // orderMessenger.close();
   });
 
   describe("happy path", () => {

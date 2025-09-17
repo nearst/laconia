@@ -55,7 +55,7 @@
     "serverless-s3-remover": "^0.6.0",
     "serverless-s3-sync": "^2.0.0",
     "uuid": "^11.1.0",
-    "ws": "^7.4.6"
+    "ws": "^8.18.3"
   },
   "engines": {
     "node": ">=12.22"

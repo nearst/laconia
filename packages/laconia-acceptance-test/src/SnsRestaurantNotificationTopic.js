@@ -1,6 +1,8 @@
+const { SNS } = require("aws-sdk");
+
 module.exports = class SnsRestaurantNotificationTopic {
-  constructor(sns, snsArn) {
-    this.sns = sns;
+  constructor(snsArn) {
+    this.sns = new SNS();
     this.snsArn = snsArn;
   }
 

@@ -7,9 +7,9 @@ module.exports = laconiaContext => async (payload = {}) => {
     throw new Error("Payload must be an object");
   }
 
-  const { context, event, $lambda } = laconiaContext;
+  const { context, event } = laconiaContext;
 
-  const lambda = $lambda || new LambdaClient();
+  const lambda = new LambdaClient();
 
   await lambda.send(
     new InvokeCommand({

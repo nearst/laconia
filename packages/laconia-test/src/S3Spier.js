@@ -3,14 +3,15 @@ const {
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
-  ListObjectsCommand
+  ListObjectsCommand,
+  S3Client
 } = require("@aws-sdk/client-s3");
 
 module.exports = class S3Spier {
-  constructor(bucketName, functionName, s3) {
+  constructor(bucketName, functionName) {
     this.bucketName = bucketName;
     this.functionName = functionName;
-    this.s3 = s3;
+    this.s3 = new S3Client();
   }
 
   get _prefix() {
@@ -22,7 +23,7 @@ module.exports = class S3Spier {
       new ListObjectsCommand({ Bucket: this.bucketName, Prefix: this._prefix })
     );
 
-    return objects.Contents.map(content => content.Key);
+    return objects.Contents?.map(content => content.Key) || [];
   }
 
   async _getTotalInvocations() {
@@ -61,14 +62,17 @@ module.exports = class S3Spier {
 
   waitForTotalInvocations(totalInvocations) {
     return pWaitFor(
-      async () => (await this._getTotalInvocations()) >= totalInvocations
+      async () => (await this._getTotalInvocations()) >= totalInvocations,
+      { interval: 500 }
     );
   }
 
   async getInvocations() {
     const keys = await this._objectsKeys();
     const objects = await this._getObjects(keys);
-    return objects.map(async o => JSON.parse(await o.Body.transformToString()));
+    return Promise.all(
+      objects.map(async o => JSON.parse(await o.Body.transformToString()))
+    );
   }
 
   async clear() {

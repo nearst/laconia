@@ -1,4 +1,4 @@
-const { InvokeCommand } = require("@aws-sdk/client-lambda");
+const { InvokeCommand, LambdaClient } = require("@aws-sdk/client-lambda");
 
 const HandledInvokeLaconiaError = require("./HandledInvokeLaconiaError");
 const UnhandledInvokeLaconiaError = require("./UnhandledInvokeLaconiaError");
@@ -13,7 +13,7 @@ const validateStatusCode = (statusCode, expectedStatusCode) => {
 
 module.exports = class LambdaInvoker {
   constructor(functionName, lambda, requestLogs) {
-    this.lambda = lambda;
+    this.lambda = lambda || new LambdaClient();
     this.functionName = functionName;
     this.requestLogs = requestLogs;
     this.fireAndForget = this.fireAndForget.bind(this);

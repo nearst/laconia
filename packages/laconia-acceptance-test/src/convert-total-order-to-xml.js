@@ -12,5 +12,5 @@ const app = async (totalOrder, { totalOrderStorage }) => {
 
 exports.handler = laconia(s3(app)).register(
   "totalOrderStorage",
-  ({ s3, env }) => new S3TotalOrderStorage(s3, env.TOTAL_ORDER_BUCKET_NAME)
+  ({ env }) => new S3TotalOrderStorage(env.TOTAL_ORDER_BUCKET_NAME)
 );

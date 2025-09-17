@@ -1,33 +1,22 @@
-const AWS = require("aws-sdk");
-const AWSMock = require("aws-sdk-mock");
-const { yields, s3Body } = require("@laconia/test-helper");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { mockClient } = require("aws-sdk-client-mock");
+const { s3Body } = require("@laconia/test-helper");
 const S3ConfigConverter = require("../src/S3ConfigConverter");
 
-AWSMock.setSDKInstance(AWS);
-
 describe("S3ConfigConverter", () => {
-  let s3;
-  let awsS3;
-
-  afterEach(() => {
-    AWSMock.restore();
-  });
+  const s3Mock = mockClient(S3Client);
 
   beforeEach(() => {
-    s3 = {
-      getObject: jest
-        .fn()
-        .mockImplementation(s3Body({ applicationName: "hello" }))
-    };
-    AWSMock.mock("S3", "getObject", s3.getObject);
-    awsS3 = new AWS.S3();
+    s3Mock.resolves({
+      Body: s3Body({ applicationName: "hello" })
+    });
   });
 
   describe("when there is no env var set", () => {
     let configConverter;
 
     beforeEach(() => {
-      configConverter = new S3ConfigConverter(awsS3);
+      configConverter = new S3ConfigConverter();
     });
 
     it("return empty instances", async () => {
@@ -37,7 +26,7 @@ describe("S3ConfigConverter", () => {
 
     it("should not call S3", async () => {
       await configConverter.convertMultiple({});
-      expect(s3.getObject).not.toBeCalled();
+      expect(s3Mock).not.toHaveReceivedAnyCommand();
     });
   });
 
@@ -46,7 +35,7 @@ describe("S3ConfigConverter", () => {
     let values;
 
     beforeEach(() => {
-      configConverter = new S3ConfigConverter(awsS3);
+      configConverter = new S3ConfigConverter();
       values = {
         myConf: "mybucket/nested/name.json"
       };
@@ -54,13 +43,10 @@ describe("S3ConfigConverter", () => {
 
     it("should call S3 with the specified value", async () => {
       await configConverter.convertMultiple(values);
-      expect(s3.getObject).toBeCalledWith(
-        {
-          Bucket: "mybucket",
-          Key: "nested/name.json"
-        },
-        expect.any(Function)
-      );
+      expect(s3Mock).toHaveReceivedCommandWith(GetObjectCommand, {
+        Bucket: "mybucket",
+        Key: "nested/name.json"
+      });
     });
 
     it("should return app config instance", async () => {
@@ -78,38 +64,28 @@ describe("S3ConfigConverter", () => {
         myConf: "mybucket/nested/name.json",
         otherConf: "otherbucket/nested/bar/other.json"
       };
-      configConverter = new S3ConfigConverter(awsS3);
 
-      s3.getObject.mockImplementation(
-        yields(({ Bucket }) => {
-          return {
-            Body: JSON.stringify(
-              Bucket === "mybucket"
-                ? { applicationName: "hello" }
-                : { username: "admin" }
-            )
-          };
-        })
-      );
+      s3Mock.on(GetObjectCommand).callsFake(input => ({
+        Body: s3Body(
+          input.Bucket === "mybucket"
+            ? { applicationName: "hello" }
+            : { username: "admin" }
+        )
+      }));
+
+      configConverter = new S3ConfigConverter();
     });
 
     it("should call S3 with the configured env var value", async () => {
       await configConverter.convertMultiple(values);
-      expect(s3.getObject).toHaveBeenCalledTimes(2);
-      expect(s3.getObject).toBeCalledWith(
-        {
-          Bucket: "mybucket",
-          Key: "nested/name.json"
-        },
-        expect.any(Function)
-      );
-      expect(s3.getObject).toBeCalledWith(
-        {
-          Bucket: "otherbucket",
-          Key: "nested/bar/other.json"
-        },
-        expect.any(Function)
-      );
+      expect(s3Mock).toHaveReceivedCommandWith(GetObjectCommand, {
+        Bucket: "mybucket",
+        Key: "nested/name.json"
+      });
+      expect(s3Mock).toHaveReceivedCommandWith(GetObjectCommand, {
+        Bucket: "otherbucket",
+        Key: "nested/bar/other.json"
+      });
     });
 
     it("should return multiple instances", async () => {
@@ -127,7 +103,7 @@ describe("S3ConfigConverter", () => {
       values = {
         myConf: "mybucket/nested/name.txt"
       };
-      configConverter = new S3ConfigConverter(awsS3);
+      configConverter = new S3ConfigConverter();
     });
 
     it("should throw error", async () => {

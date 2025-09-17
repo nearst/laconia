@@ -25,7 +25,7 @@ const createS3Event = key => {
   });
 };
 
-describe("S3JsonInputConverter", () => {
+describe("S3TextInputConverter", () => {
   let s3, s3Mock;
   const event = createS3Event("object-key");
 

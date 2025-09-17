@@ -1,16 +1,21 @@
+const {
+  SecretsManagerClient,
+  GetSecretValueCommand
+} = require("@aws-sdk/client-secrets-manager");
+
 module.exports = class SecretsManagerConfigConverter {
   constructor(secretsManager) {
-    this.secretsManager = secretsManager;
+    this.secretsManager = secretsManager || new SecretsManagerClient();
   }
 
   async _getParameterMap(secretIds) {
     const datas = await Promise.all(
       secretIds.map(secretId =>
-        this.secretsManager
-          .getSecretValue({
+        this.secretsManager.send(
+          new GetSecretValueCommand({
             SecretId: secretId
           })
-          .promise()
+        )
       )
     );
 

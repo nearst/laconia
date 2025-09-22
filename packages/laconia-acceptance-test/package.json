@@ -54,7 +54,7 @@
     "serverless-esbuild": "^1.51.0",
     "serverless-s3-remover": "^0.6.0",
     "serverless-s3-sync": "^2.0.0",
-    "uuid": "^11.1.0",
+    "uuid": "^13.0.0",
     "ws": "^8.18.3"
   },
   "engines": {

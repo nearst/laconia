@@ -41,7 +41,8 @@ module.exports = class LambdaInvoker {
     );
 
     try {
-      return JSON.parse(data.Payload);
+      const result = Buffer.from(data.Payload).toString();
+      return JSON.parse(result);
     } catch (e) {
       return data.Payload;
     }
@@ -65,7 +66,8 @@ module.exports = class LambdaInvoker {
     const data = await this.lambda.send(command);
 
     if (data && data.FunctionError) {
-      const errorPayload = JSON.parse(data.Payload || "{}");
+      const result = Buffer.from(data.Payload).toString();
+      const errorPayload = JSON.parse(result || "{}");
       if (data.FunctionError === "Handled") {
         throw new HandledInvokeLaconiaError(
           this.functionName,

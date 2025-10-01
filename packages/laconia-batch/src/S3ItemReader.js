@@ -1,14 +1,13 @@
 const get = require("lodash.get");
+const { GetObjectCommand } = require("@aws-sdk/client-s3");
 const _ = { get };
 
-const extractS3JsonBody = data => {
-  const fileContent = data.Body.toString();
+const extractS3JsonBody = async data => {
+  const jsonString = await data.Body.transformToString();
   try {
-    return JSON.parse(fileContent);
+    return JSON.parse(jsonString);
   } catch (e) {
-    throw new Error(
-      `Data stored in S3 is not a JSON!: ${JSON.stringify(fileContent)}`
-    );
+    throw new Error(`Data stored in S3 is not a JSON!: ${e.message}`);
   }
 };
 
@@ -32,8 +31,9 @@ module.exports = class S3ItemReader {
   }
 
   async _getItemsFromS3() {
-    const data = await this.s3.getObject(this.baseParams).promise();
-    const items = getArrayFromPath(extractS3JsonBody(data), this.path);
+    const data = await this.s3.send(new GetObjectCommand(this.baseParams));
+    const parsedData = await extractS3JsonBody(data);
+    const items = getArrayFromPath(parsedData, this.path);
     this.cachedItems = items;
     return items;
   }

@@ -23,13 +23,12 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
-    "aws-xray-sdk-core": "^3.0.1"
+    "aws-xray-sdk-core": "^3.10.3"
   },
   "devDependencies": {
-    "@laconia/test-helper": "file:../laconia-test-helper"
-  },
-  "peerDependencies": {
-    "aws-sdk": "^2.432.0"
+    "@aws-sdk/client-s3": "^3.873.0",
+    "@laconia/test-helper": "file:../laconia-test-helper",
+    "aws-sdk": "^2.1692.0"
   },
   "engines": {
     "node": ">=12.22"

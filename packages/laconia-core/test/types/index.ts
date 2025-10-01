@@ -29,6 +29,27 @@ laconia(app)
   .register(() => ({ someKey: "value" }), {})
   .register(() => ({ someKey: "value" }), {})
   .register("someKey", () => "value", {})
+  .register({
+    someKey: "value"
+  })
+  .register([{ someKey: "value" }, { someKey: "value" }])
+  .register([
+    { someKey: "value" },
+    () => ({
+      someKey: "value"
+    })
+  ])
+  .register(
+    {
+      someKey: "value"
+    },
+    {
+      cache: {
+        enabled: false,
+        maxAge: 1000
+      }
+    }
+  )
   .register(() => ({ someKey: "value" }), {
     cache: {
       enabled: false,

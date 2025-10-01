@@ -10,7 +10,7 @@
   ],
   "homepage": "https://laconiajs.io/",
   "bugs": {
-    "url": "https://github.com/laconiajs/laconia/issues"
+    "url": "https://github.com/nearst/laconia/issues"
   },
   "license": "Apache-2.0",
   "author": "Wisen Tanasa <wisen@ceilfors.com>",
@@ -21,12 +21,16 @@
   "types": "src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/laconiajs/laconia.git"
+    "url": "https://github.com/nearst/laconia.git"
   },
   "scripts": {
     "test:integration": "jest /integration-test"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.806.0",
+    "@aws-sdk/client-s3": "^3.873.0",
+    "@aws-sdk/client-lambda": "^3.806.0",
+    "@aws-sdk/lib-dynamodb": "^3.806.0",
     "@laconia/core": "^1.14.0",
     "@laconia/invoker": "^1.14.0",
     "await-event-emitter": "^2.0.2",
@@ -37,9 +41,6 @@
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"
   },
-  "peerDependencies": {
-    "aws-sdk": "^2.432.0"
-  },
   "engines": {
     "node": ">=12.22"
   },
@@ -49,7 +50,7 @@
   "jest": {
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
-      "jest-extended"
+      "jest-extended/all"
     ]
   }
 }

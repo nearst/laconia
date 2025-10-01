@@ -1,10 +1,17 @@
 const pWaitFor = require("p-wait-for");
+const {
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsCommand,
+  S3Client
+} = require("@aws-sdk/client-s3");
 
 module.exports = class S3Spier {
-  constructor(bucketName, functionName, s3) {
+  constructor(bucketName, functionName) {
     this.bucketName = bucketName;
     this.functionName = functionName;
-    this.s3 = s3;
+    this.s3 = new S3Client();
   }
 
   get _prefix() {
@@ -12,11 +19,11 @@ module.exports = class S3Spier {
   }
 
   async _objectsKeys() {
-    const objects = await this.s3
-      .listObjects({ Bucket: this.bucketName, Prefix: this._prefix })
-      .promise();
+    const objects = await this.s3.send(
+      new ListObjectsCommand({ Bucket: this.bucketName, Prefix: this._prefix })
+    );
 
-    return objects.Contents.map(content => content.Key);
+    return objects.Contents?.map(content => content.Key) || [];
   }
 
   async _getTotalInvocations() {
@@ -26,13 +33,15 @@ module.exports = class S3Spier {
 
   _getObjects(keys) {
     return Promise.all(
-      keys.map(k => this.s3.getObject(this._objectParams(k)).promise())
+      keys.map(k => this.s3.send(new GetObjectCommand(this._objectParams(k))))
     );
   }
 
   _deleteObjects(keys) {
     return Promise.all(
-      keys.map(k => this.s3.deleteObject(this._objectParams(k)).promise())
+      keys.map(k =>
+        this.s3.send(new DeleteObjectCommand(this._objectParams(k)))
+      )
     );
   }
 
@@ -41,26 +50,29 @@ module.exports = class S3Spier {
   }
 
   track({ event, context }) {
-    return this.s3
-      .putObject({
+    return this.s3.send(
+      new PutObjectCommand({
         Bucket: this.bucketName,
         Key: `${this._prefix}/${Date.now()}-${context.awsRequestId}.json`,
         Body: JSON.stringify({ event }),
         ContentType: "application/json"
       })
-      .promise();
+    );
   }
 
   waitForTotalInvocations(totalInvocations) {
     return pWaitFor(
-      async () => (await this._getTotalInvocations()) >= totalInvocations
+      async () => (await this._getTotalInvocations()) >= totalInvocations,
+      { interval: 500 }
     );
   }
 
   async getInvocations() {
     const keys = await this._objectsKeys();
     const objects = await this._getObjects(keys);
-    return objects.map(o => JSON.parse(o.Body.toString()));
+    return Promise.all(
+      objects.map(async o => JSON.parse(await o.Body.transformToString()))
+    );
   }
 
   async clear() {

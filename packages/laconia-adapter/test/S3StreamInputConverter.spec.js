@@ -1,11 +1,9 @@
 const { Readable } = require("stream");
-const AWS = require("aws-sdk");
-const AWSMock = require("aws-sdk-mock");
+const { S3Client } = require("@aws-sdk/client-s3");
+const { mockClient } = require("aws-sdk-client-mock");
 const createEvent = require("aws-event-mocks");
 const { s3Body } = require("@laconia/test-helper");
 const S3StreamInputConverter = require("../src/S3StreamInputConverter");
-
-AWSMock.setSDKInstance(AWS);
 
 const createS3Event = key => {
   return createEvent({
@@ -29,36 +27,30 @@ const createS3Event = key => {
 };
 
 describe("S3StreamInputConverter", () => {
-  let s3;
+  let s3, s3Mock;
   const event = createS3Event("object-key");
 
   beforeEach(() => {
-    s3 = {
-      getObject: jest.fn().mockImplementation(s3Body({ foo: "bar" }))
-    };
-    AWSMock.mock("S3", "getObject", s3.getObject);
+    s3 = new S3Client();
+    s3Mock = mockClient(s3);
+    s3Mock.resolves({
+      Body: s3Body({ foo: "bar" })
+    });
   });
 
-  afterEach(() => {
-    AWSMock.restore();
-  });
-
-  it("should convert event to stream", () => {
-    const inputConverter = new S3StreamInputConverter(new AWS.S3());
-    const input = inputConverter.convert(event);
+  it("should convert event to stream", async () => {
+    const inputConverter = new S3StreamInputConverter(s3);
+    const input = await inputConverter.convert(event);
     expect(input).toBeInstanceOf(Readable);
   });
 
   it("should call AWS sdk with the correct parameter", async () => {
-    const inputConverter = new S3StreamInputConverter(new AWS.S3());
-    inputConverter.convert(event);
+    const inputConverter = new S3StreamInputConverter(s3);
+    await inputConverter.convert(event);
 
-    expect(s3.getObject).toBeCalledWith(
-      {
-        Bucket: "my-bucket-name",
-        Key: "object-key"
-      },
-      expect.any(Function)
-    );
+    expect(s3Mock.call(0).args[0].input).toEqual({
+      Bucket: "my-bucket-name",
+      Key: "object-key"
+    });
   });
 });

@@ -13,18 +13,17 @@ import {
 import { s3, sns, sqs, kinesis, apigateway } from "../../src/index";
 const { req, res } = apigateway;
 
-import AWS from "aws-sdk";
-import { integer } from "aws-sdk/clients/lightsail";
+import { S3Client } from "@aws-sdk/client-s3";
 
-const s3Handler: S3Handler = (event: S3Event) => {
+const s3Handler: S3Handler = async (event: S3Event) => {
   const s3Event = s3(event);
   console.log(s3Event.bucket);
   console.log(s3Event.key);
   console.log(s3Event.getObject());
   console.log(s3Event.getJson());
-  s3Event.getStream().pipe(process.stdout);
+  (await s3Event.getStream()).pipe(process.stdout);
 
-  s3(event, new AWS.S3());
+  s3(event, new S3Client());
 };
 
 const snsHandler: SNSHandler = (event: SNSEvent) => {

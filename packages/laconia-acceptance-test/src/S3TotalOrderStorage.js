@@ -1,8 +1,9 @@
+const { S3 } = require("aws-sdk");
 const pWaitFor = require("p-wait-for");
 
 module.exports = class S3TotalOrderStorage {
-  constructor(s3, bucket) {
-    this.s3 = s3;
+  constructor(bucket) {
+    this.s3 = new S3();
     this.bucket = bucket;
   }
 

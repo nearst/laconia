@@ -1,27 +1,9 @@
-const AWS = require("aws-sdk");
 const CoreLaconiaContext = require("./CoreLaconiaContext");
-
-const checkFunction = (functionName, argument) => {
-  if (typeof argument !== "function")
-    throw new TypeError(
-      `${functionName}() expects to be passed a function, you passed: ${JSON.stringify(
-        argument
-      )}`
-    );
-};
-
-const awsInstances = {
-  lambda: new AWS.Lambda(),
-  s3: new AWS.S3(),
-  ssm: new AWS.SSM(),
-  sns: new AWS.SNS(),
-  secretsManager: new AWS.SecretsManager()
-};
+const { checkFunction, checkFunctionOrObject } = require("./typeChecking");
 
 module.exports = app => {
   checkFunction("laconia", app);
   const laconiaContext = new CoreLaconiaContext();
-  laconiaContext.registerBuiltInInstances(awsInstances);
 
   const laconia = async (event, context, callback) => {
     laconiaContext.registerInstances({ event, context });
@@ -47,12 +29,16 @@ module.exports = app => {
   };
 
   const registerMultiple = (factory, options = {}) => {
+    const makeFactory = factory =>
+      typeof factory === "function" ? factory : () => factory;
+
     if (Array.isArray(factory)) {
-      factory.forEach(f => checkFunction("register", f));
-      laconiaContext.registerFactories(factory, options.cache);
+      factory.forEach(f => checkFunctionOrObject("register", f));
+      const factories = factory.map(makeFactory);
+      laconiaContext.registerFactories(factories, options.cache);
     } else {
-      checkFunction("register", factory);
-      laconiaContext.registerFactory(factory, options.cache);
+      checkFunctionOrObject("register", factory);
+      laconiaContext.registerFactory(makeFactory(factory), options.cache);
     }
   };
 
@@ -64,6 +50,8 @@ module.exports = app => {
 
       if (typeof factory === "string") {
         registerSingle(factory, optionsOrFactory, options);
+      } else if (typeof factory === "object") {
+        registerMultiple(factory, optionsOrFactory);
       } else {
         registerMultiple(factory, optionsOrFactory);
       }

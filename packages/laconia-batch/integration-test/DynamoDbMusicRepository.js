@@ -1,3 +1,6 @@
+const { CreateTableCommand } = require("@aws-sdk/client-dynamodb");
+const { PutCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
+
 module.exports = class MusicRepository {
   constructor(dynamodb, documentClient) {
     this.dynamodb = dynamodb;
@@ -25,7 +28,7 @@ module.exports = class MusicRepository {
       TableName: "Music"
     };
 
-    return this.dynamodb.createTable(params).promise();
+    return this.dynamodb.send(new CreateTableCommand(params));
   }
 
   save(music) {
@@ -33,16 +36,16 @@ module.exports = class MusicRepository {
       Item: music,
       TableName: "Music"
     };
-    return this.documentClient.put(params).promise();
+    return this.documentClient.send(new PutCommand(params));
   }
 
   async scan(limit) {
     let params = { TableName: "Music" };
     if (limit) {
-      params = Object.assign({ Limit: limit }, params);
+      params = { ...params, Limit: limit };
     }
 
-    const data = await this.documentClient.scan(params).promise();
+    const data = await this.documentClient.send(new ScanCommand(params));
     return data.Items;
   }
 };

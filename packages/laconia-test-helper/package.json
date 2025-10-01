@@ -23,6 +23,7 @@
     "url": "https://github.com/laconiajs/laconia.git"
   },
   "dependencies": {
+    "@smithy/util-stream": "^4.2.4",
     "p-wait-for": "^3.1.0"
   },
   "engines": {

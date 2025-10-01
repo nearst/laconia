@@ -1,19 +1,14 @@
 const _ = require("lodash");
+const { sdkStreamMixin } = require("@smithy/util-stream");
+const { Readable } = require("stream");
 
-const yields = response => (params, callback) => {
-  if (typeof response !== "function") {
-    callback(null, response);
-  } else {
-    callback(null, response(params));
-  }
+const s3Body = object => {
+  const stream = new Readable();
+  stream.push(JSON.stringify(object));
+  stream.push(null);
+
+  return sdkStreamMixin(stream);
 };
-
-const s3Body = object =>
-  yields({
-    Body: {
-      toString: () => JSON.stringify(object)
-    }
-  });
 
 const reduceNexts = async (reader, times, startingCursor, callback) => {
   await _.range(times).reduce(async (cursorPromise, index) => {
@@ -53,7 +48,6 @@ const matchers = {
   }
 };
 
-exports.yields = yields;
 exports.s3Body = s3Body;
 exports.collectNexts = collectNexts;
 exports.reduceNexts = reduceNexts;

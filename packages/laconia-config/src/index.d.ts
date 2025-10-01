@@ -1,7 +1,10 @@
 import { LaconiaFactory } from "@laconia/core";
 
 declare namespace config {
-  function envVarInstances(): LaconiaFactory<any>;
+  function envVarInstances<Context>(): LaconiaFactory<
+    Context,
+    Record<string, any>
+  >;
 }
 
 export = config;

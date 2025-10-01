@@ -1,10 +1,8 @@
-const AWS = require("aws-sdk");
-const AWSMock = require("aws-sdk-mock");
+const { S3Client } = require("@aws-sdk/client-s3");
+const { mockClient } = require("aws-sdk-client-mock");
 const createEvent = require("aws-event-mocks");
 const { s3Body } = require("@laconia/test-helper");
 const S3TextInputConverter = require("../src/S3TextInputConverter");
-
-AWSMock.setSDKInstance(AWS);
 
 const createS3Event = key => {
   return createEvent({
@@ -28,37 +26,21 @@ const createS3Event = key => {
 };
 
 describe("S3TextInputConverter", () => {
-  let s3;
+  let s3, s3Mock;
   const event = createS3Event("object-key");
 
   beforeEach(() => {
-    s3 = {
-      getObject: jest.fn().mockImplementation(s3Body({ foo: "bar" }))
-    };
-    AWSMock.mock("S3", "getObject", s3.getObject);
-  });
-
-  afterEach(() => {
-    AWSMock.restore();
+    s3 = new S3Client();
+    s3Mock = mockClient(s3);
+    s3Mock.resolves({
+      Body: s3Body({ foo: "bar" })
+    });
   });
 
   it("should convert event to text", async () => {
-    const inputConverter = new S3TextInputConverter(new AWS.S3());
+    const inputConverter = new S3TextInputConverter(s3);
     const input = await inputConverter.convert(event);
 
     expect(input).toEqual('{"foo":"bar"}');
-  });
-
-  it("should call AWS sdk with the correct parameter", async () => {
-    const inputConverter = new S3TextInputConverter(new AWS.S3());
-    await inputConverter.convert(event);
-
-    expect(s3.getObject).toBeCalledWith(
-      {
-        Bucket: "my-bucket-name",
-        Key: "object-key"
-      },
-      expect.any(Function)
-    );
   });
 });

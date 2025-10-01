@@ -1,4 +1,5 @@
 const assert = require("assert");
+const { QueryCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 
 const QUERY = "QUERY";
 const SCAN = "SCAN";
@@ -26,10 +27,12 @@ module.exports = class DynamoDbItemReader {
   }
 
   async _hitAndCacheDynamoDb(params) {
-    const data =
+    const command =
       this.operation === QUERY
-        ? await this.documentClient.query(params).promise()
-        : await this.documentClient.scan(params).promise();
+        ? new QueryCommand(params)
+        : new ScanCommand(params);
+
+    const data = await this.documentClient.send(command);
     this.cachedData = data;
     return data;
   }

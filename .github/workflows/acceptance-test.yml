@@ -8,11 +8,13 @@ on:
 
 concurrency:
   group: acceptance-test
-
+  cancel-in-progress: true
+  
 jobs:
   acceptance-test:
     name: 🛠️ Run acceptance tests
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     permissions:
       id-token: write
       contents: read

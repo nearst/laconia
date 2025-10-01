@@ -1,61 +1,61 @@
-const AWSMock = require("aws-sdk-mock");
-const AWS = require("aws-sdk");
+const { mockClient } = require("aws-sdk-client-mock");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const S3ItemReader = require("../src/S3ItemReader");
 const _ = require("lodash");
-const {
-  yields,
-  s3Body,
-  collectNexts,
-  reduceNexts
-} = require("@laconia/test-helper");
-
-AWSMock.setSDKInstance(AWS);
+const { collectNexts, reduceNexts } = require("@laconia/test-helper");
 
 describe("S3 Item Reader", () => {
-  let s3;
-
+  let s3Mock;
   const s3Params = { Bucket: "bucket", Key: "key" };
 
   beforeEach(() => {
-    s3 = { getObject: jest.fn() };
-    AWSMock.mock("S3", "getObject", s3.getObject);
+    s3Mock = mockClient(S3Client);
   });
 
   afterEach(() => {
-    AWSMock.restore();
+    s3Mock.reset();
   });
 
+  const createS3Response = content => {
+    const jsonString = JSON.stringify(content);
+    return {
+      Body: {
+        transformToString: () => Promise.resolve(jsonString)
+      }
+    };
+  };
+
   it("retrieves a directly stored array", async () => {
-    s3.getObject.mockImplementation(s3Body(["Foo"]));
-    const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+    s3Mock.on(GetObjectCommand).resolves(createS3Response(["Foo"]));
+    const reader = new S3ItemReader(new S3Client(), s3Params, ".");
     const next = await reader.next();
 
     expect(next).toEqual({ item: "Foo", cursor: { index: 0 }, finished: true });
   });
 
   it("retrieves next item when path given is an array of 1 item", async () => {
-    s3.getObject.mockImplementation(s3Body(["Foo"]));
-    const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+    s3Mock.on(GetObjectCommand).resolves(createS3Response(["Foo"]));
+    const reader = new S3ItemReader(new S3Client(), s3Params, ".");
     const next = await reader.next();
 
     expect(next).toEqual({ item: "Foo", cursor: { index: 0 }, finished: true });
   });
 
   it("retrieves array from a simple object path", async () => {
-    s3.getObject.mockImplementation(
-      s3Body({
+    s3Mock.on(GetObjectCommand).resolves(
+      createS3Response({
         list: ["Foo"]
       })
     );
-    const reader = new S3ItemReader(new AWS.S3(), s3Params, "list");
+    const reader = new S3ItemReader(new S3Client(), s3Params, "list");
     const next = await reader.next();
 
     expect(next).toHaveProperty("item", "Foo");
   });
 
   it("retrieves array from a complex object path", async () => {
-    s3.getObject.mockImplementation(
-      s3Body({
+    s3Mock.on(GetObjectCommand).resolves(
+      createS3Response({
         database: {
           music: [
             {
@@ -68,7 +68,7 @@ describe("S3 Item Reader", () => {
       })
     );
     const reader = new S3ItemReader(
-      new AWS.S3(),
+      new S3Client(),
       s3Params,
       'database.music[0]["category"].list'
     );
@@ -81,8 +81,10 @@ describe("S3 Item Reader", () => {
     let nexts;
 
     beforeEach(async () => {
-      s3.getObject.mockImplementation(s3Body(["Foo", "Bar", "Fiz"]));
-      const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+      s3Mock
+        .on(GetObjectCommand)
+        .resolves(createS3Response(["Foo", "Bar", "Fiz"]));
+      const reader = new S3ItemReader(new S3Client(), s3Params, ".");
       nexts = await collectNexts(reader, 3);
     });
 
@@ -105,7 +107,7 @@ describe("S3 Item Reader", () => {
     });
 
     it("caches S3 result", async () => {
-      expect(s3.getObject).toHaveBeenCalledTimes(1);
+      expect(s3Mock.calls().length).toBe(1);
     });
   });
 
@@ -113,10 +115,10 @@ describe("S3 Item Reader", () => {
     let nexts;
 
     beforeEach(async () => {
-      s3.getObject.mockImplementation(
-        s3Body(["1", "2", "3", "Foo", "Bar", "Fiz"])
-      );
-      const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+      s3Mock
+        .on(GetObjectCommand)
+        .resolves(createS3Response(["1", "2", "3", "Foo", "Bar", "Fiz"]));
+      const reader = new S3ItemReader(new S3Client(), s3Params, ".");
       nexts = await collectNexts(reader, 3, { index: 2 });
     });
 
@@ -139,7 +141,7 @@ describe("S3 Item Reader", () => {
     });
 
     it("caches S3 result", async () => {
-      expect(s3.getObject).toHaveBeenCalledTimes(1);
+      expect(s3Mock.calls().length).toBe(1);
     });
   });
 
@@ -151,43 +153,45 @@ describe("S3 Item Reader", () => {
       { name: "number", value: 1.0 }
     ];
 
-    nonArrays.forEach(({ name, value, path }) => {
+    nonArrays.forEach(({ name, value }) => {
       it(`throws error when ${name} is found`, async () => {
-        s3.getObject.mockImplementation(s3Body(value));
-        const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+        s3Mock.on(GetObjectCommand).resolves(createS3Response(value));
+        const reader = new S3ItemReader(new S3Client(), s3Params, ".");
         await expect(reader.next()).rejects.toThrow(JSON.stringify(value));
       });
     });
 
     it(`throws error when undefined is found`, async () => {
-      s3.getObject.mockImplementation(s3Body("not used"));
-      const reader = new S3ItemReader(new AWS.S3(), s3Params, "non existent");
+      s3Mock.on(GetObjectCommand).resolves(createS3Response("not used"));
+      const reader = new S3ItemReader(new S3Client(), s3Params, "non existent");
       await expect(reader.next()).rejects.toThrow("undefined");
     });
   });
 
   it("throws error when path given Body is not a JSON", async () => {
-    s3.getObject.mockImplementation(
-      yields({
-        Body: { toString: () => "boom" }
-      })
-    );
-    const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+    s3Mock.on(GetObjectCommand).resolves({
+      Body: {
+        transformToString: () => Promise.resolve("boom")
+      }
+    });
+    const reader = new S3ItemReader(new S3Client(), s3Params, ".");
     await expect(reader.next()).rejects.toThrow("not a JSON");
   });
 
   it("hits S3 with the configured parameters", async () => {
-    s3.getObject.mockImplementation(s3Body(["Foo"]));
-    const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+    s3Mock.on(GetObjectCommand).resolves(createS3Response(["Foo"]));
+    const reader = new S3ItemReader(new S3Client(), s3Params, ".");
     await reader.next();
 
-    expect(s3.getObject).toHaveBeenCalledWith(s3Params, expect.any(Function));
+    const calls = s3Mock.calls();
+    expect(calls.length).toBe(1);
+    expect(calls[0].args[0].input).toEqual(s3Params);
   });
 
   it("should be able to process 1000 items", async () => {
     const oneThousand = _.range(1000);
-    s3.getObject.mockImplementation(s3Body(oneThousand));
-    const reader = new S3ItemReader(new AWS.S3(), s3Params, ".");
+    s3Mock.on(GetObjectCommand).resolves(createS3Response(oneThousand));
+    const reader = new S3ItemReader(new S3Client(), s3Params, ".");
     await reduceNexts(reader, 1000, undefined, (next, index) => {
       expect(next).toEqual({
         item: index,

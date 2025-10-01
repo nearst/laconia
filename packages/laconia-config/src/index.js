@@ -6,12 +6,12 @@ const SsmConfigConverter = require("./SsmConfigConverter");
 const S3ConfigConverter = require("./S3ConfigConverter");
 const SecretsManagerConfigConverter = require("./SecretsManagerConfigConverter");
 
-exports.envVarInstances = () => ({ env, $ssm, $s3, $secretsManager }) =>
+exports.envVarInstances = () => ({ env }) =>
   new EnvVarConfigFactory(env, {
     boolean: new BooleanConfigConverter(),
     integer: new IntegerConfigConverter(),
     float: new FloatConfigConverter(),
-    ssm: new SsmConfigConverter($ssm),
-    s3: new S3ConfigConverter($s3),
-    secretsManager: new SecretsManagerConfigConverter($secretsManager)
+    ssm: new SsmConfigConverter(),
+    s3: new S3ConfigConverter(),
+    secretsManager: new SecretsManagerConfigConverter()
   }).makeInstances();

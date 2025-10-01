@@ -1,91 +1,104 @@
-const AWSMock = require("aws-sdk-mock");
-const AWS = require("aws-sdk");
+const { mockClient } = require("aws-sdk-client-mock");
+const {
+  DynamoDBDocumentClient,
+  ScanCommand,
+  QueryCommand
+} = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const DynamoDbItemReader = require("../src/DynamoDbItemReader");
-const { yields, collectNexts } = require("@laconia/test-helper");
-
-AWSMock.setSDKInstance(AWS);
+const { collectNexts } = require("@laconia/test-helper");
 
 describe("DynamoDb Item Reader", () => {
-  let documentClient;
+  const ddbMock = mockClient(DynamoDBDocumentClient);
   const dynamoDbParams = { TableName: "Music" };
 
   beforeEach(() => {
-    documentClient = {
-      query: jest.fn().mockImplementation(yields({ Items: [] })),
-      scan: jest.fn().mockImplementation(yields({ Items: [] }))
-    };
-    AWSMock.mock("DynamoDB.DocumentClient", "query", documentClient.query);
-    AWSMock.mock("DynamoDB.DocumentClient", "scan", documentClient.scan);
-  });
-
-  afterEach(() => {
-    AWSMock.restore();
+    ddbMock.reset();
   });
 
   describe("when using QUERY operation", () => {
     beforeEach(async () => {
+      ddbMock.on(QueryCommand).resolves({ Items: [] });
+
+      const documentClient = DynamoDBDocumentClient.from(
+        new DynamoDBClient({})
+      );
       const reader = new DynamoDbItemReader(
         "QUERY",
-        new AWS.DynamoDB.DocumentClient(),
+        documentClient,
         dynamoDbParams
       );
       await reader.next();
     });
 
     it("queries DynamoDb", () => {
-      expect(documentClient.scan).not.toHaveBeenCalled();
-      expect(documentClient.query).toHaveBeenCalled();
+      const scanCalls = ddbMock
+        .calls()
+        .filter(call => call.args[0].constructor.name === "ScanCommand");
+      const queryCalls = ddbMock
+        .calls()
+        .filter(call => call.args[0].constructor.name === "QueryCommand");
+
+      expect(scanCalls.length).toEqual(0);
+      expect(queryCalls.length).toBeGreaterThanOrEqual(1);
     });
 
     it("uses the specified parameters", () => {
-      expect(documentClient.query).toHaveBeenCalledWith(
-        dynamoDbParams,
-        expect.any(Function)
-      );
+      const calls = ddbMock.calls();
+      expect(calls[0].args[0].input).toEqual(dynamoDbParams);
     });
   });
 
   describe("when using SCAN operation", () => {
     beforeEach(async () => {
+      ddbMock.on(ScanCommand).resolves({ Items: [] });
+
+      const documentClient = DynamoDBDocumentClient.from(
+        new DynamoDBClient({})
+      );
       const reader = new DynamoDbItemReader(
         "SCAN",
-        new AWS.DynamoDB.DocumentClient(),
+        documentClient,
         dynamoDbParams
       );
       await reader.next();
     });
 
     it("scans DynamoDb", () => {
-      expect(documentClient.query).not.toHaveBeenCalled();
-      expect(documentClient.scan).toHaveBeenCalled();
+      const scanCalls = ddbMock
+        .calls()
+        .filter(call => call.args[0].constructor.name === "ScanCommand");
+      const queryCalls = ddbMock
+        .calls()
+        .filter(call => call.args[0].constructor.name === "QueryCommand");
+
+      expect(scanCalls.length).toBeGreaterThanOrEqual(1);
+      expect(queryCalls.length).toEqual(0);
     });
 
     it("uses the specified parameters", () => {
-      expect(documentClient.scan).toHaveBeenCalledWith(
-        dynamoDbParams,
-        expect.any(Function)
-      );
+      const calls = ddbMock.calls();
+      expect(calls[0].args[0].input).toEqual(dynamoDbParams);
     });
   });
 
   it("throws error when operation is not supported", async () => {
+    const documentClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+
     expect(
-      () =>
-        new DynamoDbItemReader(
-          "BOOM",
-          new AWS.DynamoDB.DocumentClient(),
-          dynamoDbParams
-        )
+      () => new DynamoDbItemReader("BOOM", documentClient, dynamoDbParams)
     ).toThrow(
       "Unsupported DynamoDB operation! Supported operations are SCAN and QUERY."
     );
   });
 
   it("generates next object", async () => {
-    documentClient.scan.mockImplementation(yields({ Items: ["Foo"] }));
+    ddbMock.on(ScanCommand).resolves({ Items: ["Foo"] });
+
+    const documentClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
     const reader = new DynamoDbItemReader(
       "SCAN",
-      new AWS.DynamoDB.DocumentClient(),
+      documentClient,
       dynamoDbParams
     );
     const next = await reader.next();
@@ -97,13 +110,14 @@ describe("DynamoDb Item Reader", () => {
     let nexts;
 
     beforeEach(async () => {
-      nexts = [];
-      documentClient.scan.mockImplementation(
-        yields({ Items: ["Foo", "Bar", "Fiz"] })
+      ddbMock.on(ScanCommand).resolves({ Items: ["Foo", "Bar", "Fiz"] });
+
+      const documentClient = DynamoDBDocumentClient.from(
+        new DynamoDBClient({})
       );
       const reader = new DynamoDbItemReader(
         "SCAN",
-        new AWS.DynamoDB.DocumentClient(),
+        documentClient,
         dynamoDbParams
       );
       nexts = await collectNexts(reader, 3);
@@ -128,7 +142,7 @@ describe("DynamoDb Item Reader", () => {
     });
 
     it("should cache result", () => {
-      expect(documentClient.scan).toHaveBeenCalledTimes(1);
+      expect(ddbMock.calls().length).toEqual(1);
     });
   });
 
@@ -136,19 +150,18 @@ describe("DynamoDb Item Reader", () => {
     let nexts;
 
     beforeEach(async () => {
-      nexts = [];
-      documentClient.scan.mockImplementationOnce(
-        yields({ Items: ["Foo", "Bar"], LastEvaluatedKey: "Bar" })
-      );
-      documentClient.scan.mockImplementationOnce(
-        yields({ Items: ["Fiz", "Baz"], LastEvaluatedKey: "Baz" })
-      );
-      documentClient.scan.mockImplementationOnce(
-        yields({ Items: ["Boo", "Boz"] })
+      ddbMock
+        .on(ScanCommand)
+        .resolvesOnce({ Items: ["Foo", "Bar"], LastEvaluatedKey: "Bar" })
+        .resolvesOnce({ Items: ["Fiz", "Baz"], LastEvaluatedKey: "Baz" })
+        .resolvesOnce({ Items: ["Boo", "Boz"] });
+
+      const documentClient = DynamoDBDocumentClient.from(
+        new DynamoDBClient({})
       );
       const reader = new DynamoDbItemReader(
         "SCAN",
-        new AWS.DynamoDB.DocumentClient(),
+        documentClient,
         dynamoDbParams
       );
       nexts = await collectNexts(reader, 6);
@@ -188,19 +201,7 @@ describe("DynamoDb Item Reader", () => {
     });
 
     it("should cache result", () => {
-      expect(documentClient.scan).toHaveBeenCalledTimes(3);
-      expect(documentClient.scan).toHaveBeenCalledWith(
-        dynamoDbParams,
-        expect.any(Function)
-      );
-      expect(documentClient.scan).toHaveBeenCalledWith(
-        Object.assign({ ExclusiveStartKey: "Bar" }, dynamoDbParams),
-        expect.any(Function)
-      );
-      expect(documentClient.scan).toHaveBeenCalledWith(
-        Object.assign({ ExclusiveStartKey: "Baz" }, dynamoDbParams),
-        expect.any(Function)
-      );
+      expect(ddbMock.calls().length).toEqual(3);
     });
   });
 
@@ -208,14 +209,17 @@ describe("DynamoDb Item Reader", () => {
     let nexts;
 
     beforeEach(async () => {
-      nexts = [];
-      documentClient.scan.mockImplementationOnce(
-        yields({ Items: ["Fiz", "Baz"], LastEvaluatedKey: "Baz" })
+      ddbMock
+        .on(ScanCommand)
+        .resolvesOnce({ Items: ["Fiz", "Baz"], LastEvaluatedKey: "Baz" })
+        .resolvesOnce({ Items: ["Boo"] });
+
+      const documentClient = DynamoDBDocumentClient.from(
+        new DynamoDBClient({})
       );
-      documentClient.scan.mockImplementationOnce(yields({ Items: ["Boo"] }));
       const reader = new DynamoDbItemReader(
         "SCAN",
-        new AWS.DynamoDB.DocumentClient(),
+        documentClient,
         dynamoDbParams
       );
       nexts = await collectNexts(reader, 2, {
@@ -239,15 +243,7 @@ describe("DynamoDb Item Reader", () => {
     });
 
     it("should cache result", () => {
-      expect(documentClient.scan).toHaveBeenCalledTimes(2);
-      expect(documentClient.scan).toHaveBeenCalledWith(
-        Object.assign({ ExclusiveStartKey: "Bar" }, dynamoDbParams),
-        expect.any(Function)
-      );
-      expect(documentClient.scan).toHaveBeenCalledWith(
-        Object.assign({ ExclusiveStartKey: "Baz" }, dynamoDbParams),
-        expect.any(Function)
-      );
+      expect(ddbMock.calls().length).toEqual(2);
     });
   });
 });

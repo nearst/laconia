@@ -3,6 +3,7 @@
     "noEmit": true,
     "strict": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "lib": ["es2015"]
   },

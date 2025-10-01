@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0]
 
 - `@laconia/core`
   - **BREAKING** #539 Remove default AWS SDK instances: `s3`, `lambda`, `ssm`, `sns`
@@ -17,10 +17,10 @@ and this project adheres to
   - **BREAKING** Upgraded to AWS SDK v3. As part of this, there are breaking changes:
     `s3.getStream` now returns a Promise, and needs to be awaited, and `s3.getObject`
     has been renamed to `s3.getBuffer`.
-- `@laconia/xray`
-  - Now supports capturing instances of AWS SDK v3 clients
 - `@laconia/batch`
   - **BREAKING** Upgraded to AWS SDK v3.
+- `@laconia/xray`
+  - Now supports capturing instances of AWS SDK v3 clients
 
 ## [1.14.0]
 

@@ -1,4 +1,3 @@
-const { S3Client } = require("@aws-sdk/client-s3");
 const { LambdaClient } = require("@aws-sdk/client-lambda");
 const laconiaInvoker = require("@laconia/invoker");
 const LaconiaTester = require("./LaconiaTester");
@@ -23,11 +22,11 @@ const isSpyOptionsSet = options =>
   getSpyOptions(options).bucketName !== undefined;
 
 const createSpier = (functionName, options) => {
-  return new S3Spier(
-    options.spy.bucketName,
-    functionName,
-    options.spy.s3 || new S3Client()
-  );
+  const spier = new S3Spier(options.spy.bucketName, functionName);
+  if (options.spy.s3) {
+    spier.s3 = options.spy.s3;
+  }
+  return spier;
 };
 
 module.exports = (functionName, options = {}) => {

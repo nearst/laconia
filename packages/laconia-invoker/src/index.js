@@ -8,5 +8,5 @@ exports.default = invoker;
 
 exports.HandledInvokeLaconiaError = HandledInvokeLaconiaError;
 exports.UnhandledInvokeLaconiaError = UnhandledInvokeLaconiaError;
-exports.envVarInstances = () => ({ env }) =>
-  new EnvVarInvokerFactory(env).makeInstances();
+exports.envVarInstances = () => ({ env, $lambda }) =>
+  new EnvVarInvokerFactory(env, $lambda).makeInstances();

@@ -37,7 +37,8 @@ describe("S3Spier", () => {
 
   const sharedListObjectsTest = operation => {
     it("should only retrieve objects related to the function name", async () => {
-      const spier = new S3Spier("bucket name", "function name", s3);
+      const spier = new S3Spier("bucket name", "function name");
+      spier.s3 = s3;
       await operation(spier);
 
       expect(s3Mock).toHaveReceivedCommandWith(ListObjectsCommand, {
@@ -49,7 +50,8 @@ describe("S3Spier", () => {
 
   const sharedMultiOperationTest = (operation, s3Command) => {
     it("should only retrieve objects related to the function name", async () => {
-      const spier = new S3Spier("bucket name", "function name", s3);
+      const spier = new S3Spier("bucket name", "function name");
+      spier.s3 = s3;
       await operation(spier);
 
       expect(s3Mock).toHaveReceivedCommandWith(ListObjectsCommand, {
@@ -63,7 +65,8 @@ describe("S3Spier", () => {
       s3Mock.on(ListObjectsCommand).resolves({
         Contents: keys.map(k => ({ Key: k }))
       });
-      const spier = new S3Spier("bucket name", "function name", s3);
+      const spier = new S3Spier("bucket name", "function name");
+      spier.s3 = s3;
       await operation(spier);
       expect(s3Mock).toHaveReceivedCommandTimes(s3Command, keys.length);
       keys.forEach(k => {
@@ -77,7 +80,8 @@ describe("S3Spier", () => {
 
   describe("#track", () => {
     it("should call s3 with the correct bucket and event config", async () => {
-      const spier = new S3Spier("bucket name", "function name", s3);
+      const spier = new S3Spier("bucket name", "function name");
+      spier.s3 = s3;
       await spier.track(lc);
 
       expect(s3Mock).toHaveReceivedCommandWith(PutObjectCommand, {
@@ -89,7 +93,8 @@ describe("S3Spier", () => {
     });
 
     it("should generate unique bucket item name", async () => {
-      const spier = new S3Spier("bucket name", "function name", s3);
+      const spier = new S3Spier("bucket name", "function name");
+      spier.s3 = s3;
       await spier.track(_.merge(lc, { context: { awsRequestId: "123" } }));
       await spier.track(_.merge(lc, { context: { awsRequestId: "456" } }));
 
@@ -119,7 +124,8 @@ describe("S3Spier", () => {
     sharedListObjectsTest(spier => spier.waitForTotalInvocations(0));
 
     it("should wait for total invocations", async () => {
-      const spier = new S3Spier("bucket name", "function name", s3);
+      const spier = new S3Spier("bucket name", "function name");
+      spier.s3 = s3;
       await Promise.all([
         spier.waitForTotalInvocations(2),
         delay(25).then(_ => {
@@ -128,6 +134,6 @@ describe("S3Spier", () => {
           });
         })
       ]);
-    }, 200);
+    });
   });
 });

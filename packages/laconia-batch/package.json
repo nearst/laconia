@@ -1,6 +1,6 @@
 {
   "name": "@laconia/batch",
-  "version": "1.14.0",
+  "version": "2.0.0",
   "description": "Reads large number of records without Lambda time limit",
   "keywords": [
     "aws",
@@ -28,11 +28,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.806.0",
-    "@aws-sdk/client-s3": "^3.873.0",
     "@aws-sdk/client-lambda": "^3.806.0",
+    "@aws-sdk/client-s3": "^3.873.0",
     "@aws-sdk/lib-dynamodb": "^3.806.0",
-    "@laconia/core": "^1.14.0",
-    "@laconia/invoker": "^1.14.0",
+    "@laconia/core": "^2.0.0",
+    "@laconia/invoker": "^2.0.0",
     "await-event-emitter": "^2.0.2",
     "bottleneck": "^2.1.0",
     "lodash.get": "^4.4.2",

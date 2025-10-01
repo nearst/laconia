@@ -1,6 +1,6 @@
 {
   "name": "@laconia/config",
-  "version": "1.14.0",
+  "version": "2.0.0",
   "description": "Externalizes application secret and configuration",
   "keywords": [
     "aws",
@@ -27,7 +27,7 @@
     "@aws-sdk/client-s3": "^3.873.0",
     "@aws-sdk/client-secrets-manager": "^3.873.0",
     "@aws-sdk/client-ssm": "^3.873.0",
-    "@laconia/core": "^1.14.0"
+    "@laconia/core": "^2.0.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"

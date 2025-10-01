@@ -1,6 +1,6 @@
 {
   "name": "@laconia/event",
-  "version": "1.14.0",
+  "version": "2.0.0",
   "description": "Parses and responds to incoming events",
   "keywords": [
     "aws",
@@ -26,7 +26,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.873.0",
     "@aws-sdk/util-dynamodb": "^3.788.0",
-    "@laconia/core": "^1.14.0",
+    "@laconia/core": "^2.0.0",
     "@smithy/util-stream": "^4.2.0",
     "@types/aws-lambda": "~8.10.31"
   },

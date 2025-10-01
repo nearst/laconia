@@ -1,6 +1,6 @@
 {
   "name": "@laconia/invoker",
-  "version": "1.14.0",
+  "version": "2.0.0",
   "description": "Invokes Lambdas like regular functions",
   "keywords": [
     "aws",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.799.0",
-    "@laconia/core": "^1.14.0"
+    "@laconia/core": "^2.0.0"
   },
   "devDependencies": {
     "@laconia/test-helper": "file:../laconia-test-helper"
